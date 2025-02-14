@@ -9,7 +9,7 @@ package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.DriveConstants;
+// import frc.robot.Constants.DriveConstants;
 
 /**
  * This class handles all stored robot preferences
@@ -28,10 +28,10 @@ public class RobotPreferences {
         // Add a row for each preference to read.
         // RobotConstants.prototypeBot = readBoolean("prototypeBot", RobotConstants.prototypeBot);
 
-        DriveConstants.offsetAngleFrontLeftMotor = readDouble("Drive.offsetAngleFrontLeftMotor", DriveConstants.offsetAngleFrontLeftMotor);        
-        DriveConstants.offsetAngleFrontRightMotor = readDouble("Drive.offsetAngleFrontRightMotor", DriveConstants.offsetAngleFrontRightMotor);        
-        DriveConstants.offsetAngleBackLeftMotor = readDouble("Drive.offsetAngleBackLeftMotor", DriveConstants.offsetAngleBackLeftMotor);        
-        DriveConstants.offsetAngleBackRightMotor = readDouble("Drive.offsetAngleBackRightMotor", DriveConstants.offsetAngleBackRightMotor);        
+        // DriveConstants.offsetAngleFrontLeftMotor = readDouble("Drive.offsetAngleFrontLeftMotor", DriveConstants.offsetAngleFrontLeftMotor);        
+        // DriveConstants.offsetAngleFrontRightMotor = readDouble("Drive.offsetAngleFrontRightMotor", DriveConstants.offsetAngleFrontRightMotor);        
+        // DriveConstants.offsetAngleBackLeftMotor = readDouble("Drive.offsetAngleBackLeftMotor", DriveConstants.offsetAngleBackLeftMotor);        
+        // DriveConstants.offsetAngleBackRightMotor = readDouble("Drive.offsetAngleBackRightMotor", DriveConstants.offsetAngleBackRightMotor);        
         // DriveConstants.updateDerivedConstants();
 
         problemSubsystem = readString("problemSubsystem", problemSubsystem);
