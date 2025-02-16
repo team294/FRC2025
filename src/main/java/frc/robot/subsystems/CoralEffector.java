@@ -45,8 +45,6 @@ public class CoralEffector extends SubsystemBase {
   private final DigitalInput entrySensor = new DigitalInput(Ports.DIOCoralEffectorEntrySensor);
   private final DigitalInput exitSensor = new DigitalInput(Ports.DIOCoralEffectorExitSensor);
 
-  private double targetPercentOutput = 0;
-
   public CoralEffector(String subsystemName, FileLog log) {
     this.subsystemName = subsystemName;
     this.log = log;
@@ -87,7 +85,6 @@ public class CoralEffector extends SubsystemBase {
    * @param percent output percent, -1.0 to 1.0 (positive = intake/outtake, negative = reverse)
    */
   public void setCoralEffectorPercentOutput(double percent) {
-    this.targetPercentOutput = percent;
     coralEffectorMotor.setControl(coralEffectorVoltageControl.withOutput(percent * CoralEffectorConstants.compensationVoltage));
   }
 
@@ -150,17 +147,6 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Get whether the coralEffector motor is stalled, which occurs when there is high current and low velocity.
-   * This detection is only valid when the motor is running forward (intaking/outtaking).
-   * @return true = motor is stalled, false = motor is not stalled
-   */
-  public boolean isStalled() {
-    boolean highCurrent = getCoralEffectorAmps() > CoralEffectorConstants.stallThresholdCurrent;
-    boolean lowRPM = getCoralEffectorVelocity() < CoralEffectorConstants.stallThresholdRPM;
-    return (targetPercentOutput > 0) && highCurrent && lowRPM;
-  }
-
-  /**
    * Get the name of the subsystem.
    * @return the subsystem name
    */
@@ -187,8 +173,5 @@ public class CoralEffector extends SubsystemBase {
       SmartDashboard.putBoolean("Coral in Exit", isCoralPresentInExit());
       SmartDashboard.putBoolean("Coral Safely In", isCoralSafelyIn());
     }
-
-    // If we are trying to run the motor forward and it is stalled, stop the motor
-    if (targetPercentOutput > 0 && isStalled()) stopCoralEffectorMotor();
   }
 }
