@@ -133,9 +133,8 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Get whether a coral is safely in the coralEffector.
+   * Get whether a coral is present and is safely in the coralEffector.
    * This occurs when the coral is positioned such that it is in the exit but not in the entry.
-   * If there is not a coral present, this will return false. TODO is this behavior we want?
    * @return true = coral is safe, false = coral is not safe
    */
   public boolean isCoralSafelyIn() {
@@ -146,7 +145,7 @@ public class CoralEffector extends SubsystemBase {
    * Get whether a coral is in the coralEffector.
    * @return true = coral is present, false = coral is not present
    */
-  public boolean isPiecePresent() {
+  public boolean isCoralPresent() {
     return isCoralPresentInEntry() || isCoralPresentInExit();
   }
 
@@ -184,8 +183,8 @@ public class CoralEffector extends SubsystemBase {
   public void periodic() {
     if (fastLogging || log.isMyLogRotation(logRotationKey)) {
       updateLog(false);
-      SmartDashboard.putBoolean("Coral In Entry", isCoralPresentInEntry());
-      SmartDashboard.putBoolean("Coral In Exit", isCoralPresentInExit());
+      SmartDashboard.putBoolean("Coral in Entry", isCoralPresentInEntry());
+      SmartDashboard.putBoolean("Coral in Exit", isCoralPresentInExit());
       SmartDashboard.putBoolean("Coral Safely In", isCoralSafelyIn());
     }
 

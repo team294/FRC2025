@@ -103,6 +103,8 @@ public final class Constants {
 
   public static class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
+    public static final double intakePercent = 0.16;
+    public static final double outtakePercent = 0.4;
     public static final double stallThresholdRPM = 100;
     public static final double stallThresholdCurrent = 20;
   }
