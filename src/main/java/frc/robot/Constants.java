@@ -73,6 +73,8 @@ public final class Constants {
 
     public static final int CANdle = 21;
 
+    public static final int CANCoralIntake = 23;
+
     // Digital IO Ports
     public static final int DIOElevatorLowerLimitSensor = 3;
     public static final int DIOElevatorUpperLimitSensor = 4;
@@ -108,6 +110,14 @@ public final class Constants {
   public static class FieldConstants {
     public static final double length = 17.55;      // 57 ft 6 7/8 in = 1755 cm
     public static final double width = 8.05;        // 26 ft 5 in = 805 cm
+  }
+
+  public static final class CoralIntakeConstants {
+    public static final double compensationVoltage = 12.0;
+    public static final double coralIntakeIntakePercent = 0.16;
+    public static final double coralIntakeOuttakePercent = 0.4;
+    public static final double stallThresholdRPM = 100;
+    public static final double stallThresholdCurrent = 20; // TODO are these true? where to find
   }
 
 }
