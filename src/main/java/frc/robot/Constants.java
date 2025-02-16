@@ -73,11 +73,16 @@ public final class Constants {
 
     public static final int CANdle = 21;
 
+    public static final int CANMinion1 = 22; //Placeholder CANID
+
     // Digital IO Ports
     public static final int DIOElevatorLowerLimitSensor = 3;
     public static final int DIOElevatorUpperLimitSensor = 4;
     public static final int DIOEndEffectorEntrySensor = 0;
     public static final int DIOEndEffectorExitSensor = 1;
+
+    public static final int DIOAlgaeGrabberSensor1 = 5; //Placeholder ID
+    public static final int DIOAlgaeGraberSensor2 = 6; //Placeholder ID
   }
 
   public static final class OIConstants {
@@ -110,4 +115,10 @@ public final class Constants {
     public static final double width = 8.05;        // 26 ft 5 in = 805 cm
   }
 
+  public static final class AlgaeGrabberConstants {
+    public static final double compensationVoltage = 12.0;
+    public static final double AlgaeGrabberIntakePercent = 0.7;
+    public static final double stallThresholdRPM = 100;
+    public static final double stallThresholdCurrent = 20;
+  }
 }
