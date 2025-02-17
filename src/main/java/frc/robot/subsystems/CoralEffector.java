@@ -28,7 +28,7 @@ public class CoralEffector extends SubsystemBase {
     
   private final TalonFXS coralEffectorMotor = new TalonFXS(Ports.CANCoralEffector);
 
-  // Create variables for the coralEffectorMotor
+  // Create variables for the coralEffector Minion motor
   private final StatusSignal<Voltage> coralEffectorSupplyVoltage;             // Incoming bus voltage to motor, in volts
   private final StatusSignal<Temperature> coralEffectorTemp;                  // Motor temperature, in degrees Celsius
   private final StatusSignal<Double> coralEffectorDutyCycle;                  // Motor duty cycle percent power, -1 to 1
@@ -89,14 +89,14 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Stop the coralEffector motor.
+   * Stops the coralEffector motor.
    */
   public void stopCoralEffectorMotor() {
     setCoralEffectorPercentOutput(0);
   }
 
   /**
-   * Get the velocity of the coralEffector motor.
+   * Gets the velocity of the coralEffector motor.
    * @return motor velocity, in RPM
    */
   public double getCoralEffectorVelocity() {
@@ -105,7 +105,7 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Get the current of the coralEffector motor.
+   * Gets the current of the coralEffector motor.
    * @return motor current, in amps
    */
   public double getCoralEffectorAmps() {
@@ -114,7 +114,7 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Get whether a coral is in the exit of the coralEffector.
+   * Gets whether a coral is in the exit of the coralEffector.
    * @return true = coral is in exit, false = coral is not in exit
    */
   public boolean isCoralPresentInExit() {
@@ -122,7 +122,7 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Get whether a coral is in the entry of the coralEffector.
+   * Gets whether a coral is in the entry of the coralEffector.
    * @return true = coral is in entry, false = coral is not in entry
    */
   public boolean isCoralPresentInEntry() {
@@ -130,7 +130,7 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Get whether a coral is present and is safely in the coralEffector.
+   * Gets whether a coral is present and is safely in the coralEffector.
    * This occurs when the coral is positioned such that it is in the exit but not in the entry.
    * @return true = coral is safe, false = coral is not safe
    */
@@ -139,7 +139,7 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Get whether a coral is in the coralEffector.
+   * Gets whether a coral is in the coralEffector.
    * @return true = coral is present, false = coral is not present
    */
   public boolean isCoralPresent() {
@@ -147,7 +147,7 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Get the name of the subsystem.
+   * Gets the name of the subsystem.
    * @return the subsystem name
    */
   public String getName() {
@@ -155,7 +155,7 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Write to the file log.
+   * Writes to the file log.
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {

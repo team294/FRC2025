@@ -14,7 +14,7 @@ public class CoralEffectorSetPercent extends Command {
   private double percent = 0.0;
 
   /**
-   * Sets the percent output of the coralEffector and ends immediately without turning off.
+   * Sets the percent output of the coralEffector and ends immediately.
    * @param percent -1.0 to 1.0 (positive = intake/outtake, negative = reverse)
    * @param coralEffector CoralEffector subsystem
    * @param log LogFile utility
