@@ -17,7 +17,7 @@ public class AlgaeGrabberOuttake extends Command {
   private final double seconds;
 
   /**
-   * Outtakes algae from the AlgaeGrabber by running the motor until the algae is out of the mechanism.
+   * Outtake algae from the AlgaeGrabber by running the motor until the algae is out of the mechanism.
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */

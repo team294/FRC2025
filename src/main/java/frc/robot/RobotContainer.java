@@ -43,6 +43,7 @@ public class RobotContainer {
   // private final DriveTrain driveTrain = new DriveTrain(allianceSelection, led, log);
   private final Hopper hopper = new Hopper("Hopper", log);
   private final CoralEffector coralEffector = new CoralEffector("CoralEffector", log);
+  private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
 
   // Define other utilities
   // private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
@@ -87,7 +88,17 @@ public class RobotContainer {
     // Hopper
     SmartDashboard.putData("Hopper Set Percent", new HopperSetPercent(hopper, log));
     SmartDashboard.putData("Hopper Stop", new HopperStopMotor(hopper, log));
-  
+
+    // CoralEffector
+    SmartDashboard.putData("CoralEffector Set 10%", new CoralEffectorSetPercent(0.1, coralEffector, log));
+    SmartDashboard.putData("CoralEffector Set -10%", new CoralEffectorSetPercent(-0.1, coralEffector, log));
+    SmartDashboard.putData("CoralEffector Stop", new CoralEffectorStopMotor(coralEffector, log));
+
+    // AlgaeGrabber
+    SmartDashboard.putData("AlgaeGrabber Set 10%", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber Set -10%", new AlgaeGrabberSetPercent(-0.1, algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber Stop", new AlgaeGrabberStopMotor(algaeGrabber, log));
+
     // Autos
 
     // Copanel buttons

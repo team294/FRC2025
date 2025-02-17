@@ -14,7 +14,7 @@ public class AlgaeGrabberIntake extends Command {
   private final FileLog log;
 
   /**
-   * Intakes algae into the AlgaeGrabber by running the motor until an algae is detected.
+   * Intake algae into the AlgaeGrabber by running the motor until an algae is detected.
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */

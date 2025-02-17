@@ -107,12 +107,6 @@ public final class Constants {
     public static final double width = 8.05;    // 26 ft 5 in = 805 cm
   }
 
-  public static final class AlgaeGrabberConstants {
-    public static final double compensationVoltage = 12.0;
-    public static final double AlgaeGrabberIntakePercent = 0.1;   // TODO CALIBRATE FOR 2025
-    public static final double AlgaeGrabberOuttakePercent = -0.1; // TODO CALIBRATE FOR 2025
-  }
-
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
     public static final double hopperIntakePercent = 0.1;         // TODO CALIBRATE FOR 2025
@@ -123,5 +117,11 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;   // TODO CALIBRATE FOR 2025
     public static final double outtakePercent = -0.1; // TODO CALIBRATE FOR 2025
+  }
+
+  public static final class AlgaeGrabberConstants {
+    public static final double compensationVoltage = 12.0;
+    public static final double AlgaeGrabberIntakePercent = 0.1;   // TODO CALIBRATE FOR 2025
+    public static final double AlgaeGrabberOuttakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 }
