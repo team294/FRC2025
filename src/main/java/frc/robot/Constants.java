@@ -115,10 +115,9 @@ public final class Constants {
     public static final double width = 8.05;        // 26 ft 5 in = 805 cm
   }
 
-  public static final class AlgaeGrabberConstants { // compensation voltage and stall thresholds may vary, these are based on kraken not minion
+  public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double AlgaeGrabberIntakePercent = 0.7;
-    public static final double stallThresholdRPM = 100;
-    public static final double stallThresholdCurrent = 20;
+    public static final double AlgaeGrabberIntakePercent = 0.2; // TODO uncalibrated
+    public static final double AlgaeGrabberOuttakePercent = 0.2; // TODO uncalibrated
   }
 }
