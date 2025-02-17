@@ -8,15 +8,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hopper;
 import frc.robot.utilities.FileLog;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HopperStopMotor extends Command {
-  private final FileLog log;
   private final Hopper hopper;
-  private double hopperPercent = 0.0;
+  private final FileLog log;
  
+  /**
+   * Sets the percent output of the hopper to 0 and ends immediately.
+   * @param hopper Hopper subsystem
+   * @param log FileLog utility
+   */
   public HopperStopMotor(Hopper hopper, FileLog log) {
-    this.log = log;
     this.hopper = hopper;
+    this.log = log;
     addRequirements(hopper);
   }
 
@@ -24,16 +27,18 @@ public class HopperStopMotor extends Command {
   @Override
   public void initialize() {
     hopper.setHopperPercentOutput(0);
-    log.writeLog(false, "HopperStopMotor", "Initialize");
+    log.writeLog(false, "HopperStopMotor", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

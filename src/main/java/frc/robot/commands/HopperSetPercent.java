@@ -9,63 +9,60 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hopper;
 import frc.robot.utilities.FileLog;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HopperSetPercent extends Command {
-  private final FileLog log;
   private final Hopper hopper;
+  private final FileLog log;
   private double hopperPercent = 0.0;
   private boolean fromShuffleboard;
 
   /**
-   * Sets the percent output to the Hopper and Centering motors from Shuffleboard
-   * and ends immediately.
-   * @param hopper hopper subsystem
-   * @param log
+   * Sets the percent output of the hopper from Shuffleboard and ends immediately.
+   * @param hopper Hopper subsystem
+   * @param log FileLog utility
    */
   public HopperSetPercent(Hopper hopper, FileLog log) {
-    this.log = log;
     this.hopper = hopper;
-    addRequirements(hopper);
+    this.log = log;
     this.fromShuffleboard = true;
+    addRequirements(hopper);
 
-    if(SmartDashboard.getNumber("Hopper Percent", -9999.9) == -9999.9) {
+    if (SmartDashboard.getNumber("Hopper Percent", -9999.9) == -9999.9) {
       SmartDashboard.putNumber("Hopper Percent", 0);
     }
   }
 
   /**
-   * Sets the percent output to the Hopper and Centering motors
-   * and ends immediately.
-   * @param hopperPercent -1.0 to 1.0 (+ = hopper, - = outtake)
-   * @param hopper hopper subsystem
-   * @param log
+   * Sets the percent output of the hopper and ends immediately.
+   * @param percent -1.0 to 1.0 (positive = intake, negative = reverse)
+   * @param hopper Hopper subsystem
+   * @param log FileLog utility
    */  
-  public HopperSetPercent(double hopperPercent, Hopper hopper, FileLog log) {
-    this.log = log;
+  public HopperSetPercent(double percent, Hopper hopper, FileLog log) {
     this.hopper = hopper;
-    addRequirements(hopper);
+    this.log = log;
+    this.hopperPercent = percent;
     this.fromShuffleboard = false;
-    this.hopperPercent = hopperPercent;
+    addRequirements(hopper);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) {
-      hopperPercent = SmartDashboard.getNumber("Hopper Percent", 0.0);
-    }
+    if (fromShuffleboard) hopperPercent = SmartDashboard.getNumber("Hopper Percent", 0.0);
     hopper.setHopperPercentOutput(hopperPercent);
 
-    log.writeLog(false, "HopperSetPercent", "Initialize", "Hopper Percent", hopperPercent);
+    log.writeLog(false, "HopperSetPercent", "Init", "Hopper Percent", hopperPercent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
