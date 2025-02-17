@@ -73,7 +73,7 @@ public final class Constants {
 
     public static final int CANdle = 21;
 
-    public static final int CANCoralIntake = 23;
+    public static final int CANHopper = 23;
 
     // Digital IO Ports
     public static final int DIOElevatorLowerLimitSensor = 3;
@@ -112,12 +112,10 @@ public final class Constants {
     public static final double width = 8.05;        // 26 ft 5 in = 805 cm
   }
 
-  public static final class CoralIntakeConstants {
+  public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double coralIntakeIntakePercent = 0.16;
-    public static final double coralIntakeOuttakePercent = 0.4;
-    public static final double stallThresholdRPM = 100;
-    public static final double stallThresholdCurrent = 20; // TODO are these true? where to find
+    public static final double hopperIntakePercent = 0.16; // TODO CALIBRATE FOR 2025
+    public static final double hopperReverseIntakePercent = -0.16; // TODO CALIBRATE FOR 2025
   }
 
 }
