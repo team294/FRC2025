@@ -5,33 +5,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralEffector;
+import frc.robot.subsystems.Hopper;
 import frc.robot.utilities.FileLog;
 
-public class CoralEffectorSetPercent extends Command {
-  private final CoralEffector coralEffector;
+public class HopperStopMotor extends Command {
+  private final Hopper hopper;
   private final FileLog log;
-  private double percent = 0.0;
-
+ 
   /**
-   * Sets the percent output of the coralEffector and ends immediately.
-   * @param percent -1.0 to 1.0 (positive = intake/outtake, negative = reverse)
-   * @param coralEffector CoralEffector subsystem
+   * Sets the percent output of the hopper to 0 and ends immediately.
+   * @param hopper Hopper subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorSetPercent(double percent, CoralEffector coralEffector, FileLog log) {
-    this.coralEffector = coralEffector;
+  public HopperStopMotor(Hopper hopper, FileLog log) {
+    this.hopper = hopper;
     this.log = log;
-    this.percent = percent;
-    addRequirements(coralEffector);
+    addRequirements(hopper);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // TODO check if elevator is in correct position before running motor
-    coralEffector.setCoralEffectorPercentOutput(percent);
-    log.writeLog(false, "CoralEffectorSetPercent", "Init", "CoralEffector Percent", percent);
+    hopper.setHopperPercentOutput(0);
+    log.writeLog(false, "HopperStopMotor", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

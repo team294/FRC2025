@@ -66,6 +66,8 @@ public final class Constants {
 
     public static final int CANdle = 21;
 
+    public static final int CANHopper = 23;
+
     // Digital IO Ports
     public static final int DIOCoralEffectorEntrySensor = 0;
     public static final int DIOCoralEffectorExitSensor = 1;
@@ -107,13 +109,19 @@ public final class Constants {
 
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double AlgaeGrabberIntakePercent = 0.2; // TODO CALIBRATE FOR 2025
-    public static final double AlgaeGrabberOuttakePercent = 0.2; // TODO CALIBRATE FOR 2025
+    public static final double AlgaeGrabberIntakePercent = 0.1;   // TODO CALIBRATE FOR 2025
+    public static final double AlgaeGrabberOuttakePercent = -0.1; // TODO CALIBRATE FOR 2025
+  }
+
+  public static final class HopperConstants {
+    public static final double compensationVoltage = 12.0;
+    public static final double hopperIntakePercent = 0.1;         // TODO CALIBRATE FOR 2025
+    public static final double hopperReverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 
   public static class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.16; // TODO uncalibrated
-    public static final double outtakePercent = 0.4; // TODO uncalibrated
+    public static final double intakePercent = 0.1;   // TODO CALIBRATE FOR 2025
+    public static final double outtakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 }
