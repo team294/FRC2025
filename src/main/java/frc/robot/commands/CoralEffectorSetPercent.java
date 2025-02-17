@@ -29,6 +29,7 @@ public class CoralEffectorSetPercent extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // TODO check if elevator is in correct position before running motor
     coralEffector.setCoralEffectorPercentOutput(percent);
     log.writeLog(false, "CoralEffectorSetPercent", "Init", "CoralEffector Percent", percent);
   }
