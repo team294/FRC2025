@@ -54,21 +54,25 @@ public final class Constants {
     public static final int CANTurnEncoderBackLeft = 11;
     public static final int CANTurnEncoderBackRight = 12;
 
-    public static final int CANCoralEffector = 13;
+    public static final int CANHopper = 13;
 
-    public static final int CANElevator1 = 14;
-    public static final int CANElevator2 = 15;
+    public static final int CANCoralEffector = 14;
+
+    public static final int CANCoralGrabber = 15;
+
+    public static final int CANElevator1 = 16;
+    public static final int CANElevator2 = 17;
 
     public static final int CANPigeonGyro = 18;
     public static final int CANPigeonGyro2 = 19;
 
     public static final int CANdle = 21;
 
-    public static final int CANHopper = 23;
-
     // Digital IO Ports
     public static final int DIOCoralEffectorEntrySensor = 0;
     public static final int DIOCoralEffectorExitSensor = 1;
+    public static final int DIOAlgaeGrabberBumpSwitch1 = 2;
+    public static final int DIOAlgaeGrabberBumpSwitch2 = 3;
   }
 
   public static final class OIConstants {
@@ -105,13 +109,19 @@ public final class Constants {
 
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double hopperIntakePercent = 0.16; // TODO CALIBRATE FOR 2025
-    public static final double hopperReverseIntakePercent = -0.16; // TODO CALIBRATE FOR 2025
+    public static final double hopperIntakePercent = 0.1;         // TODO CALIBRATE FOR 2025
+    public static final double hopperReverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 
   public static class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.16; // TODO CALIBRATE FOR 2025
-    public static final double outtakePercent = -0.4; // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.1;   // TODO CALIBRATE FOR 2025
+    public static final double outtakePercent = -0.1; // TODO CALIBRATE FOR 2025
+  }
+
+  public static final class AlgaeGrabberConstants {
+    public static final double compensationVoltage = 12.0;
+    public static final double AlgaeGrabberIntakePercent = 0.1;   // TODO CALIBRATE FOR 2025
+    public static final double AlgaeGrabberOuttakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 }
