@@ -58,7 +58,7 @@ public class AlgaeGrabberOuttake extends Command {
     if (!algaeGrabber.isAlgaePresent()) {
       // If the timer has not been started, start it
       if (!timer.isRunning()) timer.start();
-      // Run the motor for slightly longerr as a safety measure
+      // Run the motor for slightly longer as a safety measure
       else if (timer.get() >= seconds) return true;
     }
     return false;

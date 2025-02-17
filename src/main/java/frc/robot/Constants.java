@@ -59,22 +59,18 @@ public final class Constants {
     public static final int CANElevator1 = 14;
     public static final int CANElevator2 = 15;
 
+    public static final int CANCoralGrabber = 16;
+
     public static final int CANPigeonGyro = 18;
     public static final int CANPigeonGyro2 = 19;
 
     public static final int CANdle = 21;
 
-    public static final int CANMinion1 = 22; //Placeholder CANID
-
     // Digital IO Ports
-    public static final int DIOElevatorLowerLimitSensor = 3;
-    public static final int DIOElevatorUpperLimitSensor = 4;
-    public static final int DIOEndEffectorEntrySensor = 0;
-    public static final int DIOEndEffectorExitSensor = 1;
-    public static final int DIOAlgaeGrabberSensor1 = 5;
-    public static final int DIOAlgaeGraberSensor2 = 6;
     public static final int DIOCoralEffectorEntrySensor = 0;
     public static final int DIOCoralEffectorExitSensor = 1;
+    public static final int DIOAlgaeGrabberBumpSwitch1 = 2;
+    public static final int DIOAlgaeGrabberBumpSwitch2 = 3;
   }
 
   public static final class OIConstants {

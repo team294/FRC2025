@@ -21,8 +21,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.FileLog;
-import frc.robot.Constants;
 import frc.robot.Constants.AlgaeGrabberConstants;
+import frc.robot.Constants.Ports;
 
 public class AlgaeGrabber extends SubsystemBase {
   private final FileLog log;
@@ -39,14 +39,14 @@ public class AlgaeGrabber extends SubsystemBase {
 	private final StatusSignal<AngularVelocity> algaeGrabberEncoderVelocity;	
 	private final StatusSignal<Voltage> algaeGrabberVoltage;
 
-  private final TalonFXS algaeGrabberMotor = new TalonFXS(Constants.Ports.CANMinion1);
+  private final TalonFXS algaeGrabberMotor = new TalonFXS(Ports.CANCoralGrabber);
   private final TalonFXSConfigurator algaeGrabberConfigurator = algaeGrabberMotor.getConfigurator();
   private TalonFXSConfiguration algaeGrabberConfig;
   private VoltageOut algaeGrabberVoltageControl;
 
   // Create bump switches
-  private final DigitalInput bumpSwitch1 = new DigitalInput(Constants.Ports.DIOAlgaeGrabberSensor1);
-  private final DigitalInput bumpSwitch2 = new DigitalInput(Constants.Ports.DIOAlgaeGraberSensor2);
+  private final DigitalInput bumpSwitch1 = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch1);
+  private final DigitalInput bumpSwitch2 = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch2);
 
   public AlgaeGrabber(String subsystemName, FileLog log) {
     this.subsystemName = subsystemName;
@@ -88,7 +88,7 @@ public class AlgaeGrabber extends SubsystemBase {
    * @param percent output percent, -1.0 to 1.0 (positive = intake, negative = outtake)
    */
   public void setAlgaeGrabberPercentOutput(double percent) {
-    algaeGrabberMotor.setControl(algaeGrabberVoltageControl.withOutput(percent * Constants.AlgaeGrabberConstants.compensationVoltage));
+    algaeGrabberMotor.setControl(algaeGrabberVoltageControl.withOutput(percent * AlgaeGrabberConstants.compensationVoltage));
   }
 
   /**
