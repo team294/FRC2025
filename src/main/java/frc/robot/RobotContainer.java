@@ -41,6 +41,7 @@ public class RobotContainer {
   // Define robot subsystems
   // private final LED led = new LED(Constants.Ports.CANdle, "LED", matchTimer, log);
   // private final DriveTrain driveTrain = new DriveTrain(allianceSelection, led, log);
+  private final Hopper hopper = new Hopper("Hopper", log);
   private final CoralEffector coralEffector = new CoralEffector("CoralEffector", log);
 
   // Define other utilities
@@ -82,6 +83,10 @@ public class RobotContainer {
     // Display sticky faults
     RobotPreferences.showStickyFaultsOnShuffleboard();
     SmartDashboard.putData("Clear Sticky Faults", new StickyFaultsClear(log));
+
+    // Hopper
+    SmartDashboard.putData("Hopper Set Percent", new HopperSetPercent(hopper, log));
+    SmartDashboard.putData("Hopper Stop", new HopperStopMotor(hopper, log));
   
     // Autos
 

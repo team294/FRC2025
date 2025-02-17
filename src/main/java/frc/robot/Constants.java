@@ -64,6 +64,8 @@ public final class Constants {
 
     public static final int CANdle = 21;
 
+    public static final int CANHopper = 23;
+
     // Digital IO Ports
     public static final int DIOCoralEffectorEntrySensor = 0;
     public static final int DIOCoralEffectorExitSensor = 1;
@@ -101,9 +103,15 @@ public final class Constants {
     public static final double width = 8.05;    // 26 ft 5 in = 805 cm
   }
 
+  public static final class HopperConstants {
+    public static final double compensationVoltage = 12.0;
+    public static final double hopperIntakePercent = 0.16; // TODO CALIBRATE FOR 2025
+    public static final double hopperReverseIntakePercent = -0.16; // TODO CALIBRATE FOR 2025
+  }
+
   public static class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.16; // TODO uncalibrated
-    public static final double outtakePercent = 0.4; // TODO uncalibrated
+    public static final double intakePercent = 0.16; // TODO CALIBRATE FOR 2025
+    public static final double outtakePercent = -0.4; // TODO CALIBRATE FOR 2025
   }
 }

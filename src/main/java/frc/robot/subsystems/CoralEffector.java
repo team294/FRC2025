@@ -155,7 +155,7 @@ public class CoralEffector extends SubsystemBase {
   }
 
   /**
-   * Writes to the file log.
+   * Writes information about the coralEffector to the file log.
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
