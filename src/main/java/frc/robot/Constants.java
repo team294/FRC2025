@@ -54,19 +54,19 @@ public final class Constants {
     public static final int CANTurnEncoderBackLeft = 11;
     public static final int CANTurnEncoderBackRight = 12;
 
-    public static final int CANCoralEffector = 13;
+    public static final int CANHopper = 13;
 
-    public static final int CANElevator1 = 14;
-    public static final int CANElevator2 = 15;
+    public static final int CANCoralEffector = 14;
 
-    public static final int CANCoralGrabber = 16;
+    public static final int CANCoralGrabber = 15;
+
+    public static final int CANElevator1 = 16;
+    public static final int CANElevator2 = 17;
 
     public static final int CANPigeonGyro = 18;
     public static final int CANPigeonGyro2 = 19;
 
     public static final int CANdle = 21;
-
-    public static final int CANHopper = 23;
 
     // Digital IO Ports
     public static final int DIOCoralEffectorEntrySensor = 0;
