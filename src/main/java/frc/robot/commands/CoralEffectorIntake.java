@@ -16,7 +16,7 @@ public class CoralEffectorIntake extends Command {
   /**
    * Intake coral into the coralEffector by running the motor until the coral is safely in the mechanism.
    * @param coralEffector CoralEffector subsystem
-   * @param log LogFile utility
+   * @param log FileLog utility
    */
   public CoralEffectorIntake(CoralEffector coralEffector, FileLog log) {
     this.coralEffector = coralEffector;
@@ -50,7 +50,6 @@ public class CoralEffectorIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (coralEffector.isCoralSafelyIn()) return true;
-    else return false;
+    return coralEffector.isCoralSafelyIn();
   }
 }

@@ -17,9 +17,9 @@ public class CoralEffectorOuttake extends Command {
   private final double seconds;
 
   /**
-   * Intake coral from the coralEffector by running the motor until the coral is out of the mechanism.
+   * Outtake coral from the coralEffector by running the motor until the coral is out of the mechanism.
    * @param coralEffector CoralEffector subsystem
-   * @param log LogFile utility
+   * @param log FileLog utility
    */
   public CoralEffectorOuttake(CoralEffector coralEffector, FileLog log) {
     this.coralEffector = coralEffector;
