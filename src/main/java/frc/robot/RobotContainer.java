@@ -42,6 +42,7 @@ public class RobotContainer {
   // private final LED led = new LED(Constants.Ports.CANdle, "LED", matchTimer, log);
   // private final DriveTrain driveTrain = new DriveTrain(allianceSelection, led, log);
   private final Hopper hopper = new Hopper("Hopper", log);
+  private final CoralEffector coralEffector = new CoralEffector("CoralEffector", log);
 
   // Define other utilities
   // private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
