@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import frc.robot.commands.*;
+import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 import frc.robot.Constants.*;
@@ -138,6 +139,7 @@ public class RobotContainer {
     // *variable name of button*.onTrue(*command(s)*);
     // ex: xbA.onTrue(new command(param1, param2));
 
+    xbRT.onTrue(new HopperCoralEffectorIntakeSequence(hopper, coralEffector, log));
   }
 
   /**
