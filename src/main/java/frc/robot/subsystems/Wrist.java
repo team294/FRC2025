@@ -58,17 +58,16 @@ public class Wrist extends SubsystemBase {
 	  private final StatusSignal<Double> wristDutyCycle = wristMotor.getDutyCycle();				  // Motor duty cycle percent power, -1 to 1
     private final StatusSignal<Voltage> wristMotorVoltage = wristMotor.getMotorVoltage();       // Motor output voltage
 	  private final StatusSignal<Current> wristStatorCurrent = wristMotor.getStatorCurrent();	// Motor stator current, in amps (+=fwd, -=rev)
-	  private final StatusSignal<Angle> wristEncoderPostion = wristMotor.getPosition();			// Encoder position, in pinion rotations
-    private final StatusSignal<AngularVelocity> wristEncoderVelocity = wristMotor.getVelocity();     // Encoder velocity, in pinion rotations per second
+	  private final StatusSignal<Angle> wristEncoderPosition = wristMotor.getPosition();			// Encoder position, in degrees
+    private final StatusSignal<AngularVelocity> wristEncoderVelocity = wristMotor.getVelocity();     // Encoder velocity, in degrees
     private final StatusSignal<AngularAcceleration> wristEncoderAcceleration = wristMotor.getAcceleration();     // Encoder acceleration, in pinion rotations per second^2
 
-     // Rev through-bore encoder
+     // CANcoder
   private final CANcoder canCoder = new CANcoder(Ports.DIOWristCANCoder);
 
   private boolean calibrationStickyFaultReported = false;   // True if we have reported a sticky fault for wrist calibration
   private double canCoderZero = 0;          // Reference raw encoder reading for encoder.  Calibration sets this to the absolute position from RobotPreferences.
   private double wristCalZero = 0;   		      // Wrist encoder position at O degrees, in degrees (i.e. the calibration factor).  Calibration sets this to match the CANcoder
-  private double wristCalZero2 = 0;   		     // Wrist encoder #2 position at O degrees, in degrees (i.e. the calibration factor).  Calibration sets this to match the CANcoder
   private boolean wristCalibrated = false;    // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
 
   private double safeAngle;         // current wrist target on position control on the Falcon motor (if the Falcon is in position mode)
@@ -84,7 +83,7 @@ public class Wrist extends SubsystemBase {
     wristMotorConfig = new TalonFXConfiguration();
 
     //Configure motor
-    wristMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;		// Don't invert motor 1 output so that +Volt moves wrist up
+    wristMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;		// Don't invert motor output so that +Volt moves wrist up
 		wristMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;          // Applies during VoltageControl only, since setting is being overridded for PositionControl
     wristMotorConfig.Voltage.PeakForwardVoltage = WristConstants.voltageCompSaturation;    // forward max output for motor 1
 		wristMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.voltageCompSaturation;   // back max output for motor 1
@@ -272,6 +271,10 @@ public class Wrist extends SubsystemBase {
       return WristAngle.lowerLimit.value;
     }
   }
+
+  public boolean isCANcoderConnected() {
+    return canCoder.isConnected();
+  }
   
   /**
    * For use in the wrist subsystem only.  Use getWristAngle() when calling from outside this class.
@@ -289,8 +292,8 @@ public class Wrist extends SubsystemBase {
    * @return raw encoder reading, in pinion rotations, adjusted direction (positive is towards stowed, negative is towards lower hard stop)
    */
   public double getWristEncoderRotationsRaw() {
-    wristEncoderPostion.refresh();          // Verified that this is not a blocking call.
-    return wristEncoderPostion.getValueAsDouble();
+    wristEncoderPosition.refresh();          // Verified that this is not a blocking call.
+    return wristEncoderPosition.getValueAsDouble();
   }
 
   private double wristDegreesToEncoderRotations(double degrees) {
@@ -318,9 +321,87 @@ public class Wrist extends SubsystemBase {
 		return wristCalibrated;
   }  
 
+  /**
+	 * Stops wrist motor and sets wristCalibrated to false
+	 */
+  public void setWristUncalibrated() {
+    stopWrist();
+
+    log.writeLog(false, "Wrist", "Uncalibrate wrist", 
+    "CANcoder angle", getWristEncoderDegrees(), "Enc Raw", getWristEncoderRotationsRaw(), "Wrist angle", getWristAngle(), "Wrist target", getCurrentWristTarget());
+
+    wristCalibrated = false;
+  }
+
+  /**
+   * Calibrates the wrist encoder, assuming we know the wrist's current angle.
+   * Sets wristCalibrated = true.
+   * @param angle current angle that the wrist is physically at, in degrees
+   */
+  public void calibrateWristEncoder(double angle) {
+    stopWrist(); // Stop the motor so it doesn't jump to a new value
+
+    wristCalZero = getWristEncoderDegrees();
+    wristCalibrated = true;
+
+    log.writeLog(true, "Wrist", "Calibrate wrist", "zero value", wristCalZero, 
+		"CANcoder angle", getWristEncoderDegrees(), "Enc Raw", getWristEncoderRotationsRaw(), "Wrist Angle", getWristAngle(), "Wrist Target", getCurrentWristTarget());
+  }
+
+
+  /** Checks if the CANcoder's reading, in degrees, is at or below the lower limit
+   * @return true = wrist is at or below lower limit, false = above lower limit
+   */
+  public boolean isWristAtLowerLimit() {
+    return getWristEncoderDegrees() <= WristAngle.lowerLimit.value;
+  }
+
+  /** Checks if the CANcoder's reading, in degrees, is at or above the upper limit
+   * @return true = wrist is at or above upper limit, false = below upper limit
+   */
+  public boolean isWristAtUpperLimit() {
+    return getWristEncoderDegrees() >= WristAngle.upperLimit.value;
+  }
+
+  /**
+   * Writes information about the subsystem to the filelog
+   * @param logWhenDisabled true will log when disabled, false will discard the string
+   */
+  public void updateWristLog(boolean logWhenDisabled) {
+    log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
+    "Temp", wristMotorTemp.refresh().getValueAsDouble(),
+    "Percent Output", getWristMotorPercentOutput(),
+    "Amps", wristStatorCurrent.refresh().getValueAsDouble(),
+    "Volts", wristMotorVoltage.refresh().getValueAsDouble(),
+    "Enc pos raw", getWristEncoderRotationsRaw(),
+    "Enc vel raw", wristEncoderVelocity.refresh().getValueAsDouble(),
+    "Enc Accel raw", wristEncoderAcceleration.refresh().getValueAsDouble(),
+    "WristCalZero", wristCalZero,
+    "Wrist degrees", getWristEncoderDegrees(),
+    "Wrist angle", getWristAngle(),
+    "CANcoder connected", isCANcoderConnected(),
+    "Lower limit", isWristAtLowerLimit(),
+    "Upper limit", isWristAtUpperLimit()
+    );
+  }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if (log.isMyLogRotation(logRotationKey)) {
+      SmartDashboard.putBoolean("CANcoder connected", isCANcoderConnected());
+      SmartDashboard.putBoolean("Wrist calibrated", wristCalibrated);
+      SmartDashboard.putBoolean("Wrist lower limit", isWristAtLowerLimit());
+      SmartDashboard.putBoolean("Wrist upper limit", isWristAtUpperLimit());
+      SmartDashboard.putNumber("Wrist CANcoder angle", getWristEncoderDegrees());
+      SmartDashboard.putNumber("Wrist angle", getWristEncoderDegrees());
+      SmartDashboard.putNumber("Wrist target angle", getCurrentWristTarget());
+      SmartDashboard.putNumber("Wrist encoder raw", getWristEncoderRotationsRaw());
+      SmartDashboard.putNumber("Wrist output", getWristMotorPercentOutput());
+    }
+
+  if(fastLogging || log.isMyLogRotation(logRotationKey)){
+      updateWristLog(false);
+    }
   }
 
 }

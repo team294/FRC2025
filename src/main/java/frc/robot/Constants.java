@@ -138,29 +138,34 @@ public final class Constants {
     public static final double maxUncalibratedPercentOutput = 0.15;     // TODO CALIBRATE FOR 2025
     public static final double maxPercentOutput = 0.4;          // TODO CALIBRATE FOR 2025
 
+    public static final double climbPercentOutput = -0.5; // TODO CALIBRATE FOR 2025
+
+    // Should be updated in RobotPreferences, so it can't be final TODO: Define what position 0 should be
+    public static double canCoderOffsetAngleWrist = 0.0; //TODO: CALIBRATE FOR 2025
+
     public static final double kP = 0.5;   // TODO CALIBRATE FOR 2025
-      public static final double kI = 0.0; // TODO CALIBRATE FOR 2025
-      public static final double kD = 0.0; // TODO CALIBRATE FOR 2025
-      public static final double kG = 0.174;   // TODO CALIBRATE FOR 2025
-      public static final double kS = 0.0367;  // TODO CALIBRATE FOR 2025
-      public static final double kV = 0.1171;  // TODO CALIBRATE FOR 2025
+    public static final double kI = 0.0; // TODO CALIBRATE FOR 2025
+    public static final double kD = 0.0; // TODO CALIBRATE FOR 2025
+    public static final double kG = 0.174;   // TODO CALIBRATE FOR 2025
+    public static final double kS = 0.0367;  // TODO CALIBRATE FOR 2025
+    public static final double kV = 0.1171;  // TODO CALIBRATE FOR 2025
 
-      public static final double MMCruiseVelocity = 90.0;   // TODO CALIBRATE FOR 2025
-      public static final double MMAcceleration = MMCruiseVelocity/0.35;    // TODO CALIBRATE FOR 2025
-      public static final double MMJerk = MMAcceleration/0.05;  // TODO CALIBRATE FOR 2025
+    public static final double MMCruiseVelocity = 90.0;   // TODO CALIBRATE FOR 2025
+    public static final double MMAcceleration = MMCruiseVelocity/0.35;    // TODO CALIBRATE FOR 2025
+    public static final double MMJerk = MMAcceleration/0.05;  // TODO CALIBRATE FOR 2025
 
-      public enum WristRegion {
-        main,
-        uncalibrated;
-      }
+    public enum WristRegion {
+      main,
+      uncalibrated;
+    }
 
-      public enum WristAngle {
-        lowerLimit(-83.0), // TODO CALIBRATE FOR 2025
-        upperLimit(90.0); // TODO CALIBRATE FOR 2025
+    public enum WristAngle {
+      lowerLimit(-83.0), // TODO CALIBRATE FOR 2025
+      upperLimit(90.0); // TODO CALIBRATE FOR 2025
 
-        @SuppressWarnings({"MemberName", "PMD.SingularField"})
-          public final double value;
-          WristAngle(double value) { this.value = value; }
-      }
+      @SuppressWarnings({"MemberName", "PMD.SingularField"})
+        public final double value;
+        WristAngle(double value) { this.value = value; }
+    }
   }
 }
