@@ -66,6 +66,8 @@ public final class Constants {
     public static final int CANPigeonGyro = 18;
     public static final int CANPigeonGyro2 = 19;
 
+    public static final int CANWrist = 20;
+
     public static final int CANdle = 21;
 
     // Digital IO Ports
@@ -73,6 +75,7 @@ public final class Constants {
     public static final int DIOCoralEffectorExitSensor = 1;
     public static final int DIOAlgaeGrabberBumpSwitch1 = 2;
     public static final int DIOAlgaeGrabberBumpSwitch2 = 3;
+    public static final int DIOWristCANCoder = 4;
   }
 
   public static final class OIConstants {
@@ -123,5 +126,41 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
     public static final double AlgaeGrabberIntakePercent = 0.1;   // TODO CALIBRATE FOR 2025
     public static final double AlgaeGrabberOuttakePercent = -0.1; // TODO CALIBRATE FOR 2025
+  }
+
+  public static final class WristConstants{
+    public static final double kEncoderCPR = 1.0;                // TODO CALIBRATE FOR 2025
+    public static final double kWristGearRatio = (5.0*5.0*3.0 * 48.0 / 22.0);   // TODO CALIBRATE FOR 2025
+    public static final double kWristDegreesPerRotation =  360.0 / kEncoderCPR / kWristGearRatio; // TODO CALIBRATE FOR 2025
+
+    
+    public static final double voltageCompSaturation = 12.0;
+    public static final double maxUncalibratedPercentOutput = 0.15;     // TODO CALIBRATE FOR 2025
+    public static final double maxPercentOutput = 0.4;          // TODO CALIBRATE FOR 2025
+
+    public static final double kP = 0.5;   // TODO CALIBRATE FOR 2025
+      public static final double kI = 0.0; // TODO CALIBRATE FOR 2025
+      public static final double kD = 0.0; // TODO CALIBRATE FOR 2025
+      public static final double kG = 0.174;   // TODO CALIBRATE FOR 2025
+      public static final double kS = 0.0367;  // TODO CALIBRATE FOR 2025
+      public static final double kV = 0.1171;  // TODO CALIBRATE FOR 2025
+
+      public static final double MMCruiseVelocity = 90.0;   // TODO CALIBRATE FOR 2025
+      public static final double MMAcceleration = MMCruiseVelocity/0.35;    // TODO CALIBRATE FOR 2025
+      public static final double MMJerk = MMAcceleration/0.05;  // TODO CALIBRATE FOR 2025
+
+      public enum WristRegion {
+        main,
+        uncalibrated;
+      }
+
+      public enum WristAngle {
+        lowerLimit(-83.0), // TODO CALIBRATE FOR 2025
+        upperLimit(90.0); // TODO CALIBRATE FOR 2025
+
+        @SuppressWarnings({"MemberName", "PMD.SingularField"})
+          public final double value;
+          WristAngle(double value) { this.value = value; }
+      }
   }
 }
