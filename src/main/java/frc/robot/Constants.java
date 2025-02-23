@@ -129,31 +129,28 @@ public final class Constants {
     public static final double AlgaeGrabberOuttakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 
-  public static final class WristConstants{
-    public static final double kEncoderCPR = 1.0;                // TODO CALIBRATE FOR 2025
-    public static final double kWristGearRatio = (5.0*5.0*3.0 * 48.0 / 22.0);   // TODO CALIBRATE FOR 2025
-    public static final double kWristDegreesPerRotation =  360.0 / kEncoderCPR / kWristGearRatio; // TODO CALIBRATE FOR 2025
-
+  public static final class WristConstants {
+    public static final double kEncoderCPR = 1.0;
+    public static final double kWristGearRatio = ((8.0 / 60.0) * (16.0 / 48.0));                  // TODO CALIBRATE FOR 2025
+    public static final double kWristDegreesPerRotation = 360.0 / kEncoderCPR / kWristGearRatio;  // TODO CALIBRATE FOR 2025
     
-    public static final double voltageCompSaturation = 12.0;
-    public static final double maxUncalibratedPercentOutput = 0.15;     // TODO CALIBRATE FOR 2025
-    public static final double maxPercentOutput = 0.4;          // TODO CALIBRATE FOR 2025
+    public static final double compensationVoltage = 12.0;
+    public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
+    public static final double maxPercentOutput = -0.1;             // TODO CALIBRATE FOR 2025
 
-    public static final double climbPercentOutput = -0.5; // TODO CALIBRATE FOR 2025
+    // Should be updated in RobotPreferences, so it cannot be final
+    public static double canCoderOffsetAngleWrist = 0.0;  // TODO CALIBRATE FOR 2025
 
-    // Should be updated in RobotPreferences, so it can't be final TODO: Define what position 0 should be
-    public static double canCoderOffsetAngleWrist = 0.0; //TODO: CALIBRATE FOR 2025
+    public static final double kP = 0.5;    // TODO CALIBRATE FOR 2025
+    public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kD = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kG = 0.174;  // TODO CALIBRATE FOR 2025
+    public static final double kS = 0.0367; // TODO CALIBRATE FOR 2025
+    public static final double kV = 0.1171; // TODO CALIBRATE FOR 2025
 
-    public static final double kP = 0.5;   // TODO CALIBRATE FOR 2025
-    public static final double kI = 0.0; // TODO CALIBRATE FOR 2025
-    public static final double kD = 0.0; // TODO CALIBRATE FOR 2025
-    public static final double kG = 0.174;   // TODO CALIBRATE FOR 2025
-    public static final double kS = 0.0367;  // TODO CALIBRATE FOR 2025
-    public static final double kV = 0.1171;  // TODO CALIBRATE FOR 2025
-
-    public static final double MMCruiseVelocity = 90.0;   // TODO CALIBRATE FOR 2025
-    public static final double MMAcceleration = MMCruiseVelocity/0.35;    // TODO CALIBRATE FOR 2025
-    public static final double MMJerk = MMAcceleration/0.05;  // TODO CALIBRATE FOR 2025
+    public static final double MMCruiseVelocity = 20.0;                   // TODO CALIBRATE FOR 2025
+    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // TODO CALIBRATE FOR 2025
+    public static final double MMJerk = MMAcceleration / 0.05;            // TODO CALIBRATE FOR 2025
 
     public enum WristRegion {
       main,
@@ -161,7 +158,7 @@ public final class Constants {
     }
 
     public enum WristAngle {
-      lowerLimit(-83.0), // TODO CALIBRATE FOR 2025
+      lowerLimit(-45.0),      // TODO CALIBRATE FOR 2025
       upperLimit(90.0); // TODO CALIBRATE FOR 2025
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})

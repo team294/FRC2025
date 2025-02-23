@@ -98,8 +98,8 @@ public class Wrist extends SubsystemBase {
     wristMotorConfig = new TalonFXConfiguration();
     wristMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		wristMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    wristMotorConfig.Voltage.PeakForwardVoltage = WristConstants.voltageCompSaturation;
-		wristMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.voltageCompSaturation;
+    wristMotorConfig.Voltage.PeakForwardVoltage = WristConstants.compensationVoltage;
+		wristMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.compensationVoltage;
     wristMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;     // Time from 0 to full power, in seconds
     wristMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
 
@@ -155,6 +155,9 @@ public class Wrist extends SubsystemBase {
     // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
     canCoderConfigurator.apply(canCoderConfig);
 
+    // If we are at our starting wrist angle
+    // calibrateWristEncoder(WristConstants.canCoderOffsetAngleWrist);
+
     // NOTE!!! When the TalonFX encoder settings are changed above, then the next call to getTurningEncoderDegrees() 
     // may contain an old value, not the value based on the updated configuration settings above!!!!  The CANBus runs 
     // asynchronously from this code, so sending the updated configuration to the CANcoder/TalonFX and then receiving 
@@ -178,7 +181,7 @@ public class Wrist extends SubsystemBase {
       percent = MathUtil.clamp(percent, -WristConstants.maxUncalibratedPercentOutput, WristConstants.maxUncalibratedPercentOutput);
     }
 
-    wristMotor.setControl(wristVoltageControl.withOutput(percent*WristConstants.voltageCompSaturation));
+    wristMotor.setControl(wristVoltageControl.withOutput(percent*WristConstants.compensationVoltage));
   }
 
   /**
@@ -208,7 +211,7 @@ public class Wrist extends SubsystemBase {
            (wristControlMode.refresh().getValue() == ControlModeValue.MotionMagicVoltageFOC);
   }
 
-   /**
+  /**
    * Sets the angle of the wrist of the encoder is working and calibrated, operating with interlocks.
    * @param angle target angle, in degrees (0 = horizontal in front of robot, + = up, - = down)
    */
