@@ -29,6 +29,7 @@ public class AlgaeGrabberIntake extends Command {
   public void initialize() {
     // If there is no algae present, run the motor
     if (!algaeGrabber.isAlgaePresent()) algaeGrabber.setAlgaeGrabberPercentOutput(AlgaeGrabberConstants.AlgaeGrabberIntakePercent);
+
     log.writeLog(false, "AlgaeGrabberIntake", "Init",
       "Algae Present 1", algaeGrabber.isAlgaePresent(1),
       "Algae Present 2", algaeGrabber.isAlgaePresent(2)); 

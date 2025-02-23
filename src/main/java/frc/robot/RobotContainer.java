@@ -7,12 +7,8 @@ package frc.robot;
 import com.ctre.phoenix6.SignalLogger;
 
 import choreo.util.ChoreoAllianceFlipUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -56,7 +52,9 @@ public class RobotContainer {
   private final Joystick coPanel = new Joystick(OIConstants.usbCoPanel);
   private final CommandXboxController xboxController = new CommandXboxController(OIConstants.usbXboxController);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     SmartDashboard.putBoolean("RobotPrefs Initialized", RobotPreferences.prefsExist());
     if(!RobotPreferences.prefsExist()) {
@@ -64,7 +62,7 @@ public class RobotContainer {
     }
 
     // Set the Choreo trajectory flipper to the 2025 field orientation.
-    // So, when the alliance is Red, Choreo will automatically flips Blue trajectories to Red.
+    // When the alliance is Red, Choreo will automatically flip Blue trajectories to Red.
     // All trajectories should be defined based on the Blue alliance perspective.
     ChoreoAllianceFlipUtil.setYear(2025);
 
@@ -77,8 +75,7 @@ public class RobotContainer {
 
     // Set initial robot position on field. This takes place a while after the drivetrain is created, so after any CANbus delays.
     // Set initial location to (0,0) and facing away from driver (regardless of alliance color).
-    // driveTrain.resetPose(new Pose2d(0.0, 0.0, 
-    //   allianceSelection.getAlliance() == Alliance.Red ? Rotation2d.k180deg : Rotation2d.kZero) );
+    // driveTrain.resetPose(new Pose2d(0.0, 0.0, allianceSelection.getAlliance() == Alliance.Red ? Rotation2d.k180deg : Rotation2d.kZero) );
   }
 
   private void configureShuffleboard() {
@@ -87,7 +84,8 @@ public class RobotContainer {
     SmartDashboard.putData("Clear Sticky Faults", new StickyFaultsClear(log));
 
     // Hopper
-    SmartDashboard.putData("Hopper Set Percent", new HopperSetPercent(hopper, log));
+    SmartDashboard.putData("Hopper Set 10%", new HopperSetPercent(0.1, hopper, log));
+    SmartDashboard.putData("Hopper Set -10%", new HopperSetPercent(-0.1, hopper, log));
     SmartDashboard.putData("Hopper Stop", new HopperStopMotor(hopper, log));
 
     // CoralEffector
@@ -108,16 +106,16 @@ public class RobotContainer {
   }
  
    private void configureButtonBindings() {
-    configureXboxButtons(); // configure Xbox controller
+    configureXboxButtons();     // configure Xbox controller
     configureJoystickButtons(); // configure joysticks
-    configureCopanel(); // configure copanel
+    configureCopanel();         // configure copanel
     configureTriggers();
   }
 
   /**
-   * Configures Xbox buttons and controls
+   * Define Xbox buttons and controls.
    */
-  private void configureXboxButtons(){
+  private void configureXboxButtons() {
     // Triggers for all Xbox buttons
     Trigger xbLT = xboxController.leftTrigger();
     Trigger xbRT = xboxController.rightTrigger();
@@ -143,7 +141,7 @@ public class RobotContainer {
   }
 
   /**
-   * Define drivers joystick button mappings.
+   * Define driver joystick button mappings.
    */
   public void configureJoystickButtons() {
     JoystickButton[] left = new JoystickButton[3];
@@ -155,7 +153,6 @@ public class RobotContainer {
     }
 
     // ex: left[1].onTrue(new command);
-
   }
 
   /**
@@ -167,11 +164,11 @@ public class RobotContainer {
    *  9  11 13 7
    *  10 12 14 7
    * 
-   *  15
-   *  16
+   *  15 17 19
+   *  16 18 20
    */
   public void configureCopanel() {
-    JoystickButton[] coP = new JoystickButton[20];
+    JoystickButton[] coP = new JoystickButton[21];
 
     for (int i = 1; i < coP.length; i++) {
       coP[i] = new JoystickButton(coPanel, i);
@@ -181,12 +178,10 @@ public class RobotContainer {
   }
 
   private void configureTriggers() {
-    
   }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
@@ -195,7 +190,7 @@ public class RobotContainer {
   }
 
   /**
-   * robotPeriodic is run every 20msec
+   * Method called once every scheduler cycle (20 ms).
    */
   public void robotPeriodic(){
     log.advanceLogRotation();
@@ -206,10 +201,11 @@ public class RobotContainer {
    * Method called when robot is disabled.
    */
   public void disabledInit() {
-    log.writeLogEcho(true, "Disabled", "Robot disabled");   // Don't log the word "Init" here -- it affects the Excel macro
+    // Do not log the word "Init" here, as it it affects the Excel macro
+    log.writeLogEcho(true, "Disabled", "Robot disabled");
 
-    // driveTrain.stopMotors();                // SAFETY:  Turn off any closed loop control that may be running, so the robot does not move when re-enabled.
-    // driveTrain.enableFastLogging(false);    // Turn off fast logging, in case it was left on from auto mode
+    // driveTrain.stopMotors();             // SAFETY: Turn off any closed loop control that may be running, so the robot does not move when re-enabled
+    // driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
     // driveTrain.setVisionForOdometryState(true);
 
     // elevator.stopElevatorMotors();
@@ -222,7 +218,7 @@ public class RobotContainer {
    * Method called once every scheduler cycle when robot is disabled.
    */
   public void disabledPeriodic() {
-    // Check for CAN bus error.  This is to prevent the issue that caused us to be eliminated in 2020!
+    // Check for CAN bus error (to prevent the issue that caused us to be eliminated in 2020!)
     // if (driveTrain.canBusError()) {
     //   RobotPreferences.recordStickyFaults("CAN Bus", log);
     // }
@@ -237,13 +233,13 @@ public class RobotContainer {
     // driveTrain.setDriveModeCoast(false);
     // driveTrain.setVisionForOdometryState(false);
 
-    // NOTE:  Do NOT reset the gyro or encoder here!!!!!
+    // NOTE: Do not reset the gyro or encoder here!
     // The first command in auto mode initializes before this code is run, and
     // it will read the gyro/encoder before the reset goes into effect.
   }
 
   /**
-   * Method called once every scheduler cycle when auto mode is initialized/enabled
+   * Method called once every scheduler cycle when auto mode is initialized/enabled.
    */
   public void autonomousPeriodic() {
   }
@@ -254,8 +250,8 @@ public class RobotContainer {
   public void teleopInit() {
     log.writeLogEcho(true, "Teleop", "Mode Init");
 
-    // driveTrain.setDriveModeCoast(false);
-    // driveTrain.enableFastLogging(false);    // Turn off fast logging, in case it was left on from auto mode
+    // driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
+    // driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
     // driveTrain.setVisionForOdometryState(true);
 
     matchTimer.reset();
@@ -266,6 +262,5 @@ public class RobotContainer {
    * Method called once every scheduler cycle when teleop mode is initialized/enabled.
    */
   public void teleopPeriodic() {
-
   }
 }
