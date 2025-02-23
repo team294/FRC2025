@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -13,6 +15,7 @@ import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -24,110 +27,135 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.utilities.FileLog;
-import frc.robot.utilities.MathBCR;
-import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.Wait;
 import frc.robot.Constants.*;
 import frc.robot.Constants.WristConstants.WristAngle;
 import frc.robot.Constants.WristConstants.WristRegion;
 
 public class Wrist extends SubsystemBase {
-  
   private final FileLog log;
-    private int logRotationKey;
-    private boolean fastLogging = false;
-    private final String subsystemName;
-    private final Timer bootTimer = new Timer();
+  private final int logRotationKey;
+  private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
+  private String subsystemName;         // Subsystem name for use in file logging and dashboard
 
-    //Creating new Kraken Motor
-    private final TalonFX wristMotor = new TalonFX(Ports.CANWrist);
-    private final TalonFXConfigurator wristMotorConfigurator = wristMotor.getConfigurator();
-    private TalonFXConfiguration wristMotorConfig;
-    private VoltageOut wristVoltageControl = new VoltageOut(0.0).withEnableFOC(false);
-    private PositionVoltage wristPositionControl = new PositionVoltage(0.0).withEnableFOC(false);
-    private MotionMagicVoltage wristMMVoltageControl = new MotionMagicVoltage(0.0).withEnableFOC(false);
+  // Createa variables for the wrist Kraken motor
+  private final StatusSignal<Voltage> wristSupplyVoltage;  // Incoming bus voltage to motor, in volts
+  private final StatusSignal<Temperature> wristTemp;       // Motor temp, in degrees Celsius
+  private final StatusSignal<Double> wristDutyCycle;       // Motor duty cycle percent power, -1 to 1
+	private final StatusSignal<Current> wristStatorCurrent;  // Motor stator current, in amps (positive = forward, negative = reverse)
+	private final StatusSignal<Angle> wristEncoderPosition;  // Encoder position, in pinion rotations
+	private final StatusSignal<AngularVelocity> wristEncoderVelocity;
+	private final StatusSignal<Voltage> wristVoltage;
+  private final StatusSignal<ControlModeValue> wristControlMode;
+  private final StatusSignal<AngularAcceleration> wristEncoderAcceleration;
+  
+  private final TalonFX wristMotor = new TalonFX(Ports.CANWrist);
+  private final TalonFXConfigurator wristMotorConfigurator = wristMotor.getConfigurator();
+  private TalonFXConfiguration wristMotorConfig;
+  private VoltageOut wristVoltageControl = new VoltageOut(0.0);
 
-    //Variables for motor singals and sensors
-    private final StatusSignal<Temperature> wristMotorTemp = wristMotor.getDeviceTemp();				  // Motor temperature, in degC
-	  private final StatusSignal<ControlModeValue> wristControlMode = wristMotor.getControlMode();			// Motor control mode (typ. ControlModeValue.VoltageOut or .PositionVoltage)
-	  private final StatusSignal<Double> wristDutyCycle = wristMotor.getDutyCycle();				  // Motor duty cycle percent power, -1 to 1
-    private final StatusSignal<Voltage> wristMotorVoltage = wristMotor.getMotorVoltage();       // Motor output voltage
-	  private final StatusSignal<Current> wristStatorCurrent = wristMotor.getStatorCurrent();	// Motor stator current, in amps (+=fwd, -=rev)
-	  private final StatusSignal<Angle> wristEncoderPosition = wristMotor.getPosition();			// Encoder position, in degrees
-    private final StatusSignal<AngularVelocity> wristEncoderVelocity = wristMotor.getVelocity();     // Encoder velocity, in degrees
-    private final StatusSignal<AngularAcceleration> wristEncoderAcceleration = wristMotor.getAcceleration();     // Encoder acceleration, in pinion rotations per second^2
+  private PositionVoltage wristPositionControl = new PositionVoltage(0.0);
+  private MotionMagicVoltage wristMMVoltageControl = new MotionMagicVoltage(0.0);
 
-     // CANcoder
-  private final CANcoder canCoder = new CANcoder(Ports.DIOWristCANCoder);
+  // Create CANcoder
+  private final CANcoder canCoder = new CANcoder(Ports.CANWristEncoder);
+  private final CANcoderConfigurator canCoderConfigurator;
+  private CANcoderConfiguration canCoderConfig;
 
-  private boolean calibrationStickyFaultReported = false;   // True if we have reported a sticky fault for wrist calibration
-  private double canCoderZero = 0;          // Reference raw encoder reading for encoder.  Calibration sets this to the absolute position from RobotPreferences.
-  private double wristCalZero = 0;   		      // Wrist encoder position at O degrees, in degrees (i.e. the calibration factor).  Calibration sets this to match the CANcoder
-  private boolean wristCalibrated = false;    // Default to wrist being uncalibrated.  Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard
+  // CANCoder signals and sensors
+	private final StatusSignal<Angle> canCoderPosition;            // CANCoder position, in CANCoder rotations
+	private final StatusSignal<AngularVelocity> canCoderVelocity;  // CANCoder velocity, in CANCoder rotations/second
 
-  private double safeAngle;         // current wrist target on position control on the Falcon motor (if the Falcon is in position mode)
+  // Variables for encoder zeroing
+  private double encoderZero = 0;   // Reference raw encoder reading for wrist motor encoder. Calibration sets this to zero.
+  private double canCoderZero = 0;  // Reference raw encoder reading for CANCoder. Calibration sets this to the absolute position from RobotPreferences.
 
-  private double ampAngleOffset = 0;
+  private boolean calibrationStickyFaultReported = false; // true = we have reported a sticky fault for wrist calibration, false = no sticky fault reported
+  private boolean wristCalibrated = false;                // Default to wrist being uncalibrated. Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard.
 
-  public Wrist(FileLog log) {
+  private double safeAngle; // Current wrist target on position control on the motor (if in position mode)
+
+  public Wrist(String subsystemName, FileLog log) {
     this.log = log;
     logRotationKey = log.allocateLogRotation();
-    subsystemName = "Wrist";
+    this.subsystemName = subsystemName;
 
-    //start with factory default TalonFX configuratio
+    // Get signal and sensor objects
+    wristSupplyVoltage = wristMotor.getSupplyVoltage();
+    wristTemp = wristMotor.getDeviceTemp();
+    wristDutyCycle = wristMotor.getDutyCycle();
+    wristStatorCurrent = wristMotor.getStatorCurrent();
+    wristEncoderPosition = wristMotor.getPosition();
+    wristEncoderVelocity = wristMotor.getVelocity();
+    wristVoltage = wristMotor.getMotorVoltage();
+    wristControlMode = wristMotor.getControlMode();
+    wristEncoderAcceleration = wristMotor.getAcceleration();
+
+    // Configure the motor
     wristMotorConfig = new TalonFXConfiguration();
+    wristMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		wristMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    wristMotorConfig.Voltage.PeakForwardVoltage = WristConstants.voltageCompSaturation;
+		wristMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.voltageCompSaturation;
+    wristMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;     // Time from 0 to full power, in seconds
+    wristMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
 
-    //Configure motor
-    wristMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;		// Don't invert motor output so that +Volt moves wrist up
-		wristMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;          // Applies during VoltageControl only, since setting is being overridded for PositionControl
-    wristMotorConfig.Voltage.PeakForwardVoltage = WristConstants.voltageCompSaturation;    // forward max output for motor 1
-		wristMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.voltageCompSaturation;   // back max output for motor 1
-		wristMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;		      // 0.3 seconds
-		wristMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3; 		// 0.3 seconds
+    // If the current is above the supply current limit for the threshold time, the current is 
+    // limited to the lower limit in order to prevent the breakers from tripping
+    wristMotorConfig.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
+    wristMotorConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
+    wristMotorConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
+    wristMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-    //Configure encoder
-    wristMotorConfig.Feedback.FeedbackSensorSource =  FeedbackSensorSourceValue.RotorSensor;
+    // Configure encoder
+    wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     wristMotorConfig.ClosedLoopGeneral.ContinuousWrap = false;
 
+    canCoderConfigurator = canCoder.getConfigurator();
+    canCoderPosition = canCoder.getPosition();
+    canCoderVelocity = canCoder.getVelocity();
+
+    // Configure CANcoder
+    canCoderConfig = new CANcoderConfiguration();
+    canCoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5; // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative 
+    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+
     // Configure PID for PositionVoltage control
-    // Note:  In Phoenix 6, slots are selected in the ControlRequest (ex. PositionVoltage.Slot)
+    // NOTE: In Phoenix 6, slots are selected in the ControlRequest (ex. PositionVoltage.Slot)
     wristPositionControl.Slot = 0;
     wristPositionControl.OverrideBrakeDurNeutral = true;
     wristMMVoltageControl.Slot = 0;
     wristMMVoltageControl.OverrideBrakeDurNeutral = true;
-    wristMotorConfig.Slot0.kP = WristConstants.kP;		// kP = (desired-output-volts) / (error-in-encoder-rotations)
+    wristMotorConfig.Slot0.kP = WristConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
 		wristMotorConfig.Slot0.kI = 0.0;
 		wristMotorConfig.Slot0.kD = 0.0;
 		wristMotorConfig.Slot0.kS = WristConstants.kS;
 		wristMotorConfig.Slot0.kV = WristConstants.kV;
 		wristMotorConfig.Slot0.kA = 0.0;
 
-    //set Magic Motion Settings
+    // Configure Magic Motion settings
 		wristMotorConfig.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMCruiseVelocity;
 		wristMotorConfig.MotionMagic.MotionMagicAcceleration = WristConstants.MMAcceleration;
 		wristMotorConfig.MotionMagic.MotionMagicJerk = WristConstants.MMJerk;
 
-    //Apply configuration to the wrist motor
-    // This is a blocking call and will wait up to 50ms-70ms for the config to apply
+    // Apply the configurations to the motor.
+    // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
     wristMotorConfigurator.apply(wristMotorConfig);
 
-    // NOTE!!! When the TalonFX encoder settings are changed above, then the next call to 
-    // getTurningEncoderDegrees() may contain an old value, not the value based on 
-    // the updated configuration settings above!!!!  The CANBus runs asynchronously from this code, so 
-    // sending the updated configuration to the CanCoder/TalonFX and then receiving an updated position measurement back
-    // may take longer than this code.
-    // The timeouts in the configuration code above should take care of this, but it does not always wait long enough.
+    // Apply the configurations to the CANcoder.
+    // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
+    canCoderConfigurator.apply(canCoderConfig);
+
+    // NOTE!!! When the TalonFX encoder settings are changed above, then the next call to getTurningEncoderDegrees() 
+    // may contain an old value, not the value based on the updated configuration settings above!!!!  The CANBus runs 
+    // asynchronously from this code, so sending the updated configuration to the CANCoder/TalonFX and then receiving 
+    // an updated position measurement back may take longer than this code. The timeouts in the configuration code 
+    // above should take care of this, but it does not always wait long enough.
     // So, add a wait time here:
     Wait.waitTime(250);
-
-
   }
 
 
@@ -292,7 +320,7 @@ public class Wrist extends SubsystemBase {
    */
   private double getWristEncoderDegrees() {
     // DO NOT normalize this angle.  It should not wrap, since the wrist mechanically can not cross the -180/+180 deg point
-    return getWristEncoderRotationsRaw()* WristConstants.kWristDegreesPerRotation - wristCalZero;
+    return getWristEncoderRotationsRaw()* WristConstants.kWristDegreesPerRotation - encoderZero;
   }
 
   /**
@@ -310,7 +338,7 @@ public class Wrist extends SubsystemBase {
    * @return wrist position in rotations
    */
   private double wristDegreesToEncoderRotations(double degrees) {
-    return (degrees + wristCalZero) / WristConstants.kWristDegreesPerRotation;
+    return (degrees + encoderZero) / WristConstants.kWristDegreesPerRotation;
   }
 
   /**
@@ -354,10 +382,10 @@ public class Wrist extends SubsystemBase {
   public void calibrateWristEncoder(double angle) {
     stopWrist(); // Stop the motor so it doesn't jump to a new value
 
-    wristCalZero = getWristEncoderDegrees();
+    encoderZero = getWristEncoderDegrees();
     wristCalibrated = true;
 
-    log.writeLog(true, "Wrist", "Calibrate wrist", "zero value", wristCalZero, 
+    log.writeLog(true, "Wrist", "Calibrate wrist", "zero value", encoderZero, 
 		"CANcoder angle", getWristEncoderDegrees(), "Enc Raw", getWristEncoderRotationsRaw(), "Wrist Angle", getWristAngle(), "Wrist Target", getCurrentWristTarget());
   }
 
@@ -382,14 +410,14 @@ public class Wrist extends SubsystemBase {
    */
   public void updateWristLog(boolean logWhenDisabled) {
     log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
-    "Temp", wristMotorTemp.refresh().getValueAsDouble(),
+    "Temp", wristTemp.refresh().getValueAsDouble(),
     "Percent Output", getWristMotorPercentOutput(),
     "Amps", wristStatorCurrent.refresh().getValueAsDouble(),
-    "Volts", wristMotorVoltage.refresh().getValueAsDouble(),
+    "Volts", wristVoltage.refresh().getValueAsDouble(),
     "Enc pos raw", getWristEncoderRotationsRaw(),
     "Enc vel raw", wristEncoderVelocity.refresh().getValueAsDouble(),
     "Enc Accel raw", wristEncoderAcceleration.refresh().getValueAsDouble(),
-    "WristCalZero", wristCalZero,
+    "WristCalZero", encoderZero,
     "Wrist degrees", getWristEncoderDegrees(),
     "Wrist angle", getWristAngle(),
     "CANcoder connected", isCANcoderConnected(),

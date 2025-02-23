@@ -28,9 +28,9 @@ public class AlgaeGrabber extends SubsystemBase {
   private final FileLog log;
   private final int logRotationKey;
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
-  private String subsystemName;         // Subsystem name for use in file logging and dashboarrd
+  private String subsystemName;         // Subsystem name for use in file logging and dashboard
 
-  // Create variables for the AlgaeGrabber Minion motor
+  // Create variables for the algaeGrabber Minion motor
   private final StatusSignal<Voltage> algaeGrabberSupplyVoltage;  // Incoming bus voltage to motor, in volts
   private final StatusSignal<Temperature> algaeGrabberTemp;       // Motor temp, in degrees Celsius
   private final StatusSignal<Double> algaeGrabberDutyCycle;       // Motor duty cycle percent power, -1 to 1

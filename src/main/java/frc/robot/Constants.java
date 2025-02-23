@@ -54,28 +54,29 @@ public final class Constants {
     public static final int CANTurnEncoderBackLeft = 11;
     public static final int CANTurnEncoderBackRight = 12;
 
-    public static final int CANHopper = 13;
+    public static final int CANWristEncoder = 13;
 
-    public static final int CANCoralEffector = 14;
+    public static final int CANHopper = 14;
 
-    public static final int CANCoralGrabber = 15;
+    public static final int CANCoralEffector = 15;
 
-    public static final int CANElevator1 = 16;
-    public static final int CANElevator2 = 17;
+    public static final int CANCoralGrabber = 16;
 
-    public static final int CANPigeonGyro = 18;
-    public static final int CANPigeonGyro2 = 19;
+    public static final int CANElevator1 = 17;
+    public static final int CANElevator2 = 18;
 
-    public static final int CANWrist = 20;
+    public static final int CANPigeonGyro = 19;
+    public static final int CANPigeonGyro2 = 20;
 
-    public static final int CANdle = 21;
+    public static final int CANWrist = 21;
+
+    public static final int CANdle = 22;
 
     // Digital IO Ports
     public static final int DIOCoralEffectorEntrySensor = 0;
     public static final int DIOCoralEffectorExitSensor = 1;
     public static final int DIOAlgaeGrabberBumpSwitch1 = 2;
     public static final int DIOAlgaeGrabberBumpSwitch2 = 3;
-    public static final int DIOWristCANCoder = 4;
   }
 
   public static final class OIConstants {
