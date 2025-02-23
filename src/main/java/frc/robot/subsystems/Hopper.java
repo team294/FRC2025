@@ -41,7 +41,7 @@ public class Hopper extends SubsystemBase {
 
   private final TalonFXConfigurator hopperConfigurator = hopperMotor.getConfigurator();
   private TalonFXConfiguration hopperConfig;
-  private VoltageOut hopperVoltageControl = new VoltageOut(0.0); 
+  private VoltageOut hopperVoltageControl = new VoltageOut(0.0);
 
   public Hopper(String subsystemName, FileLog log) {
     this.subsystemName = subsystemName;

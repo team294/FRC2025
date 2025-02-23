@@ -42,7 +42,7 @@ public class AlgaeGrabber extends SubsystemBase {
   private final TalonFXS algaeGrabberMotor = new TalonFXS(Ports.CANCoralGrabber);
   private final TalonFXSConfigurator algaeGrabberConfigurator = algaeGrabberMotor.getConfigurator();
   private TalonFXSConfiguration algaeGrabberConfig;
-  private VoltageOut algaeGrabberVoltageControl;
+  private VoltageOut algaeGrabberVoltageControl = new VoltageOut(0.0);
 
   // Create bump switches
   private final DigitalInput bumpSwitch1 = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch1);
