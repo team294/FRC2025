@@ -103,6 +103,12 @@ public class Wrist extends SubsystemBase {
     wristMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;     // Time from 0 to full power, in seconds
     wristMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
 
+    // Configure soft limits on motor
+    wristMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.upperLimit.value);
+    wristMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.lowerLimit.value);
+    wristMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    wristMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
     // If the current is above the supply current limit for the threshold time, the current is 
     // limited to the lower limit in order to prevent the breakers from tripping
     wristMotorConfig.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
