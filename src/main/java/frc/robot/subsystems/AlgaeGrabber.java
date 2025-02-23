@@ -42,16 +42,16 @@ public class AlgaeGrabber extends SubsystemBase {
   private final TalonFXS algaeGrabberMotor = new TalonFXS(Ports.CANCoralGrabber);
   private final TalonFXSConfigurator algaeGrabberConfigurator = algaeGrabberMotor.getConfigurator();
   private TalonFXSConfiguration algaeGrabberConfig;
-  private VoltageOut algaeGrabberVoltageControl;
+  private VoltageOut algaeGrabberVoltageControl = new VoltageOut(0.0);
 
   // Create bump switches
   private final DigitalInput bumpSwitch1 = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch1);
   private final DigitalInput bumpSwitch2 = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch2);
 
   public AlgaeGrabber(String subsystemName, FileLog log) {
-    this.subsystemName = subsystemName;
     this.log = log;
     logRotationKey = log.allocateLogRotation();
+    this.subsystemName = subsystemName;
 
     // Get signal and sensor objects
     algaeGrabberSupplyVoltage = algaeGrabberMotor.getSupplyVoltage();
@@ -70,14 +70,15 @@ public class AlgaeGrabber extends SubsystemBase {
     algaeGrabberConfig.Voltage.PeakReverseVoltage = -AlgaeGrabberConstants.compensationVoltage;
     algaeGrabberConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
 
-    // If the current is above the supply current limit for the threshold time, the current is limited to the lower limit.
-    // This is configured to prevent the breakers from tripping.
+    // If the current is above the supply current limit for the threshold time, the current is 
+    // limited to the lower limit in order to prevent the breakers from tripping
     algaeGrabberConfig.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
     algaeGrabberConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
     algaeGrabberConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
     algaeGrabberConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-    // Apply the configurations to the motor
+    // Apply the configurations to the motor.
+    // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
     algaeGrabberConfigurator.apply(algaeGrabberConfig);
 
     stopAlgaeGrabberMotor();
@@ -144,7 +145,7 @@ public class AlgaeGrabber extends SubsystemBase {
   }
 
   /**
-   * Writes to the file log.
+   * Writes information about the algaeGrabber to the file log.
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {

@@ -7,13 +7,11 @@
 
 package frc.robot.utilities;
 
-/**
- * Add your docs here.
- */
 public interface Loggable {
-    /**
-     * 
-     * @param enabled true is enabled for every cycle; false follows normal logging cycles
-     */
-    public void enableFastLogging(boolean enabled);
+
+  /**
+   * Sets whether fast logging is enabled or disabled.
+   * @param enabled true = enabled to run every cycle, false = follow normal logging cycles
+   */
+  public void enableFastLogging(boolean enabled);
 }
