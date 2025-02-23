@@ -10,65 +10,61 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.FileLog;
 
 public class WristSetPercentOutput extends Command {
-  
-  private final FileLog log;
   private final Wrist wrist;
-  private final boolean fromShuffleBoard;
-  private double percent;
+  private final FileLog log;
+  private double percent = 0.0;
+  private boolean fromShuffleboard;
 
   /**
-   * Sets the percent power of the wrist.
-   * <p> Command does not end.  When interrupted, it turns off the wrist motor.
-   * @param percent percent output, -1 (down) to +1 (up)
-   * @param wrist
-   * @param log
+   * Sets the percent output of the coralEffector from Shuffleboard.
+   * NOTE: This command does not end. When interrupted, it turns off the wrist motor.
+   * @param wrist Wrist subsystem
+   * @param log FileLog utility
    */
-  public WristSetPercentOutput(double percent, Wrist wrist, FileLog log) {
-    fromShuffleBoard = false;
-    this.percent = percent;
-    this.log = log;
+  public WristSetPercentOutput(Wrist wrist, FileLog log) {
     this.wrist = wrist;
-
+    this.log = log;
+    this.fromShuffleboard = true;
     addRequirements(wrist);
+
+    if (SmartDashboard.getNumber("Wrist Set Percent", -9999) == -9999) {
+      SmartDashboard.putNumber("Wrist Set Percent", 0);
+    }
   }
 
   /**
-   * Sets the percent power of the wrist from Shuffleboard, -1 (down) to +1 (up).
-   * <p> Command does not end.  When interrupted, it turns off the wrist motor.
-   * @param wrist
-   * @param log
+   * Sets the percent output of the wrist.
+   * NOTE: This command does not end. When interrupted, it turns off the wrist motor.
+   * @param percent -1.0 to 1.0 (positive = up, negative = down)
+   * @param wrist Wrist subsystem
+   * @param log FileLog utility
    */
-  public WristSetPercentOutput(Wrist wrist, FileLog log) {
-    fromShuffleBoard = true;
-    this.wrist = wrist;
+  public WristSetPercentOutput(double percent, Wrist wrist, FileLog log) {
     this.log = log;
-    
-    if(SmartDashboard.getNumber("Wrist Output to set", -9999) == -9999) {
-      SmartDashboard.putNumber("Wrist Output to set", 0);
-    }
+    this.wrist = wrist;
+    this.percent = percent;
+    this.fromShuffleboard = false;
     addRequirements(wrist);
-
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(fromShuffleBoard) {
-      percent = SmartDashboard.getNumber("Wrist Output to set", 0);
-    }
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("Wrist Percent", 0);
     wrist.setWristMotorPercentOutput(percent);
-    log.writeLog(false, "WristSetPercentOutput", "Initialize", "percent", percent);
 
+    log.writeLog(false, "WristSetPercentOutput", "Init", "Percent", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    wrist.stopWrist();
+    wrist.stopWristMotor();
   }
 
   // Returns true when the command should end.
