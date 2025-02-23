@@ -4,8 +4,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.AlgaeGrabber;
 import frc.robot.utilities.FileLog;
 
@@ -13,9 +13,26 @@ public class AlgaeGrabberSetPercent extends Command {
   private final AlgaeGrabber algaeGrabber;
   private final FileLog log;
   private double percent = 0.0;
+  private boolean fromShuffleboard;
 
   /**
-   * Sets the percent output of the algaeGrabber and ends immediately without turning off.
+   * Sets the percent output of the algaeGrabber from Shuffleboard and ends immediately.
+   * @param algaeGrabber AlgaeGrabber subsystem
+   * @param log FileLog utility
+   */
+  public AlgaeGrabberSetPercent(AlgaeGrabber algaeGrabber, FileLog log) {
+    this.algaeGrabber = algaeGrabber;
+    this.log = log;
+    this.fromShuffleboard = true;
+    addRequirements(algaeGrabber);
+
+    if (SmartDashboard.getNumber("AlgaeGrabber Percent", -9999.9) == -9999.9) {
+      SmartDashboard.putNumber("AlgaeGrabber Percent", 0);
+    }
+  }
+
+  /**
+   * Sets the percent output of the algaeGrabber and ends immediately.
    * @param percent -1.0 to 1.0 (positive = intake, negative = outtake)
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
@@ -24,14 +41,17 @@ public class AlgaeGrabberSetPercent extends Command {
     this.algaeGrabber = algaeGrabber;
     this.log = log;
     this.percent = percent;
+    this.fromShuffleboard = false;
     addRequirements(algaeGrabber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("AlgaeGrabber Percent", 0.0);
     algaeGrabber.setAlgaeGrabberPercentOutput(percent);
-    log.writeLog(false, "AlgaeGrabberSetPercent", "Init", "AlgaeGrabber Percent", percent);
+
+    log.writeLog(false, "AlgaeGrabberSetPercent", "Init", "Percent", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

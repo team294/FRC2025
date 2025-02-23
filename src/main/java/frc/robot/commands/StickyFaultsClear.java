@@ -17,11 +17,10 @@ public class StickyFaultsClear extends Command {
 
   /**
    * Clears the sticky faults in RobotPreferences.
-   * <p> Note:  This command can run while the robot is disabled.
+   * NOTE: This command can run while the robot is disabled.
    * @param log
    */
   public StickyFaultsClear(FileLog log) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.log = log;
   }
 
@@ -29,7 +28,7 @@ public class StickyFaultsClear extends Command {
   @Override
   public void initialize() {
     RobotPreferences.clearStickyFaults(log);
-    log.writeLog(false, "ClearStickyFaults", "Init");
+    log.writeLog(false, "StickyFaultsClear", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,11 +47,7 @@ public class StickyFaultsClear extends Command {
     return true;
   }
 
-  /**
-   * Whether the given command should run when the robot is disabled. Override to return true if the
-   * command should run when disabled.
-   * @return whether the command should run when the robot is disabled
-   */
+  // Returns whether the command should be able to run while the robot is disabled (default = false). 
   @Override
   public boolean runsWhenDisabled() {
     return true;

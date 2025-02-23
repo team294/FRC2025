@@ -12,7 +12,7 @@ import frc.robot.utilities.FileLog;
 public class HopperSetPercent extends Command {
   private final Hopper hopper;
   private final FileLog log;
-  private double hopperPercent = 0.0;
+  private double percent = 0.0;
   private boolean fromShuffleboard;
 
   /**
@@ -40,7 +40,7 @@ public class HopperSetPercent extends Command {
   public HopperSetPercent(double percent, Hopper hopper, FileLog log) {
     this.hopper = hopper;
     this.log = log;
-    this.hopperPercent = percent;
+    this.percent = percent;
     this.fromShuffleboard = false;
     addRequirements(hopper);
   }
@@ -48,10 +48,10 @@ public class HopperSetPercent extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) hopperPercent = SmartDashboard.getNumber("Hopper Percent", 0.0);
-    hopper.setHopperPercentOutput(hopperPercent);
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("Hopper Percent", 0.0);
+    hopper.setHopperPercentOutput(percent);
 
-    log.writeLog(false, "HopperSetPercent", "Init", "Hopper Percent", hopperPercent);
+    log.writeLog(false, "HopperSetPercent", "Init", "Percent", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

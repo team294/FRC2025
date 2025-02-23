@@ -41,7 +41,7 @@ public class Hopper extends SubsystemBase {
 
   private final TalonFXConfigurator hopperConfigurator = hopperMotor.getConfigurator();
   private TalonFXConfiguration hopperConfig;
-  private VoltageOut hopperVoltageControl = new VoltageOut(0.0); 
+  private VoltageOut hopperVoltageControl = new VoltageOut(0.0);
 
   public Hopper(String subsystemName, FileLog log) {
     this.subsystemName = subsystemName;
@@ -72,7 +72,8 @@ public class Hopper extends SubsystemBase {
     hopperConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
     hopperConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-    // Set hopper motor configuration
+    // Apply the configurations to the motor.
+    // This is a blocking call and will wait up to 200ms for the zero to apply.
     hopperConfigurator.apply(hopperConfig);
 
     stopHopperMotor();
@@ -120,7 +121,7 @@ public class Hopper extends SubsystemBase {
   }
 
   /**
-   * Write information about hopper to the file log.
+   * Write information about the hopper to the file log.
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {

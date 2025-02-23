@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralEffector;
 import frc.robot.utilities.FileLog;
@@ -12,6 +13,23 @@ public class CoralEffectorSetPercent extends Command {
   private final CoralEffector coralEffector;
   private final FileLog log;
   private double percent = 0.0;
+  private boolean fromShuffleboard;
+
+  /**
+   * Sets the percent output of the coralEffector from Shuffleboard and ends immediately.
+   * @param coralEffector CoralEffector subsystem
+   * @param log FileLog utility
+   */
+  public CoralEffectorSetPercent(CoralEffector coralEffector, FileLog log) {
+    this.coralEffector = coralEffector;
+    this.log = log;
+    this.fromShuffleboard = true;
+    addRequirements(coralEffector);
+
+    if (SmartDashboard.getNumber("CoralEffector Percent", -9999.9) == -9999.9) {
+      SmartDashboard.putNumber("CoralEffector Percent", 0);
+    }
+  }
 
   /**
    * Sets the percent output of the coralEffector and ends immediately.
@@ -23,6 +41,7 @@ public class CoralEffectorSetPercent extends Command {
     this.coralEffector = coralEffector;
     this.log = log;
     this.percent = percent;
+    this.fromShuffleboard = false;
     addRequirements(coralEffector);
   }
 
@@ -30,8 +49,10 @@ public class CoralEffectorSetPercent extends Command {
   @Override
   public void initialize() {
     // TODO check if elevator is in correct position before running motor
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("CoralEffector Percent", 0.0);
     coralEffector.setCoralEffectorPercentOutput(percent);
-    log.writeLog(false, "CoralEffectorSetPercent", "Init", "CoralEffector Percent", percent);
+
+    log.writeLog(false, "CoralEffectorSetPercent", "Init", "Percent", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

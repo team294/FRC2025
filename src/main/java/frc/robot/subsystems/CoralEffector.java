@@ -74,7 +74,8 @@ public class CoralEffector extends SubsystemBase {
     coralEffectorConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;     // Threshold time, in seconds
     coralEffectorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-    // Apply the configurations to the motor
+    // Apply the configurations to the motor.
+    // This is a blocking call and will wait up to 200ms for the zero to apply.
     coralEffectorConfigurator.apply(coralEffectorConfig);
 
     stopCoralEffectorMotor();
