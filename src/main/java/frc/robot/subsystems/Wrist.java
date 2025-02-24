@@ -30,12 +30,13 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.Loggable;
 import frc.robot.utilities.Wait;
 import frc.robot.Constants.*;
 import frc.robot.Constants.WristConstants.WristAngle;
 import frc.robot.Constants.WristConstants.WristRegion;
 
-public class Wrist extends SubsystemBase {
+public class Wrist extends SubsystemBase implements Loggable {
   private final FileLog log;
   private final int logRotationKey;
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
@@ -55,10 +56,10 @@ public class Wrist extends SubsystemBase {
   private final TalonFX wristMotor = new TalonFX(Ports.CANWrist);
   private final TalonFXConfigurator wristMotorConfigurator = wristMotor.getConfigurator();
   private TalonFXConfiguration wristMotorConfig;
-  private VoltageOut wristVoltageControl = new VoltageOut(0.0);
 
-  private PositionVoltage wristPositionControl = new PositionVoltage(0.0);
-  private MotionMagicVoltage wristMMVoltageControl = new MotionMagicVoltage(0.0);
+  private VoltageOut wristVoltageControl = new VoltageOut(0.0).withEnableFOC(false);
+  private PositionVoltage wristPositionControl = new PositionVoltage(0.0).withEnableFOC(false);
+  private MotionMagicVoltage wristMMVoltageControl = new MotionMagicVoltage(0.0).withEnableFOC(false);
 
   // Create CANcoder
   private final CANcoder canCoder = new CANcoder(Ports.CANWristEncoder);
@@ -69,9 +70,7 @@ public class Wrist extends SubsystemBase {
 	private final StatusSignal<Angle> canCoderPosition;            // CANcoder position, in CANcoder rotations
 	private final StatusSignal<AngularVelocity> canCoderVelocity;  // CANcoder velocity, in CANcoder rotations/second
 
-  // Variables for encoder zeroing
-  private double encoderZero = 0;   // Reference raw encoder reading for wrist motor encoder. Calibration sets this to zero.
-  private double canCoderZero = 0;  // Reference raw encoder reading for CANcoder. Calibration sets this to the absolute position from RobotPreferences.
+  private double encoderZero = 0;   // Reference raw encoder reading for wrist motor encoder at 0 degrees.
 
   private boolean calibrationStickyFaultReported = false; // true = we have reported a sticky fault for wrist calibration, false = no sticky fault reported
   private boolean wristCalibrated = false;                // Default to wrist being uncalibrated. Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard.
@@ -116,8 +115,15 @@ public class Wrist extends SubsystemBase {
     wristMotorConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
     wristMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-    // Configure encoder
-    wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    // TODO evaluate SyncCANcoder
+    // Another option is at boot, creating two configs -- one with RemoteCANcoder and one with and RotorEncoder.
+    // The default would be the RemoteCANcoder. If the CANcoder fails, we would have a manual calibrate button 
+    // to force it to RotorEncoder and calbrate at a known angle.
+
+    // Configure CANcoder and rotor encoder to be synced
+    wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
+    wristMotorConfig.Feedback.FeedbackRemoteSensorID = Ports.CANWristEncoder;
+    wristMotorConfig.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
     wristMotorConfig.ClosedLoopGeneral.ContinuousWrap = false;
 
     // Configure PID for PositionVoltage control
@@ -144,8 +150,12 @@ public class Wrist extends SubsystemBase {
 
     // Configure CANcoder
     canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5; // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative 
     canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    canCoderConfig.MagnetSensor.MagnetOffset = WristConstants.canCoderOffsetAngleWrist;
+
+    // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
+    // TODO update this value based on the center of the region of unallowed motion
+    canCoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
 
     // Apply the configurations to the motor.
     // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
@@ -155,8 +165,11 @@ public class Wrist extends SubsystemBase {
     // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
     canCoderConfigurator.apply(canCoderConfig);
 
-    // If we are at our starting wrist angle
-    // calibrateWristEncoder(WristConstants.canCoderOffsetAngleWrist);
+    // Determine if the wrist is initially calibrated
+    if (isCANcoderConnected()) {
+      // TODO If we are at our starting wrist angle
+      // calibrateWristEncoder(WristConstants.canCoderOffsetAngleWrist);
+    }
 
     // NOTE!!! When the TalonFX encoder settings are changed above, then the next call to getTurningEncoderDegrees() 
     // may contain an old value, not the value based on the updated configuration settings above!!!!  The CANBus runs 
@@ -389,6 +402,15 @@ public class Wrist extends SubsystemBase {
    */
   public String getName() {
     return subsystemName;
+  }
+
+  /**
+   * Turns file logging on every scheduler cycle (~20 ms) or every 10 cycles (~0.2 sec).
+   * @param enabled true = log every cycle, false = log every 10 cycles
+   */ 
+  @Override
+  public void enableFastLogging(boolean enabled) {
+    fastLogging = enabled;
   }
 
   /**

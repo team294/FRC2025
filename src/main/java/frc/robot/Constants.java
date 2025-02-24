@@ -148,9 +148,9 @@ public final class Constants {
     public static final double kS = 0.0367; // TODO CALIBRATE FOR 2025
     public static final double kV = 0.1171; // TODO CALIBRATE FOR 2025
 
-    public static final double MMCruiseVelocity = 20.0;                   // TODO CALIBRATE FOR 2025
-    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // TODO CALIBRATE FOR 2025
-    public static final double MMJerk = MMAcceleration / 0.05;            // TODO CALIBRATE FOR 2025
+    public static final double MMCruiseVelocity = 20.0;                   // Max velocity in motor rotations / second TODO CALIBRATE FOR 2025
+    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in motor rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
+    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in motor rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
 
     public enum WristRegion {
       main,
