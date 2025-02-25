@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.HopperConstants;
 import frc.robot.commands.CoralEffectorIntake;
 import frc.robot.commands.HopperSetPercent;
-import frc.robot.commands.HopperStopMotor;
+import frc.robot.commands.StopHopperMotor;
 import frc.robot.subsystems.CoralEffector;
 import frc.robot.subsystems.Hopper;
 import frc.robot.utilities.FileLog;
@@ -29,7 +29,7 @@ public class HopperCoralEffectorIntakeSequence extends SequentialCommandGroup {
         new HopperSetPercent(HopperConstants.intakePercent, hopper, log),
         new CoralEffectorIntake(coralEffector, log)
       ),
-      new HopperStopMotor(hopper, log)
+      new StopHopperMotor(hopper, log)
     );
   }
 }
