@@ -19,8 +19,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.Constants.Ports;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.Loggable;
 
-public class CoralEffector extends SubsystemBase {
+public class CoralEffector extends SubsystemBase implements Loggable {
   private final FileLog log;
   private final int logRotationKey;
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
@@ -153,6 +154,15 @@ public class CoralEffector extends SubsystemBase {
    */
   public String getName() {
     return subsystemName;
+  }
+
+  /**
+   * Turns file logging on every scheduler cycle (~20 ms) or every 10 cycles (~0.2 sec).
+   * @param enabled true = log every cycle, false = log every 10 cycles
+   */
+  @Override
+  public void enableFastLogging(boolean enabled) {
+    fastLogging = enabled;
   }
 
   /**

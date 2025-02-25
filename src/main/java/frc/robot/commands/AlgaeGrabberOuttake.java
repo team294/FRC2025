@@ -32,7 +32,7 @@ public class AlgaeGrabberOuttake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    algaeGrabber.setAlgaeGrabberPercentOutput(AlgaeGrabberConstants.AlgaeGrabberOuttakePercent);
+    algaeGrabber.setAlgaeGrabberPercentOutput(AlgaeGrabberConstants.outtakePercent);
 
     log.writeLog(false, "AlgaeGrabberOuttake", "Init",
       "Algae Present 1", algaeGrabber.isAlgaePresent(1),
