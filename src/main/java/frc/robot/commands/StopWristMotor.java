@@ -1,0 +1,48 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Wrist;
+import frc.robot.utilities.FileLog;
+
+public class StopWristMotor extends Command {
+  private final Wrist wrist;
+  private final FileLog log;
+ 
+  /**
+   * Sets the percent output of the wrist to 0 and ends immediately.
+   * @param wrist Wrist subsystem
+   * @param log FileLog utility
+   */
+  public StopWristMotor(Wrist wrist, FileLog log) {
+    this.wrist = wrist;
+    this.log = log;
+    addRequirements(wrist);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    wrist.setWristPercentOutput(0);
+    log.writeLog(false, "StopWristMotor", "Init");
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return true;
+  }
+}

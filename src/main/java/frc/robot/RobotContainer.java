@@ -41,6 +41,7 @@ public class RobotContainer {
   private final Hopper hopper = new Hopper("Hopper", log);
   private final CoralEffector coralEffector = new CoralEffector("CoralEffector", log);
   private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
+  private final Wrist wrist = new Wrist("Wrist", log);
   private final Elevator elevator = new Elevator("Elevator", log);
 
   // Define other utilities
@@ -98,6 +99,8 @@ public class RobotContainer {
     SmartDashboard.putData("AlgaeGrabber Set 10%", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
     SmartDashboard.putData("AlgaeGrabber Set -10%", new AlgaeGrabberSetPercent(-0.1, algaeGrabber, log));
     SmartDashboard.putData("AlgaeGrabber Stop", new StopAlgaeGrabberMotor(algaeGrabber, log));
+
+    // Wrist
 
     // Elevator
     SmartDashboard.putData("Move Elevator Up", new ElevatorSetPercent(.05, elevator, log));
@@ -165,6 +168,7 @@ public class RobotContainer {
       new StopHopperMotor(hopper, log),
       new StopAlgaeGrabberMotor(algaeGrabber, log),
       new StopCoralEffectorMotor(coralEffector, log),
+      new StopWristMotor(wrist, log),
       new StopElevatorMotors(elevator, log)
     ));
   }

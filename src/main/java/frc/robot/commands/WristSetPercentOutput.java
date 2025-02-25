@@ -51,7 +51,7 @@ public class WristSetPercentOutput extends Command {
   @Override
   public void initialize() {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Wrist Percent", 0);
-    wrist.setWristMotorPercentOutput(percent);
+    wrist.setWristPercentOutput(percent);
 
     log.writeLog(false, "WristSetPercentOutput", "Init", "Percent", percent);
   }

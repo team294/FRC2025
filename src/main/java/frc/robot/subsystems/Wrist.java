@@ -183,11 +183,11 @@ public class Wrist extends SubsystemBase implements Loggable {
   // ********** Wrist movement methods
 
   /**
-   * Sets the percent power of the wrist motor using voltage compensation.
+   * Sets the percent output of the wrist motor using voltage compensation.
    * NOTE: There are no elevator interlocks on this method!
    * @param percent output percent, -1.0 to 1.0 (positive = up, negative = down)
    */
-  public void setWristMotorPercentOutput(double percent) {
+  public void setWristPercentOutput(double percent) {
     if (wristCalibrated) {
       percent = MathUtil.clamp(percent, -WristConstants.maxPercentOutput, WristConstants.maxPercentOutput);
     } else {
@@ -201,7 +201,7 @@ public class Wrist extends SubsystemBase implements Loggable {
    * Stops the wrist motor.
    */
   public void stopWristMotor() {
-    setWristMotorPercentOutput(0.0);
+    setWristPercentOutput(0.0);
   }
 
   /**
