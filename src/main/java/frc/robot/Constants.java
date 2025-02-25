@@ -140,8 +140,6 @@ public final class Constants {
 
     // TODO CALIBRATE FOR 2025
     public enum ElevatorPosition {
-      HOME(0.0),
-
       LOWER_LIMIT(0.0),
       UPPER_LIMIT(90.0),
 

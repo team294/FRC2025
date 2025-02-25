@@ -148,9 +148,10 @@ public class RobotContainer {
     // *variable name of button*.onTrue(*command(s)*);
     // ex: xbA.onTrue(new command(param1, param2));
 
-    xbRT.onTrue(new HopperCoralEffectorIntakeSequence(hopper, coralEffector, log));
+    // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
+    xbRT.onTrue(new CoralIntakeSequence(elevator, hopper, coralEffector, log));
 
-    // Move elevator to Coral HP (X), L2 (A), L3 (B), and L4 (Y)
+    // Move elevator to Coral HP with X, L2 with A, L3 with B, and L4 with Y
     xbX.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_HP.value, elevator, log));
     xbA.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L2.value, elevator, log));
     xbB.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L3.value, elevator, log));
