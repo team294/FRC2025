@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralEffector;
 import frc.robot.utilities.FileLog;
 
-public class CoralEffectorStopMotor extends Command {
+public class StopCoralEffectorMotor extends Command {
   private final CoralEffector coralEffector;
   private final FileLog log;
 
@@ -17,7 +17,7 @@ public class CoralEffectorStopMotor extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorStopMotor(CoralEffector coralEffector, FileLog log) {
+  public StopCoralEffectorMotor(CoralEffector coralEffector, FileLog log) {
     this.coralEffector = coralEffector;
     this.log = log;
     addRequirements(coralEffector);
@@ -27,7 +27,7 @@ public class CoralEffectorStopMotor extends Command {
   @Override
   public void initialize() {
     coralEffector.stopCoralEffectorMotor();
-    log.writeLog(false, "CoralEffectorStopMotor", "Init");
+    log.writeLog(false, "StopCoralEffectorMotor", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

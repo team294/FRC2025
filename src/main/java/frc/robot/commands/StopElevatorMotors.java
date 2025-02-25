@@ -5,29 +5,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Elevator;
 import frc.robot.utilities.FileLog;
 
-public class HopperStopMotor extends Command {
-  private final Hopper hopper;
+public class StopElevatorMotors extends Command {
+  private final Elevator elevator;
   private final FileLog log;
- 
-  /**
-   * Sets the percent output of the hopper to 0 and ends immediately.
-   * @param hopper Hopper subsystem
-   * @param log FileLog utility
-   */
-  public HopperStopMotor(Hopper hopper, FileLog log) {
-    this.hopper = hopper;
+
+  public StopElevatorMotors(Elevator elevator, FileLog log) {
+    this.elevator = elevator;
     this.log = log;
-    addRequirements(hopper);
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    hopper.setHopperPercentOutput(0);
-    log.writeLog(false, "HopperStopMotor", "Init");
+    elevator.stopElevatorMotors();
+    log.writeLog(false, "StopElevatorMotors", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

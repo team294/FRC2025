@@ -5,29 +5,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AlgaeGrabber;
+import frc.robot.subsystems.Hopper;
 import frc.robot.utilities.FileLog;
 
-public class AlgaeGrabberStopMotor extends Command {
-  private final AlgaeGrabber algaeGrabber;
+public class StopHopperMotor extends Command {
+  private final Hopper hopper;
   private final FileLog log;
-
+ 
   /**
-   * Sets the percent output of the algaeGrabber to 0 and ends immediately.
-   * @param algaeGrabber AlgaeGrabber subsystem
+   * Sets the percent output of the hopper to 0 and ends immediately.
+   * @param hopper Hopper subsystem
    * @param log FileLog utility
    */
-  public AlgaeGrabberStopMotor(AlgaeGrabber algaeGrabber, FileLog log) {
-    this.algaeGrabber = algaeGrabber;
+  public StopHopperMotor(Hopper hopper, FileLog log) {
+    this.hopper = hopper;
     this.log = log;
-    addRequirements(algaeGrabber);
+    addRequirements(hopper);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    algaeGrabber.setAlgaeGrabberPercentOutput(0);
-    log.writeLog(false, "AlgaeGrabberStopMotor", "Init");
+    hopper.setHopperPercentOutput(0);
+    log.writeLog(false, "StopHopperMotor", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

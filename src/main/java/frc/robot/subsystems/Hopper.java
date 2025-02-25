@@ -81,7 +81,7 @@ public class Hopper extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Sets the percent of the hopper motor using voltage compensation.
+   * Sets the percent output of the hopper motor using voltage compensation.
    * @param percent output percent, -1.0 to 1.0 (positive = intake, negative = reverse)
    */
   public void setHopperPercentOutput(double percent) {
@@ -124,7 +124,7 @@ public class Hopper extends SubsystemBase implements Loggable {
   /**
    * Turns file logging on every scheduler cycle (~20 ms) or every 10 cycles (~0.2 sec).
    * @param enabled true = log every cycle, false = log every 10 cycles
-   */ 
+   */
   @Override
   public void enableFastLogging(boolean enabled) {
     fastLogging = enabled;
