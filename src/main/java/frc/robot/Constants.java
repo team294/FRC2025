@@ -71,10 +71,9 @@ public final class Constants {
     // Digital IO Ports
     public static final int DIOCoralEffectorEntrySensor = 0;
     public static final int DIOCoralEffectorExitSensor = 1;
-    public static final int DIOAlgaeGrabberBumpSwitch1 = 2;
-    public static final int DIOAlgaeGrabberBumpSwitch2 = 3;
-    public static final int DIOElevatorLowerLimitSensor1 = 4;
-    public static final int DIOElevatorLowerLimitSensor2 = 5; 
+    public static final int DIOAlgaeGrabberBumpSwitch = 2;
+    public static final int DIOElevatorLowerLimitSensor1 = 3;
+    public static final int DIOElevatorLowerLimitSensor2 = 4; 
   }
 
   public static final class OIConstants {

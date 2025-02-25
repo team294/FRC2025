@@ -16,7 +16,7 @@ public class ElevatorSetPercent extends Command {
   private boolean fromShuffleboard;
 
   /**
-   * Sets the percent output to the elevator and ends immediately.
+   * Sets the percent output of the elevator and ends immediately.
    * @param percent -1.0 to 1.0 (positive = up, negative = down)
    * @param elevator Elevator subsystem
    * @param log FileLog utility
@@ -30,7 +30,7 @@ public class ElevatorSetPercent extends Command {
   }
 
   /**
-   * Sets the percent output to the elevator from Shuffleboard and ends immediately.
+   * Sets the percent output of the elevator from Shuffleboard and ends immediately.
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */

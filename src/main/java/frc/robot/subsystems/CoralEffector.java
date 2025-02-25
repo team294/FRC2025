@@ -83,7 +83,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Sets the percent of the coralEffector motor using voltage compensation.
+   * Sets the percent output of the coralEffector motor using voltage compensation.
    * @param percent output percent, -1.0 to 1.0 (positive = intake/outtake, negative = reverse)
    */
   public void setCoralEffectorPercentOutput(double percent) {

@@ -46,8 +46,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   private VoltageOut algaeGrabberVoltageControl = new VoltageOut(0.0);
 
   // Create bump switches
-  private final DigitalInput bumpSwitch1 = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch1);
-  private final DigitalInput bumpSwitch2 = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch2);
+  private final DigitalInput bumpSwitch1 = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch);
 
   public AlgaeGrabber(String subsystemName, FileLog log) {
     this.log = log;
@@ -86,7 +85,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   }
 
   /** 
-   * Sets the percent of the algaeGrabber motor using voltage compensation. 
+   * Sets the percent output of the algaeGrabber motor using voltage compensation. 
    * @param percent output percent, -1.0 to 1.0 (positive = intake, negative = outtake)
    */
   public void setAlgaeGrabberPercentOutput(double percent) {
@@ -120,10 +119,10 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
   /**
    * Gets whether an algae is in the algaeGrabber.
-   * @return true = algae is present, false = algae is not present or not triggering either bump switch
+   * @return true = algae is present, false = algae is not present or not triggering the bump switch
    */
   public boolean isAlgaePresent() {
-    return bumpSwitch1.get() || bumpSwitch2.get();
+    return bumpSwitch1.get();
   }
 
   /**
@@ -133,7 +132,6 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
    */
   public boolean isAlgaePresent(int bumpSwitch) {
     if (bumpSwitch == 1) return bumpSwitch1.get();
-    else if (bumpSwitch == 2) return bumpSwitch2.get();
     else return false;
   }
 
