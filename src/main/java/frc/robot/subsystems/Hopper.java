@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.HopperConstants;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.Loggable;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -22,7 +23,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-public class Hopper extends SubsystemBase {
+public class Hopper extends SubsystemBase implements Loggable {
   private final FileLog log;
   private final int logRotationKey;
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
@@ -80,7 +81,7 @@ public class Hopper extends SubsystemBase {
   }
 
   /**
-   * Sets the percent of the hopper motor using voltage compensation.
+   * Sets the percent output of the hopper motor using voltage compensation.
    * @param percent output percent, -1.0 to 1.0 (positive = intake, negative = reverse)
    */
   public void setHopperPercentOutput(double percent) {
@@ -118,6 +119,15 @@ public class Hopper extends SubsystemBase {
    */
   public String getName() {
     return subsystemName;
+  }
+
+  /**
+   * Turns file logging on every scheduler cycle (~20 ms) or every 10 cycles (~0.2 sec).
+   * @param enabled true = log every cycle, false = log every 10 cycles
+   */
+  @Override
+  public void enableFastLogging(boolean enabled) {
+    fastLogging = enabled;
   }
 
   /**
