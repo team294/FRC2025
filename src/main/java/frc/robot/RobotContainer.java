@@ -41,6 +41,7 @@ public class RobotContainer {
   private final Hopper hopper = new Hopper("Hopper", log);
   private final CoralEffector coralEffector = new CoralEffector("CoralEffector", log);
   private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
+  private final Elevator elevator = new Elevator("Elevator", log);
 
   // Define other utilities
   // private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
@@ -98,6 +99,16 @@ public class RobotContainer {
     SmartDashboard.putData("AlgaeGrabber Set -10%", new AlgaeGrabberSetPercent(-0.1, algaeGrabber, log));
     SmartDashboard.putData("AlgaeGrabber Stop", new AlgaeGrabberStopMotor(algaeGrabber, log));
 
+    // Elevator
+    SmartDashboard.putData("Move Elevator Up", new ElevatorSetPercent(.05, elevator, log));
+    SmartDashboard.putData("Move Elevator Down", new ElevatorSetPercent(-.05, elevator, log));
+    SmartDashboard.putData("Stop Elevator Motors", new ElevatorStopMotors(elevator, log));
+    SmartDashboard.putData("Move Elevator To 20 Inches", new ElevatorSetPosition(20.0, elevator, log));
+    SmartDashboard.putData("Move Elevator To L2", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L2.value, elevator, log));
+    SmartDashboard.putData("Move Elevator To L3", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L3.value, elevator, log));
+    SmartDashboard.putData("Move Elevator To L4", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L4.value, elevator, log));
+    SmartDashboard.putData("Elevator Calibration", new ElevatorCalibration(0.1, elevator, log));
+    
     // Autos
 
     // Copanel buttons
@@ -138,6 +149,23 @@ public class RobotContainer {
     // ex: xbA.onTrue(new command(param1, param2));
 
     xbRT.onTrue(new HopperCoralEffectorIntakeSequence(hopper, coralEffector, log));
+
+    // Move elevator to Coral HP (X), L2 (A), L3 (B), and L4 (Y)
+    xbX.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_HP.value, elevator, log));
+    xbA.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L2.value, elevator, log));
+    xbB.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L3.value, elevator, log));
+    xbY.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L4.value, elevator, log));
+
+    // Manually control elevator with right joystick
+    xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, log, true));
+
+    // Stop all motors with LB
+    xbLB.onTrue(parallel(
+      new HopperStopMotor(hopper, log),
+      new AlgaeGrabberStopMotor(algaeGrabber, log),
+      new CoralEffectorStopMotor(coralEffector, log),
+      new ElevatorStopMotors(elevator, log)
+    ));
   }
 
   /**
@@ -208,7 +236,7 @@ public class RobotContainer {
     // driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
     // driveTrain.setVisionForOdometryState(true);
 
-    // elevator.stopElevatorMotors();
+    elevator.stopElevatorMotors();
 
     matchTimer.stop();
     SignalLogger.stop();

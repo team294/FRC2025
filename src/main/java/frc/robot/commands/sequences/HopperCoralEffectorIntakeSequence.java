@@ -26,7 +26,7 @@ public class HopperCoralEffectorIntakeSequence extends SequentialCommandGroup {
   public HopperCoralEffectorIntakeSequence(Hopper hopper, CoralEffector coralEffector, FileLog log) {
     addCommands(
       new ParallelCommandGroup(
-        new HopperSetPercent(HopperConstants.hopperIntakePercent, hopper, log),
+        new HopperSetPercent(HopperConstants.intakePercent, hopper, log),
         new CoralEffectorIntake(coralEffector, log)
       ),
       new HopperStopMotor(hopper, log)

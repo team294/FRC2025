@@ -73,6 +73,8 @@ public final class Constants {
     public static final int DIOCoralEffectorExitSensor = 1;
     public static final int DIOAlgaeGrabberBumpSwitch1 = 2;
     public static final int DIOAlgaeGrabberBumpSwitch2 = 3;
+    public static final int DIOElevatorLowerLimitSensor1 = 4;
+    public static final int DIOElevatorLowerLimitSensor2 = 5; 
   }
 
   public static final class OIConstants {
@@ -109,8 +111,8 @@ public final class Constants {
 
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double hopperIntakePercent = 0.1;         // TODO CALIBRATE FOR 2025
-    public static final double hopperReverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.1;         // TODO CALIBRATE FOR 2025
+    public static final double reverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 
   public static class CoralEffectorConstants {
@@ -121,7 +123,48 @@ public final class Constants {
 
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double AlgaeGrabberIntakePercent = 0.1;   // TODO CALIBRATE FOR 2025
-    public static final double AlgaeGrabberOuttakePercent = -0.1; // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.1;   // TODO CALIBRATE FOR 2025
+    public static final double outtakePercent = -0.1; // TODO CALIBRATE FOR 2025
+  }
+
+  public static final class ElevatorConstants {
+    public static final double kEncoderCPR = 1.0;                 // Encoder counts per revolution of the motor pinion gear
+    public static final double kElevGearRatio = (9.0 / 1.0);      // Gear reduction ratio between Kraken and gear driving the elevator TODO CALIBRATE FOR 2025
+    public static final double kElevPulleyDiameterInches = 1.504; // Diameter of the pulley driving the elevator in inches TODO CALIBRATE FOR 2025
+    public static final double kElevEncoderInchesPerTick = (kElevPulleyDiameterInches * Math.PI) / kEncoderCPR / kElevGearRatio;
+    
+    public static final double compensationVoltage = 12.0;
+
+    public static final double maxUncalibratedPercentOutput = 0.1;
+    public static final double maxManualPercentOutput = 0.2;  // Max elevator speed when driven using Xbox controller
+    public static final double maxPercentOutput = 1.0;        // Absolute max output to elevator motors
+
+    // TODO CALIBRATE FOR 2025
+    public enum ElevatorPosition {
+      HOME(0.0),
+
+      LOWER_LIMIT(0.0),
+      UPPER_LIMIT(90.0),
+
+      CORAL_HP(0.0),
+
+      CORAL_L1(14.0),
+      CORAL_L2(19.25),
+      CORAL_L3(35.25),
+      CORAL_L4(62.0),
+      
+      ALGAE_GROUND(14.0),
+      ALGAE_LOWER(19.25),
+      ALGAE_UPPER(35.25),
+      
+      ALGAE_PROCESSOR(10.0),
+      ALGAE_NET(80.0);
+ 
+      public final double value;
+  
+      ElevatorPosition(double value) {
+        this.value = value;
+      }
+    }
   }
 }
