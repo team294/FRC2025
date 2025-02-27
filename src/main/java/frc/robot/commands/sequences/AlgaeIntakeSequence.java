@@ -13,17 +13,16 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.utilities.FileLog;
 
 /**
- * Intakes algae by moving the elevator to the correct intake
- * position based on where algae is being picked up from 
+ * Intakes algae by moving the elevator to the indicated intake position, and then running the algaeGrabber 
+ * until the algae is in the mechanism.
  * TODO add wrist movement
+ * @param position position to move elevator to (use ElevatorConstants.ElevatorPosition.ALGAE_...)
  * @param elevator Elevator subsystem
- * @param algaeGrabber Algae Grabber subsystem
- * @param position ElevatorPosition constant to move elevator to
+ * @param algaeGrabber AlgaeGrabber subsystem
  * @param log FileLog utility
  */
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
-  /** Creates a new AlgaeIntakeSequence. */
-  public AlgaeIntakeSequence(Elevator elevator, /*Wrist wrist,*/ AlgaeGrabber algaeGrabber, ElevatorPosition position, FileLog log) {
+  public AlgaeIntakeSequence(ElevatorPosition position, Elevator elevator, /*Wrist wrist,*/ AlgaeGrabber algaeGrabber, FileLog log) {
     addCommands(
       new ElevatorSetPosition(position.value, elevator, log),
       new AlgaeGrabberIntake(algaeGrabber, log)

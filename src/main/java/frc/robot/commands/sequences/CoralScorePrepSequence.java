@@ -11,18 +11,17 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.utilities.FileLog;
 
 /**
- * Moves elevator to correct position to score coral based on ElevatorPosition constant
+ * Prepares to score coral by moving the elevator to the indicated scoring position.
  * TODO add wrist movement
+ * @param position position to move elevator to (use ElevatorConstants.ElevatorPosition.CORAL_...)
  * @param elevator Elevator subsystem
- * @param position ElevatorPosition constant to move elevator to
  * @param log FileLog utility
  */
 public class CoralScorePrepSequence extends SequentialCommandGroup {
-  /** Creates a new CoralScorePrepSequence. */
   public CoralScorePrepSequence(Elevator elevator, /*Wrist wrist,*/ ElevatorPosition position, FileLog log) {
     addCommands(
-      // activate coral mode
       new ElevatorSetPosition(position.value, elevator, log)
+      // TODO set in coral mode
     );
   }
 }
