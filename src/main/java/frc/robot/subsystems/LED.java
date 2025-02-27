@@ -278,7 +278,6 @@ public class LED extends SubsystemBase {
     candle.animate(anim);
   }
 
-  // TODO incorporate gap length!!!!!
   private Color[] makeScoringPattern(int numLEDs, int ledPerGap, StripEvents event) {
     Color[] pattern = new Color[numLEDs];
 
@@ -289,7 +288,10 @@ public class LED extends SubsystemBase {
     } else if (event == StripEvents.ALGAE_MODE_LOWER_REEF) {
         for (int i = 0; i < LEDSegmentRange.StripLeftSection2.count; i++) {
           if (i == LEDSegmentRange.StripLeftSection2.count / 2) {
-            pattern[i] = new Color(0, 0, 0);
+            for (int j = 0; j < ledPerGap; j++) {
+              pattern[i + j] = new Color(0, 0, 0);
+            }
+            i += ledPerGap;
           } else {
             pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
           }
@@ -297,7 +299,10 @@ public class LED extends SubsystemBase {
     } else if (event == StripEvents.ALGAE_MODE_UPPER_REEF) {
         for (int i = 0; i < LEDSegmentRange.StripLeftSection3.count; i++) {
           if (i == LEDSegmentRange.StripLeftSection3.count / 3 || i == LEDSegmentRange.StripLeftSection3.count * 2 / 3) {
-            pattern[i] = new Color(0, 0, 0);
+            for (int j = 0; j < ledPerGap; j++) {
+              pattern[i + j] = new Color(0, 0, 0);
+            }
+            i += ledPerGap;
           } else {
             pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
           }
@@ -305,7 +310,10 @@ public class LED extends SubsystemBase {
     } else if (event == StripEvents.ALGAE_MODE_NET) {
         for (int i = 0; i < LEDSegmentRange.StripLeftSection4.count; i++) {
           if (i == LEDSegmentRange.StripLeftSection4.count / 4 || i == LEDSegmentRange.StripLeftSection4.count / 2 || i == LEDSegmentRange.StripLeftSection4.count * 3 / 4) {
-            pattern[i] = new Color(0, 0, 0);
+            for (int j = 0; j < ledPerGap; j++) {
+              pattern[i + j] = new Color(0, 0, 0);
+            }
+            i += ledPerGap;
           } else {
             pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
           }
@@ -317,7 +325,10 @@ public class LED extends SubsystemBase {
     } else if (event == StripEvents.CORAL_MODE_L2) {
         for (int i = 0; i < LEDSegmentRange.StripLeftSection2.count; i++) {
           if (i == LEDSegmentRange.StripLeftSection2.count / 2) {
-            pattern[i] = new Color(0, 0, 0);
+            for (int j = 0; j < ledPerGap; j++) {
+              pattern[i + j] = new Color(0, 0, 0);
+            }
+            i += ledPerGap;
           } else {
             pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
           }
@@ -325,7 +336,10 @@ public class LED extends SubsystemBase {
     } else if (event == StripEvents.CORAL_MODE_L3) {
         for (int i = 0; i < LEDSegmentRange.StripLeftSection3.count; i++) {
           if (i == LEDSegmentRange.StripLeftSection3.count / 3 || i == LEDSegmentRange.StripLeftSection3.count * 2 / 3) {
-            pattern[i] = new Color(0, 0, 0);
+            for (int j = 0; j < ledPerGap; j++) {
+              pattern[i + j] = new Color(0, 0, 0);
+            }
+            i += ledPerGap;
           } else {
             pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
           }
@@ -333,7 +347,10 @@ public class LED extends SubsystemBase {
     } else if (event == StripEvents.CORAL_MODE_L4) {
         for (int i = 0; i < LEDSegmentRange.StripLeftSection4.count; i++) {
           if (i == LEDSegmentRange.StripLeftSection4.count / 4 || i == LEDSegmentRange.StripLeftSection4.count / 2 || i == LEDSegmentRange.StripLeftSection4.count * 3 / 4) {
-            pattern[i] = new Color(0, 0, 0);
+            for (int j = 0; j < ledPerGap; j++) {
+              pattern[i + j] = new Color(0, 0, 0);
+            }
+            i += ledPerGap;
           } else {
             pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
           }
