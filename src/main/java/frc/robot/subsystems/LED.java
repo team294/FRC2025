@@ -27,8 +27,11 @@ import frc.robot.utilities.RobotPreferences;
 public class LED extends SubsystemBase {
   private final FileLog log;
   private final int logRotationKey;
-  private final CANdle candle;
   private String subsystemName;
+
+  private final CANdle candle;
+  private HashMap<LEDSegmentRange, LEDSegment> segments;
+
   private Timer matchTimer;
   private CANdleEvents previousEventCANdle;
   private StripEvents previousEventStrip;
@@ -63,60 +66,41 @@ public class LED extends SubsystemBase {
   }
 
   private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
-    static {
-      prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 0);
-      prioritiesStripEvents.put(StripEvents.INTAKE_RUNNING, 1);
-      prioritiesStripEvents.put(StripEvents.ALGAE_MODE_IDLE, 2);
-      prioritiesStripEvents.put(StripEvents.ALGAE_MODE_PROCESSOR, 3);
-      prioritiesStripEvents.put(StripEvents.ALGAE_MODE_LOWER_REEF, 3);
-      prioritiesStripEvents.put(StripEvents.ALGAE_MODE_UPPER_REEF, 3);
-      prioritiesStripEvents.put(StripEvents.ALGAE_MODE_NET, 3);
-      prioritiesStripEvents.put(StripEvents.CORAL_MODE_IDLE, 2);
-      prioritiesStripEvents.put(StripEvents.CORAL_MODE_L1, 3);
-      prioritiesStripEvents.put(StripEvents.CORAL_MODE_L2, 3);
-      prioritiesStripEvents.put(StripEvents.CORAL_MODE_L3, 3);
-      prioritiesStripEvents.put(StripEvents.CORAL_MODE_L4, 3);
-      prioritiesStripEvents.put(StripEvents.MATCH_COUNTDOWN, 4);
-      prioritiesStripEvents.put(StripEvents.CLIMB, 5);
-      prioritiesStripEvents.put(StripEvents.NEUTRAL, 6);
-    }
-
-  /**
-   * Get the priority level for an event.
-   * @param event CANdleEvents event
-   * @return priority level integer (higher value = higher priority), default is -1
-   */
-  private int getPriority(CANdleEvents event) {
-    return event != null ? prioritiesCANdleEvents.getOrDefault(event, -1) : -1;
+  static {
+    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 0);
+    prioritiesStripEvents.put(StripEvents.INTAKE_RUNNING, 1);
+    prioritiesStripEvents.put(StripEvents.ALGAE_MODE_IDLE, 2);
+    prioritiesStripEvents.put(StripEvents.ALGAE_MODE_PROCESSOR, 3);
+    prioritiesStripEvents.put(StripEvents.ALGAE_MODE_LOWER_REEF, 3);
+    prioritiesStripEvents.put(StripEvents.ALGAE_MODE_UPPER_REEF, 3);
+    prioritiesStripEvents.put(StripEvents.ALGAE_MODE_NET, 3);
+    prioritiesStripEvents.put(StripEvents.CORAL_MODE_IDLE, 2);
+    prioritiesStripEvents.put(StripEvents.CORAL_MODE_L1, 3);
+    prioritiesStripEvents.put(StripEvents.CORAL_MODE_L2, 3);
+    prioritiesStripEvents.put(StripEvents.CORAL_MODE_L3, 3);
+    prioritiesStripEvents.put(StripEvents.CORAL_MODE_L4, 3);
+    prioritiesStripEvents.put(StripEvents.MATCH_COUNTDOWN, 4);
+    prioritiesStripEvents.put(StripEvents.CLIMB, 5);
+    prioritiesStripEvents.put(StripEvents.NEUTRAL, 6);
   }
 
   /**
-   * Get the priority level for an event.
-   * @param event StripEvents event
-   * @return priority level integer (higher value = higher priority), default is -1
-   */
-  private int getPriority(StripEvents event) {
-    return event != null ? prioritiesStripEvents.getOrDefault(event, -1) : -1;
-  }
-
-  private HashMap<LEDSegmentRange, LEDSegment> segments;
-
-  /**
-   * Creates the CANdle LED subsystem.
-   * @param CANPort
-   * @param subsystemName
-   * @param matchTimer
-   * @param log
+   * Creates the LED subsystem.
+   * @param CANPort the CAN port that the CANdle is on
+   * @param subsystemName the name of the subsystem
+   * @param matchTimer a timer that tracks the time elapsed in the match
+   * @param log FileLog utility
    */
   public LED(int CANPort, String subsystemName, Timer matchTimer, FileLog log/*, BCRRobotState robotState*/) {
-    this.subsystemName = subsystemName;
-    this.candle = new CANdle(CANPort, "");
-    this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
-    this.matchTimer = matchTimer;
     this.log = log;
     logRotationKey = log.allocateLogRotation();
+    this.subsystemName = subsystemName;
 
-    // Create the LED segments
+    this.candle = new CANdle(CANPort, "");
+    this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
+
+    this.matchTimer = matchTimer;
+
     for (LEDSegmentRange segment : LEDSegmentRange.values()) {
       segments.put(segment, new LEDSegment(segment.index, segment.count, LEDConstants.EmptyPatterns.noPatternAnimation));
     }
@@ -125,11 +109,10 @@ public class LED extends SubsystemBase {
   }
 
   /**
-   * Update strips for a countdown animation.
+   * Updates the LED strips for a countdown animation.
    * @param percent 0-1 progress through the countdown
    */
   private void updateLEDsCountdown(double percent) {
-
     double leftCount = LEDSegmentRange.StripLeft.count * percent;
     int ledCountLeft = (int) leftCount;
 
@@ -141,7 +124,7 @@ public class LED extends SubsystemBase {
   }
 
   /**
-   * Change the color of the LEDs.
+   * Changes the color of the LEDs on either the strips or the CANdle.
    * @param color BCRColor to make LEDs (solid)
    * @param strip true = update strips, false = update CANdle
    */
@@ -150,19 +133,24 @@ public class LED extends SubsystemBase {
       setLEDs(color, LEDSegmentRange.StripLeft);
       setLEDs(color, LEDSegmentRange.StripRight);
       setLEDs(color, LEDSegmentRange.StripHorizontal);
-    }
-    else {
+    } else {
       setLEDs(color, LEDSegmentRange.CANdle);
     }
   }
 
+  /**
+   * Sets the animation for an LED segment.
+   * @param segment
+   * @param ledPerGap
+   * @param event
+   */
   private void updateLEDs(LEDSegmentRange segment, int ledPerGap, StripEvents event) {
     setAnimation(makeScoringPattern(segment.count, ledPerGap, event), segment, false);
   }
 
   /**
-   * Send an event to the CANdle and update LEDs if necessary.
-   * @param event CANdle event
+   * Sends an event to the CANdle and update the LEDs if necessary.
+   * @param event CANdleEvent
    */
   public void sendEvent(CANdleEvents event) {
     // Do not update if the new event priority is less than the previous
@@ -170,7 +158,7 @@ public class LED extends SubsystemBase {
 
     switch (event) {
       case STICKY_FAULT_PRESENT:
-        updateLEDs(BCRColor.STICKY_FAULT_PRESENT, false);
+        updateLEDs(BCRColor.CANDLE_STICKY_FAULT, false);
         break;
       default:
         updateLEDs(BCRColor.CANDLE_IDLE, false);
@@ -182,8 +170,8 @@ public class LED extends SubsystemBase {
   }
 
   /**
-   * Send an event to the Strips and update LEDs if necessary.
-   * @param event Strip event
+   * Sends an event to the LED Strips and update the LEDs if necessary.
+   * @param event StripEvent
    */
   public void sendEvent(StripEvents event) {
     // Always update state if previous event was idle
@@ -239,7 +227,7 @@ public class LED extends SubsystemBase {
         updateLEDs(LEDSegmentRange.StripRightSection4, LEDConstants.ledPerGap, StripEvents.ALGAE_MODE_NET);
         break;
       case ROBOT_DISABLED:
-        // TODO figure out how to use the CandleBCRAnimation command but first see if it actually works
+        // TODO test CANdleBCRAnimation and figure out how to use it here
         // CANdleBCRAnimation teamAnim = new CANdleBCRAnimation(this, log);
         // setAnimation(teamAnim);
       default:
@@ -248,20 +236,20 @@ public class LED extends SubsystemBase {
         break;
     }
 
-    // Update previous event since we updated the LEDs
+    // Update previous event since the LEDs were updated
     previousEventStrip = event;
   }
 
-  /** 
-   * Get the subsystem's name.
-   * @return subsystem name as a string
+  /**
+   * Gets the name of the subsystem.
+   * @return the subsystem name
    */
   public String getName() {
     return subsystemName;
   }
   
   /**
-   * Clear all animation
+   * Clears all animations from the CANdle and LED strips.
    */
   public void clearAnimation() {
     candle.clearAnimation(0);
@@ -271,97 +259,111 @@ public class LED extends SubsystemBase {
   }
   
   /**
-   * Start a built-in animation
+   * Starts a built-in animation.
    * @param anim animation object to use
    */
   public void animate(Animation anim) {
     candle.animate(anim);
   }
 
+  /**
+   * Creates a pattern in the vertical LED strips of four sections, each separated by a gap.
+   * @param numLEDs the number of LEDs used in the pattern
+   * @param ledPerGap number of LEDs used to represent the gap between sections
+   * @param event the event that is represented by this pattern
+   * @return the resulting pattern
+   */
   private Color[] makeScoringPattern(int numLEDs, int ledPerGap, StripEvents event) {
     Color[] pattern = new Color[numLEDs];
 
     if (event == StripEvents.ALGAE_MODE_PROCESSOR) {
-        for (int i = 0; i < LEDSegmentRange.StripLeftSection1.count; i++) {
+      for (int i = 0; i < LEDSegmentRange.StripLeftSection1.count; i++) {
+        pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
+      }
+
+    } else if (event == StripEvents.ALGAE_MODE_LOWER_REEF) {
+      for (int i = 0; i < LEDSegmentRange.StripLeftSection2.count; i++) {
+        if (i == LEDSegmentRange.StripLeftSection2.count / 2) {
+          for (int j = 0; j < ledPerGap; j++) {
+            pattern[i + j] = new Color(0, 0, 0);
+          }
+          i += ledPerGap;
+        } else {
           pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
         }
-    } else if (event == StripEvents.ALGAE_MODE_LOWER_REEF) {
-        for (int i = 0; i < LEDSegmentRange.StripLeftSection2.count; i++) {
-          if (i == LEDSegmentRange.StripLeftSection2.count / 2) {
-            for (int j = 0; j < ledPerGap; j++) {
-              pattern[i + j] = new Color(0, 0, 0);
-            }
-            i += ledPerGap;
-          } else {
-            pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
-          }
-        }
+      }
+
     } else if (event == StripEvents.ALGAE_MODE_UPPER_REEF) {
-        for (int i = 0; i < LEDSegmentRange.StripLeftSection3.count; i++) {
-          if (i == LEDSegmentRange.StripLeftSection3.count / 3 || i == LEDSegmentRange.StripLeftSection3.count * 2 / 3) {
-            for (int j = 0; j < ledPerGap; j++) {
-              pattern[i + j] = new Color(0, 0, 0);
-            }
-            i += ledPerGap;
-          } else {
-            pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
+      for (int i = 0; i < LEDSegmentRange.StripLeftSection3.count; i++) {
+        if (i == LEDSegmentRange.StripLeftSection3.count / 3 || i == LEDSegmentRange.StripLeftSection3.count * 2 / 3) {
+          for (int j = 0; j < ledPerGap; j++) {
+            pattern[i + j] = new Color(0, 0, 0);
           }
+          i += ledPerGap;
+        } else {
+          pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
         }
+      }
+
     } else if (event == StripEvents.ALGAE_MODE_NET) {
-        for (int i = 0; i < LEDSegmentRange.StripLeftSection4.count; i++) {
-          if (i == LEDSegmentRange.StripLeftSection4.count / 4 || i == LEDSegmentRange.StripLeftSection4.count / 2 || i == LEDSegmentRange.StripLeftSection4.count * 3 / 4) {
-            for (int j = 0; j < ledPerGap; j++) {
-              pattern[i + j] = new Color(0, 0, 0);
-            }
-            i += ledPerGap;
-          } else {
-            pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
+      for (int i = 0; i < LEDSegmentRange.StripLeftSection4.count; i++) {
+        if (i == LEDSegmentRange.StripLeftSection4.count / 4 || i == LEDSegmentRange.StripLeftSection4.count / 2 || i == LEDSegmentRange.StripLeftSection4.count * 3 / 4) {
+          for (int j = 0; j < ledPerGap; j++) {
+            pattern[i + j] = new Color(0, 0, 0);
           }
+          i += ledPerGap;
+        } else {
+          pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
         }
+      }
+
     } else if (event == StripEvents.CORAL_MODE_L1) {
-        for (int i = 0; i < LEDSegmentRange.StripLeftSection1.count; i++) {
+      for (int i = 0; i < LEDSegmentRange.StripLeftSection1.count; i++) {
+        pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
+      }
+
+    } else if (event == StripEvents.CORAL_MODE_L2) {
+      for (int i = 0; i < LEDSegmentRange.StripLeftSection2.count; i++) {
+        if (i == LEDSegmentRange.StripLeftSection2.count / 2) {
+          for (int j = 0; j < ledPerGap; j++) {
+            pattern[i + j] = new Color(0, 0, 0);
+          }
+          i += ledPerGap;
+        } else {
           pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
         }
-    } else if (event == StripEvents.CORAL_MODE_L2) {
-        for (int i = 0; i < LEDSegmentRange.StripLeftSection2.count; i++) {
-          if (i == LEDSegmentRange.StripLeftSection2.count / 2) {
-            for (int j = 0; j < ledPerGap; j++) {
-              pattern[i + j] = new Color(0, 0, 0);
-            }
-            i += ledPerGap;
-          } else {
-            pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
-          }
-        }
+      }
+
     } else if (event == StripEvents.CORAL_MODE_L3) {
-        for (int i = 0; i < LEDSegmentRange.StripLeftSection3.count; i++) {
-          if (i == LEDSegmentRange.StripLeftSection3.count / 3 || i == LEDSegmentRange.StripLeftSection3.count * 2 / 3) {
-            for (int j = 0; j < ledPerGap; j++) {
-              pattern[i + j] = new Color(0, 0, 0);
-            }
-            i += ledPerGap;
-          } else {
-            pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
+      for (int i = 0; i < LEDSegmentRange.StripLeftSection3.count; i++) {
+        if (i == LEDSegmentRange.StripLeftSection3.count / 3 || i == LEDSegmentRange.StripLeftSection3.count * 2 / 3) {
+          for (int j = 0; j < ledPerGap; j++) {
+            pattern[i + j] = new Color(0, 0, 0);
           }
+          i += ledPerGap;
+        } else {
+          pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
         }
+      }
+
     } else if (event == StripEvents.CORAL_MODE_L4) {
-        for (int i = 0; i < LEDSegmentRange.StripLeftSection4.count; i++) {
-          if (i == LEDSegmentRange.StripLeftSection4.count / 4 || i == LEDSegmentRange.StripLeftSection4.count / 2 || i == LEDSegmentRange.StripLeftSection4.count * 3 / 4) {
-            for (int j = 0; j < ledPerGap; j++) {
-              pattern[i + j] = new Color(0, 0, 0);
-            }
-            i += ledPerGap;
-          } else {
-            pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
+      for (int i = 0; i < LEDSegmentRange.StripLeftSection4.count; i++) {
+        if (i == LEDSegmentRange.StripLeftSection4.count / 4 || i == LEDSegmentRange.StripLeftSection4.count / 2 || i == LEDSegmentRange.StripLeftSection4.count * 3 / 4) {
+          for (int j = 0; j < ledPerGap; j++) {
+            pattern[i + j] = new Color(0, 0, 0);
           }
+          i += ledPerGap;
+        } else {
+          pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
         }
-    } else return pattern;
+      }
+    }
 
     return pattern;
   }
 
   /**
-   * Sets the pattern and resizes it to fit the LED strip
+   * Sets the pattern and resizes it to fit the LED strip.
    * @param pattern the pattern to use
    * @param segment the segment to use
    */
@@ -374,7 +376,7 @@ public class LED extends SubsystemBase {
   }
 
   /**
-   * Sets the animation for a given led segment
+   * Sets the animation for a given led segment.
    * @param animation animation to display
    * @param segment segment to play animation on
    * @param loop whether the animation repeats
@@ -384,7 +386,7 @@ public class LED extends SubsystemBase {
   }
 
    /**
-   * Sets the animation for a given LED segment using Color
+   * Sets the animation for a given LED segment using Color.
    * @param pattern pattern to display
    * @param segment segment to play animation on
    * @param loop whether the animation repeats
@@ -395,7 +397,7 @@ public class LED extends SubsystemBase {
   }
 
   /**
-   * Sets LEDs using only R, G, and B
+   * Sets LEDs using R, G, and B.
    * @param r red value
    * @param g green value
    * @param b blue value
@@ -404,12 +406,18 @@ public class LED extends SubsystemBase {
     candle.setLEDs(r, g, b);
   }
 
+  /**
+   * Sets LEDs using Color, an index, and a count.
+   * @param color color to set
+   * @param index index to start at
+   * @param count count of LEDs to set
+   */
   public void setLEDs(Color color, int index, int count) {
     candle.setLEDs((int) (color.red * 255), (int) (color.green * 255), (int) (color.blue) * 255, 0, index, count);
   }
 
   /**
-   * Sets LEDs using color and index value
+   * Sets LEDs using Color and an index.
    * @param color color to set
    * @param index index to start at
    */
@@ -418,30 +426,48 @@ public class LED extends SubsystemBase {
   }
 
   /**
-   * Sets LEDs using BCRColor and segment values
+   * Sets LEDs using BCRColor and segment values.
    * @param color BCRColor value
-   * @param segment segment to light up (range)
+   * @param segment segment to light up
    */
   public void setLEDs(BCRColor color, LEDSegmentRange segment) {
     candle.setLEDs(color.r, color.g, color.b, 0, segment.index, segment.count);
   }
 
+  /**
+   * Gets the priority level for an event.
+   * @param event CANdleEvents event
+   * @return priority level integer (higher value = higher priority), default is -1
+   */
+  private int getPriority(CANdleEvents event) {
+    return event != null ? prioritiesCANdleEvents.getOrDefault(event, -1) : -1;
+  }
+
+  /**
+   * Gets the priority level for an event.
+   * @param event StripEvents event
+   * @return priority level integer (higher value = higher priority), default is -1
+   */
+  private int getPriority(StripEvents event) {
+    return event != null ? prioritiesStripEvents.getOrDefault(event, -1) : -1;
+  }
+
   @Override
   public void periodic() {
-    // only update every log rotation as opposed to every 20ms
     if(log.isMyLogRotation(logRotationKey)) { 
-      // if there is a sticky fault, send sticky fault present event
+      // If there is a sticky fault, send sticky fault present event
       if (RobotPreferences.isStickyFaultActive()) {
         sendEvent(CANdleEvents.STICKY_FAULT_PRESENT);
         lastStickyFaultPresentReading = true;
       }
-      // if there is not a sticky fault and there previously was, send sticky fault cleared event
+
+      // If there is not a sticky fault and there previously was, send sticky fault cleared event
       else if (!RobotPreferences.isStickyFaultActive() && lastStickyFaultPresentReading) {
         sendEvent(CANdleEvents.STICKY_FAULTS_CLEARED);
         lastStickyFaultPresentReading = false;
       }
 
-      // if in last 10 seconds of match, send match countdown event
+      // If in last 10 seconds of match, send match countdown event
       if (matchTimer.get() > 125 && matchTimer.get() <= 135) {
         sendEvent(StripEvents.MATCH_COUNTDOWN);
       }

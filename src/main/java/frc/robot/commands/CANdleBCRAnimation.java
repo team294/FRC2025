@@ -11,21 +11,20 @@ import frc.robot.subsystems.LED;
 import frc.robot.utilities.FileLog;
 
 public class CANdleBCRAnimation extends Command {
-  private LED led;
-  private FileLog log;
-  private boolean fromShuffleboard;
+  private final LED led;
+  private final FileLog log;
   private int total;
   private float offset = 0;
-  private Color orange = new Color(255, 100, 0), blue = new Color(0, 0, 255);
-  /** Creates a new CANdleBCRAnimation. */
+  private boolean fromShuffleboard;
+
+  private Color orange = new Color(255, 100, 0);
+  private Color blue = new Color(0, 0, 255);
+
   public CANdleBCRAnimation(LED led, FileLog log) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.led = led;
     this.log = log;
     fromShuffleboard = true;
-    // Use addRequirements() here to declare subsystem dependencies.
     SmartDashboard.putNumber("NumberLEDs", 67);
-
     addRequirements(led);
   }
 
@@ -42,6 +41,7 @@ public class CANdleBCRAnimation extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // TODO utilize fromShuffleboard boolean
     total = (int) SmartDashboard.getNumber("NumberLEDs", 1) - 1;
     led.setLEDs(0, 0, 0);
   }
@@ -49,7 +49,7 @@ public class CANdleBCRAnimation extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    offset += 420.0/690.0;
+    offset += 420.0 / 690.0;
     for (int i = 0; i < total; i++) {
       double sin = Math.sin((i + offset) * 0.5);
       Color color = lerpColor(orange, blue, sin);

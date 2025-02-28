@@ -16,16 +16,14 @@ public class CANdleRainbowAnimation extends Command {
   private LED led;
   private LEDSegmentRange segment;
 
-/** Creates a new CANdle Rainbow Animation.  Note that this command
- * runs until interrupted.
- * @param led led to use
- * @param segment segment to turn rainbow
- */
+  /**
+   * Creates a new CANdle rainbow animation that runs until it is interrupted.
+   * @param led LEDd subsystem
+   * @param segment segment to show animation
+   */
   public CANdleRainbowAnimation(LED led, LEDSegmentRange segment) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.led = led;
     this.segment = segment;
-
     addRequirements(led);
   }
 
@@ -39,7 +37,8 @@ public class CANdleRainbowAnimation extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override

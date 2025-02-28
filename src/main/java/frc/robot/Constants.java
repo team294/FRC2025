@@ -166,20 +166,20 @@ public final class Constants {
     }
   }
 
-  /** Colors for the LEDs based on different robot states (see BCRRobotState) */
+  // Colors for the LEDs based on different robot states (see BCRRobotState)
   public enum BCRColor {
-    CANDLE_IDLE(0, 0, 0),          // CANdle
-    STICKY_FAULT_PRESENT(255, 0, 0),  // CANdle
-    NEUTRAL(0, 0, 0),
-    ALGAE_MODE(0, 200, 255),
-    CORAL_MODE(255, 0, 255);
+    CANDLE_IDLE(0, 0, 0),           // CANdle Black
+    CANDLE_STICKY_FAULT(255, 0, 0), // CANdle Red
+    NEUTRAL(0, 0, 0),               // Black
+    ALGAE_MODE(0, 200, 255),        // Turquoise
+    CORAL_MODE(255, 0, 255);        // Purple
 
     public final int r, g, b;
     BCRColor(int r, int g, int b) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.col = Color.kBlack;
+      this.r = r;
+      this.g = g;
+      this.b = b;
+      this.col = Color.kBlack;
     }
 
     public final Color col;
@@ -189,38 +189,39 @@ public final class Constants {
       this.b = 0;
       this.col = c;
     }
-}
+  }
 
   public static final class LEDConstants {
     public static int ledPerGap = 2;
+
     public static final class EmptyPatterns {
-      // Utilities
       public static final Color[] noPatternStatic = {};
       public static final Color[][] noPatternAnimation = {{}};
     }
 
     public enum LEDSegmentRange {
-        // TODO These numbers are not final. We don't have LEDs yet.
-        CANdle(0, 8),
-        StripHorizontal(CANdle.index + CANdle.count, 24),
-        StripLeft(StripHorizontal.index + StripHorizontal.count, 30),
-        StripRight(StripLeft.index + StripLeft.count, 30),
-        StripAll(StripHorizontal.index, StripLeft.count + StripRight.count + StripHorizontal.count),
+      // TODO DETERMINE LED COUNTS FOR 2025
+      CANdle(0, 8),
+      StripHorizontal(CANdle.index + CANdle.count, 24),
+      StripLeft(StripHorizontal.index + StripHorizontal.count, 30),
+      StripRight(StripLeft.index + StripLeft.count, 30),
+      StripAll(StripHorizontal.index, StripLeft.count + StripRight.count + StripHorizontal.count),
 
-        StripLeftSection1(StripLeft.index, StripLeft.count / 4),
-        StripLeftSection2(StripLeft.index, StripLeft.count / 2),
-        StripLeftSection3(StripLeft.index, StripLeft.count * 3 / 4),
-        StripLeftSection4(StripLeft.index, StripLeft.count), //TODO do we need this
-        StripRightSection1(StripRight.index, StripRight.count / 4),
-        StripRightSection2(StripRight.index, StripRight.count / 2),
-        StripRightSection3(StripRight.index, StripRight.count * 3 / 4),
-        StripRightSection4(StripRight.index, StripRight.count); //TODO do we need this
+      // TODO determine if StripLeftSection4 and StripRightSection4 are needed
+      StripLeftSection1(StripLeft.index, StripLeft.count / 4),
+      StripLeftSection2(StripLeft.index, StripLeft.count / 2),
+      StripLeftSection3(StripLeft.index, StripLeft.count * 3 / 4),
+      StripLeftSection4(StripLeft.index, StripLeft.count),
+      StripRightSection1(StripRight.index, StripRight.count / 4),
+      StripRightSection2(StripRight.index, StripRight.count / 2),
+      StripRightSection3(StripRight.index, StripRight.count * 3 / 4),
+      StripRightSection4(StripRight.index, StripRight.count);
 
-        public final int index, count;
-        LEDSegmentRange(int index, int count) {
-            this.index = index;
-            this.count = count;
-        }
+      public final int index, count;
+      LEDSegmentRange(int index, int count) {
+        this.index = index;
+        this.count = count;
+      }
     }
   }
 }
