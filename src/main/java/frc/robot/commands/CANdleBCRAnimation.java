@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.LED;
 import frc.robot.utilities.FileLog;
 
@@ -20,6 +21,11 @@ public class CANdleBCRAnimation extends Command {
   private Color orange = new Color(255, 100, 0);
   private Color blue = new Color(0, 0, 255);
 
+  /**
+   * Animate the CANdle and all LEDs attached
+   * @param led LED subsystem
+   * @param log FileLog utility
+   */
   public CANdleBCRAnimation(LED led, FileLog log) {
     this.led = led;
     this.log = log;
@@ -28,7 +34,13 @@ public class CANdleBCRAnimation extends Command {
     addRequirements(led);
   }
 
-  // t is from -1.0 to 1.0
+  /**
+   * Finds a color between color1 and color2,
+   * using t as a proportion of color2 to use
+   * @param color1 Color object
+   * @param color2 Color object
+   * @param t -1.0 to +1.0
+   */
   private Color lerpColor(Color color1, Color color2, double t) {
     double r, g, b;
     double _t = (t + 1) / 2;
@@ -41,8 +53,7 @@ public class CANdleBCRAnimation extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // TODO utilize fromShuffleboard boolean
-    total = (int) SmartDashboard.getNumber("NumberLEDs", 1) - 1;
+    total = Constants.LEDConstants.LEDSegmentRange.CANdle.count + Constants.LEDConstants.LEDSegmentRange.StripAll.count;
     led.setLEDs(0, 0, 0);
   }
 
@@ -51,8 +62,7 @@ public class CANdleBCRAnimation extends Command {
   public void execute() {
     offset += 420.0 / 690.0;
     for (int i = 0; i < total; i++) {
-      double sin = Math.sin((i + offset) * 0.5);
-      Color color = lerpColor(orange, blue, sin);
+      Color color = lerpColor(orange, blue, Math.sin((i + offset) * 0.5));
       led.setLEDs(color, 0, i);
     }
   }
