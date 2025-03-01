@@ -102,6 +102,8 @@ public class RobotContainer {
     SmartDashboard.putData("AlgaeGrabber Stop", new StopAlgaeGrabberMotor(algaeGrabber, log));
 
     // Wrist
+    SmartDashboard.putData("Wrist Set Percent", new WristSetPercentOutput(wrist, log));
+    SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist, log));
 
     // Elevator
     SmartDashboard.putData("Move Elevator Up", new ElevatorSetPercent(.05, elevator, log));

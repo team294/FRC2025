@@ -58,8 +58,8 @@ public class WristSetAngle extends Command {
     this.log = log;
     fromShuffleboard = true;
 
-    if (SmartDashboard.getNumber("Wrist Set Angle", -9999) == -9999) {
-      SmartDashboard.putNumber("Wrist Set Angle", 0);
+    if (SmartDashboard.getNumber("Wrist Goal Angle", -9999) == -9999) {
+      SmartDashboard.putNumber("Wrist Goal Angle", 0);
     }
 
     addRequirements(wrist);
@@ -68,7 +68,7 @@ public class WristSetAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Set Angle", 0);
+    if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Goal Angle", 0);
 
     wrist.setWristAngle(angle);
     log.writeLog(false, "WristSetAngle", "Init", "Target", angle);
