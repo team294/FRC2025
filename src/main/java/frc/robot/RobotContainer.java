@@ -104,6 +104,8 @@ public class RobotContainer {
     // Wrist
     SmartDashboard.putData("Wrist Set Percent", new WristSetPercentOutput(wrist, log));
     SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist, log));
+    SmartDashboard.putData("Wrist Manually Calibrate", new WristCalibrateManual(wrist, log));
+    SmartDashboard.putData("Wrist Manually Calibrate at Lower Limit", new WristCalibrateManual(WristConstants.WristAngle.lowerLimit.value, wrist, log));
 
     // Elevator
     SmartDashboard.putData("Move Elevator Up", new ElevatorSetPercent(.05, elevator, log));
