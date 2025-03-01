@@ -198,8 +198,13 @@ public final class Constants {
     }
 
     public enum WristAngle {
-      lowerLimit(-45.0),      // TODO CALIBRATE FOR 2025
-      upperLimit(90.0); // TODO CALIBRATE FOR 2025
+      lowerLimit(-45.0),       // TODO CALIBRATE FOR 2025
+      upperLimit(90.0),  // TODO CALIBRATE FOR 2025
+      coralIntake(39.0), // TODO CALIBRATE FOR 2025
+      coralScore(35.0),  // TODO CALIBRATE FOR 2025
+      algaeIntake(50.0), // TODO CALIBRATE FOR 2025
+      algaeScore(65.0);  // TODO CALIBRATE FOR 2025
+      
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
         public final double value;

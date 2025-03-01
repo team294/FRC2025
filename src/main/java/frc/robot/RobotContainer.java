@@ -153,24 +153,24 @@ public class RobotContainer {
     // ex: xbA.onTrue(new command(param1, param2));
 
     // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
-    xbRT.onTrue(new CoralIntakeSequence(elevator, hopper, coralEffector, log));
+    xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log));
 
     // Prep and intake coral from HP with X
-    xbX.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_HP, log));
+    xbX.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_HP, log));
 
     // Prep to score coral on L2 with A, L3 with B, and L4 with Y
-    xbA.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_L2, log));
-    xbB.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_L3, log));
-    xbY.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_L4, log));
+    xbA.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L2, log));
+    xbB.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L3, log));
+    xbY.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L4, log));
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
-    xbLT.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_GROUND, elevator, algaeGrabber, log));
-    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_LOWER, elevator, algaeGrabber, log));
-    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_UPPER, elevator, algaeGrabber, log));
+    xbLT.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_GROUND, elevator, wrist, algaeGrabber, log));
+    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_LOWER, elevator, wrist, algaeGrabber, log));
+    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_UPPER, elevator, wrist, algaeGrabber, log));
 
     // Prep to score algae in Net with D-Pad Up and Processor with D-Pad Right
-    xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_NET, elevator, log));
-    xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_PROCESSOR, elevator, log));
+    xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_NET, elevator, wrist, log));
+    xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_PROCESSOR, elevator, wrist, log));
 
     // Manually control elevator with right joystick
     xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, log, true));

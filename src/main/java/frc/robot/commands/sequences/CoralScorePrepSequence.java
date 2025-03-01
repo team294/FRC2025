@@ -6,8 +6,11 @@ package frc.robot.commands.sequences;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+import frc.robot.Constants.WristConstants.WristAngle;
+import frc.robot.commands.WristSetAngle;
 import frc.robot.commands.ElevatorSetPosition;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.FileLog;
 
 /**
@@ -18,9 +21,10 @@ import frc.robot.utilities.FileLog;
  * @param log FileLog utility
  */
 public class CoralScorePrepSequence extends SequentialCommandGroup {
-  public CoralScorePrepSequence(Elevator elevator, /*Wrist wrist,*/ ElevatorPosition position, FileLog log) {
+  public CoralScorePrepSequence(Elevator elevator, Wrist wrist, ElevatorPosition position, FileLog log) {
     addCommands(
-      new ElevatorSetPosition(position.value, elevator, log)
+      new ElevatorSetPosition(position.value, elevator, log),
+      new WristSetAngle(WristAngle.coralScore, wrist, log)
       // TODO set in coral mode
     );
   }
