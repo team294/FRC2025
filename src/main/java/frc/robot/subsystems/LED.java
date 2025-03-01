@@ -118,8 +118,9 @@ public class LED extends SubsystemBase {
 
     double rightCount = LEDSegmentRange.StripRight.count * percent;
     int ledCountRight = (int) rightCount;
-
-    setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft);
+    
+    //TODO change depending on how strips are wired
+    setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft); 
     setLEDs(Color.kRed, LEDSegmentRange.StripRight.index, ledCountRight);
   }
 
@@ -189,7 +190,7 @@ public class LED extends SubsystemBase {
         break;
       case CLIMB:
         RainbowAnimation rainbowAnim = new RainbowAnimation(1, .7, LEDSegmentRange.StripHorizontal.count, false, LEDSegmentRange.StripHorizontal.index);
-        animate(rainbowAnim);
+        candle.animate(rainbowAnim);
         break;
       case CORAL_MODE_IDLE:
         updateLEDs(BCRColor.CORAL_MODE, true);
