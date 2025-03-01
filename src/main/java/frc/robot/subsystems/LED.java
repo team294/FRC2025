@@ -139,10 +139,10 @@ public class LED extends SubsystemBase {
   }
 
   /**
-   * Sets the animation for an LED segment.
-   * @param segment
-   * @param ledPerGap
-   * @param event
+   * Changes the color of the LEDs on the strips for events related to coral and algae
+   * @param segment LEDSegmentRange constant - segment of LEDs to use
+   * @param ledPerGap # of individual LEDs for each gap between chunks of LEDs (for every coral/algae event except coral idle, algae idle, coral L1, and algae processor)
+   * @param event StripEvents event happening
    */
   private void updateLEDs(LEDSegmentRange segment, int ledPerGap, StripEvents event) {
     setAnimation(makeScoringPattern(segment.count, ledPerGap, event), segment, false);
@@ -150,7 +150,7 @@ public class LED extends SubsystemBase {
 
   /**
    * Sends an event to the CANdle and update the LEDs if necessary.
-   * @param event CANdleEvent
+   * @param event CANdleEvent event happening
    */
   public void sendEvent(CANdleEvents event) {
     // Do not update if the new event priority is less than the previous
@@ -171,12 +171,15 @@ public class LED extends SubsystemBase {
 
   /**
    * Sends an event to the LED Strips and update the LEDs if necessary.
-   * @param event StripEvent
+   * @param event StripEvent event happening
    */
   public void sendEvent(StripEvents event) {
-    // Always update state if previous event was idle
-    // Do not update if last event was not idle and the new event priority is less than the previous
-    if (previousEventStrip != StripEvents.NEUTRAL && getPriority(event) < getPriority(previousEventStrip)) return;
+    // If new event is robot disabled, always update LEDs to match it.
+    // Always update state if previous event was idle.
+    // Do not update if last event was not idle and the new event priority is less than the previous.
+
+    if ((previousEventStrip != StripEvents.NEUTRAL && event != StripEvents.ROBOT_DISABLED) && getPriority(event) < getPriority(previousEventStrip) && 
+      !(event == StripEvents.ALGAE_MODE_IDLE || event == StripEvents.CORAL_MODE_IDLE) && getPriority(previousEventStrip) == 3) return;
 
     switch (event) {
       case MATCH_COUNTDOWN:
@@ -228,8 +231,7 @@ public class LED extends SubsystemBase {
         break;
       case ROBOT_DISABLED:
         // TODO test CANdleBCRAnimation and figure out how to use it here
-        // CANdleBCRAnimation teamAnim = new CANdleBCRAnimation(this, log);
-        // setAnimation(teamAnim);
+        // new CANdleBCRAnimation(this, log);
       default:
         clearAnimation();
         updateLEDs(BCRColor.NEUTRAL, true);
@@ -267,6 +269,64 @@ public class LED extends SubsystemBase {
   }
 
   /**
+   * Create a pattern based on the segment, leds per gap, and current game object mode
+   * @param pattern 1D array of Color objects - each index represents the color of 1 individual LED
+   * @param segment LEDSegmentRange constant segment to create pattern for
+   * @param ledPerGap # of LEDs 
+   * @param algaeMode true = algae mode, false = coral mode
+   * @return 1D array of Color objects corresponding to the event
+   */
+  public Color[] setLEDsScoringPattern(Color[] pattern, LEDSegmentRange segment, int ledPerGap, boolean algaeMode) {
+    int count = 0;            // # of LEDs
+    int firstGap = -9999;     // LED # for 1st gap
+    int secondGap = -9999;    // LED # for 2nd gap
+    int thirdGap = -9999;     // LED # for 3rd gap
+
+    switch (segment) {
+      case StripLeftSection1:
+        count = LEDSegmentRange.StripLeftSection1.count;
+        break;
+      case StripLeftSection2:
+        count = LEDSegmentRange.StripLeftSection2.count;
+        // two chunks of LEDs, one gap - 1/2
+        firstGap = count / 2;
+        break;
+      case StripLeftSection3:
+        count = LEDSegmentRange.StripLeftSection3.count;
+        // three chunks of LEDs, two gaps - 1/3 and 2/3
+        firstGap = count / 3;
+        secondGap = count * 2 / 3;
+        break;
+      case StripLeftSection4:
+        count = LEDSegmentRange.StripLeftSection4.count;
+        // four chunks of LEDs, three gaps - 1/4, 2/4, and 3/4
+        firstGap = count / 4;
+        secondGap = count / 2;
+        thirdGap = count * 3 / 4;
+        break;
+      default:
+        break;
+    }
+
+    // set each index of the pattern to the correct color
+    for (int i = 0; i < count; i++) {
+      // set the first index of the gap to black, as well as additional indices as specified by ledPerGap
+      if (i == firstGap || i == secondGap || i == thirdGap) {
+        for (int j = 0; j < ledPerGap; j++) {
+          pattern[i + j] = new Color(0, 0, 0);
+        }
+        i += ledPerGap; // increment i by ledPerGap to avoid overriding the gap with a color other than black
+      } else {
+        // if in algae mode, set to algae color. if in coral mode, set to coral color.
+        if (algaeMode) pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
+        else pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
+      }
+    }
+
+    return pattern;
+  }
+
+  /**
    * Creates a pattern in the vertical LED strips of four sections, each separated by a gap.
    * @param numLEDs the number of LEDs used in the pattern
    * @param ledPerGap number of LEDs used to represent the gap between sections
@@ -276,87 +336,33 @@ public class LED extends SubsystemBase {
   private Color[] makeScoringPattern(int numLEDs, int ledPerGap, StripEvents event) {
     Color[] pattern = new Color[numLEDs];
 
-    if (event == StripEvents.ALGAE_MODE_PROCESSOR) {
-      for (int i = 0; i < LEDSegmentRange.StripLeftSection1.count; i++) {
-        pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
-      }
-
-    } else if (event == StripEvents.ALGAE_MODE_LOWER_REEF) {
-      for (int i = 0; i < LEDSegmentRange.StripLeftSection2.count; i++) {
-        if (i == LEDSegmentRange.StripLeftSection2.count / 2) {
-          for (int j = 0; j < ledPerGap; j++) {
-            pattern[i + j] = new Color(0, 0, 0);
-          }
-          i += ledPerGap;
-        } else {
-          pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
-        }
-      }
-
-    } else if (event == StripEvents.ALGAE_MODE_UPPER_REEF) {
-      for (int i = 0; i < LEDSegmentRange.StripLeftSection3.count; i++) {
-        if (i == LEDSegmentRange.StripLeftSection3.count / 3 || i == LEDSegmentRange.StripLeftSection3.count * 2 / 3) {
-          for (int j = 0; j < ledPerGap; j++) {
-            pattern[i + j] = new Color(0, 0, 0);
-          }
-          i += ledPerGap;
-        } else {
-          pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
-        }
-      }
-
-    } else if (event == StripEvents.ALGAE_MODE_NET) {
-      for (int i = 0; i < LEDSegmentRange.StripLeftSection4.count; i++) {
-        if (i == LEDSegmentRange.StripLeftSection4.count / 4 || i == LEDSegmentRange.StripLeftSection4.count / 2 || i == LEDSegmentRange.StripLeftSection4.count * 3 / 4) {
-          for (int j = 0; j < ledPerGap; j++) {
-            pattern[i + j] = new Color(0, 0, 0);
-          }
-          i += ledPerGap;
-        } else {
-          pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
-        }
-      }
-
-    } else if (event == StripEvents.CORAL_MODE_L1) {
-      for (int i = 0; i < LEDSegmentRange.StripLeftSection1.count; i++) {
-        pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
-      }
-
-    } else if (event == StripEvents.CORAL_MODE_L2) {
-      for (int i = 0; i < LEDSegmentRange.StripLeftSection2.count; i++) {
-        if (i == LEDSegmentRange.StripLeftSection2.count / 2) {
-          for (int j = 0; j < ledPerGap; j++) {
-            pattern[i + j] = new Color(0, 0, 0);
-          }
-          i += ledPerGap;
-        } else {
-          pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
-        }
-      }
-
-    } else if (event == StripEvents.CORAL_MODE_L3) {
-      for (int i = 0; i < LEDSegmentRange.StripLeftSection3.count; i++) {
-        if (i == LEDSegmentRange.StripLeftSection3.count / 3 || i == LEDSegmentRange.StripLeftSection3.count * 2 / 3) {
-          for (int j = 0; j < ledPerGap; j++) {
-            pattern[i + j] = new Color(0, 0, 0);
-          }
-          i += ledPerGap;
-        } else {
-          pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
-        }
-      }
-
-    } else if (event == StripEvents.CORAL_MODE_L4) {
-      for (int i = 0; i < LEDSegmentRange.StripLeftSection4.count; i++) {
-        if (i == LEDSegmentRange.StripLeftSection4.count / 4 || i == LEDSegmentRange.StripLeftSection4.count / 2 || i == LEDSegmentRange.StripLeftSection4.count * 3 / 4) {
-          for (int j = 0; j < ledPerGap; j++) {
-            pattern[i + j] = new Color(0, 0, 0);
-          }
-          i += ledPerGap;
-        } else {
-          pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
-        }
-      }
+    switch (event) {
+      case ALGAE_MODE_PROCESSOR:
+        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection1, ledPerGap, true);
+        break;
+      case ALGAE_MODE_LOWER_REEF:
+        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection2, ledPerGap, true);
+        break;
+      case ALGAE_MODE_UPPER_REEF:
+        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection3, ledPerGap, true);
+        break;
+      case ALGAE_MODE_NET:
+        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection4, ledPerGap, true);
+        break;
+      case CORAL_MODE_L1:
+        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection1, ledPerGap, false);
+        break;
+      case CORAL_MODE_L2:
+        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection2, ledPerGap, false);
+        break;
+      case CORAL_MODE_L3:
+        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection3, ledPerGap, false);
+        break;
+      case CORAL_MODE_L4:
+        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection4, ledPerGap, false);
+        break;
+      default:
+        break;
     }
 
     return pattern;
