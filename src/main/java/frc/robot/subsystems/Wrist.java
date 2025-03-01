@@ -338,12 +338,15 @@ public class Wrist extends SubsystemBase implements Loggable {
 
   /**
    * Adjusts the current calibration degrees of the wrist by a small amount.
+   * Will not do anything if wrist in uncalibrated.
    * @param deltaDegrees number of degrees to move up/down
    */
   public void nudgeWristAngle(double deltaDegrees) {
-    // TODO add this functionality
     // Do not attempt to nudge if the wrist is not calibrated
     if (!wristCalibrated) return;
+
+    if(wristCalibrated) encoderZero += deltaDegrees;
+
   }
 
   // ********** Internal Kraken calibration methods
