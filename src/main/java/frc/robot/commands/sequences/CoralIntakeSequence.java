@@ -21,7 +21,7 @@ import frc.robot.utilities.FileLog;
 public class CoralIntakeSequence extends SequentialCommandGroup {
   
   /**
-   * Intakes coral by moving the elevator to the intake position, and then running hopper and coralEffector 
+   * Intakes coral by moving the elevator to the intake position, and then running the hopper and coralEffector 
    * in parallel until the coral is safely in the coralEffector.
    * TODO add wrist movement
    * @param elevator Elevator subsystem
@@ -29,7 +29,7 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralIntakeSequence(Elevator elevator, Hopper hopper, CoralEffector coralEffector, FileLog log) {
+  public CoralIntakeSequence(Elevator elevator, /*Wrist wrist,*/ Hopper hopper, CoralEffector coralEffector, FileLog log) {
     addCommands(
       new ElevatorSetPosition(ElevatorPosition.CORAL_HP.value, elevator, log),
       new ParallelCommandGroup(

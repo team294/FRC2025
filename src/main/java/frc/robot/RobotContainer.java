@@ -21,6 +21,7 @@ import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 import frc.robot.Constants.*;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -154,11 +155,22 @@ public class RobotContainer {
     // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
     xbRT.onTrue(new CoralIntakeSequence(elevator, hopper, coralEffector, log));
 
-    // Move elevator to Coral HP with X, L2 with A, L3 with B, and L4 with Y
-    xbX.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_HP.value, elevator, log));
-    xbA.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L2.value, elevator, log));
-    xbB.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L3.value, elevator, log));
-    xbY.onTrue(new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L4.value, elevator, log));
+    // Prep and intake coral from HP with X
+    xbX.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_HP, log));
+
+    // Prep to score coral on L2 with A, L3 with B, and L4 with Y
+    xbA.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_L2, log));
+    xbB.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_L3, log));
+    xbY.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_L4, log));
+
+    // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
+    xbLT.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_GROUND, elevator, algaeGrabber, log));
+    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_LOWER, elevator, algaeGrabber, log));
+    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_UPPER, elevator, algaeGrabber, log));
+
+    // Prep to score algae in Net with D-Pad Up and Processor with D-Pad Right
+    xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_NET, elevator, log));
+    xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_PROCESSOR, elevator, log));
 
     // Manually control elevator with right joystick
     xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, log, true));
