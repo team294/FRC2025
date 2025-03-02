@@ -9,55 +9,47 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.FileLog;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class WristNudgeAngle extends InstantCommand {
-  private double deltaDegrees;
   private Wrist wrist;
   private FileLog log;
+  private double deltaDegrees;
   private boolean fromShuffleboard;
 
   /**
-   * Adjust the current calibration degrees of the wrist by a small amount
-   * @param deltaDegrees the number of degrees to move up/down.  + = down, - = up
-   * @param wrist
-   * @param log
+   * Adjusts the current calibration degrees of the wrist by a small amount.
+   * @param deltaDegrees degrees to move (positive = down, negative = up)
+   * @param wrist Wrist subsystem
+   * @param log FileLog utility
    */
   public WristNudgeAngle(double deltaDegrees, Wrist wrist, FileLog log) {
     this.deltaDegrees = deltaDegrees;
     this.wrist = wrist;
     this.log = log;
     fromShuffleboard = false;
-
     addRequirements(wrist);
   }
 
   /**
-   * Adjust the current calibration degrees of the wrist by a small amount (from SmartDashboard)
-   * @param deltaDegrees the number of degrees to move up/down (Wrist Nudge Delta Degrees from SmartDashboard).  + = down, - = up
-   * @param wrist
-   * @param log
+   * Adjusts the current calibration degrees of the wrist by a small amount from Shuffleboard.
+   * @param wrist Wrist subsystem
+   * @param log FileLog utility
    */
   public WristNudgeAngle(Wrist wrist, FileLog log) {
     this.wrist = wrist;
     this.log = log;
     fromShuffleboard = true;
+    addRequirements(wrist);
 
     if (SmartDashboard.getNumber("Wrist Nudge Delta Degrees", -9999) == -9999) {
       SmartDashboard.putNumber("Wrist Nudge Delta Degrees", 0);
     }
-
-    addRequirements(wrist);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) {
-      deltaDegrees = SmartDashboard.getNumber("Wrist Nudge Delta Degrees", 0);
-    }
+    if (fromShuffleboard) deltaDegrees = SmartDashboard.getNumber("Wrist Nudge Delta Degrees", 0);
     wrist.nudgeWristAngle(deltaDegrees);
-    log.writeLog(false, "WristNudgeAngle", "Initialize", "Target", deltaDegrees);
+    log.writeLog(false, "WristNudgeAngle", "Init", "Delta", deltaDegrees);
   }
 }

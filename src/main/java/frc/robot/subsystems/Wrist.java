@@ -59,8 +59,7 @@ public class Wrist extends SubsystemBase implements Loggable {
   // We create two configs -- one with RemoteCANcoder and one with RotorEncoder.
   // The default config is RemoteCANcoder. If the CANcoder fails, the wrist will the
   // use the RotorEncoder config as a fallback.
-  // TODO ensure that are calibrating for both intially
-  private boolean usingCANcoder;               // true = using CANcoder configuration, false = using RotorEncoder configuration
+  private boolean usingCANcoder;                              // true = using CANcoder configuration, false = using RotorEncoder configuration
   private TalonFXConfiguration wristRotorEncoderMotorConfig;  // Configuration reading the rotor encoder
   private TalonFXConfiguration wristCANcoderMotorConfig;      // Configuration reading the CANcoder
 
@@ -227,13 +226,9 @@ public class Wrist extends SubsystemBase implements Loggable {
    * @param percent output percent, -1.0 to 1.0 (positive = up, negative = down)
    */
   public void setWristPercentOutput(double percent) {
-    if (wristCalibrated) {
-      percent = MathUtil.clamp(percent, -WristConstants.maxPercentOutput, WristConstants.maxPercentOutput);
-    } else {
-      percent = MathUtil.clamp(percent, -WristConstants.maxUncalibratedPercentOutput, WristConstants.maxUncalibratedPercentOutput);
-    }
-
-    wristMotor.setControl(wristVoltageControl.withOutput(percent*WristConstants.compensationVoltage));
+    if (wristCalibrated) percent = MathUtil.clamp(percent, -WristConstants.maxPercentOutput, WristConstants.maxPercentOutput);
+    else percent = MathUtil.clamp(percent, -WristConstants.maxUncalibratedPercentOutput, WristConstants.maxUncalibratedPercentOutput);
+    wristMotor.setControl(wristVoltageControl.withOutput(percent * WristConstants.compensationVoltage));
   }
 
   /**
@@ -265,49 +260,14 @@ public class Wrist extends SubsystemBase implements Loggable {
 
   /**
    * Sets the angle of the wrist of the encoder is working and calibrated, operating with interlocks.
-   * @param angle target angle, in degrees (0 = horizontal in front of robot, + = up, - = down)
+   * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    */
   public void setWristAngle(double angle) {
     if (wristCalibrated) {
       // Keep the wrist in usable range
       safeAngle = MathUtil.clamp(angle, WristConstants.WristAngle.lowerLimit.value, WristConstants.WristAngle.upperLimit.value);
 
-      wristMotor.setControl(wristMMVoltageControl.withPosition(wristDegreesToEncoderRotations(safeAngle)).withFeedForward(WristConstants.kG * Math.cos(safeAngle * Math.PI / 180.0)));
-
-      log.writeLog(false, subsystemName, "setWristAngle", "Desired Angle", angle, "Set Angle", safeAngle);
-      SmartDashboard.putNumber("Wrist set raw ticks", wristDegreesToEncoderRotations(safeAngle));
-    }  
-  }
-
-  /**
-   * Sets the angle of the wrist of the encoder is working and calibrated, operating with interlocks.
-   * @param angle target angle, in degrees (0 = horizontal in front of robot, + = up, - = down)
-   * @param height height the elevator is currently at, in inches
-   * @param hasAlgae whether the AlgaeGrabber is holding an algae
-   * @param inReef whether the robot is against the reef
-   */
-  public void setWristAngle(double angle, double height, boolean hasAlgae, boolean inReef) {
-    if (wristCalibrated) {
-
-      // Keep the wrist in usable range
-      double lowerLimit = WristConstants.WristAngleLimitsTest.lowerLimit.apply(height);
-      double upperLimit = WristConstants.WristAngleLimitsTest.upperLimit.apply(height); 
-      if (hasAlgae) {
-        if (inReef) {
-          lowerLimit = WristConstants.WristAngleLimitsTest.lowerLimit.apply(height); // TODO Find limits for being in the reef with algae
-          upperLimit = WristConstants.WristAngleLimitsTest.upperLimit.apply(height); // See Above
-        } else {
-          lowerLimit = WristConstants.WristAngleLimitsTest.lowerLimitWithAlgae.apply(height);
-          upperLimit = WristConstants.WristAngleLimitsTest.upperLimitWithAlgae.apply(height);
-        }
-      } else {
-        if (inReef) {
-          lowerLimit = WristConstants.WristAngleLimitsTest.lowerLimitAtReef.apply(height);
-          upperLimit = WristConstants.WristAngleLimitsTest.upperLimitAtReef.apply(height);
-        }
-      }
-
-      safeAngle = MathUtil.clamp(angle, lowerLimit, upperLimit);
+      // TODO add interlocks with elevator, algaeGrabber, and coralEffector
 
       wristMotor.setControl(wristMMVoltageControl.withPosition(wristDegreesToEncoderRotations(safeAngle)).withFeedForward(WristConstants.kG * Math.cos(safeAngle * Math.PI / 180.0)));
 
@@ -350,9 +310,9 @@ public class Wrist extends SubsystemBase implements Loggable {
 	 * @return corresponding wrist region
 	 */
 	private WristRegion getRegion(double degrees) {
-    // TODO determine if this is necessary and/or if we should actually check the region
+    // TODO add wrist regions
     return WristRegion.main; 
-	}
+  }
 
   /**
    * Gets the wrist region for a given angle.
@@ -415,13 +375,12 @@ public class Wrist extends SubsystemBase implements Loggable {
   /**
    * Adjusts the current calibration degrees of the wrist by a small amount.
    * Will not do anything if wrist in uncalibrated.
-   * @param deltaDegrees number of degrees to move up/down
+   * @param deltaDegrees degrees to move (positive = down, negative = up)
    */
   public void nudgeWristAngle(double deltaDegrees) {
     // Do not attempt to nudge if the wrist is not calibrated
     if (!wristCalibrated) return;
-
-    if(wristCalibrated) encoderZero += deltaDegrees;
+    encoderZero += deltaDegrees;
 
   }
 
@@ -533,6 +492,7 @@ public class Wrist extends SubsystemBase implements Loggable {
     }
 
     // If the CANcoder stops reading, apply RotorEncoder configuration and stop using the CANcoder
+    // This condition should only occur one time (if at all)
     if (usingCANcoder && wristCalibrated && !isCANcoderConnected()) {
       setWristUncalibrated();
       usingCANcoder = false;
@@ -544,6 +504,5 @@ public class Wrist extends SubsystemBase implements Loggable {
         "Angle", getWristAngle(), 
         "Target", getCurrentWristTarget());
     }
-
   }
 }
