@@ -181,7 +181,8 @@ public final class Constants {
     public static final double maxPercentOutput = -0.1;             // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
-    public static double canCoderOffsetAngleWrist = 0.0;  // TODO CALIBRATE FOR 2025
+    public static double offsetAngleCANcoder = 0.0;     // TODO CALIBRATE FOR 2025
+    public static double offsetAngleRotorEncoder = 0.0; // TODO CALIBRATE FOR 2025
 
     public static final double kP = 0.5;    // TODO CALIBRATE FOR 2025
     public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
