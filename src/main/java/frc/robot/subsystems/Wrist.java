@@ -60,7 +60,7 @@ public class Wrist extends SubsystemBase implements Loggable {
   // The default config is RemoteCANcoder. If the CANcoder fails, the wrist will the
   // use the RotorEncoder config as a fallback.
   // TODO ensure that are calibrating for both intially
-  private boolean usingCANcoder = false;                      // true = using CANcoder configuration, false = using RotorEncoder configuration
+  private boolean usingCANcoder;               // true = using CANcoder configuration, false = using RotorEncoder configuration
   private TalonFXConfiguration wristRotorEncoderMotorConfig;  // Configuration reading the rotor encoder
   private TalonFXConfiguration wristCANcoderMotorConfig;      // Configuration reading the CANcoder
 
@@ -206,8 +206,9 @@ public class Wrist extends SubsystemBase implements Loggable {
 
     // Determine if the wrist is initially calibrated
     if (isCANcoderConnected() && (getWristAngle() == WristConstants.offsetAngleCANcoder)) {
-      calibrateWristEncoder(WristConstants.offsetAngleCANcoder);
-    }
+      usingCANcoder = true;
+      if (getWristAngle() == WristConstants.offsetAngleCANcoder) calibrateWristEncoder(WristConstants.offsetAngleCANcoder);
+    } else if (!isCANcoderConnected()) usingCANcoder = false;
 
     // NOTE!!! When the TalonFX encoder settings are changed above, then the next call to getTurningEncoderDegrees() 
     // may contain an old value, not the value based on the updated configuration settings above!!!!  The CANBus runs 
