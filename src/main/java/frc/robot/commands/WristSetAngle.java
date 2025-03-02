@@ -20,7 +20,7 @@ public class WristSetAngle extends Command {
   /**
    * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 5 degrees 
    * of the target. If the wrist is uncalbraated, this does nothing and ends immediately.
-   * @param angle target angle in degrees (0 = horizontal in front of robot, positive = up, negative = down)
+   * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
@@ -35,7 +35,7 @@ public class WristSetAngle extends Command {
   /**
    * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 5 degrees 
    * of the target. If the wrist is uncalbraated, this does nothing and ends immediately.
-   * @param position target WristAngle (see Constants.WristAngle)
+   * @param position target WristAngle angle, in degrees (see Constants.WristAngle)
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */

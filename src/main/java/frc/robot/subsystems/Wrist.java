@@ -46,13 +46,13 @@ public class Wrist extends SubsystemBase implements Loggable {
   private final StatusSignal<Voltage> wristSupplyVoltage;  // Incoming bus voltage to motor, in volts
   private final StatusSignal<Temperature> wristTemp;       // Motor temp, in degrees Celsius
   private final StatusSignal<Double> wristDutyCycle;       // Motor duty cycle percent power, -1 to 1
-	private final StatusSignal<Current> wristStatorCurrent;  // Motor stator current, in amps (positive = forward, negative = reverse)
-	private final StatusSignal<Angle> wristEncoderPosition;  // Encoder position, in pinion rotations
-	private final StatusSignal<AngularVelocity> wristEncoderVelocity;
-	private final StatusSignal<Voltage> wristVoltage;
+  private final StatusSignal<Current> wristStatorCurrent;  // Motor stator current, in amps (positive = forward, negative = reverse)
+  private final StatusSignal<Angle> wristEncoderPosition;  // Encoder position, in pinion rotations
+  private final StatusSignal<AngularVelocity> wristEncoderVelocity;
+  private final StatusSignal<Voltage> wristVoltage;
   private final StatusSignal<ControlModeValue> wristControlMode;
   private final StatusSignal<AngularAcceleration> wristEncoderAcceleration;
-  
+
   private final TalonFX wristMotor = new TalonFX(Ports.CANWrist);
   private final TalonFXConfigurator wristMotorConfigurator = wristMotor.getConfigurator();
 
@@ -73,8 +73,8 @@ public class Wrist extends SubsystemBase implements Loggable {
   private CANcoderConfiguration canCoderConfig;
 
   // CANcoder signals and sensors
-	private final StatusSignal<Angle> canCoderPosition;            // CANcoder position, in CANcoder rotations
-	private final StatusSignal<AngularVelocity> canCoderVelocity;  // CANcoder velocity, in CANcoder rotations/second
+  private final StatusSignal<Angle> canCoderPosition;            // CANcoder position, in CANcoder rotations
+  private final StatusSignal<AngularVelocity> canCoderVelocity;  // CANcoder velocity, in CANcoder rotations/second
 
   private double encoderZero = 0;   // Reference raw encoder reading for wrist motor encoder at 0 degrees.
 
@@ -102,28 +102,28 @@ public class Wrist extends SubsystemBase implements Loggable {
     // Create the configuration for using the rotor encoder
     wristRotorEncoderMotorConfig = new TalonFXConfiguration();
     wristRotorEncoderMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-		wristRotorEncoderMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    wristRotorEncoderMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     wristRotorEncoderMotorConfig.Voltage.PeakForwardVoltage = WristConstants.compensationVoltage;
-		wristRotorEncoderMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.compensationVoltage;
+    wristRotorEncoderMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.compensationVoltage;
     wristRotorEncoderMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;     // Time from 0 to full power, in seconds
     wristRotorEncoderMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
 
     // Create the configuration for using the CANcoder
     wristCANcoderMotorConfig = new TalonFXConfiguration();
     wristCANcoderMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-		wristCANcoderMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    wristCANcoderMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     wristCANcoderMotorConfig.Voltage.PeakForwardVoltage = WristConstants.compensationVoltage;
-		wristCANcoderMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.compensationVoltage;
+    wristCANcoderMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.compensationVoltage;
     wristCANcoderMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;     // Time from 0 to full power, in seconds
     wristCANcoderMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
 
     // Configure soft limits on motor
-    wristRotorEncoderMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.upperLimit.value);
-    wristRotorEncoderMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.lowerLimit.value);
+    wristRotorEncoderMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.UPPER_LIMIT.value);
+    wristRotorEncoderMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.LOWER_LIMIT.value);
     wristRotorEncoderMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     wristRotorEncoderMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    wristCANcoderMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.upperLimit.value);
-    wristCANcoderMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.lowerLimit.value);
+    wristCANcoderMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.UPPER_LIMIT.value);
+    wristCANcoderMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.LOWER_LIMIT.value);
     wristCANcoderMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     wristCANcoderMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
@@ -161,30 +161,31 @@ public class Wrist extends SubsystemBase implements Loggable {
     wristMMVoltageControl.OverrideBrakeDurNeutral = true;
 
     wristRotorEncoderMotorConfig.Slot0.kP = WristConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
-		wristRotorEncoderMotorConfig.Slot0.kI = 0.0;
-		wristRotorEncoderMotorConfig.Slot0.kD = 0.0;
-		wristRotorEncoderMotorConfig.Slot0.kS = WristConstants.kS;
-		wristRotorEncoderMotorConfig.Slot0.kV = WristConstants.kV;
-		wristRotorEncoderMotorConfig.Slot0.kA = 0.0;
+    wristRotorEncoderMotorConfig.Slot0.kI = 0.0;
+    wristRotorEncoderMotorConfig.Slot0.kD = 0.0;
+    wristRotorEncoderMotorConfig.Slot0.kS = WristConstants.kS;
+    wristRotorEncoderMotorConfig.Slot0.kV = WristConstants.kV;
+    wristRotorEncoderMotorConfig.Slot0.kA = 0.0;
 
     wristCANcoderMotorConfig.Slot0.kP = WristConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
-		wristCANcoderMotorConfig.Slot0.kI = 0.0;
-		wristCANcoderMotorConfig.Slot0.kD = 0.0;
-		wristCANcoderMotorConfig.Slot0.kS = WristConstants.kS;
-		wristCANcoderMotorConfig.Slot0.kV = WristConstants.kV;
-		wristCANcoderMotorConfig.Slot0.kA = 0.0;
+    wristCANcoderMotorConfig.Slot0.kI = 0.0;
+    wristCANcoderMotorConfig.Slot0.kD = 0.0;
+    wristCANcoderMotorConfig.Slot0.kS = WristConstants.kS;
+    wristCANcoderMotorConfig.Slot0.kV = WristConstants.kV;
+    wristCANcoderMotorConfig.Slot0.kA = 0.0;
 
     // Configure Magic Motion settings
-		wristRotorEncoderMotorConfig.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMCruiseVelocity;
-		wristRotorEncoderMotorConfig.MotionMagic.MotionMagicAcceleration = WristConstants.MMAcceleration;
-		wristRotorEncoderMotorConfig.MotionMagic.MotionMagicJerk = WristConstants.MMJerk;
+    wristRotorEncoderMotorConfig.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMCruiseVelocity;
+    wristRotorEncoderMotorConfig.MotionMagic.MotionMagicAcceleration = WristConstants.MMAcceleration;
+    wristRotorEncoderMotorConfig.MotionMagic.MotionMagicJerk = WristConstants.MMJerk;
     wristCANcoderMotorConfig.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMCruiseVelocity;
-		wristCANcoderMotorConfig.MotionMagic.MotionMagicAcceleration = WristConstants.MMAcceleration;
-		wristCANcoderMotorConfig.MotionMagic.MotionMagicJerk = WristConstants.MMJerk;
+    wristCANcoderMotorConfig.MotionMagic.MotionMagicAcceleration = WristConstants.MMAcceleration;
+    wristCANcoderMotorConfig.MotionMagic.MotionMagicJerk = WristConstants.MMJerk;
 
     canCoderConfigurator = canCoder.getConfigurator();
     canCoderPosition = canCoder.getPosition();
     canCoderVelocity = canCoder.getVelocity();
+    usingCANcoder = isCANcoderConnected();
 
     // Configure CANcoder
     canCoderConfig = new CANcoderConfiguration();
@@ -203,11 +204,10 @@ public class Wrist extends SubsystemBase implements Loggable {
     // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
     canCoderConfigurator.apply(canCoderConfig);
 
-    // Determine if the wrist is initially calibrated
-    if (isCANcoderConnected() && (getWristAngle() == WristConstants.offsetAngleCANcoder)) {
-      usingCANcoder = true;
-      if (getWristAngle() == WristConstants.offsetAngleCANcoder) calibrateWristEncoder(WristConstants.offsetAngleCANcoder);
-    } else if (!isCANcoderConnected()) usingCANcoder = false;
+    // Calibrate if the CANcoder is connected and the wrist it at a known angle
+    if (usingCANcoder && getWristAngle() == WristConstants.offsetAngleCANcoder) {
+      calibrateWristEncoder(WristConstants.offsetAngleCANcoder);
+    }
 
     // NOTE!!! When the TalonFX encoder settings are changed above, then the next call to getTurningEncoderDegrees() 
     // may contain an old value, not the value based on the updated configuration settings above!!!!  The CANBus runs 
@@ -243,9 +243,9 @@ public class Wrist extends SubsystemBase implements Loggable {
    * @return percent output percent, -1.0 to 1.0 (positive = up, negative = down)
    */
   public double getWristMotorPercentOutput() {
-		wristDutyCycle.refresh(); // Verified that this is not a blocking call
-		return wristDutyCycle.getValueAsDouble();
-	}
+    wristDutyCycle.refresh(); // Verified that this is not a blocking call
+    return wristDutyCycle.getValueAsDouble();
+  }
 
   /**
    * Gets whether the wrist is in position control or direct percent output control.
@@ -253,9 +253,9 @@ public class Wrist extends SubsystemBase implements Loggable {
    */
   public boolean isWristMotorPositionControl() {
     return (wristControlMode.refresh().getValue() == ControlModeValue.PositionVoltage) || 
-           (wristControlMode.refresh().getValue() == ControlModeValue.MotionMagicVoltage) ||
-           (wristControlMode.refresh().getValue() == ControlModeValue.PositionVoltageFOC) || 
-           (wristControlMode.refresh().getValue() == ControlModeValue.MotionMagicVoltageFOC);
+            (wristControlMode.refresh().getValue() == ControlModeValue.MotionMagicVoltage) ||
+            (wristControlMode.refresh().getValue() == ControlModeValue.PositionVoltageFOC) || 
+            (wristControlMode.refresh().getValue() == ControlModeValue.MotionMagicVoltageFOC);
   }
 
   /**
@@ -265,7 +265,7 @@ public class Wrist extends SubsystemBase implements Loggable {
   public void setWristAngle(double angle) {
     if (wristCalibrated) {
       // Keep the wrist in usable range
-      safeAngle = MathUtil.clamp(angle, WristConstants.WristAngle.lowerLimit.value, WristConstants.WristAngle.upperLimit.value);
+      safeAngle = MathUtil.clamp(angle, WristConstants.WristAngle.LOWER_LIMIT.value, WristConstants.WristAngle.UPPER_LIMIT.value);
 
       // TODO add interlocks with elevator, algaeGrabber, and coralEffector
 
@@ -277,11 +277,11 @@ public class Wrist extends SubsystemBase implements Loggable {
   }
 
   /**
-	 * Gets the angle that the wrist is trying to move to. If the wrist is not calibrated, then this value is 
+   * Gets the angle that the wrist is trying to move to. If the wrist is not calibrated, then this value is 
    * the lowerLimit, since we really do not know where the wrist is at. If the wrist is in manual control mode, 
    * then this value is the actual wrist position.
-	 * @return desired wrist angle, in degrees
-	 */
+   * @return desired wrist angle, in degrees
+   */
   public double getCurrentWristTarget() {
     double currentTarget;
 
@@ -297,7 +297,7 @@ public class Wrist extends SubsystemBase implements Loggable {
     } else {
       // Wrist is not calibrated. Assume we are at lowerLimit to engage all interlocks, since we really 
       // do not know where the wrist is at.
-      return WristAngle.lowerLimit.value;
+      return WristAngle.LOWER_LIMIT.value;
     }
   }
 
@@ -307,9 +307,9 @@ public class Wrist extends SubsystemBase implements Loggable {
    * Gets the wrist region for a given angle.
    * NOTE: This is for internal subsystem use only. Use getWristRegion() when calling from outside.
    * @param degrees angle, in degrees
-	 * @return corresponding wrist region
-	 */
-	private WristRegion getRegion(double degrees) {
+   * @return corresponding wrist region
+   */
+  private WristRegion getRegion(double degrees) {
     // TODO add wrist regions
     return WristRegion.main; 
   }
@@ -317,23 +317,23 @@ public class Wrist extends SubsystemBase implements Loggable {
   /**
    * Gets the wrist region for a given angle.
    * @param degrees angle, in degrees
-	 * @return corresponding wrist region
-	 */
+   * @return corresponding wrist region
+   */
   public WristRegion getWristRegion() {
     if (!wristCalibrated) return WristRegion.uncalibrated;
     else return getRegion(getWristAngle());
-	}
-  
+  }
+
   //****** Internal Kraken encoder methods
 
-   /**
-	 * Returns the angle that the wrist is currently positioned at. If the wrist is not calibrated, then this value is 
+    /**
+   * Returns the angle that the wrist is currently positioned at. If the wrist is not calibrated, then this value is 
    * the lowerLimit, since we really do not know where the wrist is at.
-	 * @return current wrist angle, in degrees
-	 */
+   * @return current wrist angle, in degrees
+   */
   public double getWristAngle() {
     if (wristCalibrated) return getWristEncoderDegrees();
-    else return WristAngle.lowerLimit.value;
+    else return WristAngle.LOWER_LIMIT.value;
   }
 
   /**
@@ -343,7 +343,7 @@ public class Wrist extends SubsystemBase implements Loggable {
   public boolean isCANcoderConnected() {
     return canCoder.isConnected();
   }
-  
+
   /**
    * Gets the current wrist angle from the Kraken encoder, assuming the encoder is calibrated.
    * NOTE: This is for internal subsystem use only. Use getWristAngle() when calling from outside.
@@ -387,16 +387,16 @@ public class Wrist extends SubsystemBase implements Loggable {
   // ********** Internal Kraken calibration methods
 
   /**
-	 * Gets whether the encoder is calibrated.
-	 * @return true = encoder is calibrated and working, false = encoder is not calibrated
-	 */
+   * Gets whether the encoder is calibrated.
+   * @return true = encoder is calibrated and working, false = encoder is not calibrated
+   */
   public boolean isEncoderCalibrated() {
-		return wristCalibrated;
+    return wristCalibrated;
   }  
 
   /**
-	 * Stops the wrist and sets wristCalibrated to false.
-	 */
+   * Stops the wrist and sets wristCalibrated to false.
+   */
   public void setWristUncalibrated() {
     stopWristMotor();
     wristCalibrated = false;
@@ -423,7 +423,7 @@ public class Wrist extends SubsystemBase implements Loggable {
    * @return true = wrist is at or below lower limit, false = wrist is above lower limit
    */
   public boolean isWristAtLowerLimit() {
-    return getWristEncoderDegrees() <= WristAngle.lowerLimit.value;
+    return getWristEncoderDegrees() <= WristAngle.LOWER_LIMIT.value;
   }
 
   /**
@@ -431,7 +431,7 @@ public class Wrist extends SubsystemBase implements Loggable {
    * @return true = wrist is at or above upper limit, false = wrist is below upper limit
    */
   public boolean isWristAtUpperLimit() {
-    return getWristEncoderDegrees() >= WristAngle.upperLimit.value;
+    return getWristEncoderDegrees() >= WristAngle.UPPER_LIMIT.value;
   }
 
   /**

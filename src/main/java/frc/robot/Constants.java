@@ -195,26 +195,32 @@ public final class Constants {
     public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in motor rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
     public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in motor rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
 
+    // TODO add wrist regions
     public enum WristRegion {
       main,
       uncalibrated;
     }
 
+    // TODO CALIBRATE FOR 2025
     public enum WristAngle {
-      lowerLimit(-107.0),       // TODO CALIBRATE FOR 2025
-      upperLimit(90.0),  // TODO CALIBRATE FOR 2025
-      upperLimitWithAlgae(90), // TODO CALIBRATE FOR 2025
-      upperLimitAtReef(104), // TODO CALIBRATE FOR 2025
-      lowerLimitElevatorDown(-15), // TODO CALIBRATE FOR 2025
-      coralIntake(39.0), // TODO CALIBRATE FOR 2025
-      coralScore(35.0),  // TODO CALIBRATE FOR 2025
-      algaeIntake(50.0), // TODO CALIBRATE FOR 2025
-      algaeScore(65.0);  // TODO CALIBRATE FOR 2025
-      
+      LOWER_LIMIT(0.0),
+      UPPER_LIMIT(0.0),
+
+      CORAL_HP(0.0),
+
+      CORAL_L1(0.0),
+      CORAL_L2_L3(0.0),
+      CORAL_L4(0.0),
+
+      ALGAE_GROUND(0.0),
+      ALGAE_REEF(0.0),
+
+      ALGAE_PROCESSOR(0.0),
+      ALGAE_NET(0.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
-        public final double value;
-        WristAngle(double value) { this.value = value; }
+      public final double value;
+      WristAngle(double value) { this.value = value; }
     }
 
     public enum WristAngleLimitsTest {
