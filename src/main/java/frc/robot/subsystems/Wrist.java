@@ -278,6 +278,41 @@ public class Wrist extends SubsystemBase implements Loggable {
   }
 
   /**
+   * Sets the angle of the wrist of the encoder is working and calibrated, operating with interlocks.
+   * @param angle target angle, in degrees (0 = horizontal in front of robot, + = up, - = down)
+   * @param height height the elevator is currently at, in inches
+   */
+  public void setWristAngle(double angle, double height, boolean hasAlgae, boolean inReef) {
+    if (wristCalibrated) {
+      
+      // Keep the wrist in usable range
+      double lowerLimit = WristConstants.WristAngleLimitsTest.lowerLimit.apply(height);
+      double upperLimit = WristConstants.WristAngleLimitsTest.upperLimit.apply(height); 
+      if (hasAlgae) {
+        if (inReef) {
+          lowerLimit = WristConstants.WristAngleLimitsTest.lowerLimit.apply(height); // TODO Find limits for being in the reef with algae
+          upperLimit = WristConstants.WristAngleLimitsTest.upperLimit.apply(height); // See Above
+        } else {
+          lowerLimit = WristConstants.WristAngleLimitsTest.lowerLimitWithAlgae.apply(height);
+          upperLimit = WristConstants.WristAngleLimitsTest.upperLimitWithAlgae.apply(height);
+        }
+      } else {
+        if (inReef) {
+          lowerLimit = WristConstants.WristAngleLimitsTest.lowerLimitAtReef.apply(height);
+          upperLimit = WristConstants.WristAngleLimitsTest.upperLimitAtReef.apply(height);
+        }
+      }
+
+      safeAngle = MathUtil.clamp(angle, lowerLimit, upperLimit);
+
+      wristMotor.setControl(wristMMVoltageControl.withPosition(wristDegreesToEncoderRotations(safeAngle)).withFeedForward(WristConstants.kG * Math.cos(safeAngle * Math.PI / 180.0)));
+
+      log.writeLog(false, subsystemName, "setWristAngle", "Desired Angle", angle, "Set Angle", safeAngle);
+      SmartDashboard.putNumber("Wrist set raw ticks", wristDegreesToEncoderRotations(safeAngle));
+    }  
+  }
+
+  /**
 	 * Gets the angle that the wrist is trying to move to. If the wrist is not calibrated, then this value is 
    * the lowerLimit, since we really do not know where the wrist is at. If the wrist is in manual control mode, 
    * then this value is the actual wrist position.

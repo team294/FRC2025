@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Function;
+
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -198,8 +200,11 @@ public final class Constants {
     }
 
     public enum WristAngle {
-      lowerLimit(-45.0),       // TODO CALIBRATE FOR 2025
+      lowerLimit(-107.0),       // TODO CALIBRATE FOR 2025
       upperLimit(90.0),  // TODO CALIBRATE FOR 2025
+      upperLimitWithAlgae(90), // TODO CALIBRATE FOR 2025
+      upperLimitAtReef(104), // TODO CALIBRATE FOR 2025
+      lowerLimitElevatorDown(-15), // TODO CALIBRATE FOR 2025
       coralIntake(39.0), // TODO CALIBRATE FOR 2025
       coralScore(35.0),  // TODO CALIBRATE FOR 2025
       algaeIntake(50.0), // TODO CALIBRATE FOR 2025
@@ -209,6 +214,68 @@ public final class Constants {
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
         public final double value;
         WristAngle(double value) { this.value = value; }
+    }
+
+    public enum WristAngleLimitsTest {
+      lowerLimit(
+        (Double height) -> {
+          if(height > 18){
+            return -107.0;
+          } else if (height > 5) {
+            return -33.0;
+          } else {
+            return 69.5;
+          }
+        }
+      ),
+      upperLimit(
+        (Double height) -> {
+          if(height > 17){
+            return 104.0;
+          } else {
+            return 90.0;
+          }
+        }
+      ),
+      lowerLimitWithAlgae(
+        (Double height) -> {
+          if(height > 22){
+            return -93.0;
+          } else if (height > 4) {
+            return -16.6;
+          } else {
+            return 60.0;
+          }
+        }
+      ),
+      upperLimitWithAlgae((Double height) -> 90.0),
+      lowerLimitAtReef(
+        (Double height) -> {
+          if(height > 67){
+            return 27.0;
+          } else if (height > 50) {
+            return 82.0;
+          } else if (height > 9) {
+            return 50.0;
+          } else {
+            return 60.0;
+          }
+        }
+      ),
+      upperLimitAtReef(
+        (Double height) -> {
+          if(height > 17){
+            return 104.0;
+          } else {
+            return 90.0;
+          }
+        }
+      );
+
+      @SuppressWarnings({"MemberName", "PMD.SingularField"})
+        public final Function<Double, Double> value;
+        WristAngleLimitsTest(Function<Double, Double> value) { this.value = value; }
+        public double apply(Double height) { return value.apply(height); }
     }
   }
 }
