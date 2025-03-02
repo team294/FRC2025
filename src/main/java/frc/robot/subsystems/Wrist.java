@@ -281,10 +281,12 @@ public class Wrist extends SubsystemBase implements Loggable {
    * Sets the angle of the wrist of the encoder is working and calibrated, operating with interlocks.
    * @param angle target angle, in degrees (0 = horizontal in front of robot, + = up, - = down)
    * @param height height the elevator is currently at, in inches
+   * @param hasAlgae whether the AlgaeGrabber is holding an algae
+   * @param inReef whether the robot is against the reef
    */
   public void setWristAngle(double angle, double height, boolean hasAlgae, boolean inReef) {
     if (wristCalibrated) {
-      
+
       // Keep the wrist in usable range
       double lowerLimit = WristConstants.WristAngleLimitsTest.lowerLimit.apply(height);
       double upperLimit = WristConstants.WristAngleLimitsTest.upperLimit.apply(height); 
