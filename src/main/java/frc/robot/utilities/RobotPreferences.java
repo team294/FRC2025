@@ -36,6 +36,7 @@ public class RobotPreferences {
     // DriveConstants.updateDerivedConstants();
 
     WristConstants.offsetAngleCANcoder = readDouble("Wrist.offsetAngleCANcoder", WristConstants.offsetAngleCANcoder);
+    WristConstants.cancoderDiscontinuityPoint = readDouble("Wrist.cancoderDiscontinuityPoint", WristConstants.cancoderDiscontinuityPoint);
 
     problemSubsystem = readString("problemSubsystem", problemSubsystem);
     problemExists = readBoolean("problemExists", problemExists);

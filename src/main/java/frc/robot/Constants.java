@@ -167,16 +167,21 @@ public final class Constants {
   }
 
   public static final class WristConstants {
-    public static final double kEncoderCPR = 1.0;
-    public static final double kWristGearRatio = ((8.0 / 60.0) * (16.0 / 48.0));                  // TODO CALIBRATE FOR 2025
-    public static final double kWristDegreesPerRotation = 360.0 / kEncoderCPR / kWristGearRatio;  // TODO CALIBRATE FOR 2025
+    // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
+    // where a ratio greater than 1 is a reduction.
+    public static final double kWristGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // TODO CALIBRATE FOR 2025
+    public static final double kWristDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
     public static final double maxPercentOutput = -0.1;             // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
-    public static double offsetAngleCANcoder = 0.0; // TODO CALIBRATE FOR 2025
+    public static double offsetAngleCANcoder = 0.0;                 // TODO CALIBRATE FOR 2025
+    // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
+    // TODO update this value based on the center of the region of unallowed motion
+    public static double cancoderDiscontinuityPoint = 0.5;          // TODO CALIBRATE FOR 2025
+
 
     public static final double kP = 0.5;    // TODO CALIBRATE FOR 2025
     public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025

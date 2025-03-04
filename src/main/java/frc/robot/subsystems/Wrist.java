@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.WristConstants.offsetAngleCANcoder;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
@@ -42,6 +44,21 @@ public class Wrist extends SubsystemBase implements Loggable {
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;         // Subsystem name for use in file logging and dashboard
 
+  // Create wrist motor
+  private final TalonFX wristMotor = new TalonFX(Ports.CANWrist);
+  private final TalonFXConfigurator wristMotorConfigurator = wristMotor.getConfigurator();
+
+  // We create two configs for the wrist motor -- one with RemoteCANcoder and one with RotorEncoder.
+  // The default config is RemoteCANcoder. If the CANcoder fails, the wrist will the
+  // use the RotorEncoder config as a fallback.
+  private boolean usingCANcoder;                              // true = using CANcoder configuration, false = using RotorEncoder configuration
+  private TalonFXConfiguration wristMotor_RotorEncoderConfig;  // Configuration reading the rotor encoder
+  private TalonFXConfiguration wristMotor_CANcoderConfig;      // Configuration reading the CANcoder
+
+  private VoltageOut wristVoltageControl = new VoltageOut(0.0).withEnableFOC(true);
+  private PositionVoltage wristPositionControl = new PositionVoltage(0.0).withEnableFOC(true);
+  private MotionMagicVoltage wristMMVoltageControl = new MotionMagicVoltage(0.0).withEnableFOC(true);
+
   // Create variables for the wrist Kraken motor
   private final StatusSignal<Voltage> wristSupplyVoltage;  // Incoming bus voltage to motor, in volts
   private final StatusSignal<Temperature> wristTemp;       // Motor temp, in degrees Celsius
@@ -53,27 +70,13 @@ public class Wrist extends SubsystemBase implements Loggable {
   private final StatusSignal<ControlModeValue> wristControlMode;
   private final StatusSignal<AngularAcceleration> wristEncoderAcceleration;
 
-  private final TalonFX wristMotor = new TalonFX(Ports.CANWrist);
-  private final TalonFXConfigurator wristMotorConfigurator = wristMotor.getConfigurator();
-
-  // We create two configs -- one with RemoteCANcoder and one with RotorEncoder.
-  // The default config is RemoteCANcoder. If the CANcoder fails, the wrist will the
-  // use the RotorEncoder config as a fallback.
-  private boolean usingCANcoder;                              // true = using CANcoder configuration, false = using RotorEncoder configuration
-  private TalonFXConfiguration wristRotorEncoderMotorConfig;  // Configuration reading the rotor encoder
-  private TalonFXConfiguration wristCANcoderMotorConfig;      // Configuration reading the CANcoder
-
-  private VoltageOut wristVoltageControl = new VoltageOut(0.0).withEnableFOC(false);
-  private PositionVoltage wristPositionControl = new PositionVoltage(0.0).withEnableFOC(false);
-  private MotionMagicVoltage wristMMVoltageControl = new MotionMagicVoltage(0.0).withEnableFOC(false);
-
   // Create CANcoder
   private final CANcoder canCoder = new CANcoder(Ports.CANWristEncoder);
-  private final CANcoderConfigurator canCoderConfigurator;
+  private final CANcoderConfigurator canCoderConfigurator = canCoder.getConfigurator();
   private CANcoderConfiguration canCoderConfig;
 
   // CANcoder signals and sensors
-  private final StatusSignal<Angle> canCoderPosition;            // CANcoder position, in CANcoder rotations
+  private final StatusSignal<Angle> canCoderPosition;            // CANcoder position, in CANcoder rotations      //TODO put this on Shuffleboard.  Create method to read this.
   private final StatusSignal<AngularVelocity> canCoderVelocity;  // CANcoder velocity, in CANcoder rotations/second
 
   private double encoderZero = 0;   // Reference raw encoder reading for wrist motor encoder at 0 degrees.
@@ -99,59 +102,27 @@ public class Wrist extends SubsystemBase implements Loggable {
     wristControlMode = wristMotor.getControlMode();
     wristEncoderAcceleration = wristMotor.getAcceleration();
 
-    // Create the configuration for using the rotor encoder
-    wristRotorEncoderMotorConfig = new TalonFXConfiguration();
-    wristRotorEncoderMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    wristRotorEncoderMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    wristRotorEncoderMotorConfig.Voltage.PeakForwardVoltage = WristConstants.compensationVoltage;
-    wristRotorEncoderMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.compensationVoltage;
-    wristRotorEncoderMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;     // Time from 0 to full power, in seconds
-    wristRotorEncoderMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
-
-    // Create the configuration for using the CANcoder
-    wristCANcoderMotorConfig = new TalonFXConfiguration();
-    wristCANcoderMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    wristCANcoderMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    wristCANcoderMotorConfig.Voltage.PeakForwardVoltage = WristConstants.compensationVoltage;
-    wristCANcoderMotorConfig.Voltage.PeakReverseVoltage = -WristConstants.compensationVoltage;
-    wristCANcoderMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;     // Time from 0 to full power, in seconds
-    wristCANcoderMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    // Create the motor configuration for using the rotor encoder
+    wristMotor_RotorEncoderConfig = new TalonFXConfiguration();
+    wristMotor_RotorEncoderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;         // TODO verify motor direction
+    wristMotor_RotorEncoderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    wristMotor_RotorEncoderConfig.Voltage.PeakForwardVoltage = WristConstants.compensationVoltage;
+    wristMotor_RotorEncoderConfig.Voltage.PeakReverseVoltage = -WristConstants.compensationVoltage;
+    wristMotor_RotorEncoderConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;     // Time from 0 to full power, in seconds
+    wristMotor_RotorEncoderConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
 
     // Configure soft limits on motor
-    wristRotorEncoderMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.UPPER_LIMIT.value);
-    wristRotorEncoderMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.LOWER_LIMIT.value);
-    wristRotorEncoderMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    wristRotorEncoderMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    wristCANcoderMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.UPPER_LIMIT.value);
-    wristCANcoderMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.LOWER_LIMIT.value);
-    wristCANcoderMotorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    wristCANcoderMotorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    wristMotor_RotorEncoderConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.UPPER_LIMIT.value);
+    wristMotor_RotorEncoderConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.LOWER_LIMIT.value);
+    wristMotor_RotorEncoderConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    wristMotor_RotorEncoderConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
     // If the current is above the supply current limit for the threshold time, the current is 
     // limited to the lower limit in order to prevent the breakers from tripping
-    wristRotorEncoderMotorConfig.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
-    wristRotorEncoderMotorConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
-    wristRotorEncoderMotorConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
-    wristRotorEncoderMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-
-    wristRotorEncoderMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    wristRotorEncoderMotorConfig.ClosedLoopGeneral.ContinuousWrap = false;
-
-    wristCANcoderMotorConfig.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
-    wristCANcoderMotorConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
-    wristCANcoderMotorConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
-    wristCANcoderMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-
-    wristCANcoderMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-    wristCANcoderMotorConfig.Feedback.FeedbackRemoteSensorID = Ports.CANWristEncoder;
-    wristCANcoderMotorConfig.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
-    wristCANcoderMotorConfig.ClosedLoopGeneral.ContinuousWrap = false;
-
-    // Configure CANcoder and rotor encoder to be synced
-    // wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
-    // wristMotorConfig.Feedback.FeedbackRemoteSensorID = Ports.CANWristEncoder;
-    // wristMotorConfig.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
-    // wristMotorConfig.ClosedLoopGeneral.ContinuousWrap = false;
+    wristMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
+    wristMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
+    wristMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
+    wristMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Configure PID for PositionVoltage control
     // NOTE: In Phoenix 6, slots are selected in the ControlRequest (ex. PositionVoltage.Slot)
@@ -160,53 +131,67 @@ public class Wrist extends SubsystemBase implements Loggable {
     wristMMVoltageControl.Slot = 0;
     wristMMVoltageControl.OverrideBrakeDurNeutral = true;
 
-    wristRotorEncoderMotorConfig.Slot0.kP = WristConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
-    wristRotorEncoderMotorConfig.Slot0.kI = 0.0;
-    wristRotorEncoderMotorConfig.Slot0.kD = 0.0;
-    wristRotorEncoderMotorConfig.Slot0.kS = WristConstants.kS;
-    wristRotorEncoderMotorConfig.Slot0.kV = WristConstants.kV;
-    wristRotorEncoderMotorConfig.Slot0.kA = 0.0;
-
-    wristCANcoderMotorConfig.Slot0.kP = WristConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
-    wristCANcoderMotorConfig.Slot0.kI = 0.0;
-    wristCANcoderMotorConfig.Slot0.kD = 0.0;
-    wristCANcoderMotorConfig.Slot0.kS = WristConstants.kS;
-    wristCANcoderMotorConfig.Slot0.kV = WristConstants.kV;
-    wristCANcoderMotorConfig.Slot0.kA = 0.0;
+    wristMotor_RotorEncoderConfig.Slot0.kP = WristConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
+    wristMotor_RotorEncoderConfig.Slot0.kI = 0.0;
+    wristMotor_RotorEncoderConfig.Slot0.kD = 0.0;
+    wristMotor_RotorEncoderConfig.Slot0.kS = WristConstants.kS;
+    wristMotor_RotorEncoderConfig.Slot0.kV = WristConstants.kV;
+    wristMotor_RotorEncoderConfig.Slot0.kA = 0.0;
 
     // Configure Magic Motion settings
-    wristRotorEncoderMotorConfig.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMCruiseVelocity;
-    wristRotorEncoderMotorConfig.MotionMagic.MotionMagicAcceleration = WristConstants.MMAcceleration;
-    wristRotorEncoderMotorConfig.MotionMagic.MotionMagicJerk = WristConstants.MMJerk;
-    wristCANcoderMotorConfig.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMCruiseVelocity;
-    wristCANcoderMotorConfig.MotionMagic.MotionMagicAcceleration = WristConstants.MMAcceleration;
-    wristCANcoderMotorConfig.MotionMagic.MotionMagicJerk = WristConstants.MMJerk;
+    wristMotor_RotorEncoderConfig.MotionMagic.MotionMagicCruiseVelocity = WristConstants.MMCruiseVelocity;
+    wristMotor_RotorEncoderConfig.MotionMagic.MotionMagicAcceleration = WristConstants.MMAcceleration;
+    wristMotor_RotorEncoderConfig.MotionMagic.MotionMagicJerk = WristConstants.MMJerk;
 
-    canCoderConfigurator = canCoder.getConfigurator();
+    // Configure encoder to user for feedback
+    wristMotor_RotorEncoderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    wristMotor_RotorEncoderConfig.Feedback.RotorToSensorRatio = 1.0;
+    wristMotor_RotorEncoderConfig.Feedback.SensorToMechanismRatio = WristConstants.kWristGearRatio;
+    wristMotor_RotorEncoderConfig.ClosedLoopGeneral.ContinuousWrap = false;
+
+    // Create the motor configuration for using the CANcoder
+    wristMotor_CANcoderConfig = new TalonFXConfiguration();
+    // Copy settings from the other motor configuration
+    wristMotor_CANcoderConfig.deserialize(wristMotor_RotorEncoderConfig.serialize());
+    // Configure encoder to user for feedbacvk
+    wristMotor_CANcoderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    wristMotor_CANcoderConfig.Feedback.FeedbackRemoteSensorID = Ports.CANWristEncoder;
+    wristMotor_CANcoderConfig.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
+    wristMotor_CANcoderConfig.Feedback.SensorToMechanismRatio = 1.0;
+
+    // Configure CANcoder and rotor encoder to be synced
+    // wristMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;
+    // wristMotorConfig.Feedback.FeedbackRemoteSensorID = Ports.CANWristEncoder;
+    // wristMotorConfig.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
+    // wristMotorConfig.ClosedLoopGeneral.ContinuousWrap = false;
+
     canCoderPosition = canCoder.getPosition();
     canCoderVelocity = canCoder.getVelocity();
-    usingCANcoder = isCANcoderConnected();
 
     // Configure CANcoder
     canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    canCoderConfig.MagnetSensor.MagnetOffset = WristConstants.offsetAngleCANcoder;
-
-    // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
-    // TODO update this value based on the center of the region of unallowed motion
-    canCoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
-
-    // Apply the configurations to the motor.
-    // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
-    wristMotorConfigurator.apply(wristCANcoderMotorConfig);
+    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;          // TODO verify cancoder direction
+    canCoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = WristConstants.cancoderDiscontinuityPoint;
 
     // Apply the configurations to the CANcoder.
     // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
     canCoderConfigurator.apply(canCoderConfig);
 
-    // Calibrate if the CANcoder is connected and the wrist it at a known angle
-    if (usingCANcoder && getWristAngle() == WristConstants.offsetAngleCANcoder) {
-      calibrateWristEncoder(WristConstants.offsetAngleCANcoder);
+    // Calibrate if the CANcoder is connected
+    usingCANcoder = isCANcoderConnected();
+    if (usingCANcoder) {
+      // Apply the configurations to the motor.
+      // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
+      wristMotorConfigurator.apply(wristMotor_CANcoderConfig);
+
+      // calibrateWristEncoder(WristConstants.offsetAngleCANcoder);
+      // TODO Don to verify this is correct code
+      encoderZero = -WristConstants.offsetAngleCANcoder;
+      wristCalibrated = true;
+    } else {
+      // Apply the configurations to the motor.
+      // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
+      wristMotorConfigurator.apply(wristMotor_RotorEncoderConfig);
     }
 
     // NOTE!!! When the TalonFX encoder settings are changed above, then the next call to getTurningEncoderDegrees() 
@@ -337,11 +322,11 @@ public class Wrist extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Gets whether the CANcoder is connected to the robot.
+   * Gets whether the CANcoder is connected to the robot and reading the magnet
    * @return true = CANcoder is connected, false = CANcoder is not connected
    */
   public boolean isCANcoderConnected() {
-    return canCoder.isConnected();
+    return canCoder.isConnected() && canCoder.getMagnetHealth();  // TODO fix me
   }
 
   /**
@@ -493,10 +478,14 @@ public class Wrist extends SubsystemBase implements Loggable {
 
     // If the CANcoder stops reading, apply RotorEncoder configuration and stop using the CANcoder
     // This condition should only occur one time (if at all)
-    if (usingCANcoder && wristCalibrated && !isCANcoderConnected()) {
+    if (usingCANcoder && !isCANcoderConnected()) {
       setWristUncalibrated();
       usingCANcoder = false;
-      wristMotorConfigurator.apply(wristRotorEncoderMotorConfig);
+
+      // Apply the configurations to the motor.
+      // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
+      wristMotorConfigurator.apply(wristMotor_RotorEncoderConfig);
+
       log.writeLog(false, "Wrist", "CANcoder Disconnection",
         "Enc Zero", encoderZero, 
         "CANcoder Angle", getWristEncoderDegrees(), 
