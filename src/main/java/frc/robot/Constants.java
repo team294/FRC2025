@@ -53,20 +53,21 @@ public final class Constants {
     public static final int CANTurnEncoderFrontRight = 10;
     public static final int CANTurnEncoderBackLeft = 11;
     public static final int CANTurnEncoderBackRight = 12;
+    public static final int CANWristEncoder = 13;
+    // public static final int CANClimbEncoder = 14;
 
-    public static final int CANHopper = 13;
+    public static final int CANElevator1 = 15;
+    public static final int CANElevator2 = 16;
+    public static final int CANHopper = 17;
+    public static final int CANCoralEffector = 18;
+    public static final int CANCoralGrabber = 19;
+    public static final int CANWrist = 20;
+    // public static final int CANClimb1 = 21;
+    // public static final int CANClimb2 = 22;
 
-    public static final int CANCoralEffector = 14;
+    public static final int CANPigeonGyro = 23;
 
-    public static final int CANCoralGrabber = 15;
-
-    public static final int CANElevator1 = 16;
-    public static final int CANElevator2 = 17;
-
-    public static final int CANPigeonGyro = 18;
-    public static final int CANPigeonGyro2 = 19;
-
-    public static final int CANdle = 21;
+    public static final int CANdle = 24;
 
     // Digital IO Ports
     public static final int DIOCoralEffectorEntrySensor = 0;
@@ -162,6 +163,63 @@ public final class Constants {
       ElevatorPosition(double value) {
         this.value = value;
       }
+    }
+  }
+
+  public static final class WristConstants {
+    // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
+    // where a ratio greater than 1 is a reduction.
+    public static final double kWristGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // TODO CALIBRATE FOR 2025
+    public static final double kWristDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
+    
+    public static final double compensationVoltage = 12.0;
+    public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
+    public static final double maxPercentOutput = -0.1;             // TODO CALIBRATE FOR 2025
+
+    // Should be updated in RobotPreferences, so it cannot be final
+    public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
+    // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
+    // TODO update this value based on the center of the region of unallowed motion
+    public static double cancoderDiscontinuityPoint = 1.0;          // TODO CALIBRATE FOR 2025
+
+
+    public static final double kP = 0.5;    // TODO CALIBRATE FOR 2025
+    public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kD = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kG = 0.174;  // TODO CALIBRATE FOR 2025
+    public static final double kS = 0.0367; // TODO CALIBRATE FOR 2025
+    public static final double kV = 0.1171; // TODO CALIBRATE FOR 2025
+
+    public static final double MMCruiseVelocity = 20.0;                   // Max velocity in motor rotations / second TODO CALIBRATE FOR 2025
+    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in motor rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
+    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in motor rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
+
+    // TODO add wrist regions
+    public enum WristRegion {
+      main,
+      uncalibrated;
+    }
+
+    // TODO CALIBRATE FOR 2025
+    public enum WristAngle {
+      LOWER_LIMIT(0.0),
+      UPPER_LIMIT(0.0),
+
+      CORAL_HP(0.0),
+
+      CORAL_L1(0.0),
+      CORAL_L2_L3(0.0),
+      CORAL_L4(0.0),
+
+      ALGAE_GROUND(0.0),
+      ALGAE_REEF(0.0),
+
+      ALGAE_PROCESSOR(0.0),
+      ALGAE_NET(0.0);
+
+      @SuppressWarnings({"MemberName", "PMD.SingularField"})
+      public final double value;
+      WristAngle(double value) { this.value = value; }
     }
   }
 }

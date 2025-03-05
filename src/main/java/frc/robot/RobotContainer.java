@@ -42,6 +42,7 @@ public class RobotContainer {
   private final Hopper hopper = new Hopper("Hopper", log);
   private final CoralEffector coralEffector = new CoralEffector("CoralEffector", log);
   private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
+  private final Wrist wrist = new Wrist("Wrist", log);
   private final Elevator elevator = new Elevator("Elevator", log);
 
   // Define other utilities
@@ -88,26 +89,32 @@ public class RobotContainer {
     // Hopper
     SmartDashboard.putData("Hopper Set 10%", new HopperSetPercent(0.1, hopper, log));
     SmartDashboard.putData("Hopper Set -10%", new HopperSetPercent(-0.1, hopper, log));
-    SmartDashboard.putData("Hopper Stop", new StopHopperMotor(hopper, log));
+    SmartDashboard.putData("Hopper Stop", new HopperStop(hopper, log));
 
     // CoralEffector
     SmartDashboard.putData("CoralEffector Set 10%", new CoralEffectorSetPercent(0.1, coralEffector, log));
     SmartDashboard.putData("CoralEffector Set -10%", new CoralEffectorSetPercent(-0.1, coralEffector, log));
-    SmartDashboard.putData("CoralEffector Stop", new StopCoralEffectorMotor(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Stop", new CoralEffectorStop(coralEffector, log));
 
     // AlgaeGrabber
     SmartDashboard.putData("AlgaeGrabber Set 10%", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
     SmartDashboard.putData("AlgaeGrabber Set -10%", new AlgaeGrabberSetPercent(-0.1, algaeGrabber, log));
-    SmartDashboard.putData("AlgaeGrabber Stop", new StopAlgaeGrabberMotor(algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber Stop", new AlgaeGrabberStop(algaeGrabber, log));
+
+    // Wrist
+    SmartDashboard.putData("Wrist Stop", new WristStop(wrist, log));
+    SmartDashboard.putData("Wrist Set Percent", new WristSetPercentOutput(wrist, log));
+    SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist, log));
+    SmartDashboard.putData("Wrist Manually Calibrate", new WristCalibrateManual(wrist, log));
 
     // Elevator
-    SmartDashboard.putData("Move Elevator Up", new ElevatorSetPercent(.05, elevator, log));
-    SmartDashboard.putData("Move Elevator Down", new ElevatorSetPercent(-.05, elevator, log));
-    SmartDashboard.putData("Stop Elevator Motors", new StopElevatorMotors(elevator, log));
-    SmartDashboard.putData("Move Elevator To 20 Inches", new ElevatorSetPosition(20.0, elevator, log));
-    SmartDashboard.putData("Move Elevator To L2", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L2.value, elevator, log));
-    SmartDashboard.putData("Move Elevator To L3", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L3.value, elevator, log));
-    SmartDashboard.putData("Move Elevator To L4", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L4.value, elevator, log));
+    SmartDashboard.putData("Elevator Move Up", new ElevatorSetPercent(.05, elevator, log));
+    SmartDashboard.putData("Elevator Move Down", new ElevatorSetPercent(-.05, elevator, log));
+    SmartDashboard.putData("Elevator Stop Motors", new ElevatorStop(elevator, log));
+    SmartDashboard.putData("Elevator Move To 20 Inches", new ElevatorSetPosition(20.0, elevator, log));
+    SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L2.value, elevator, log));
+    SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L3.value, elevator, log));
+    SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L4.value, elevator, log));
     SmartDashboard.putData("Elevator Calibration", new ElevatorCalibration(0.1, elevator, log));
     
     // Autos
@@ -150,34 +157,35 @@ public class RobotContainer {
     // ex: xbA.onTrue(new command(param1, param2));
 
     // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
-    xbRT.onTrue(new CoralIntakeSequence(elevator, hopper, coralEffector, log));
+    xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log));
 
     // Prep and intake coral from HP with X
-    xbX.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_HP, log));
+    xbX.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_HP, log));
 
     // Prep to score coral on L2 with A, L3 with B, and L4 with Y
-    xbA.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_L2, log));
-    xbB.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_L3, log));
-    xbY.onTrue(new CoralScorePrepSequence(elevator, ElevatorPosition.CORAL_L4, log));
+    xbA.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L2, log));
+    xbB.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L3, log));
+    xbY.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L4, log));
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
-    xbLT.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_GROUND, elevator, algaeGrabber, log));
-    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_LOWER, elevator, algaeGrabber, log));
-    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_UPPER, elevator, algaeGrabber, log));
+    xbLT.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_GROUND, elevator, wrist, algaeGrabber, log));
+    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_LOWER, elevator, wrist, algaeGrabber, log));
+    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_UPPER, elevator, wrist, algaeGrabber, log));
 
     // Prep to score algae in Net with D-Pad Up and Processor with D-Pad Right
-    xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_NET, elevator, log));
-    xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_PROCESSOR, elevator, log));
+    xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_NET, elevator, wrist, log));
+    xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_PROCESSOR, elevator, wrist, log));
 
     // Manually control elevator with right joystick
     xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, log, true));
 
     // Stop all motors with LB
     xbLB.onTrue(parallel(
-      new StopHopperMotor(hopper, log),
-      new StopAlgaeGrabberMotor(algaeGrabber, log),
-      new StopCoralEffectorMotor(coralEffector, log),
-      new StopElevatorMotors(elevator, log)
+      new HopperStop(hopper, log),
+      new AlgaeGrabberStop(algaeGrabber, log),
+      new CoralEffectorStop(coralEffector, log),
+      new WristStop(wrist, log),
+      new ElevatorStop(elevator, log)
     ));
   }
 

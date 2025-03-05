@@ -10,6 +10,7 @@ package frc.robot.utilities;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.WristConstants;
 
 /**
  * Utility to handle all stored robot preferences.
@@ -33,6 +34,9 @@ public class RobotPreferences {
     // DriveConstants.offsetAngleBackLeftMotor = readDouble("Drive.offsetAngleBackLeftMotor", DriveConstants.offsetAngleBackLeftMotor);        
     // DriveConstants.offsetAngleBackRightMotor = readDouble("Drive.offsetAngleBackRightMotor", DriveConstants.offsetAngleBackRightMotor);        
     // DriveConstants.updateDerivedConstants();
+
+    WristConstants.offsetAngleCANcoder = readDouble("Wrist.offsetAngleCANcoder", WristConstants.offsetAngleCANcoder);
+    WristConstants.cancoderDiscontinuityPoint = readDouble("Wrist.cancoderDiscontinuityPoint", WristConstants.cancoderDiscontinuityPoint);
 
     problemSubsystem = readString("problemSubsystem", problemSubsystem);
     problemExists = readBoolean("problemExists", problemExists);
