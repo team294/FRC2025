@@ -89,31 +89,32 @@ public class RobotContainer {
     // Hopper
     SmartDashboard.putData("Hopper Set 10%", new HopperSetPercent(0.1, hopper, log));
     SmartDashboard.putData("Hopper Set -10%", new HopperSetPercent(-0.1, hopper, log));
-    SmartDashboard.putData("Hopper Stop", new StopHopperMotor(hopper, log));
+    SmartDashboard.putData("Hopper Stop", new HopperStop(hopper, log));
 
     // CoralEffector
     SmartDashboard.putData("CoralEffector Set 10%", new CoralEffectorSetPercent(0.1, coralEffector, log));
     SmartDashboard.putData("CoralEffector Set -10%", new CoralEffectorSetPercent(-0.1, coralEffector, log));
-    SmartDashboard.putData("CoralEffector Stop", new StopCoralEffectorMotor(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Stop", new CoralEffectorStop(coralEffector, log));
 
     // AlgaeGrabber
     SmartDashboard.putData("AlgaeGrabber Set 10%", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
     SmartDashboard.putData("AlgaeGrabber Set -10%", new AlgaeGrabberSetPercent(-0.1, algaeGrabber, log));
-    SmartDashboard.putData("AlgaeGrabber Stop", new StopAlgaeGrabberMotor(algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber Stop", new AlgaeGrabberStop(algaeGrabber, log));
 
     // Wrist
+    SmartDashboard.putData("Wrist Stop", new WristStop(wrist, log));
     SmartDashboard.putData("Wrist Set Percent", new WristSetPercentOutput(wrist, log));
     SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist, log));
     SmartDashboard.putData("Wrist Manually Calibrate", new WristCalibrateManual(wrist, log));
 
     // Elevator
-    SmartDashboard.putData("Move Elevator Up", new ElevatorSetPercent(.05, elevator, log));
-    SmartDashboard.putData("Move Elevator Down", new ElevatorSetPercent(-.05, elevator, log));
-    SmartDashboard.putData("Stop Elevator Motors", new StopElevatorMotors(elevator, log));
-    SmartDashboard.putData("Move Elevator To 20 Inches", new ElevatorSetPosition(20.0, elevator, log));
-    SmartDashboard.putData("Move Elevator To L2", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L2.value, elevator, log));
-    SmartDashboard.putData("Move Elevator To L3", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L3.value, elevator, log));
-    SmartDashboard.putData("Move Elevator To L4", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L4.value, elevator, log));
+    SmartDashboard.putData("Elevator Move Up", new ElevatorSetPercent(.05, elevator, log));
+    SmartDashboard.putData("Elevator Move Down", new ElevatorSetPercent(-.05, elevator, log));
+    SmartDashboard.putData("Elevator Stop Motors", new ElevatorStop(elevator, log));
+    SmartDashboard.putData("Elevator Move To 20 Inches", new ElevatorSetPosition(20.0, elevator, log));
+    SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L2.value, elevator, log));
+    SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L3.value, elevator, log));
+    SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L4.value, elevator, log));
     SmartDashboard.putData("Elevator Calibration", new ElevatorCalibration(0.1, elevator, log));
     
     // Autos
@@ -180,11 +181,11 @@ public class RobotContainer {
 
     // Stop all motors with LB
     xbLB.onTrue(parallel(
-      new StopHopperMotor(hopper, log),
-      new StopAlgaeGrabberMotor(algaeGrabber, log),
-      new StopCoralEffectorMotor(coralEffector, log),
-      new StopWristMotor(wrist, log),
-      new StopElevatorMotors(elevator, log)
+      new HopperStop(hopper, log),
+      new AlgaeGrabberStop(algaeGrabber, log),
+      new CoralEffectorStop(coralEffector, log),
+      new WristStop(wrist, log),
+      new ElevatorStop(elevator, log)
     ));
   }
 

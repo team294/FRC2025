@@ -177,10 +177,10 @@ public final class Constants {
     public static final double maxPercentOutput = -0.1;             // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
-    public static double offsetAngleCANcoder = 0.0;                 // TODO CALIBRATE FOR 2025
+    public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
     // TODO update this value based on the center of the region of unallowed motion
-    public static double cancoderDiscontinuityPoint = 0.5;          // TODO CALIBRATE FOR 2025
+    public static double cancoderDiscontinuityPoint = 1.0;          // TODO CALIBRATE FOR 2025
 
 
     public static final double kP = 0.5;    // TODO CALIBRATE FOR 2025

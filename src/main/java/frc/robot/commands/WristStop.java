@@ -5,29 +5,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.FileLog;
 
-public class StopHopperMotor extends Command {
-  private final Hopper hopper;
+public class WristStop extends Command {
+  private final Wrist wrist;
   private final FileLog log;
  
   /**
-   * Sets the percent output of the hopper to 0 and ends immediately.
-   * @param hopper Hopper subsystem
+   * Sets the percent output of the wrist to 0 and ends immediately.
+   * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public StopHopperMotor(Hopper hopper, FileLog log) {
-    this.hopper = hopper;
+  public WristStop(Wrist wrist, FileLog log) {
+    this.wrist = wrist;
     this.log = log;
-    addRequirements(hopper);
+    addRequirements(wrist);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    hopper.setHopperPercentOutput(0);
-    log.writeLog(false, "StopHopperMotor", "Init");
+    wrist.stopWrist();
+    log.writeLog(false, "WristStop", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

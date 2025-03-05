@@ -11,7 +11,7 @@ import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.WristConstants.WristAngle;
 import frc.robot.commands.CoralEffectorIntake;
 import frc.robot.commands.HopperSetPercent;
-import frc.robot.commands.StopHopperMotor;
+import frc.robot.commands.HopperStop;
 import frc.robot.subsystems.CoralEffector;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Hopper;
@@ -37,7 +37,7 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
         new HopperSetPercent(HopperConstants.intakePercent, hopper, log),
         new CoralEffectorIntake(coralEffector, log)
       ),
-      new StopHopperMotor(hopper, log)
+      new HopperStop(hopper, log)
     );
   }
 }

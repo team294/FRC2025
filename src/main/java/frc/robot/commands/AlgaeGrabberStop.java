@@ -5,29 +5,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralEffector;
+import frc.robot.subsystems.AlgaeGrabber;
 import frc.robot.utilities.FileLog;
 
-public class StopCoralEffectorMotor extends Command {
-  private final CoralEffector coralEffector;
+public class AlgaeGrabberStop extends Command {
+  private final AlgaeGrabber algaeGrabber;
   private final FileLog log;
 
   /**
-   * Sets the percent output of the coralEffector to 0 and ends immediately.
-   * @param coralEffector CoralEffector subsystem
+   * Sets the percent output of the algaeGrabber to 0 and ends immediately.
+   * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */
-  public StopCoralEffectorMotor(CoralEffector coralEffector, FileLog log) {
-    this.coralEffector = coralEffector;
+  public AlgaeGrabberStop(AlgaeGrabber algaeGrabber, FileLog log) {
+    this.algaeGrabber = algaeGrabber;
     this.log = log;
-    addRequirements(coralEffector);
+    addRequirements(algaeGrabber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    coralEffector.stopCoralEffectorMotor();
-    log.writeLog(false, "StopCoralEffectorMotor", "Init");
+    algaeGrabber.setAlgaeGrabberPercentOutput(0);
+    log.writeLog(false, "AlgaeGrabberStop", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

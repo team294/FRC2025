@@ -5,29 +5,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.CoralEffector;
 import frc.robot.utilities.FileLog;
 
-public class StopWristMotor extends Command {
-  private final Wrist wrist;
+public class CoralEffectorStop extends Command {
+  private final CoralEffector coralEffector;
   private final FileLog log;
- 
+
   /**
-   * Sets the percent output of the wrist to 0 and ends immediately.
-   * @param wrist Wrist subsystem
+   * Sets the percent output of the coralEffector to 0 and ends immediately.
+   * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public StopWristMotor(Wrist wrist, FileLog log) {
-    this.wrist = wrist;
+  public CoralEffectorStop(CoralEffector coralEffector, FileLog log) {
+    this.coralEffector = coralEffector;
     this.log = log;
-    addRequirements(wrist);
+    addRequirements(coralEffector);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    wrist.setWristPercentOutput(0);
-    log.writeLog(false, "StopWristMotor", "Init");
+    coralEffector.stopCoralEffectorMotor();
+    log.writeLog(false, "CoralEffectorStop", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

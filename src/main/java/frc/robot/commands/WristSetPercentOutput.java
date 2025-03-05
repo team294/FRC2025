@@ -63,7 +63,7 @@ public class WristSetPercentOutput extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    wrist.stopWristMotor();
+    wrist.stopWrist();
   }
 
   // Returns true when the command should end.

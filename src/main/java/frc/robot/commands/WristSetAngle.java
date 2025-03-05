@@ -14,11 +14,11 @@ public class WristSetAngle extends Command {
   private final Wrist wrist;
   private final FileLog log;
   private double angle;
-  private final double tolerance = 5.0; // tolerance of 5 degrees
+  private final double tolerance = 3.0; // tolerance of 5 degrees
   private boolean fromShuffleboard;
 
   /**
-   * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 5 degrees 
+   * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 3 degrees 
    * of the target. If the wrist is uncalbraated, this does nothing and ends immediately.
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    * @param wrist Wrist subsystem
@@ -33,7 +33,7 @@ public class WristSetAngle extends Command {
   }
 
   /**
-   * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 5 degrees 
+   * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 3 degrees 
    * of the target. If the wrist is uncalbraated, this does nothing and ends immediately.
    * @param position target WristAngle angle, in degrees (see Constants.WristAngle)
    * @param wrist Wrist subsystem
@@ -49,7 +49,7 @@ public class WristSetAngle extends Command {
 
   /**
    * Sets the target angle for the wrist from Shuffleboard and moves it to that angle. Ends when the wrist is 
-   * within 5 degrees of the target. If the wrist is uncalbraated, this does nothing and ends immediately.
+   * within 3 degrees of the target. If the wrist is uncalbraated, this does nothing and ends immediately.
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
