@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.WristConstants.WristAngle;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.FileLog;
@@ -59,7 +60,7 @@ public class WristSetAngle extends Command {
     fromShuffleboard = true;
 
     if (SmartDashboard.getNumber("Wrist Goal Angle", -9999) == -9999) {
-      SmartDashboard.putNumber("Wrist Goal Angle", 0);
+      SmartDashboard.putNumber("Wrist Goal Angle", WristConstants.WristAngle.CORAL_HP.value);
     }
 
     addRequirements(wrist);
@@ -68,7 +69,7 @@ public class WristSetAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Goal Angle", 0);
+    if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Goal Angle", WristConstants.WristAngle.CORAL_HP.value);
     wrist.setWristAngle(angle);
     log.writeLog(false, "WristSetAngle", "Init", "Target", angle);
 

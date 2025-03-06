@@ -16,9 +16,9 @@ public class ClimberCalibrateManual extends InstantCommand {
   private boolean fromShuffleboard;
 
   /**
-   * Manually calibrates the wrist, assuming we know its current angle.
-   * @param angle the angle the wrist is at, in degrees
-   * @param wrist Wrist subsystem
+   * Manually calibrates the climber, assuming we know its current angle.
+   * @param angle the angle the climber is at, in degrees
+   * @param climber Climber subsystem
    * @param log FileLog utility
    */
   public ClimberCalibrateManual(double angle, Climber climber, FileLog log) {
@@ -30,8 +30,8 @@ public class ClimberCalibrateManual extends InstantCommand {
   }
 
   /**
-   * Manually calibrates the wrist, assuming we know its current angle.
-   * @param wrist Wrist subsystem
+   * Manually calibrates the climber, assuming we know its current angle.
+   * @param climber Climber subsystem
    * @param log FileLog utility
    */
   public ClimberCalibrateManual(Climber climber, FileLog log) {
@@ -40,17 +40,17 @@ public class ClimberCalibrateManual extends InstantCommand {
     fromShuffleboard = true;
     addRequirements(climber);
 
-    if (SmartDashboard.getNumber("Wrist Manual Calibration Value", -9999) == -9999) {
-      SmartDashboard.putNumber("Wrist Manual Calibration Value", 0);
+    if (SmartDashboard.getNumber("Climber Manual Calibration Value", -9999) == -9999) {
+      SmartDashboard.putNumber("Climber Manual Calibration Value", 0);
     }
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Manual Calibration Value", 0);
+    if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Manual Calibration Value", 0);
     climber.calibrateClimberEncoder(angle);
 
-    log.writeLog(true, "WristCalibrateManual", "Init", "Angle", angle);
+    log.writeLog(true, "ClimberCalibrateManual", "Init", "Angle", angle);
   }
 }

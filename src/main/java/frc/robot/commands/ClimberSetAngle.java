@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
 import frc.robot.subsystems.Climber;
 import frc.robot.utilities.FileLog;
@@ -59,7 +60,7 @@ public class ClimberSetAngle extends Command {
     fromShuffleboard = true;
 
     if (SmartDashboard.getNumber("Climber Goal Angle", -9999) == -9999) {
-      SmartDashboard.putNumber("Climber Goal Angle", 0);
+      SmartDashboard.putNumber("Climber Goal Angle", ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
     }
 
     addRequirements(climber);
@@ -68,7 +69,7 @@ public class ClimberSetAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Goal Angle", 0);
+    if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Goal Angle", ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
     climber.setClimberAngle(angle);
     log.writeLog(false, "ClimberSetAngle", "Init", "Target", angle);
 

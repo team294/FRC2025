@@ -50,7 +50,7 @@ public class WristSetPercentOutput extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) percent = SmartDashboard.getNumber("Wrist Percent", 0);
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("Wrist Set Percent", 0);
     wrist.setWristPercentOutput(percent);
     log.writeLog(false, "WristSetPercentOutput", "Init", "Percent", percent);
   }

@@ -50,7 +50,7 @@ public class ClimberSetPercentOutput extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Percent", 0);
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Set Percent", 0);
     climber.setClimberPercentOutput(percent);
     log.writeLog(false, "ClimberSetPercentOutput", "Init", "Percent", percent);
   }
