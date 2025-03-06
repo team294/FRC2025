@@ -28,7 +28,7 @@ public class AlgaeScorePrepSequence extends SequentialCommandGroup {
     if (angle == null) return;
 
     addCommands(
-      new WristElevatorPrepSequence(position, null, elevator, wrist, log)
+      new WristElevatorPrepSequence(position, angle, elevator, wrist, log)
       // TODO set in algae mode
     );
   }

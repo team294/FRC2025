@@ -44,6 +44,7 @@ public class RobotContainer {
   private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
   private final Wrist wrist = new Wrist("Wrist", log);
   private final Elevator elevator = new Elevator("Elevator", log);
+  private final Climber climber = new Climber("Climber", log);
 
   // Define other utilities
   // private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
@@ -116,6 +117,12 @@ public class RobotContainer {
     SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L3.value, elevator, log));
     SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L4.value, elevator, log));
     SmartDashboard.putData("Elevator Calibration", new ElevatorCalibration(0.1, elevator, log));
+
+    // Climber
+    SmartDashboard.putData("Climber Stop", new ClimberStop(climber, log));
+    SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber, log));
+    SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber, log));
+    SmartDashboard.putData("Climber Manually Calibrate", new ClimberCalibrateManual(climber, log));
     
     // Autos
 

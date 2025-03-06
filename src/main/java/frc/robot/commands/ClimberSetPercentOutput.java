@@ -6,53 +6,53 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.Climber;
 import frc.robot.utilities.FileLog;
 
-public class WristSetPercentOutput extends Command {
-  private final Wrist wrist;
+public class ClimberSetPercentOutput extends Command {
+  private final Climber climber;
   private final FileLog log;
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
   /**
    * Sets the percent output of the coralEffector from Shuffleboard.
-   * <b>NOTE: This command does not end. When interrupted, it turns off the wrist motor.
-   * @param wrist Wrist subsystem
+   * <b>NOTE: This command does not end. When interrupted, it turns off the climber motor.
+   * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public WristSetPercentOutput(Wrist wrist, FileLog log) {
-    this.wrist = wrist;
+  public ClimberSetPercentOutput(Climber climber, FileLog log) {
+    this.climber = climber;
     this.log = log;
     this.fromShuffleboard = true;
-    addRequirements(wrist);
+    addRequirements(climber);
 
-    if (SmartDashboard.getNumber("Wrist Set Percent", -9999) == -9999) {
-      SmartDashboard.putNumber("Wrist Set Percent", 0);
+    if (SmartDashboard.getNumber("Climber Set Percent", -9999) == -9999) {
+      SmartDashboard.putNumber("Climber Set Percent", 0);
     }
   }
 
   /**
-   * Sets the percent output of the wrist.
-   * <b>NOTE: This command does not end. When interrupted, it turns off the wrist motor.
+   * Sets the percent output of the climber.
+   * <b>NOTE: This command does not end. When interrupted, it turns off the climber motor.
    * @param percent -1.0 to 1.0 (positive = up, negative = down)
-   * @param wrist Wrist subsystem
+   * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public WristSetPercentOutput(double percent, Wrist wrist, FileLog log) {
+  public ClimberSetPercentOutput(double percent, Climber climber, FileLog log) {
     this.log = log;
-    this.wrist = wrist;
+    this.climber = climber;
     this.percent = percent;
     this.fromShuffleboard = false;
-    addRequirements(wrist);
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) percent = SmartDashboard.getNumber("Wrist Set Percent", 0);
-    wrist.setWristPercentOutput(percent);
-    log.writeLog(false, "WristSetPercentOutput", "Init", "Percent", percent);
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Set Percent", 0);
+    climber.setClimberPercentOutput(percent);
+    log.writeLog(false, "ClimberSetPercentOutput", "Init", "Percent", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -63,7 +63,7 @@ public class WristSetPercentOutput extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    wrist.stopWrist();
+    climber.stopClimber();
   }
 
   // Returns true when the command should end.

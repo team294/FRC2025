@@ -478,6 +478,9 @@ public class Wrist extends SubsystemBase implements Loggable {
    * @param deltaDegrees degrees to move (positive = down, negative = up)
    */
   public void nudgeWristAngle(double deltaDegrees) {
+    // This is dangerous.  Do not use this code for now.  -Don
+
+    /*
     // Do not attempt to nudge if the wrist is not calibrated
     if (!wristCalibrated) return;
 
@@ -495,6 +498,8 @@ public class Wrist extends SubsystemBase implements Loggable {
     
     log.writeLogEcho(true, "Wrist", "NudgeWristAngle", 
       "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getWristEncoderRotationsRaw(), "Angle", getWristAngle(), "Target", getCurrentWristTarget());
+
+    */
   }
 
   //****** Information methods

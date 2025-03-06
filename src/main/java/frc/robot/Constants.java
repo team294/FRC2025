@@ -54,7 +54,7 @@ public final class Constants {
     public static final int CANTurnEncoderBackLeft = 11;
     public static final int CANTurnEncoderBackRight = 12;
     public static final int CANWristEncoder = 13;
-    // public static final int CANClimbEncoder = 14;
+    public static final int CANClimberEncoder = 14;
 
     public static final int CANElevator1 = 15;
     public static final int CANElevator2 = 16;
@@ -62,8 +62,7 @@ public final class Constants {
     public static final int CANCoralEffector = 18;
     public static final int CANCoralGrabber = 19;
     public static final int CANWrist = 20;
-    // public static final int CANClimb1 = 21;
-    // public static final int CANClimb2 = 22;
+    public static final int CANClimber = 21;
 
     public static final int CANPigeonGyro = 23;
 
@@ -174,7 +173,7 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
-    public static final double maxPercentOutput = -0.1;             // TODO CALIBRATE FOR 2025
+    public static final double maxPercentOutput = 0.2;              // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
     public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
@@ -183,16 +182,16 @@ public final class Constants {
     public static double cancoderDiscontinuityPoint = 1.0;          // TODO CALIBRATE FOR 2025
 
 
-    public static final double kP = 0.5;    // TODO CALIBRATE FOR 2025
+    public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025    kP = (desired-output-volts) / (error-in-wrist-rotations)
     public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
     public static final double kD = 0.0;    // TODO CALIBRATE FOR 2025
-    public static final double kG = 0.174;  // TODO CALIBRATE FOR 2025
-    public static final double kS = 0.0367; // TODO CALIBRATE FOR 2025
-    public static final double kV = 0.1171; // TODO CALIBRATE FOR 2025
+    public static final double kG = 0.0;  // TODO CALIBRATE FOR 2025    kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
+    public static final double kS = 0.0; // TODO CALIBRATE FOR 2025
+    public static final double kV = 0.0; // TODO CALIBRATE FOR 2025
 
-    public static final double MMCruiseVelocity = 20.0;                   // Max velocity in motor rotations / second TODO CALIBRATE FOR 2025
-    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in motor rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
-    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in motor rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
+    public static final double MMCruiseVelocity = 0.25;                   // Max velocity in wrist rotations / second TODO CALIBRATE FOR 2025
+    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in wrist rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
+    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in wrist rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
 
     // TODO add wrist regions
     public enum WristRegion {
@@ -220,6 +219,49 @@ public final class Constants {
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
       WristAngle(double value) { this.value = value; }
+    }
+  }
+
+  public static final class ClimberConstants {
+    // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
+    // where a ratio greater than 1 is a reduction.
+    // TODO VERY IMPORTANT DONT EVEN THINK ABOUT COMITTING W/O CHANGING THIS GEAR RATIO (if necessary)
+    public static final double kClimberGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // TODO CALIBRATE FOR 2025
+    public static final double kClimberDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
+    
+    public static final double compensationVoltage = 12.0;
+    public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
+    public static final double maxPercentOutput = 0.2;             // TODO CALIBRATE FOR 2025
+
+    // Should be updated in RobotPreferences, so it cannot be final
+    public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
+    // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
+    // TODO update this value based on the center of the region of unallowed motion
+    public static double cancoderDiscontinuityPoint = 1.0;          // TODO CALIBRATE FOR 2025
+
+
+    public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025      kP = (desired-output-volts) / (error-in-wrist-rotations)
+    public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kD = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kG = 0.0;    // TODO CALIBRATE FOR 2025      kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
+    public static final double kS = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kV = 0.0;    // TODO CALIBRATE FOR 2025
+
+    public static final double MMCruiseVelocity = 0.25;                   // Max velocity in climber rotations / second TODO CALIBRATE FOR 2025
+    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in climber rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
+    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in climber rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
+
+    // TODO CALIBRATE FOR 2025
+    public enum ClimberAngle {
+      LOWER_LIMIT(-0),
+      UPPER_LIMIT(-0),
+
+      CLIMB_START(-0),
+      CLIMB_END(-0);
+
+      @SuppressWarnings({"MemberName", "PMD.SingularField"})
+      public final double value;
+      ClimberAngle(double value) { this.value = value; }
     }
   }
 }
