@@ -250,17 +250,11 @@ public final class Constants {
     public static final double MMCruiseVelocity = 20.0;                   // Max velocity in motor rotations / second TODO CALIBRATE FOR 2025
     public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in motor rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
     public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in motor rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
-  
-    // TODO add climber regions
-    public enum ClimberRegion {
-      main,
-      uncalibrated;
-    }
 
-    // TODO add angles
+    // TODO CALIBRATE FOR 2025
     public enum ClimberAngle {
-      start(-0),
-      end(-0),
+      CLIMB_START(-0),
+      CLIMB_END(-0),
       UPPER_LIMIT(-0),
       LOWER_LIMIT(-0);
 

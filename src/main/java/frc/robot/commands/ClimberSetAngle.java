@@ -14,27 +14,27 @@ public class ClimberSetAngle extends Command {
   private final Climber climber;
   private final FileLog log;
   private double angle;
-  private final double tolerance = 3.0; // tolerance of 5 degrees
+  private final double tolerance = 3.0; // tolerance of 3 degrees
   private boolean fromShuffleboard;
 
   /**
    * Sets the target angle for the climber and moves it to that angle. Ends when the climber is within 3 degrees 
-   * of the target. If the climber is uncalbraated, this does nothing and ends immediately.
+   * of the target. If the climber is uncalibrated, this does nothing and ends immediately.
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
   public ClimberSetAngle(double angle, Climber climber, FileLog log) {
-      this.climber = climber;
-      this.log = log;
-      this.angle = angle;
-      fromShuffleboard = false;
-      addRequirements(climber);
+    this.climber = climber;
+    this.log = log;
+    this.angle = angle;
+    fromShuffleboard = false;
+    addRequirements(climber);
   }
 
   /**
    * Sets the target angle for the climber and moves it to that angle. Ends when the climber is within 3 degrees 
-   * of the target. If the climber is uncalbraated, this does nothing and ends immediately.
+   * of the target. If the climber is uncalibrated, this does nothing and ends immediately.
    * @param position target ClimberAngle angle, in degrees (see Constants.ClimberAngle)
    * @param climber Climber subsystem
    * @param log FileLog utility
@@ -49,7 +49,7 @@ public class ClimberSetAngle extends Command {
 
   /**
    * Sets the target angle for the climber from Shuffleboard and moves it to that angle. Ends when the climber is 
-   * within 3 degrees of the target. If the climber is uncalbraated, this does nothing and ends immediately.
+   * within 3 degrees of the target. If the climber is uncalibrated, this does nothing and ends immediately.
    * @param climber Climber subsystem
    * @param log FileLog utility
    */

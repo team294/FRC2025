@@ -23,7 +23,6 @@ import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.Wait;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
-import frc.robot.Constants.ClimberConstants.ClimberRegion;
 
 public class Climber extends SubsystemBase implements Loggable {
   private final FileLog log;
@@ -239,7 +238,6 @@ public class Climber extends SubsystemBase implements Loggable {
 
   /**
    * Sets the percent output of the climber motor using voltage compensation.
-   * <b>NOTE: There are no elevator interlocks on this method!
    * @param percent output percent, -1.0 to 1.0 (positive = up, negative = down)
    */
   public void setClimberPercentOutput(double percent) {
@@ -249,14 +247,12 @@ public class Climber extends SubsystemBase implements Loggable {
       percent = MathUtil.clamp(percent, -ClimberConstants.maxUncalibratedPercentOutput, ClimberConstants.maxUncalibratedPercentOutput);
     }
 
-    // TODO add interlocks with elevator, algaeGrabber, and coralEffector
-
     climberMotor.setControl(climberVoltageControl.withOutput(percent * ClimberConstants.compensationVoltage));
   }
 
   /**
    * Gets the percent output of the climber.
-   * @return percent output percent, -1.0 to 1.0 (positive = up, negative = down)
+   * @return percent output, -1.0 to 1.0 (positive = up, negative = down)
    */
   public double getClimberMotorPercentOutput() {
     climberDutyCycle.refresh(); // Verified that this is not a blocking call
@@ -275,8 +271,7 @@ public class Climber extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Only works when encoder is working and calibrated
-   * Interlocks with elevator position
+   * Sets the climber angle, only when the encoder is working and calibrated, operating with interlocks.
    * @param angle target angle, per ClimberContstants.ClimberAngle
    */
   public void setClimberAngle(ClimberAngle angle) {
@@ -284,18 +279,15 @@ public class Climber extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Sets the angle of the climber of the encoder is working and calibrated, operating with interlocks.
+   * Sets the angle of the climber only when the encoder is working and calibrated, operating with interlocks.
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    */
   public void setClimberAngle(double angle) {
     if (climberCalibrated) {
       // Keep the climber in usable range
       safeAngle = MathUtil.clamp(angle, ClimberConstants.ClimberAngle.LOWER_LIMIT.value, ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
-
-      // ClimberRegion curRegion = getRegion(getClimberAngle());
-      // TODO add interlocks with elevator, algaeGrabber, and coralEffector
       
-      // Phoenix6 PositionVoltage control:  Position is in rotor rotations, FeedFoward is in Volts
+      // Phoenix6 PositionVoltage control: Position is in rotor rotations, FeedFoward is in Volts
       climberMotor.setControl(climberMMVoltageControl.withPosition(climberDegreesToEncoderRotations(safeAngle))
                             .withFeedForward(ClimberConstants.kG * Math.cos(safeAngle * Math.PI / 180.0)) );
 
@@ -329,33 +321,10 @@ public class Climber extends SubsystemBase implements Loggable {
     }
   }
 
-  // ********** Climber region methods
-
-  /**
-   * Gets the climber region for a given angle.
-   * NOTE: This is for internal subsystem use only. Use getClimberRegion() when calling from outside.
-   * @param degrees angle, in degrees
-   * @return corresponding climber region
-   */
-  private ClimberRegion getRegion(double degrees) {
-    // TODO add climber regions
-    return ClimberRegion.main; 
-  }
-
-  /**
-   * Gets the climber region for a given angle.
-   * @param degrees angle, in degrees
-   * @return corresponding climber region
-   */
-  public ClimberRegion getClimberRegion() {
-    if (!climberCalibrated) return ClimberRegion.uncalibrated;
-    return getRegion(getClimberAngle());
-  }
-
   //****** CANcoder methods
 
   /**
-   * Gets whether the CANcoder is connected to the robot and reading the magnet
+   * Gets whether the CANcoder is connected to the robot and reading the magnet.
    * @return true = CANcoder is connected, false = CANcoder is not connected
    */
   public boolean isCANcoderConnected() {
@@ -363,7 +332,7 @@ public class Climber extends SubsystemBase implements Loggable {
     MagnetHealthValue magnetHealth = canCoderMagnetHealth.getValue();
     
     return canCoder.isConnected() && 
-      ( magnetHealth == MagnetHealthValue.Magnet_Green ||
+      (magnetHealth == MagnetHealthValue.Magnet_Green ||
         magnetHealth == MagnetHealthValue.Magnet_Orange);
   }
 
@@ -447,7 +416,7 @@ public class Climber extends SubsystemBase implements Loggable {
     climberCalibrated = true;
 
     log.writeLogEcho(true, "Climber", "Calibrate", "Using CANcoder", usingCANcoder,
-      "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getClimberEncoderRotationsRaw(), "Angle", getClimberAngle(), "Target", getCurrentClimberTarget());
+      "Enc Zero", encoderZero, "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getClimberEncoderRotationsRaw(), "Angle", getClimberAngle(), "Target", getCurrentClimberTarget());
 
     if (usingCANcoder) {
       // Set software limits after setting encoderZero
@@ -470,31 +439,6 @@ public class Climber extends SubsystemBase implements Loggable {
       // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
       climberMotorConfigurator.apply(climberMotor_RotorEncoderConfig);      
     }
-  }
-
-  /**
-   * Adjusts the current calibration degrees of the climber by a small amount.
-   * Will not do anything if climber in uncalibrated.
-   * @param deltaDegrees degrees to move (positive = down, negative = up)
-   */
-  public void nudgeClimberAngle(double deltaDegrees) {
-    // Do not attempt to nudge if the climber is not calibrated
-    if (!climberCalibrated) return;
-
-    // Save the current write control method (position vs voltage/off)
-    boolean isPositionControl = isClimberMotorPositionControl();
-
-    // Adjust by recalibrating with a modified degrees, then set to the new angle
-    // Note that calibrating the climber turns off position control.
-    calibrateClimberEncoder(getClimberEncoderDegrees() + deltaDegrees);
-
-    // Only set the angle if in position control mode
-    if (isPositionControl) {
-      setClimberAngle(safeAngle);
-    }
-    
-    log.writeLogEcho(true, "Climber", "NudgeClimberAngle", 
-      "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getClimberEncoderRotationsRaw(), "Angle", getClimberAngle(), "Target", getCurrentClimberTarget());
   }
 
   //****** Information methods
@@ -572,7 +516,5 @@ public class Climber extends SubsystemBase implements Loggable {
     if (DriverStation.isDisabled()) {
       stopClimber();
     }
-
-    // TODO Apply interlocks for manual motion or safeAngle
   }
 }
