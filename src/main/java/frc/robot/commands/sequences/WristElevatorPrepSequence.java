@@ -25,7 +25,7 @@ import frc.robot.utilities.FileLog;
 public class WristElevatorPrepSequence extends SequentialCommandGroup {
   public WristElevatorPrepSequence(ElevatorPosition position, WristAngle angle, Elevator elevator, Wrist wrist, FileLog log) {
     addCommands(
-      new WristSetAngle(angle, wrist, log),
+      // new WristSetAngle(angle, wrist, log),
       new ElevatorSetPosition(position, elevator, log)
     );
   }
