@@ -253,7 +253,8 @@ public class RobotContainer {
     }
 
     // ex: left[1].onTrue(new command);
-    left[1].onTrue(either( // 180 if we're red, 0 if we're blue
+    // 180 if we're red, 0 if we're blue
+    left[1].onTrue(either(
     new DriveResetPose(180, false, driveTrain, log), 
     new DriveResetPose(0, false, driveTrain, log), 
     () -> allianceSelection.getAlliance() == Alliance.Red));
@@ -300,7 +301,8 @@ public class RobotContainer {
     coP[11].onTrue(new AlgaeGrabberOuttake(algaeGrabber, log));
     coP[12].onTrue(new AlgaeGrabberIntake(algaeGrabber, log));
 
-    coP[7].onTrue(either( // 180 if we're red, 0 if we're blue
+    // 180 if we're red, 0 if we're blue
+    coP[7].onTrue(either(
         new DriveResetPose(180, false, driveTrain, log), 
         new DriveResetPose(0, false, driveTrain, log), 
         () -> allianceSelection.getAlliance() == Alliance.Red));

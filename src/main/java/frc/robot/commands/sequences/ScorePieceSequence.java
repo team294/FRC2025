@@ -16,10 +16,6 @@ import frc.robot.subsystems.CoralEffector;
 import frc.robot.utilities.FileLog;
 
 public class ScorePieceSequence extends SequentialCommandGroup {
-  CoralEffector coralEffector;
-  AlgaeGrabber algaeGrabber;
-  FileLog log;
-
   /**
    * Scores piece depending on what piece(s) is/are held. If holding 
    * both coral and algae, score algae. Otherwise, score held piece.
@@ -29,10 +25,6 @@ public class ScorePieceSequence extends SequentialCommandGroup {
    * @param log FileLog utility
    */
   public ScorePieceSequence(CoralEffector coralEffector, AlgaeGrabber algaeGrabber, FileLog log) {
-    this.coralEffector = coralEffector;
-    this.algaeGrabber = algaeGrabber;
-    this.log = log;
-
     if (coralEffector.isCoralSafelyIn() && algaeGrabber.isAlgaePresent()) {
       addCommands(
         new AlgaeGrabberOuttake(algaeGrabber, log),
