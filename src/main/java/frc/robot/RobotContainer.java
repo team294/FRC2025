@@ -104,8 +104,8 @@ public class RobotContainer {
 
     // Wrist
     SmartDashboard.putData("Wrist Stop", new WristStop(wrist, log));
-    SmartDashboard.putData("Wrist Set Percent", new WristSetPercentOutput(wrist, log));
-    SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist, log));
+    SmartDashboard.putData("Wrist Set Percent Output", new WristSetPercentOutput(wrist, log));
+    SmartDashboard.putData("Wrist Reset Angle", new WristSetAngle(wrist, log));
     SmartDashboard.putData("Wrist Manually Calibrate", new WristCalibrateManual(wrist, log));
 
     // Elevator
@@ -113,15 +113,17 @@ public class RobotContainer {
     SmartDashboard.putData("Elevator Move Down", new ElevatorSetPercent(-.05, elevator, log));
     SmartDashboard.putData("Elevator Stop Motors", new ElevatorStop(elevator, log));
     SmartDashboard.putData("Elevator Move To 20 Inches", new ElevatorSetPosition(20.0, elevator, log));
-    SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L2.value, elevator, log));
-    SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L3.value, elevator, log));
-    SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorConstants.ElevatorPosition.CORAL_L4.value, elevator, log));
+    SmartDashboard.putData("Elevator Move to HP", new ElevatorSetPosition(ElevatorPosition.CORAL_HP, elevator, log));
+    SmartDashboard.putData("Elevator Move to L1", new ElevatorSetPosition(ElevatorPosition.CORAL_L1, elevator, log));
+    SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorPosition.CORAL_L2, elevator, log));
+    SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorPosition.CORAL_L3, elevator, log));
+    SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorPosition.CORAL_L4, elevator, log));
     SmartDashboard.putData("Elevator Calibration", new ElevatorCalibration(0.1, elevator, log));
 
     // Climber
     SmartDashboard.putData("Climber Stop", new ClimberStop(climber, log));
-    SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber, log));
-    SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber, log));
+    SmartDashboard.putData("Climber Set Percent Output", new ClimberSetPercentOutput(climber, log));
+    SmartDashboard.putData("Climber Reset Angle", new ClimberSetAngle(climber, log));
     SmartDashboard.putData("Climber Manually Calibrate", new ClimberCalibrateManual(climber, log));
     
     // Autos
@@ -129,6 +131,21 @@ public class RobotContainer {
     // Copanel buttons
 
     // Vision
+
+    // Sequences
+    SmartDashboard.putData("Algae Intake Sequence Ground", new AlgaeIntakeSequence(ElevatorPosition.ALGAE_GROUND, elevator, wrist, algaeGrabber, log));
+    SmartDashboard.putData("Algae Intake Sequence Lower", new AlgaeIntakeSequence(ElevatorPosition.ALGAE_LOWER, elevator, wrist, algaeGrabber, log));
+    SmartDashboard.putData("Algae Intake Sequence Upper", new AlgaeIntakeSequence(ElevatorPosition.ALGAE_UPPER, elevator, wrist, algaeGrabber, log));
+    SmartDashboard.putData("Algae Score Prep Sequence Processor", new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_PROCESSOR, elevator, wrist, log));
+    SmartDashboard.putData("Algae Score Prep Sequence Net", new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_NET, elevator, wrist, log));
+
+    SmartDashboard.putData("Coral Intake Sequence", new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log));
+    SmartDashboard.putData("Coral Score Prep Sequence L1", new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L1, log));
+    SmartDashboard.putData("Coral Score Prep Sequence L2", new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L2, log));
+    SmartDashboard.putData("Coral Score Prep Sequence L3", new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L3, log));
+    SmartDashboard.putData("Coral Score Prep Sequence L4", new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L4, log));
+
+    SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber, log));
   }
  
    private void configureButtonBindings() {
