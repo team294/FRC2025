@@ -18,7 +18,7 @@
             },
             "children": [
               {
-                "title": "Autonomous delay",
+                "title": "Autonomous Delay",
                 "x": 256.0,
                 "y": 256.0,
                 "width": 128.0,
@@ -32,7 +32,7 @@
                 }
               },
               {
-                "title": "Autonomous routine",
+                "title": "Autonomous Routine",
                 "x": 384.0,
                 "y": 384.0,
                 "width": 128.0,
@@ -1219,20 +1219,7 @@
             },
             "children": [
               {
-                "title": "Intake Coral (-10%)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/CoralEffector Set -10%",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Reverse (+10%)",
+                "title": "Intake/Outtake Coral (+10%)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1240,6 +1227,19 @@
                 "type": "Command",
                 "properties": {
                   "topic": "/SmartDashboard/CoralEffector Set 10%",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Reverse (-10%)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/CoralEffector Set -10%",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -1322,20 +1322,7 @@
             },
             "children": [
               {
-                "title": "Intake Coral (-10%)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Hopper Set -10%",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Reverse (+10%)",
+                "title": "Intake Coral (+10%)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1343,6 +1330,19 @@
                 "type": "Command",
                 "properties": {
                   "topic": "/SmartDashboard/Hopper Set 10%",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Reverse (-10%)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper Set -10%",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -1427,7 +1427,7 @@
                 }
               },
               {
-                "title": "Climber Manually Calibrate",
+                "title": "Climber Calibrate ROTOR ENC",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1557,7 +1557,7 @@
                 }
               },
               {
-                "title": "Wrist Manually Calibrate",
+                "title": "Wrist Calibrate ROTOR ENC",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
