@@ -274,14 +274,14 @@ public class RobotContainer {
     }
 
     // ex: coP[1].onTrue(new command);
-    coP[1].onTrue(new ElevatorSetPercent(.05, false, elevator, log));
-    coP[2].onTrue(new ElevatorSetPercent(-.05, false, elevator, log));
+    coP[1].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator, log));
+    coP[2].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator, log));
 
-    coP[3].onTrue(new WristSetPercentOutput(.05, wrist, log));
-    coP[4].onTrue(new WristSetPercentOutput(-.05, wrist, log));
+    coP[3].onTrue(new WristSetPercentOutput(WristConstants.maxManualPercentOutput, wrist, log));
+    coP[4].onTrue(new WristSetPercentOutput(-WristConstants.maxManualPercentOutput, wrist, log));
 
-    coP[5].onTrue(new ClimberSetPercentOutput(.05, climber, log));
-    coP[6].onTrue(new ClimberSetPercentOutput(-.05, climber, log));
+    coP[5].onTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber, log));
+    coP[6].onTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber, log));
 
     coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber, log));
     coP[13].onTrue(new ClimberSetAngle(ClimberAngle.CLIMB_END, climber, log));
@@ -292,7 +292,10 @@ public class RobotContainer {
     coP[11].onTrue(new AlgaeGrabberOuttake(algaeGrabber, log));
     coP[12].onTrue(new AlgaeGrabberIntake(algaeGrabber, log));
 
-    coP[7].onTrue(new DriveResetPose(driveTrain, log));
+    coP[7].onTrue(either( // 180 if we're red, 0 if we're blue
+        new DriveResetPose(180, false, driveTrain, log), 
+        new DriveResetPose(0, false, driveTrain, log), 
+        () -> allianceSelection.getAlliance() == Alliance.Red));
   }
 
   private void configureTriggers() {

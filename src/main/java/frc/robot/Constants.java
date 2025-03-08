@@ -333,6 +333,7 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
+    public static final double maxManualPercentOutput = 0.05;       // TODO CALIBRATE FOR 2025
     public static final double maxPercentOutput = 0.2;              // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
@@ -390,6 +391,7 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
+    public static final double maxManualPercentOutput = 0.05;       // TODO CALIBRATE FOR 2025
     public static final double maxPercentOutput = 0.2;             // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
