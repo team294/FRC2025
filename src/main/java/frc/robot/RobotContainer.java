@@ -25,7 +25,6 @@ import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 import frc.robot.Constants.*;
-import frc.robot.Constants.ClimberConstants.ClimberAngle;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 
 /**
@@ -284,7 +283,7 @@ public class RobotContainer {
     coP[6].onTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber, log));
 
     coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber, log));
-    coP[13].onTrue(new ClimberSetAngle(ClimberAngle.CLIMB_END, climber, log));
+    coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
 
     coP[9].onTrue(new CoralEffectorOuttake(coralEffector, log));
     coP[10].onTrue(new CoralEffectorIntake(coralEffector, log));
