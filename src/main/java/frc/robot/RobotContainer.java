@@ -168,6 +168,7 @@ public class RobotContainer {
     SmartDashboard.putData("Coral Score Prep Sequence L4", new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L4, log));
 
     SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber, log));
+    SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
   }
  
    private void configureButtonBindings() {
