@@ -4,12 +4,9 @@
 
 package frc.robot.commands.sequences;
 
-import static edu.wpi.first.wpilibj2.command.Commands.*;
-
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Wrist;
-import frc.robot.Constants.WristConstants.WristAngle;
 import frc.robot.commands.AlgaeGrabberIntake;
 import frc.robot.subsystems.AlgaeGrabber;
 import frc.robot.subsystems.Elevator;
@@ -19,35 +16,17 @@ import frc.robot.utilities.FileLog;
 /**
  * Intakes algae by moving the wrist and elevator to the indicated intake position, and then 
  * running the algaeGrabber until the algae is in the mechanism.
- * @param position position to move elevator to (use ElevatorConstants.ElevatorPosition.ALGAE_...)
+ * @param position position to move elevator to (use ElevatorWristConstants.ElevatorWristPosition.ALGAE_...)
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
  * @param algaeGrabber AlgaeGrabber subsystem
  * @param log FileLog utility
  */
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
-  public AlgaeIntakeSequence(ElevatorPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
-    WristAngle angle = null;
-
-    switch (position) {
-      case ALGAE_GROUND:
-        angle = WristAngle.ALGAE_GROUND;
-        break;
-      case ALGAE_LOWER:
-      case ALGAE_UPPER:
-        angle = WristAngle.ALGAE_REEF;
-        break;
-      default:
-        break;
-    }
-
-    if (angle == null) {
-      addCommands(none());
-    } else {
-      addCommands(
-        new WristElevatorPrepSequence(position, angle, elevator, wrist, log),
-        new AlgaeGrabberIntake(algaeGrabber, log)    
-      );
-    }
+  public AlgaeIntakeSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
+    addCommands(
+      new WristElevatorPrepSequence(position, elevator, wrist, log),
+      new AlgaeGrabberIntake(algaeGrabber, log)    
+    );
   }
 }
