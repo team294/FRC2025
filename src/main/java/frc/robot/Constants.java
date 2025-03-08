@@ -276,7 +276,7 @@ public final class Constants {
     public static final double reverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 
-  public static class CoralEffectorConstants {
+  public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;   // TODO CALIBRATE FOR 2025
     public static final double outtakePercent = -0.1; // TODO CALIBRATE FOR 2025
@@ -303,24 +303,10 @@ public final class Constants {
     // TODO CALIBRATE FOR 2025
     public enum ElevatorPosition {
       LOWER_LIMIT(0.0),
-      UPPER_LIMIT(90.0),
-
-      CORAL_HP(0.0),
-
-      CORAL_L1(14.0),
-      CORAL_L2(19.25),
-      CORAL_L3(35.25),
-      CORAL_L4(62.0),
-      
-      ALGAE_GROUND(14.0),
-      ALGAE_LOWER(19.25),
-      ALGAE_UPPER(35.25),
-      
-      ALGAE_PROCESSOR(10.0),
-      ALGAE_NET(80.0);
+      UPPER_LIMIT(90.0);
  
+      @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
-  
       ElevatorPosition(double value) { this.value = value; }
     }
   }
@@ -362,24 +348,40 @@ public final class Constants {
     // TODO CALIBRATE FOR 2025
     public enum WristAngle {
       LOWER_LIMIT(0.0),
-      UPPER_LIMIT(0.0),
-      CALIBRATE_MANUAL(0.0),
-
-      CORAL_HP(0.0),
-
-      CORAL_L1(0.0),
-      CORAL_L2_L3(0.0),
-      CORAL_L4(0.0),
-
-      ALGAE_GROUND(0.0),
-      ALGAE_REEF(0.0),
-
-      ALGAE_PROCESSOR(0.0),
-      ALGAE_NET(0.0);
+      UPPER_LIMIT(0.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
       WristAngle(double value) { this.value = value; }
+    }
+  }
+
+  public static final class ElevatorWristConstants {
+    public enum ElevatorWristPosition {
+      START_CONFIG(0.0, 90.0),
+
+      CORAL_HP(0.0, 69.0),
+
+      CORAL_L1(25.56, 55.0),
+      CORAL_L2(25.56, 55.0),
+      CORAL_L3(40.78, 55.0),
+      CORAL_L4(70.7, 20.0),
+
+      ALGAE_GROUND(5.8, -18.5),
+      ALGAE_LOWER(34.0, -15.0),
+      ALGAE_UPPER(49.7, -15.0),
+
+      ALGAE_PROCESSOR(9.84, 0.0),
+      ALGAE_NET(63.0, 70.0);
+
+      @SuppressWarnings({"MemberName", "PMD.SingularField"})
+      public final double elevatorPosition;
+      public final double wristAngle;
+
+      ElevatorWristPosition(double elevatorPosition, double wristAngle) {
+        this.elevatorPosition = elevatorPosition;
+        this.wristAngle = wristAngle;
+      }
     }
   }
 

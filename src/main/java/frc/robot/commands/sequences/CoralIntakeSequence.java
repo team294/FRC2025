@@ -7,8 +7,7 @@ package frc.robot.commands.sequences;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.HopperConstants;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
-import frc.robot.Constants.WristConstants.WristAngle;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.CoralEffectorIntake;
 import frc.robot.commands.HopperSetPercent;
 import frc.robot.commands.HopperStop;
@@ -32,7 +31,7 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
    */
   public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, FileLog log) {
     addCommands(
-      new WristElevatorPrepSequence(ElevatorPosition.CORAL_HP, WristAngle.CORAL_HP, elevator, wrist, log),
+      new WristElevatorPrepSequence(ElevatorWristPosition.CORAL_HP, elevator, wrist, log),
       new ParallelCommandGroup(
         new HopperSetPercent(HopperConstants.intakePercent, hopper, log),
         new CoralEffectorIntake(coralEffector, log)
