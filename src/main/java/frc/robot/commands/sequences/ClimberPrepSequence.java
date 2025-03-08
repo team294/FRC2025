@@ -6,8 +6,7 @@ package frc.robot.commands.sequences;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
-import frc.robot.Constants.WristConstants.WristAngle;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.ClimberSetAngle;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -26,7 +25,7 @@ public class ClimberPrepSequence extends SequentialCommandGroup {
    */
   public ClimberPrepSequence(Elevator elevator, Wrist wrist, Climber climber, FileLog log) {
     addCommands(
-      new WristElevatorPrepSequence(ElevatorPosition.CORAL_HP, WristAngle.CORAL_HP, elevator, wrist, log),
+      new WristElevatorPrepSequence(ElevatorWristPosition.CORAL_HP, elevator, wrist, log),
       new ClimberSetAngle(ClimberAngle.CLIMB_START, climber, log)
     );
   }

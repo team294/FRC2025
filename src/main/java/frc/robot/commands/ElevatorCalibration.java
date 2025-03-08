@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.subsystems.Elevator;
 import frc.robot.utilities.FileLog;
 
@@ -60,7 +61,7 @@ public class ElevatorCalibration extends Command {
     switch (state) {
       // Ramp upwards until 10 inches from top
       case RAMP_UP:
-        if (elevator.getElevatorPosition() < ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value - 10.0) {
+        if (elevator.getElevatorPosition() < ElevatorPosition.UPPER_LIMIT.value - 10.0) {
           percentOutput = MathUtil.clamp(currTime * rampRate, -1.0, 1.0);
           elevator.setElevatorPercentOutput(percentOutput);      
         } else {

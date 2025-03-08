@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Elevator;
 import frc.robot.utilities.FileLog;
 
@@ -33,14 +33,14 @@ public class ElevatorSetPosition extends Command {
   /**
    * Sets the target position of the elevator to run a generated profile.
    * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
-   * @param target target ElevatorPosition, in inches (see ElevatorConstants.ElevatorPosition)
+   * @param target target ElevatorWristPosition, in inches (see ElevatorWristConstants.ElevatorWristPosition)
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorSetPosition(ElevatorPosition target, Elevator elevator, FileLog log) {
+  public ElevatorSetPosition(ElevatorWristPosition target, Elevator elevator, FileLog log) {
     this.elevator = elevator;
     this.log = log;
-    this.target = target.value;
+    this.target = target.elevatorPosition;
     addRequirements(elevator);
   }
 
