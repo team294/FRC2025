@@ -253,6 +253,12 @@ public class RobotContainer {
     }
 
     // ex: left[1].onTrue(new command);
+    left[1].onTrue(either( // 180 if we're red, 0 if we're blue
+    new DriveResetPose(180, false, driveTrain, log), 
+    new DriveResetPose(0, false, driveTrain, log), 
+    () -> allianceSelection.getAlliance() == Alliance.Red));
+    left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, log));
+
     right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, log));
   }
 
