@@ -480,6 +480,7 @@ public class Climber extends SubsystemBase implements Loggable {
     if (log.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Climber CANcoder connected", isCANcoderConnected());
       SmartDashboard.putBoolean("Climber calibrated", climberCalibrated);
+      SmartDashboard.putBoolean("Climber Using CANcoder", usingCANcoder);
       SmartDashboard.putNumber("Climber CANcoder raw", getCANcoderRotationsRaw());
       SmartDashboard.putNumber("Climber encoder raw", getClimberEncoderRotationsRaw());
       SmartDashboard.putNumber("Climber angle", getClimberEncoderDegrees());

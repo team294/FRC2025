@@ -26,17 +26,29 @@ import frc.robot.utilities.FileLog;
  */
 public class AlgaeScorePrepSequence extends SequentialCommandGroup {
   public AlgaeScorePrepSequence(ElevatorPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
-    WristAngle angle =
-      position == ElevatorPosition.ALGAE_PROCESSOR ? WristAngle.ALGAE_PROCESSOR
-      : position == ElevatorPosition.ALGAE_NET ? WristAngle.ALGAE_NET
-      : null;
+    WristAngle angle = null;
 
-    addCommands(
-      either(
-        new WristElevatorPrepSequence(position, angle, elevator, wrist, log),
-        none(),
-        () -> angle != null && algaeGrabber.isAlgaePresent()
-      )
-    );
+    switch (position) {
+      case ALGAE_PROCESSOR:
+        angle = WristAngle.ALGAE_PROCESSOR;
+        break;
+      case ALGAE_NET:
+        angle = WristAngle.ALGAE_NET;
+        break;
+      default:
+        break;
+    }
+
+    if (angle == null) {
+      addCommands(none());
+    } else {
+      addCommands(
+        either(
+          new WristElevatorPrepSequence(position, angle, elevator, wrist, log),
+          none(),
+          () -> algaeGrabber.isAlgaePresent()
+        )
+      );
+    }
   }
 }
