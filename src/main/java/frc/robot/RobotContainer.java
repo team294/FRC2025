@@ -38,6 +38,7 @@ public class RobotContainer {
   private final FileLog log = new FileLog("A1");
   private final AllianceSelection allianceSelection = new AllianceSelection(log);
   private final Field field = new Field(allianceSelection, log);
+  private final ElevatorWristRegions elevatorWristRegions = new ElevatorWristRegions(log);
   private final Timer matchTimer = new Timer();
 
   // Define robot subsystems
@@ -68,6 +69,9 @@ public class RobotContainer {
     if(!RobotPreferences.prefsExist()) {
       RobotPreferences.recordStickyFaults("RobotPreferences", log);
     }
+
+    // Register subsystems for ElevatorWristRegions
+    elevatorWristRegions.registerSubsystems(elevator, coralEffector, algaeGrabber);
 
     // Set the Choreo trajectory flipper to the 2025 field orientation.
     // When the alliance is Red, Choreo will automatically flip Blue trajectories to Red.
