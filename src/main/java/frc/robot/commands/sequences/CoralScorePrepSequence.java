@@ -29,18 +29,32 @@ import frc.robot.utilities.FileLog;
  */
 public class CoralScorePrepSequence extends SequentialCommandGroup {
   public CoralScorePrepSequence(ElevatorPosition position, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, FileLog log) {
-    WristAngle angle = 
-      position == ElevatorPosition.CORAL_L1 ? WristAngle.CORAL_L1
-      : position == ElevatorPosition.CORAL_L2 || position == ElevatorPosition.CORAL_L2 ? WristAngle.CORAL_L2_L3
-      : position == ElevatorPosition.CORAL_L4 ? WristAngle.CORAL_L4
-      : null;
+    WristAngle angle = null;
 
-    addCommands(
-      either(
-        new WristElevatorPrepSequence(position, angle, elevator, wrist, log),
-        none(),
-        () -> angle != null && !algaeGrabber.isAlgaePresent() && coralEffector.isCoralPresent()
-      )
-    );
+    switch (position) {
+      case CORAL_HP:
+        angle = WristAngle.CORAL_HP;
+        break;
+      case CORAL_L2:
+      case CORAL_L3:
+        angle = WristAngle.CORAL_L2_L3;
+        break;
+      case CORAL_L4:
+        angle = WristAngle.CORAL_L4;
+      default:
+        break;
+    }
+
+    if (angle == null) {
+      addCommands(none());
+    } else {
+      addCommands(
+        either(
+          new WristElevatorPrepSequence(position, angle, elevator, wrist, log),
+          none(),
+          () -> !algaeGrabber.isAlgaePresent() && coralEffector.isCoralPresent()
+        )
+      );
+    }
   }
 }
