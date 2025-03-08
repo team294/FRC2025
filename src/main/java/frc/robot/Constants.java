@@ -92,7 +92,6 @@ public final class Constants {
 
     public static final double joystickDeadband = 0.01;
     public static final double controllerDeadband = 0.05;
-    public static final double manualWristDeadband = 0.1; // TODO CALIBRATE FOR 2025
   }
   
   // TODO CALIBRATE FOR 2025
