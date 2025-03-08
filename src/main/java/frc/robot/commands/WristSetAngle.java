@@ -20,22 +20,22 @@ public class WristSetAngle extends Command {
 
   /**
    * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 3 degrees 
-   * of the target. If the wrist is uncalbraated, this does nothing and ends immediately.
+   * of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
   public WristSetAngle(double angle, Wrist wrist, FileLog log) {
-      this.wrist = wrist;
-      this.log = log;
-      this.angle = angle;
-      fromShuffleboard = false;
-      addRequirements(wrist);
+    this.wrist = wrist;
+    this.log = log;
+    this.angle = angle;
+    fromShuffleboard = false;
+    addRequirements(wrist);
   }
 
   /**
    * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 3 degrees 
-   * of the target. If the wrist is uncalbraated, this does nothing and ends immediately.
+   * of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
    * @param position target WristAngle angle, in degrees (see Constants.WristAngle)
    * @param wrist Wrist subsystem
    * @param log FileLog utility
@@ -50,7 +50,7 @@ public class WristSetAngle extends Command {
 
   /**
    * Sets the target angle for the wrist from Shuffleboard and moves it to that angle. Ends when the wrist is 
-   * within 3 degrees of the target. If the wrist is uncalbraated, this does nothing and ends immediately.
+   * within 3 degrees of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */

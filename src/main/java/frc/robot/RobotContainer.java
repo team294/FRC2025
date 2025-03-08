@@ -7,6 +7,9 @@ package frc.robot;
 import com.ctre.phoenix6.SignalLogger;
 
 import choreo.util.ChoreoAllianceFlipUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,13 +35,13 @@ import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 public class RobotContainer {
   // Define Key robot utilities (DO THIS FIRST)
   private final FileLog log = new FileLog("A1");
-  // private final AllianceSelection allianceSelection = new AllianceSelection(log);
-  // private final Field field = new Field(allianceSelection, log);
+  private final AllianceSelection allianceSelection = new AllianceSelection(log);
+  private final Field field = new Field(allianceSelection, log);
   private final Timer matchTimer = new Timer();
 
   // Define robot subsystems
   // private final LED led = new LED(Constants.Ports.CANdle, "LED", matchTimer, log);
-  // private final DriveTrain driveTrain = new DriveTrain(allianceSelection, led, log);
+  private final DriveTrain driveTrain = new DriveTrain(allianceSelection, log);
   private final Hopper hopper = new Hopper("Hopper", log);
   private final CoralEffector coralEffector = new CoralEffector("CoralEffector", log);
   private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
@@ -73,19 +76,36 @@ public class RobotContainer {
     configureButtonBindings();
     configureShuffleboard();
 
-    // driveTrain.setDefaultCommand(new DriveWithJoysticksAdvanced(leftJoystick, rightJoystick, allianceSelection, driveTrain, log));
+    driveTrain.setDefaultCommand(new DriveWithJoysticksAdvanced(leftJoystick, rightJoystick, allianceSelection, driveTrain, field, log));
     // driveTrain.setDefaultCommand(new DriveWithJoysticks(leftJoystick, rightJoystick, allianceSelection, driveTrain, log));
     // driveTrain.setDefaultCommand(new DriveWithController(driveTrain, xboxController, allianceSelection, log));
 
     // Set initial robot position on field. This takes place a while after the drivetrain is created, so after any CANbus delays.
     // Set initial location to (0,0) and facing away from driver (regardless of alliance color).
-    // driveTrain.resetPose(new Pose2d(0.0, 0.0, allianceSelection.getAlliance() == Alliance.Red ? Rotation2d.k180deg : Rotation2d.kZero) );
+    driveTrain.resetPose(new Pose2d(0.0, 0.0, 
+      allianceSelection.getAlliance() == Alliance.Red ? Rotation2d.k180deg : Rotation2d.kZero));
   }
 
   private void configureShuffleboard() {
     // Display sticky faults
     RobotPreferences.showStickyFaultsOnShuffleboard();
     SmartDashboard.putData("Clear Sticky Faults", new StickyFaultsClear(log));
+
+    // DriveTrain
+    SmartDashboard.putData("Drive FOC On", new DriveSetFOC(true, driveTrain, log));
+    SmartDashboard.putData("Drive FOC Off", new DriveSetFOC(false, driveTrain, log));
+    SmartDashboard.putData("Drive Toggle Coast", new DriveToggleCoastMode(driveTrain, log));
+    SmartDashboard.putData("Drive Reset Pose", new DriveResetPose(driveTrain, log));
+    SmartDashboard.putData("Drive To Pose", new DriveToPose(CoordType.kAbsolute, driveTrain, log));
+    SmartDashboard.putData("Drive 6m Fwd", new DriveToPose(CoordType.kRelative, () -> new Pose2d(6.0, 0.0, new Rotation2d(0.0)),
+      SwerveConstants.kNominalSpeedMetersPerSecond, SwerveConstants.kNominalAccelerationMetersPerSecondSquare, 
+      TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+      true, true, driveTrain, log));
+    SmartDashboard.putData("Drive Calibration", new DriveCalibration(0.0, 0.5, 5.0, 0.1, driveTrain, log));
+    SmartDashboard.putData("Drive Turn Calibration", new DriveTurnCalibration(0.2, 5.0, 0.2 / 5.0, driveTrain, log));
+    SmartDashboard.putData("Drive Percent Speed", new DrivePercentSpeed(driveTrain, log));
+    SmartDashboard.putData("Drive Straight", new DriveStraight(false, false, false, driveTrain, log));
+    
 
     // Hopper
     SmartDashboard.putData("Hopper Set 10%", new HopperSetPercent(0.1, hopper, log));
@@ -129,6 +149,8 @@ public class RobotContainer {
     // Copanel buttons
 
     // Vision
+    SmartDashboard.putData("Vision Enable Odometry Updates", new VisionOdometryStateSet(true, driveTrain, log));
+    SmartDashboard.putData("Vision Disable Odometry Updates", new VisionOdometryStateSet(false, driveTrain, log));
   }
  
    private void configureButtonBindings() {
@@ -209,6 +231,7 @@ public class RobotContainer {
     }
 
     // ex: left[1].onTrue(new command);
+    right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, log));
   }
 
   /**
@@ -250,7 +273,7 @@ public class RobotContainer {
    */
   public void robotPeriodic(){
     log.advanceLogRotation();
-    // allianceSelection.periodic();
+    allianceSelection.periodic();
   }
 
   /**
@@ -260,9 +283,9 @@ public class RobotContainer {
     // Do not log the word "Init" here, as it it affects the Excel macro
     log.writeLogEcho(true, "Disabled", "Robot disabled");
 
-    // driveTrain.stopMotors();             // SAFETY: Turn off any closed loop control that may be running, so the robot does not move when re-enabled
-    // driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
-    // driveTrain.setVisionForOdometryState(true);
+    driveTrain.stopMotors();             // SAFETY: Turn off any closed loop control that may be running, so the robot does not move when re-enabled
+    driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
+    driveTrain.setVisionForOdometryState(true);
 
     elevator.stopElevatorMotors();
 
@@ -275,9 +298,9 @@ public class RobotContainer {
    */
   public void disabledPeriodic() {
     // Check for CAN bus error (to prevent the issue that caused us to be eliminated in 2020!)
-    // if (driveTrain.canBusError()) {
-    //   RobotPreferences.recordStickyFaults("CAN Bus", log);
-    // }
+    if (driveTrain.canBusError()) {
+      RobotPreferences.recordStickyFaults("CAN Bus", log);
+    }
   }
   
   /**
@@ -286,8 +309,8 @@ public class RobotContainer {
   public void autonomousInit() {
     log.writeLogEcho(true, "Auto", "Mode Init");
 
-    // driveTrain.setDriveModeCoast(false);
-    // driveTrain.setVisionForOdometryState(false);
+    driveTrain.setDriveModeCoast(false);
+    driveTrain.setVisionForOdometryState(false);
 
     // NOTE: Do not reset the gyro or encoder here!
     // The first command in auto mode initializes before this code is run, and
@@ -306,9 +329,9 @@ public class RobotContainer {
   public void teleopInit() {
     log.writeLogEcho(true, "Teleop", "Mode Init");
 
-    // driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
-    // driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
-    // driveTrain.setVisionForOdometryState(true);
+    driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
+    driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
+    driveTrain.setVisionForOdometryState(true);
 
     matchTimer.reset();
     matchTimer.start();
