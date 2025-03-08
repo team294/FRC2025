@@ -335,7 +335,6 @@ public final class Constants {
     public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
     public static final double maxManualPercentOutput = 0.05;       // TODO CALIBRATE FOR 2025
     public static final double maxPercentOutput = 0.2;              // TODO CALIBRATE FOR 2025
-    public static final double maxManualPercentOutput = 0.2;        // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
     public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
