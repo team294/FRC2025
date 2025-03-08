@@ -130,8 +130,8 @@ public class RobotContainer {
     SmartDashboard.putData("Wrist Manually Calibrate", new WristCalibrateManual(wrist, log));
 
     // Elevator
-    SmartDashboard.putData("Elevator Move Up", new ElevatorSetPercent(.05, true, elevator, log));
-    SmartDashboard.putData("Elevator Move Down", new ElevatorSetPercent(-.05, true, elevator, log));
+    SmartDashboard.putData("Elevator Move Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, true, elevator, log));
+    SmartDashboard.putData("Elevator Move Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, true, elevator, log));
     SmartDashboard.putData("Elevator Stop Motors", new ElevatorStop(elevator, log));
     SmartDashboard.putData("Elevator Move To 20 Inches", new ElevatorSetPosition(20.0, elevator, log));
     SmartDashboard.putData("Elevator Move to HP", new ElevatorSetPosition(ElevatorPosition.CORAL_HP, elevator, log));
