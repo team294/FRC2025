@@ -1,0 +1,115 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.utilities;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+public class AllianceSelection {
+  private final FileLog log;
+  private int logRotationKey;
+  private Alliance alliance;  // Red or Blue
+  private List<Consumer<Alliance>> newAllianceCalls;
+
+  private enum AllianceChoice {
+    Red,
+    Blue,
+    Auto
+  }
+
+  private SendableChooser<AllianceChoice> allianceChooser = new SendableChooser<>();
+
+  public AllianceSelection(FileLog log) {
+    this.log = log;
+    newAllianceCalls = new ArrayList<Consumer<Alliance>>();
+    logRotationKey = log.allocateLogRotation();
+
+		allianceChooser.setDefaultOption("Automatic", AllianceChoice.Auto);
+		allianceChooser.addOption("Red", AllianceChoice.Red);
+		allianceChooser.addOption("Blue", AllianceChoice.Blue);
+	
+		// Show alliance selection widget on Shuffleboard
+		SmartDashboard.putData("Alliance Selection", allianceChooser);
+
+    // Set Alliance on Shuffleboard
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+      setAlliance(ally.get());
+      log.writeLogEcho(true, "Alliance Selection", "Initialize", "Alliance from DriverStation", alliance.name());
+    } else {
+      setAlliance(Alliance.Blue);
+      log.writeLogEcho(true, "Alliance Selection", "Initialize", "DriverStation not present - default to Blue", alliance.name());
+    }
+  }
+
+  /**
+   * Sets the current alliance.
+   * @param alliance Red, Blue, or Invalid
+   */
+  public void setAlliance(Alliance alliance) {
+    this.alliance = alliance;
+    log.writeLogEcho(true, "Alliance Selection", "SetAlliance", 
+        "Alliance Chooser", allianceChooser.getSelected().name(), "Alliance", alliance.name());
+
+    SmartDashboard.putBoolean("Alliance Blue", alliance != Alliance.Red);
+    SmartDashboard.putBoolean("Alliance Red", alliance != Alliance.Blue);
+    SmartDashboard.putString("Alliance", alliance.name());
+  }
+
+  /**
+   * Adds a consumer to the newAllianceCalls list that is called whenever the alliance of the robot is changed.
+   * @param newConsumer new Alliance consumer that will be added to the list
+   */
+  public void addAllianceChangeNotification(Consumer<Alliance> newConsumer) {
+    newAllianceCalls.add(newConsumer);
+  }
+
+  /**
+   * Gets the current alliance.
+   * @return Red or Blue
+   */
+  public Alliance getAlliance() {
+    return alliance;
+  }
+
+  /**
+   * Runs once per scheduler cycle.
+   */
+  public void periodic() {
+    if (log.isMyLogRotation(logRotationKey)) {
+      Alliance newAlliance = alliance;
+
+      switch (allianceChooser.getSelected()) {
+        case Auto:
+          // Do not auto change alliance in Auto or Teleop mode
+          if (DriverStation.isDisabled()) {
+            Optional<Alliance> ally = DriverStation.getAlliance();
+            if (ally.isPresent()) newAlliance = ally.get();
+          }
+          break;
+        case Red:
+          newAlliance = Alliance.Red;
+          break;
+        case Blue:
+          newAlliance = Alliance.Blue;
+          break;
+      }
+
+      if (alliance != newAlliance) {
+        setAlliance(newAlliance);
+        for (Consumer<Alliance> setters : newAllianceCalls) {
+          setters.accept(newAlliance);
+        }
+      }
+    }
+  }
+}

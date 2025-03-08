@@ -4,8 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.utilities.TrapezoidProfileBCR;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -54,20 +62,20 @@ public final class Constants {
     public static final int CANTurnEncoderFrontRight = 10;
     public static final int CANTurnEncoderBackLeft = 11;
     public static final int CANTurnEncoderBackRight = 12;
+    public static final int CANWristEncoder = 13;
+    public static final int CANClimberEncoder = 14;
 
-    public static final int CANHopper = 13;
+    public static final int CANElevator1 = 15;
+    public static final int CANElevator2 = 16;
+    public static final int CANHopper = 17;
+    public static final int CANCoralEffector = 18;
+    public static final int CANCoralGrabber = 19;
+    public static final int CANWrist = 20;
+    public static final int CANClimber = 21;
 
-    public static final int CANCoralEffector = 14;
+    public static final int CANPigeonGyro = 23;
 
-    public static final int CANCoralGrabber = 15;
-
-    public static final int CANElevator1 = 16;
-    public static final int CANElevator2 = 17;
-
-    public static final int CANPigeonGyro = 18;
-    public static final int CANPigeonGyro2 = 19;
-
-    public static final int CANdle = 21;
+    public static final int CANdle = 24;
 
     // Digital IO Ports
     public static final int DIOCoralEffectorEntrySensor = 0;
@@ -87,6 +95,7 @@ public final class Constants {
     public static final double controllerDeadband = 0.05;
   }
   
+  // TODO CALIBRATE FOR 2025
   public static final class RobotDimensions {
     // Drivebase adjustment for path-of-wheel diameter when turning in place
     private static final double DrivetrainAdjustmentFactor = 0.9911;
@@ -104,9 +113,162 @@ public final class Constants {
     public static final double robotDiagonal = Math.sqrt(2) * robotWidth;
   }
 
+  public static final class SwerveConstants {
+    // Past kDriveGearRatio: L3 = 6.12:1. Mk4i = 8.14:1 (L1-std gears), 6.75:1 (L2-fast gears), 5.903 (modified L2 16-tooth gear).
+    // Past kTurningGearRatio: Mk4i = 150 / 7:1.
+
+    // Encoder calibration to meters traveled or wheel facing degrees
+    public static final double kEncoderCPR = 1.0;                                              // CALIBRATED Encoder counts per revolution of motor pinion gear
+    public static final double kDriveGearRatio = (5.90 / 1.0);                                 // CALIBRATED Mk4n = 5.90:1 (L2+)
+    public static final double kTurningGearRatio = (18.75 / 1.0);                              // CALIBRATED Mk4n = 18.75:1
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9739; // CALIBRATED Wheels are nominal 4"
+    public static final double kDriveEncoderMetersPerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR / kDriveGearRatio;
+    public static final double kTurningEncoderDegreesPerTick = 360.0 / kEncoderCPR / kTurningGearRatio;
+  
+    // Robot calibration for feed-forward and max speeds
+    public static final double voltageCompSaturation = 12.0;
+
+    // Max speed is used to keep each motor from maxing out, which preserves ratio between motors 
+    // and ensures that the robot travels in the requested direction.  So, use min value of all 4 motors,
+    // and further derate (initial test by 5%) to account for some battery droop under heavy loads.
+
+    public static final double kMaxSpeedMetersPerSecond = 5.1;  // TODO CALIBRATE FOR 2025
+    public static final double kFullSpeedMetersPerSecond = 0.95 * kMaxSpeedMetersPerSecond;
+    public static final double kNominalSpeedMetersPerSecond = 0.5 * kMaxSpeedMetersPerSecond;
+
+    public static final double kFineControlMaxSpeedMetersPerSecond = 1;
+    public static final double kFineControlMaxTurningRadiansPerSecond = 1;
+
+    // TODO CALIBRATE FOR 2025
+    public static final double kMaxAccelerationMetersPerSecondSquare = 7.5;
+    public static final double kFullAccelerationMetersPerSecondSquare = 0.9 * kMaxAccelerationMetersPerSecondSquare;
+    public static final double kNominalAccelerationMetersPerSecondSquare = 3.5;
+    public static final double kMaxTurningRadiansPerSecond = 11.0;
+    public static final double kNominalTurningRadiansPerSecond = Math.PI;
+    public static final double kMaxAngularAccelerationRadiansPerSecondSquared = 35.0;     // Not used in code currently
+    public static final double kNominalAngularAccelerationRadiansPerSecondSquared = Math.PI;
+
+    // TODO CALIBRATE FOR 2025
+    public static final double kVDriveAvg = 2.350;  // In voltage per meters/second
+    private static final double kVmFLrel = 1.0;     // kV modifier for FL drive motor
+    private static final double kVmFRrel = 1.0;     // kV modifier for FR drive motor
+    private static final double kVmBLrel = 1.0;     // kV modifier for BL drive motor
+    private static final double kVmBRrel = 1.0;     // kV modifier for BR drive motor
+
+    // Normalize kVm constants
+    private static double kVmAvg = (kVmFLrel + kVmFRrel + kVmBLrel + kVmBRrel) / 4.0;
+    public static final double kVmFL = kVmFLrel / kVmAvg;
+    public static final double kVmFR = kVmFRrel / kVmAvg;
+    public static final double kVmBL = kVmBLrel / kVmAvg;
+    public static final double kVmBR = kVmBRrel / kVmAvg;
+
+    public static final double dt = 0.02;             // CALIBRATED Timestep for discretizing robot motion, in seconds (scheduler time period = 20ms)
+    public static final double kADrive = 0.1203;      // In voltage per meters per second^2 TODO CALIBRATE FOR 2025
+    public static final double kADriveToPose = 0.050; // CALIBRATED on ETU in 3/2/2025 In seconds (On the ETU, DriveToPose behaves better with a small value for kADriveToPose)
+    public static final double kSDrive = 0.002;       // In voltage TODO CALIBRATE FOR 2025
+
+    // Minimum abs delta (in m/sec) between actual wheel velocity and desired wheel velocity for kADrive to be applied.
+    // If the delta is less than this, then don't use kADrive. This prevents the drive motors from jittering.
+    // Note that the swerve module kP in the velocity controller will still work to maintain the proper wheel speed.
+    public static final double velMinDeltaUsingkA = 0.3;
+  }
+  public static final class DriveConstants {
+    // The locations of the wheels relative to the physical center of the robot, in meters.
+    // X: positive = forward. Y: positive = to the left
+    // The order in which you pass in the wheel locations is the same order that you will receive 
+    // the module states when performing inverse kinematics. It is also expected that
+    // you pass in the module states in the same order when calling the forward kinematics methods.
+    // 0 = FrontLeft, 1 = FrontRight, 2 = BackLeft, 3 = BackRight
+    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+      new Translation2d(RobotDimensions.DRIVETRAIN_WHEELBASE_METERS / 2, RobotDimensions.DRIVETRAIN_TRACKWIDTH_METERS / 2),
+      new Translation2d(RobotDimensions.DRIVETRAIN_WHEELBASE_METERS / 2, -RobotDimensions.DRIVETRAIN_TRACKWIDTH_METERS / 2),
+      new Translation2d(-RobotDimensions.DRIVETRAIN_WHEELBASE_METERS / 2, RobotDimensions.DRIVETRAIN_TRACKWIDTH_METERS / 2),
+      new Translation2d(-RobotDimensions.DRIVETRAIN_WHEELBASE_METERS / 2, -RobotDimensions.DRIVETRAIN_TRACKWIDTH_METERS / 2)
+    );
+
+    // Update the offset angles in RobotPreferences (in Shuffleboard), not in this code!
+    // After updating in RobotPreferences, you will need to re-start the robot code for the changes to take effect.
+    // When calibrating offset, set the wheels to zero degrees with the bevel gear facing to the right
+    // TODO CALIBRATE FOR 2025
+    public static double offsetAngleFrontLeftMotor = 100.18;
+    public static double offsetAngleFrontRightMotor = -163.04;
+    public static double offsetAngleBackLeftMotor = 19.09;
+    public static double offsetAngleBackRightMotor = 2.96;
+
+    // Theta kp value for joystick in rad/sec
+    public static final double kPJoystickThetaController = 3;    
+  }
+
   public static class FieldConstants {
-    public static final double length = 17.55;  // 57 ft 6 7/8 in = 1755 cm
-    public static final double width = 8.05;    // 26 ft 5 in = 805 cm
+    public static final double length = 17.548;  // CALIBRATED 57 ft 6 7/8 in = 1754.8 cm
+    public static final double width = 8.052;    // CALIBRATED 26 ft 5 in = 805.2 cm
+
+    public static enum ReefLevel {
+      L1, L2, L3, L4
+    }
+
+    public static enum ReefLocation {
+      A, B, C, D, E, F, G, H, I, J, K, L
+    }
+
+    // Calculated by measuring y distance between center of reef wall and reef pole (6.469731 in), converted to meters
+    public static final double ReefScoringPositionAprilTagOffset = 0.164331496063;
+  }
+
+  public static class VisionConstants {
+    public static class PhotonVisionConstants {        
+      public static final Transform3d robotToCamLeft = new Transform3d(
+        new Translation3d(Units.inchesToMeters(7.25), Units.inchesToMeters(13.75), Units.inchesToMeters(14.5)),
+        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-28)) // Mounted facing forward-right on left side of robot
+      );
+      public static final Transform3d robotToCamRight = new Transform3d(
+        new Translation3d(Units.inchesToMeters(8), Units.inchesToMeters(-14), Units.inchesToMeters(15)),
+        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(26))  // Mounted facing forward-left on right side of robot
+      );
+
+      public static final String leftAprilTagCameraName = "AprilTagCameraLeft";
+      public static final String rightAprilTagCameraName = "AprilTagCameraRight";
+    }
+  }
+
+  public static final class TrajectoryConstants {
+    // Max error for robot rotation
+    public static final double maxThetaErrorDegrees = 1.0;
+    public static final double maxPositionErrorMeters = 0.04; // 1.6 inches
+
+    // Max error for interim positions (not final)
+    public static final double interimThetaErrorDegrees = 2.0;        
+    public static final double interimPositionErrorMeters = 0.20; // 8 inches
+
+    public static final double xError = 0.25;
+    public static final double yError = 0.25;
+    public static final double choreoMaxThetaErrorDegrees = 5;
+    public static final double endVelocityErrorDegrees = 0.75;
+
+    // Feedback terms for holonomic drive controllers
+
+    // X-velocity controller kP. Units = (meters/sec of velocity) / (meters of position error)
+    public static final double kPXController = 4;
+
+    // Y-velocity controller kP. Units = (meters/sec of velocity) / (meters of position error)  
+    public static final double kPYController = 4; 
+
+    // Theta-velocity controller kP. Units = (rad/sec of velocity) / (radians of angle error)
+    public static final double kPThetaController = 3;
+
+    public static final TrajectoryConfig swerveTrajectoryConfig = new TrajectoryConfig(
+        SwerveConstants.kNominalSpeedMetersPerSecond,
+        SwerveConstants.kNominalAccelerationMetersPerSecondSquare)
+        .setKinematics(DriveConstants.kDriveKinematics);
+
+    // Constraint for the motion profilied robot angle controller
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+        SwerveConstants.kNominalTurningRadiansPerSecond,
+        SwerveConstants.kNominalAngularAccelerationRadiansPerSecondSquared);
+
+    // Constraint for the DriveToPose motion profile for distance being travelled
+    public static final TrapezoidProfileBCR.Constraints kDriveProfileConstraints = new TrapezoidProfileBCR.Constraints(
+        SwerveConstants.kNominalSpeedMetersPerSecond, SwerveConstants.kNominalAccelerationMetersPerSecondSquare);
   }
 
   public static final class HopperConstants {
@@ -160,9 +322,106 @@ public final class Constants {
  
       public final double value;
   
-      ElevatorPosition(double value) {
-        this.value = value;
-      }
+      ElevatorPosition(double value) { this.value = value; }
+    }
+  }
+
+  public static final class WristConstants {
+    // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
+    // where a ratio greater than 1 is a reduction.
+    public static final double kWristGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // TODO CALIBRATE FOR 2025
+    public static final double kWristDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
+    
+    public static final double compensationVoltage = 12.0;
+    public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
+    public static final double maxPercentOutput = 0.2;              // TODO CALIBRATE FOR 2025
+
+    // Should be updated in RobotPreferences, so it cannot be final
+    public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
+
+    // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
+    public static double cancoderDiscontinuityPoint = 1.0;          // TODO CALIBRATE FOR 2025 - should be the center of the region of unallowed motion
+
+    public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025    kP = (desired-output-volts) / (error-in-wrist-rotations)
+    public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kD = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kG = 0.0;  // TODO CALIBRATE FOR 2025    kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
+    public static final double kS = 0.0; // TODO CALIBRATE FOR 2025
+    public static final double kV = 0.0; // TODO CALIBRATE FOR 2025
+
+    public static final double MMCruiseVelocity = 0.25;                   // Max velocity in wrist rotations / second TODO CALIBRATE FOR 2025
+    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in wrist rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
+    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in wrist rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
+
+    // TODO add wrist regions
+    public enum WristRegion {
+      main,
+      uncalibrated;
+    }
+
+    // TODO CALIBRATE FOR 2025
+    public enum WristAngle {
+      LOWER_LIMIT(0.0),
+      UPPER_LIMIT(0.0),
+
+      CORAL_HP(0.0),
+
+      CORAL_L1(0.0),
+      CORAL_L2_L3(0.0),
+      CORAL_L4(0.0),
+
+      ALGAE_GROUND(0.0),
+      ALGAE_REEF(0.0),
+
+      ALGAE_PROCESSOR(0.0),
+      ALGAE_NET(0.0);
+
+      @SuppressWarnings({"MemberName", "PMD.SingularField"})
+      public final double value;
+      WristAngle(double value) { this.value = value; }
+    }
+  }
+
+  public static final class ClimberConstants {
+    // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
+    // where a ratio greater than 1 is a reduction.
+    // TODO VERY IMPORTANT DONT EVEN THINK ABOUT COMITTING W/O CHANGING THIS GEAR RATIO (if necessary)
+    public static final double kClimberGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // TODO CALIBRATE FOR 2025
+    public static final double kClimberDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
+    
+    public static final double compensationVoltage = 12.0;
+    public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
+    public static final double maxPercentOutput = 0.2;             // TODO CALIBRATE FOR 2025
+
+    // Should be updated in RobotPreferences, so it cannot be final
+    public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
+    // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
+    // TODO update this value based on the center of the region of unallowed motion
+    public static double cancoderDiscontinuityPoint = 1.0;          // TODO CALIBRATE FOR 2025
+
+
+    public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025      kP = (desired-output-volts) / (error-in-wrist-rotations)
+    public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kD = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kG = 0.0;    // TODO CALIBRATE FOR 2025      kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
+    public static final double kS = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kV = 0.0;    // TODO CALIBRATE FOR 2025
+
+    public static final double MMCruiseVelocity = 0.25;                   // Max velocity in climber rotations / second TODO CALIBRATE FOR 2025
+    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in climber rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
+    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in climber rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
+
+    // TODO CALIBRATE FOR 2025
+    public enum ClimberAngle {
+      LOWER_LIMIT(-0),
+      UPPER_LIMIT(-0),
+
+      CLIMB_START(-0),
+      CLIMB_END(-0);
+
+      @SuppressWarnings({"MemberName", "PMD.SingularField"})
+      public final double value;
+      ClimberAngle(double value) { this.value = value; }
     }
   }
 
