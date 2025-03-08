@@ -1232,7 +1232,7 @@
                 }
               },
               {
-                "title": "Outtake Coral (+10%)",
+                "title": "Reverse (+10%)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1322,7 +1322,7 @@
             },
             "children": [
               {
-                "title": "Intake Piece (-10%)",
+                "title": "Intake Coral (-10%)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1335,7 +1335,7 @@
                 }
               },
               {
-                "title": "Feed Piece (+10%)",
+                "title": "Reverse (+10%)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1410,7 +1410,7 @@
                   "topic": "/SmartDashboard/Climber Set Percent",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -1540,7 +1540,7 @@
                   "topic": "/SmartDashboard/Wrist Set Percent",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
