@@ -163,7 +163,7 @@ public final class Constants {
 
     public static final double dt = 0.02;             // CALIBRATED Timestep for discretizing robot motion, in seconds (scheduler time period = 20ms)
     public static final double kADrive = 0.1203;      // In voltage per meters per second^2 TODO CALIBRATE FOR 2025
-    public static final double kADriveToPose = 0.000; // CALIBRATED In seconds (no longer needed since kADrive will be used in the SwerveModules inside DriveToPose)
+    public static final double kADriveToPose = 0.050; // CALIBRATED on ETU in 3/2/2025 In seconds (On the ETU, DriveToPose behaves better with a small value for kADriveToPose)
     public static final double kSDrive = 0.002;       // In voltage TODO CALIBRATE FOR 2025
 
     // Minimum abs delta (in m/sec) between actual wheel velocity and desired wheel velocity for kADrive to be applied.
