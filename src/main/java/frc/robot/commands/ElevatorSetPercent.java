@@ -14,6 +14,7 @@ public class ElevatorSetPercent extends Command {
   private final FileLog log;
   private double percent = 0.0;
   private boolean fromShuffleboard;
+  private boolean endImmediately;
 
   /**
    * Sets the percent output of the elevator and ends immediately.
@@ -21,10 +22,11 @@ public class ElevatorSetPercent extends Command {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorSetPercent(double percent, Elevator elevator, FileLog log) {
+  public ElevatorSetPercent(double percent, boolean endImmediately, Elevator elevator, FileLog log) {
     this.elevator = elevator;
     this.log = log;
     this.percent = percent;
+    this.endImmediately = endImmediately;
     this.fromShuffleboard = false;
     addRequirements(elevator);
   }
@@ -62,11 +64,13 @@ public class ElevatorSetPercent extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    elevator.stopElevatorMotors();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    if (endImmediately) return true;
+    else return false;
   }
 }
