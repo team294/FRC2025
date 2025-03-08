@@ -253,11 +253,15 @@ public class RobotContainer {
     }
 
     // ex: left[1].onTrue(new command);
-    // 180 if we're red, 0 if we're blue
-    left[1].onTrue(either(
-    new DriveResetPose(180, false, driveTrain, log), 
-    new DriveResetPose(0, false, driveTrain, log), 
-    () -> allianceSelection.getAlliance() == Alliance.Red));
+
+    // 180 if we are red, 0 if we are blue
+    left[1].onTrue(
+      either(
+        new DriveResetPose(180, false, driveTrain, log), 
+        new DriveResetPose(0, false, driveTrain, log), 
+        () -> allianceSelection.getAlliance() == Alliance.Red
+      )
+    );
     left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, log));
 
     right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, log));
@@ -283,6 +287,7 @@ public class RobotContainer {
     }
 
     // ex: coP[1].onTrue(new command);
+    
     coP[1].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator, log));
     coP[2].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator, log));
 
@@ -301,7 +306,7 @@ public class RobotContainer {
     coP[11].onTrue(new AlgaeGrabberOuttake(algaeGrabber, log));
     coP[12].onTrue(new AlgaeGrabberIntake(algaeGrabber, log));
 
-    // 180 if we're red, 0 if we're blue
+    // 180 if we are red, 0 if we are blue
     coP[7].onTrue(either(
         new DriveResetPose(180, false, driveTrain, log), 
         new DriveResetPose(0, false, driveTrain, log), 
