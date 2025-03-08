@@ -4,6 +4,8 @@
 
 package frc.robot.commands.sequences;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.WristConstants.WristAngle;
@@ -24,17 +26,17 @@ import frc.robot.utilities.FileLog;
  */
 public class AlgaeScorePrepSequence extends SequentialCommandGroup {
   public AlgaeScorePrepSequence(ElevatorPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
-    if (!algaeGrabber.isAlgaePresent()) return;
-
     WristAngle angle =
-      position == ElevatorPosition.ALGAE_PROCESSOR ? WristAngle.ALGAE_PROCESSOR :
-      position == ElevatorPosition.ALGAE_NET ? WristAngle.ALGAE_NET :
-      null;
-    if (angle == null) return;
+      position == ElevatorPosition.ALGAE_PROCESSOR ? WristAngle.ALGAE_PROCESSOR
+      : position == ElevatorPosition.ALGAE_NET ? WristAngle.ALGAE_NET
+      : null;
 
     addCommands(
-      new WristElevatorPrepSequence(position, angle, elevator, wrist, log)
-      // TODO set in algae mode
+      either(
+        new WristElevatorPrepSequence(position, angle, elevator, wrist, log),
+        none(),
+        () -> angle != null && algaeGrabber.isAlgaePresent()
+      )
     );
   }
 }
