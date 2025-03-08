@@ -541,6 +541,7 @@ public class Wrist extends SubsystemBase implements Loggable {
     if (log.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Wrist CANcoder connected", isCANcoderConnected());
       SmartDashboard.putBoolean("Wrist calibrated", wristCalibrated);
+      SmartDashboard.putBoolean("Wrist Using CANcoder", usingCANcoder);
       SmartDashboard.putNumber("Wrist CANcoder raw", getCANcoderRotationsRaw());
       SmartDashboard.putNumber("Wrist encoder raw", getWristEncoderRotationsRaw());
       SmartDashboard.putNumber("Wrist angle", getWristEncoderDegrees());

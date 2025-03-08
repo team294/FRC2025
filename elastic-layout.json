@@ -1312,8 +1312,8 @@
           },
           {
             "title": "Hopper",
-            "x": 0.0,
-            "y": 512.0,
+            "x": 512.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 384.0,
             "type": "List Layout",
@@ -1364,10 +1364,10 @@
           },
           {
             "title": "Climber",
-            "x": 1024.0,
+            "x": 1280.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 640.0,
+            "height": 896.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -1427,6 +1427,19 @@
                 }
               },
               {
+                "title": "Climber Manually Calibrate",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Manually Calibrate",
+                  "period": 0.06,
+                  "show_type": true
+                }
+              },
+              {
                 "title": "Climber Calibrated",
                 "x": 0.0,
                 "y": 0.0,
@@ -1459,15 +1472,32 @@
                   "true_icon": "None",
                   "false_icon": "None"
                 }
+              },
+              {
+                "title": "Wrist Using CANcoder",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Using CANcoder",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
               }
             ]
           },
           {
             "title": "Wrist",
-            "x": 512.0,
+            "x": 768.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 768.0,
+            "height": 896.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -1572,12 +1602,29 @@
                   "true_icon": "None",
                   "false_icon": "None"
                 }
+              },
+              {
+                "title": "Climber Using CANcoder",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Using CANcoder",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
               }
             ]
           },
           {
             "title": "Elevator",
-            "x": 768.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 256.0,
             "height": 896.0,
@@ -1588,8 +1635,8 @@
             "children": [
               {
                 "title": "Elevator Move to HP",
-                "x": 0.0,
-                "y": 0.0,
+                "x": 768.0,
+                "y": 768.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
@@ -1709,7 +1756,7 @@
       "grid_layout": {
         "layouts": [
           {
-            "title": "Algae Sequences",
+            "title": "Algae Sequences (Moves Multiple Subsystems)",
             "x": 0.0,
             "y": 0.0,
             "width": 384.0,
@@ -1787,7 +1834,7 @@
             ]
           },
           {
-            "title": "Coral Sequences",
+            "title": "Coral Sequences (Moves Multiple Subsystems)",
             "x": 384.0,
             "y": 0.0,
             "width": 384.0,
@@ -1865,7 +1912,7 @@
             ]
           },
           {
-            "title": "Climber Sequences",
+            "title": "Climber Sequences (Moves Multiple Subsystems)",
             "x": 768.0,
             "y": 0.0,
             "width": 384.0,
