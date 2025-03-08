@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import choreo.util.ChoreoAllianceFlipUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import frc.robot.commands.*;
 import frc.robot.commands.sequences.*;
@@ -207,12 +208,12 @@ public class RobotContainer {
     xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log));
 
     // Prep and intake coral from HP with X
-    xbX.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_HP, log));
+    xbX.onTrue(new CoralScorePrepSequence(ElevatorPosition.CORAL_HP, elevator, wrist, coralEffector, algaeGrabber, log));
 
     // Prep to score coral on L2 with A, L3 with B, and L4 with Y
-    xbA.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L2, log));
-    xbB.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L3, log));
-    xbY.onTrue(new CoralScorePrepSequence(elevator, wrist, ElevatorPosition.CORAL_L4, log));
+    xbA.onTrue(new CoralScorePrepSequence(ElevatorPosition.CORAL_L2, elevator, wrist, coralEffector, algaeGrabber, log));
+    xbB.onTrue(new CoralScorePrepSequence(ElevatorPosition.CORAL_L3, elevator, wrist, coralEffector, algaeGrabber, log));
+    xbY.onTrue(new CoralScorePrepSequence(ElevatorPosition.CORAL_L4, elevator, wrist, coralEffector, algaeGrabber, log));
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
     xbLT.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_GROUND, elevator, wrist, algaeGrabber, log));
@@ -220,8 +221,8 @@ public class RobotContainer {
     xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorPosition.ALGAE_UPPER, elevator, wrist, algaeGrabber, log));
 
     // Prep to score algae in Net with D-Pad Up and Processor with D-Pad Right
-    xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_NET, elevator, wrist, log));
-    xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_PROCESSOR, elevator, wrist, log));
+    xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_NET,elevator, wrist, algaeGrabber, log));
+    xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber, log));
 
     // Manually control elevator with right joystick
     xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, log, true));

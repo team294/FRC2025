@@ -29,7 +29,7 @@ public class VisionOdometryStateSet extends InstantCommand {
   @Override
   public void initialize() {
     driveTrain.setVisionForOdometryState(enabled);
-    log.writeLog(true, "VisionOdometryStateSet", "Initialize", "Enabled", (enabled) ? "yes" : "np");
+    log.writeLog(true, "VisionOdometryStateSet", "Initialize", "Enabled", (enabled) ? "yes" : "no");
   }
   
   // Returns true if the command should run when the robot is disabled.
