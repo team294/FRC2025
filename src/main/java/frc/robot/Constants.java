@@ -199,8 +199,8 @@ public final class Constants {
   }
 
   public static class FieldConstants {
-    public static final double length = 17.55;  // CALIBRATED 57 ft 6 7/8 in = 1755 cm
-    public static final double width = 8.05;    // CALIBRATED 26 ft 5 in = 805 cm
+    public static final double length = 17.548;  // CALIBRATED 57 ft 6 7/8 in = 1754.8 cm
+    public static final double width = 8.052;    // CALIBRATED 26 ft 5 in = 805.2 cm
 
     public static enum ReefLevel {
       L1, L2, L3, L4
