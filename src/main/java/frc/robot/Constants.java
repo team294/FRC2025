@@ -333,8 +333,8 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
+    public static final double maxManualPercentOutput = 0.05;       // TODO CALIBRATE FOR 2025
     public static final double maxPercentOutput = 0.2;              // TODO CALIBRATE FOR 2025
-    public static final double maxManualPercentOutput = 0.2;        // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
     public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
@@ -363,6 +363,7 @@ public final class Constants {
     public enum WristAngle {
       LOWER_LIMIT(0.0),
       UPPER_LIMIT(0.0),
+      CALIBRATE_MANUAL(0.0),
 
       CORAL_HP(0.0),
 
@@ -391,6 +392,7 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
+    public static final double maxManualPercentOutput = 0.05;       // TODO CALIBRATE FOR 2025
     public static final double maxPercentOutput = 0.2;             // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
@@ -415,6 +417,7 @@ public final class Constants {
     public enum ClimberAngle {
       LOWER_LIMIT(-0),
       UPPER_LIMIT(-0),
+      CALIBRATE_MANUAL(0.0),
 
       CLIMB_START(-0),
       CLIMB_END(-0);
