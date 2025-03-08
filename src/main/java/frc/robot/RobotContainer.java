@@ -125,7 +125,7 @@ public class RobotContainer {
 
     // Wrist
     SmartDashboard.putData("Wrist Stop", new WristStop(wrist, log));
-    SmartDashboard.putData("Wrist Set Percent", new WristSetPercentOutput(wrist, log));
+    SmartDashboard.putData("Wrist Set Percent", new WristSetPercent(wrist, log));
     SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist, log));
     SmartDashboard.putData("Wrist Manually Calibrate", new WristCalibrateManual(wrist, log));
 
@@ -208,6 +208,9 @@ public class RobotContainer {
 
     // Manually control elevator with right joystick
     xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, log, true));
+
+    // Manually control wrist with the left joystick
+    xbLJoystickTrigger.whileTrue(new WristManualControl(xboxController, wrist, log, false));
 
     // Stop all motors with LB
     xbLB.onTrue(parallel(
