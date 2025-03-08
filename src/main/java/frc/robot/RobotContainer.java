@@ -125,7 +125,7 @@ public class RobotContainer {
 
     // Wrist
     SmartDashboard.putData("Wrist Stop", new WristStop(wrist, log));
-    SmartDashboard.putData("Wrist Set Percent Output", new WristSetPercentOutput(wrist, log));
+    SmartDashboard.putData("Wrist Set Percent", new WristSetPercent(wrist, log));
     SmartDashboard.putData("Wrist Reset Angle", new WristSetAngle(wrist, log));
     SmartDashboard.putData("Wrist Manually Calibrate", new WristCalibrateManual(wrist, log));
 
@@ -227,6 +227,9 @@ public class RobotContainer {
     // Manually control elevator with right joystick
     xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, log, true));
 
+    // Manually control wrist with the left joystick
+    xbLJoystickTrigger.whileTrue(new WristManualControl(xboxController, wrist, log, false));
+
     // Stop all motors with LB
     xbLB.onTrue(parallel(
       new HopperStop(hopper, log),
@@ -276,8 +279,8 @@ public class RobotContainer {
     coP[1].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator, log));
     coP[2].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator, log));
 
-    coP[3].onTrue(new WristSetPercentOutput(WristConstants.maxManualPercentOutput, wrist, log));
-    coP[4].onTrue(new WristSetPercentOutput(-WristConstants.maxManualPercentOutput, wrist, log));
+    coP[3].onTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist, log));
+    coP[4].onTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist, log));
 
     coP[5].onTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber, log));
     coP[6].onTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber, log));
