@@ -8,8 +8,8 @@
         "layouts": [
           {
             "title": "Autonomous",
-            "x": 256.0,
-            "y": 128.0,
+            "x": 0.0,
+            "y": 0.0,
             "width": 512.0,
             "height": 256.0,
             "type": "List Layout",
@@ -48,8 +48,8 @@
           },
           {
             "title": "Alliance",
-            "x": 256.0,
-            "y": 384.0,
+            "x": 0.0,
+            "y": 256.0,
             "width": 512.0,
             "height": 384.0,
             "type": "List Layout",
@@ -107,8 +107,8 @@
         "containers": [
           {
             "title": "problemExists",
-            "x": 1024.0,
-            "y": 256.0,
+            "x": 768.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -124,8 +124,8 @@
           },
           {
             "title": "Prefs Init?",
-            "x": 1536.0,
-            "y": 128.0,
+            "x": 1280.0,
+            "y": 0.0,
             "width": 128.0,
             "height": 256.0,
             "type": "Boolean Box",
@@ -141,8 +141,8 @@
           },
           {
             "title": "isGyroReading",
-            "x": 1280.0,
-            "y": 256.0,
+            "x": 1024.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -158,8 +158,8 @@
           },
           {
             "title": "Clear Sticky Faults",
-            "x": 768.0,
-            "y": 128.0,
+            "x": 512.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -171,8 +171,8 @@
           },
           {
             "title": "problemSubsystem",
-            "x": 1024.0,
-            "y": 128.0,
+            "x": 768.0,
+            "y": 0.0,
             "width": 512.0,
             "height": 128.0,
             "type": "Text Display",
@@ -185,8 +185,8 @@
           },
           {
             "title": "Field",
-            "x": 768.0,
-            "y": 384.0,
+            "x": 512.0,
+            "y": 256.0,
             "width": 896.0,
             "height": 384.0,
             "type": "Field",
@@ -205,8 +205,8 @@
           },
           {
             "title": "Camera OK",
-            "x": 768.0,
-            "y": 256.0,
+            "x": 512.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -228,44 +228,16 @@
       "grid_layout": {
         "layouts": [
           {
-            "title": "Swerve Modules",
-            "x": 384.0,
+            "title": "Back Swerve Modules",
+            "x": 0.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 896.0,
+            "height": 512.0,
             "type": "List Layout",
             "properties": {
               "label_position": "LEFT"
             },
             "children": [
-              {
-                "title": "distanceFL",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Swerve distanceFL",
-                  "period": 0.04,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "distanceFR",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Swerve distanceFR",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
               {
                 "title": "distanceBL",
                 "x": 0.0,
@@ -275,76 +247,6 @@
                 "type": "Text Display",
                 "properties": {
                   "topic": "/SmartDashboard/Swerve distanceBL",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "distanceBR",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Swerve distanceBR",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "CCangle FL",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Swerve CCangle FL",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "FXangle dpsFL",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Swerve FXangle dpsFL",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "CCangle FR",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Swerve CCangle FR",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "FXangle FR",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Swerve FXangle FR",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -379,6 +281,34 @@
                 }
               },
               {
+                "title": "drive temp BL",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve drive temp BL",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "distanceBR",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve distanceBR",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
                 "title": "CCangle BR",
                 "x": 0.0,
                 "y": 0.0,
@@ -407,48 +337,6 @@
                 }
               },
               {
-                "title": "drive temp FL",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Swerve drive temp FL",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "drive temp FR",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Swerve drive temp FR",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "drive temp BL",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Swerve drive temp BL",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
                 "title": "drive temp BR",
                 "x": 0.0,
                 "y": 0.0,
@@ -466,32 +354,15 @@
           },
           {
             "title": "DriveTrain",
-            "x": 640.0,
+            "x": 512.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 896.0,
+            "height": 768.0,
             "type": "List Layout",
             "properties": {
               "label_position": "LEFT"
             },
             "children": [
-              {
-                "title": "isGyroReading",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive isGyroReading",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
               {
                 "title": "Drive Mode",
                 "x": 0.0,
@@ -647,14 +518,14 @@
                 }
               },
               {
-                "title": "isBrakeMode",
+                "title": "isGyroReading",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Boolean Box",
                 "properties": {
-                  "topic": "/SmartDashboard/Drive isBrakeMode",
+                  "topic": "/SmartDashboard/Drive isGyroReading",
                   "period": 0.06,
                   "data_type": "boolean",
                   "true_color": 4283215696,
@@ -667,7 +538,7 @@
           },
           {
             "title": "Drive Commands",
-            "x": 896.0,
+            "x": 768.0,
             "y": 0.0,
             "width": 256.0,
             "height": 384.0,
@@ -716,26 +587,30 @@
                 }
               },
               {
-                "title": " ",
-                "x": 640.0,
-                "y": 768.0,
-                "width": 256.0,
+                "title": "isBrakeMode",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
                 "height": 128.0,
-                "type": "Command",
+                "type": "Boolean Box",
                 "properties": {
-                  "topic": "/SmartDashboard/Drive Toggle Coast",
+                  "topic": "/SmartDashboard/Drive isBrakeMode",
                   "period": 0.06,
-                  "show_type": true
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
                 }
               }
             ]
           },
           {
             "title": "Reset Pose",
-            "x": 1152.0,
+            "x": 1024.0,
             "y": 384.0,
             "width": 256.0,
-            "height": 512.0,
+            "height": 384.0,
             "type": "List Layout",
             "properties": {
               "label_position": "LEFT"
@@ -800,7 +675,7 @@
           },
           {
             "title": "DriveStraight",
-            "x": 1152.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 256.0,
             "height": 384.0,
@@ -882,10 +757,10 @@
           },
           {
             "title": "DriveToPose",
-            "x": 896.0,
+            "x": 768.0,
             "y": 384.0,
             "width": 256.0,
-            "height": 512.0,
+            "height": 384.0,
             "type": "List Layout",
             "properties": {
               "label_position": "LEFT"
@@ -977,10 +852,10 @@
           },
           {
             "title": "Drive Percent Speed",
-            "x": 1408.0,
+            "x": 1280.0,
             "y": 384.0,
             "width": 256.0,
-            "height": 512.0,
+            "height": 384.0,
             "type": "List Layout",
             "properties": {
               "label_position": "LEFT"
@@ -1059,7 +934,7 @@
           },
           {
             "title": "Vision",
-            "x": 1408.0,
+            "x": 1280.0,
             "y": 0.0,
             "width": 256.0,
             "height": 384.0,
@@ -1129,6 +1004,131 @@
                 }
               }
             ]
+          },
+          {
+            "title": "Front Swerve Modules",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 512.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "LEFT"
+            },
+            "children": [
+              {
+                "title": "distanceFL",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve distanceFL",
+                  "period": 0.04,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "CCangle FL",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve CCangle FL",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "FXangle dpsFL",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve FXangle dpsFL",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "drive temp FL",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve drive temp FL",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "distanceFR",
+                "x": 512.0,
+                "y": 384.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve distanceFR",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "CCangle FR",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve CCangle FR",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "FXangle FR",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve FXangle FR",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "drive temp FR",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Swerve drive temp FR",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           }
         ],
         "containers": []
@@ -1140,10 +1140,10 @@
         "layouts": [
           {
             "title": "Algae Grabber",
-            "x": 128.0,
+            "x": 0.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 896.0,
+            "height": 512.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -1209,10 +1209,10 @@
           },
           {
             "title": "Coral Effector",
-            "x": 384.0,
+            "x": 256.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 896.0,
+            "height": 768.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -1312,10 +1312,10 @@
           },
           {
             "title": "Hopper",
-            "x": 640.0,
-            "y": 0.0,
+            "x": 0.0,
+            "y": 512.0,
             "width": 256.0,
-            "height": 896.0,
+            "height": 384.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -1364,10 +1364,10 @@
           },
           {
             "title": "Climber",
-            "x": 1408.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 896.0,
+            "height": 640.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -1464,10 +1464,10 @@
           },
           {
             "title": "Wrist",
-            "x": 896.0,
+            "x": 512.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 896.0,
+            "height": 768.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -1577,7 +1577,7 @@
           },
           {
             "title": "Elevator",
-            "x": 1152.0,
+            "x": 768.0,
             "y": 0.0,
             "width": 256.0,
             "height": 896.0,
@@ -1710,10 +1710,10 @@
         "layouts": [
           {
             "title": "Algae Sequences",
-            "x": 128.0,
+            "x": 0.0,
             "y": 0.0,
-            "width": 512.0,
-            "height": 896.0,
+            "width": 384.0,
+            "height": 640.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -1788,10 +1788,10 @@
           },
           {
             "title": "Coral Sequences",
-            "x": 640.0,
+            "x": 384.0,
             "y": 0.0,
-            "width": 512.0,
-            "height": 896.0,
+            "width": 384.0,
+            "height": 640.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -1866,10 +1866,10 @@
           },
           {
             "title": "Climber Sequences",
-            "x": 1152.0,
+            "x": 768.0,
             "y": 0.0,
-            "width": 512.0,
-            "height": 896.0,
+            "width": 384.0,
+            "height": 640.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
