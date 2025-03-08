@@ -627,7 +627,7 @@
                   "topic": "/SmartDashboard/DriveResetPose Angle",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -641,7 +641,7 @@
                   "topic": "/SmartDashboard/DriveResetPose X",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -655,7 +655,7 @@
                   "topic": "/SmartDashboard/DriveResetPose Y",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -695,7 +695,7 @@
                   "topic": "/SmartDashboard/DriveStraight Manual Angle",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -709,7 +709,7 @@
                   "topic": "/SmartDashboard/DriveStraight Manual Target Dist",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -723,7 +723,7 @@
                   "topic": "/SmartDashboard/DriveStraight Manual MaxVel",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -737,7 +737,7 @@
                   "topic": "/SmartDashboard/DriveStraight Manual MaxAccel",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -790,7 +790,7 @@
                   "topic": "/SmartDashboard/DriveToPose VelMax mps",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -804,7 +804,7 @@
                   "topic": "/SmartDashboard/DriveToPose Rot degrees",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -818,7 +818,7 @@
                   "topic": "/SmartDashboard/DriveToPose XPos meters",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -832,7 +832,7 @@
                   "topic": "/SmartDashboard/DriveToPose YPos meters",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -862,19 +862,6 @@
             },
             "children": [
               {
-                "title": " ",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive Percent Speed",
-                  "period": 0.06,
-                  "show_type": true
-                }
-              },
-              {
                 "title": "angle",
                 "x": 0.0,
                 "y": 0.0,
@@ -885,7 +872,7 @@
                   "topic": "/SmartDashboard/DrivePercentSpeed angle",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -899,7 +886,7 @@
                   "topic": "/SmartDashboard/DrivePercentSpeed percent",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -913,7 +900,7 @@
                   "topic": "/SmartDashboard/DrivePercentSpeed maxDistance",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -927,7 +914,20 @@
                   "topic": "/SmartDashboard/DrivePercentSpeed curDistance",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": " ",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive Percent Speed",
+                  "period": 0.06,
+                  "show_type": true
                 }
               }
             ]
@@ -1159,7 +1159,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/AlgaeGrabber Set -10%",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1172,7 +1172,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/AlgaeGrabber Set 10%",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1185,7 +1185,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/AlgaeGrabber Stop",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1228,7 +1228,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/CoralEffector Set -10%",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1241,7 +1241,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/CoralEffector Set 10%",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1254,7 +1254,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/CoralEffector Stop",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1331,7 +1331,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Hopper Set -10%",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1344,7 +1344,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Hopper Set 10%",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1357,7 +1357,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Hopper Stop",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               }
             ]
@@ -1383,7 +1383,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Climber Reset Angle",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1396,7 +1396,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Climber Set Percent Output",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1423,7 +1423,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Climber Stop",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1436,7 +1436,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Climber Manually Calibrate",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1513,7 +1513,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Wrist Reset Angle",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1526,7 +1526,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Wrist Set Percent Output",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1553,7 +1553,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Wrist Stop",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1566,7 +1566,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Wrist Manually Calibrate",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1643,7 +1643,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Elevator Move to HP",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1656,7 +1656,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Elevator Move to L1",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1669,7 +1669,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Elevator Move To L2",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1682,7 +1682,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Elevator Move To L3",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1695,7 +1695,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Elevator Move To L4",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1708,7 +1708,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Elevator Stop Motors",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1776,7 +1776,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Algae Intake Sequence Ground",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1789,7 +1789,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Algae Intake Sequence Lower",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1802,7 +1802,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Algae Intake Sequence Upper",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1815,7 +1815,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Algae Score Prep Sequence Net",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1828,7 +1828,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Algae Score Prep Sequence Processor",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               }
             ]
@@ -1854,7 +1854,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Coral Intake Sequence",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1867,7 +1867,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Coral Score Prep Sequence L1",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1880,7 +1880,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Coral Score Prep Sequence L2",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1893,7 +1893,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Coral Score Prep Sequence L3",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1906,7 +1906,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Coral Score Prep Sequence L4",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               }
             ]
@@ -1932,7 +1932,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Climber Prep Sequence",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1945,7 +1945,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Climber Set Angle to Lift",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               }
             ]
