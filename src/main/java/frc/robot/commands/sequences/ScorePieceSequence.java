@@ -15,7 +15,8 @@ import frc.robot.utilities.FileLog;
 
 public class ScorePieceSequence extends SequentialCommandGroup {
   /**
-   * Scores game piece. If holding algae (regardless of if holding coral), score algae. Otherwise, score coral.
+   * Scores a game piece. If holding algae (regardless of coral), score algae. Otherwise, score coral.
+   * Does not move the elevator or wrist.
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
