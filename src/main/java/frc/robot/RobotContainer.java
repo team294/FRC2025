@@ -210,7 +210,7 @@ public class RobotContainer {
     xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, log, true));
 
     // Manually control wrist with the left joystick
-    xbRJoystickTrigger.whileTrue(new WristManualControl(xboxController, wrist, log, true));
+    xbLJoystickTrigger.whileTrue(new WristManualControl(xboxController, wrist, log, false));
 
     // Stop all motors with LB
     xbLB.onTrue(parallel(

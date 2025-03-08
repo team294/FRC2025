@@ -8,27 +8,26 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 import frc.robot.utilities.FileLog;
 
-public class ClimbCalibrationRamp extends Command {
+public class ClimberCalibrationRamp extends Command {
   private final Climber climber;
   private final FileLog log;
 
   private double rate;        // Ramp rate per execute() cycle = every 20ms
   private double maxPercent;
-
   private double percent;     // Current percent
 
   /**
-   * Slowly ramps voltage to the climber motors.  Used for logging data to calibrate
+   * Slowly ramps voltage to the climber motors. Used for logging data to calibrate
    * kS and kV for the climber motors.
-   * @param rate rate to increase climber percent output, in percent(-1 down to +1 up) per second.
-   * @param maxPercent stop command when climber percent output (abs value) reaches this value (0->1)
-   * @param wrist
-   * @param log
+   * @param rate rate to increase climber percent output, in percent (-1 down to +1 up) per second
+   * @param maxPercent stop command when climber percent output (abs value) reaches this value (0 -> 1)
+   * @param climber Climber subsystem
+   * @param log FileLog utility
    */
-  public ClimbCalibrationRamp(double rate, double maxPercent, Climber climber, FileLog log) {
+  public ClimberCalibrationRamp(double rate, double maxPercent, Climber climber, FileLog log) {
     this.climber = climber;
     this.log = log;
-    this.rate = rate * 0.020;       // convert to execute() cycles = every 20ms
+    this.rate = rate * 0.020; // convert to execute() cycles = every 20ms
     this.maxPercent = maxPercent;
 
     addRequirements(climber);

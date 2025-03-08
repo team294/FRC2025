@@ -14,21 +14,20 @@ public class WristCalibrationRamp extends Command {
 
   private double rate;        // Ramp rate per execute() cycle = every 20ms
   private double maxPercent;
-
   private double percent;     // Current percent
 
   /**
-   * Slowly ramps voltage to the wrist motors.  Used for logging data to calibrate
+   * Slowly ramps voltage to the wrist motors. Used for logging data to calibrate
    * kS and kV for the wrist motors.
-   * @param rate rate to increase wrist percent output, in percent(-1 down to +1 up) per second.
-   * @param maxPercent stop command when wrist percent output (abs value) reaches this value (0->1)
-   * @param wrist
-   * @param log
+   * @param rate rate to increase wrist percent output, in percent (-1 down to +1 up) per second
+   * @param maxPercent stop command when wrist percent output (abs value) reaches this value (0 -> 1)
+   * @param wrist Wrist subsytsem
+   * @param log FileLog utility
    */
   public WristCalibrationRamp(double rate, double maxPercent, Wrist wrist, FileLog log) {
     this.wrist = wrist;
     this.log = log;
-    this.rate = rate * 0.020;       // convert to execute() cycles = every 20ms
+    this.rate = rate * 0.020; // convert to execute() cycles = every 20ms
     this.maxPercent = maxPercent;
 
     addRequirements(wrist);

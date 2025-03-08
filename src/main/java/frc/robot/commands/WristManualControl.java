@@ -15,20 +15,20 @@ public class WristManualControl extends Command {
   private final Wrist wrist;
   private final CommandXboxController xboxController;
   private final FileLog log;
-  private boolean leftJoystick;
+  private boolean rightJoystick;
 
   /**
    * Controls the wrist using the Xbox controller joysticks.
    * @param xboxController Xbox controller
-   * @param wrist wrist subsystem
+   * @param wrist Wrist subsystem
    * @param log FileLog utility
-   * @param leftJoystick true = use left joystick, false = use right joystick
+   * @param rightJoystick true = use right joystick, false = use left joystick
    */
-  public WristManualControl(CommandXboxController xboxController, Wrist wrist, FileLog log, boolean leftJoystick) {
+  public WristManualControl(CommandXboxController xboxController, Wrist wrist, FileLog log, boolean rightJoystick) {
     this.wrist = wrist;
     this.xboxController = xboxController;
     this.log = log;
-    this.leftJoystick = leftJoystick;
+    this.rightJoystick = rightJoystick;
     addRequirements(wrist);
   }
 
@@ -41,7 +41,7 @@ public class WristManualControl extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double wristPercent = leftJoystick ? -xboxController.getLeftY() : -xboxController.getRightY();
+    double wristPercent = rightJoystick ? -xboxController.getRightY() : -xboxController.getLeftY();
     if ((Math.abs(wristPercent) < OIConstants.joystickDeadband)) wristPercent = 0;
 
     // Slow the control down
