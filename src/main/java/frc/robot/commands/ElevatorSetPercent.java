@@ -23,10 +23,10 @@ public class ElevatorSetPercent extends Command {
    * @param log FileLog utility
    */
   public ElevatorSetPercent(double percent, boolean endImmediately, Elevator elevator, FileLog log) {
-    this.elevator = elevator;
-    this.log = log;
     this.percent = percent;
     this.endImmediately = endImmediately;
+    this.elevator = elevator;
+    this.log = log;
     this.fromShuffleboard = false;
     addRequirements(elevator);
   }
@@ -36,7 +36,8 @@ public class ElevatorSetPercent extends Command {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorSetPercent(Elevator elevator, FileLog log) {
+  public ElevatorSetPercent(boolean endImmediately, Elevator elevator, FileLog log) {
+    this.endImmediately = endImmediately;
     this.elevator = elevator;
     this.log = log;
     this.fromShuffleboard = true;
