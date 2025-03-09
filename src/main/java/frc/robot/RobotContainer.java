@@ -267,7 +267,7 @@ public class RobotContainer {
     );
     left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, log));
 
-    right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, log));
+    right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
   }
 
   /**
