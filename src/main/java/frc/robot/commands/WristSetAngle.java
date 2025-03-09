@@ -89,6 +89,6 @@ public class WristSetAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !wrist.isEncoderCalibrated() || Math.abs(wrist.getWristAngle() - wrist.getCurrentWristTarget()) < tolerance;
+    return !wrist.isWristCalibrated() || Math.abs(wrist.getWristAngle() - wrist.getCurrentWristTarget()) < tolerance;
   }
 }

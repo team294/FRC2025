@@ -347,8 +347,8 @@ public final class Constants {
 
     // TODO CALIBRATE FOR 2025
     public enum WristAngle {
-      LOWER_LIMIT(0.0),
-      UPPER_LIMIT(0.0);
+      LOWER_LIMIT(-90.0),
+      UPPER_LIMIT(90.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;

@@ -26,7 +26,7 @@ public class ElevatorWristRegions {
         private Optional<Region> regionAbove, regionBelow;      // Region above (or empty if this is the top) or below (or empty if this is the bottom)
 
         /**
-         * Creates a region.  TODO fill out JavaDocs
+         * Creates a region for a region type and a range of elevator heights
          * @param type          Type for this region
          * @param regionIndex   Region numbering FOR THIS RegionType, from 0 (bottom) to highest (top)
          * @param elevatorMin   Elevator min height for this region, in inches
@@ -116,6 +116,7 @@ public class ElevatorWristRegions {
         }
     }
 
+    // TODO remove the registering and related methods and member variables (and FileLog)
     /**
      * Provide a link to the necessary subsystems
      * @param elevator
@@ -183,4 +184,41 @@ public class ElevatorWristRegions {
 
         return currentRegion;
     }
+
+
+    /**
+     * Returns a region, based on the input region type and elevatorHeight
+     * @param type  CORAL_ONLY or STANDARD
+     * @param elevatorHeight
+     * @return Region
+     */
+    public Region getRegion(RegionType type, double elevatorHeight) {
+        Region currentRegion;
+
+        // Clamp the elevator height to be within the region arrays
+        elevatorHeight = MathUtil.clamp(elevatorHeight, 
+            ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 
+            ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value - 0.001);
+
+        if (type == RegionType.CORAL_ONLY) {
+            currentRegion = CoralOnlyRegions[0];  // default value
+            for (Region r : CoralOnlyRegions) {
+                if ( elevatorHeight >= r.elevatorMin && elevatorHeight < r.elevatorMax) {
+                    currentRegion = r;
+                    break;
+                }
+            }
+        } else {
+            currentRegion = StandardRegions[0];  // default value
+            for (Region r : StandardRegions) {
+                if ( elevatorHeight >= r.elevatorMin && elevatorHeight < r.elevatorMax) {
+                    currentRegion = r;
+                    break;
+                }
+            }
+        }
+
+        return currentRegion;
+    }
+
 }

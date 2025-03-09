@@ -10,18 +10,24 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.commands.WristSetAngle;
 import frc.robot.commands.ElevatorSetPosition;
 import frc.robot.subsystems.Elevator;
+import frc.robot.utilities.ElevatorWristRegions;
 import frc.robot.utilities.FileLog;
 
-/**
- * Moves the wrist and elevator in sequence, accounting for interlocks and regions.
- * TODO add interlocks and regions
- * @param position position to move the elevator and wrist to (use ElevatorWwristConstants.ElevatorWristPosition)
- * @param elevator Elevator subsystem
- * @param wrist Wrist subsystem
- * @param log FileLog utility
- */
 public class WristElevatorPrepSequence extends SequentialCommandGroup {
-  public WristElevatorPrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, FileLog log) {
+
+  /**
+   * Moves the wrist and elevator in sequence, accounting for interlocks and regions.
+   * TODO add interlocks and regions
+   * @param position position to move the elevator and wrist to (use ElevatorWwristConstants.ElevatorWristPosition)
+   * @param type  Region type = CORAL_ONLY or STANDARD
+   * @param elevatorWristRegions ElevatorWristRegions calculator
+   * @param elevator Elevator subsystem
+   * @param wrist Wrist subsystem
+   * @param log FileLog utility
+   */
+  public WristElevatorPrepSequence(ElevatorWristPosition position, 
+            ElevatorWristRegions.RegionType type, ElevatorWristRegions elevatorWristRegions,
+            Elevator elevator, Wrist wrist, FileLog log) {
     addCommands(
       new WristSetAngle(position.wristAngle, wrist, log),
       new ElevatorSetPosition(position.elevatorPosition, elevator, log)
