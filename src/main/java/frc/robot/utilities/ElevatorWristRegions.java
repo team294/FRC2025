@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.subsystems.*;
 
 public class ElevatorWristRegions {
 
@@ -18,7 +17,7 @@ public class ElevatorWristRegions {
     }
 
     // All of the information about a region
-    public class Region {
+    public static class Region {
         public final RegionType type;                           // Type for this region
         public final int regionIndex;                           // Region numbering FOR THIS RegionType, from 0 (bottom) to highest (top)
         public final double elevatorMin, elevatorMax;           // Elevator min and max heights for this region, in inches
@@ -73,34 +72,24 @@ public class ElevatorWristRegions {
         }
     }
 
-    private final FileLog log;
-    // Reference to necessary subsystems.  Note that they may be null!!!!
-    private Elevator elevator;
-    private CoralEffector coralEffector;
-    private AlgaeGrabber algaeGrabber;
-
     // Arrays for the regions
-    private final Region[] CoralOnlyRegions = {
+    public static final Region[] CoralOnlyRegions = {
         new Region(RegionType.CORAL_ONLY, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 10, 69.5, 90),
         new Region(RegionType.CORAL_ONLY, 1, 10, 50, 50, 90),
         new Region(RegionType.CORAL_ONLY, 2, 50, 67, 82, 90),
         new Region(RegionType.CORAL_ONLY, 3, 67, 72, 20, 90),
         new Region(RegionType.CORAL_ONLY, 4, 72, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, 27, 90)
     };
-    private final Region[] StandardRegions = {
+    private static final Region[] StandardRegions = {
         new Region(RegionType.STANDARD, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 5, 69.5, 90),
         new Region(RegionType.STANDARD, 1, 5, 23, 50, 90),
         new Region(RegionType.STANDARD, 2, 23, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, 82, 90)
     };
 
     /**
-     * Creates the ElevatorWristRegions system.
-     * <p><b> Be sure </b> to register the subsystems to this object in RobotContainer constructor!!!!
-     * @param log
+     * Link the prior and next regions in each array
      */
-    public ElevatorWristRegions(FileLog log) {
-        this.log = log;
-
+    static {
         // Set the links to each region above/below
         for (Region region : CoralOnlyRegions) {
             region.setNeighborRegions(
@@ -116,83 +105,13 @@ public class ElevatorWristRegions {
         }
     }
 
-    // TODO remove the registering and related methods and member variables (and FileLog)
-    /**
-     * Provide a link to the necessary subsystems
-     * @param elevator
-     * @param coralEffector
-     * @param algaeGrabber
-     */
-    public void registerSubsystems(Elevator elevator, CoralEffector coralEffector, AlgaeGrabber algaeGrabber) {
-        this.elevator = elevator;
-        this.coralEffector = coralEffector;
-        this.algaeGrabber = algaeGrabber;
-    }
-
-    /**
-     * Returns the current region type, based on piece presence in the grabbers/effectors.
-     * <p> If subsystems are not registered, then returns CORAL_ONLY (most restrictive) and throws a sticky fault.
-     * @return RegionType = CORAL_ONLY or STANDARD
-     */
-    public RegionType getCurrentRegionType() {
-        // Prevent crashes if subsystems are not registered
-        if (coralEffector == null || algaeGrabber == null || elevator == null) {
-            RobotPreferences.recordStickyFaults("ElevatorWristRegions-Type", log);
-            return RegionType.CORAL_ONLY;
-        }
-
-        return (coralEffector.isCoralPresent() && !algaeGrabber.isAlgaePresent()) ? RegionType.CORAL_ONLY : RegionType.STANDARD;
-    }
-
-    /**
-     * Returns the current region, based on piece presence in the grabbers/effectors and the elevator height.
-     * <p> If subsystems are not registered, then returns the bottom CORAL_ONLY region (most restrictive) and throws a sticky fault.
-     * @return Region
-     */
-    public Region getCurrentRegion() {
-        // Prevent crashes if subsystems are not registered
-        if (coralEffector == null || algaeGrabber == null || elevator == null) {
-            RobotPreferences.recordStickyFaults("ElevatorWristRegions-Region", log);
-            return CoralOnlyRegions[0];
-        }
-
-        Region currentRegion;
-
-        // Get the elevator height
-        double elevatorHeight = elevator.getElevatorPosition();
-        elevatorHeight = MathUtil.clamp(elevatorHeight, 
-            ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 
-            ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value - 0.001);
-
-        if (getCurrentRegionType() == RegionType.CORAL_ONLY) {
-            currentRegion = CoralOnlyRegions[0];  // default value
-            for (Region r : CoralOnlyRegions) {
-                if ( elevatorHeight >= r.elevatorMin && elevatorHeight < r.elevatorMax) {
-                    currentRegion = r;
-                    break;
-                }
-            }
-        } else {
-            currentRegion = StandardRegions[0];  // default value
-            for (Region r : StandardRegions) {
-                if ( elevatorHeight >= r.elevatorMin && elevatorHeight < r.elevatorMax) {
-                    currentRegion = r;
-                    break;
-                }
-            }
-        }
-
-        return currentRegion;
-    }
-
-
     /**
      * Returns a region, based on the input region type and elevatorHeight
      * @param type  CORAL_ONLY or STANDARD
      * @param elevatorHeight
      * @return Region
      */
-    public Region getRegion(RegionType type, double elevatorHeight) {
+    public static Region GetRegion(RegionType type, double elevatorHeight) {
         Region currentRegion;
 
         // Clamp the elevator height to be within the region arrays

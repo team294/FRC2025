@@ -8,10 +8,12 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.commands.WristElevatorSafeMove;
 import frc.robot.subsystems.AlgaeGrabber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
 /**
@@ -27,7 +29,7 @@ public class AlgaeScorePrepSequence extends SequentialCommandGroup {
   public AlgaeScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
     addCommands(
       either(
-        new WristElevatorPrepSequence(position, elevator, wrist, log),
+        new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist, log),
         none(),
         () -> algaeGrabber.isAlgaePresent()
       )

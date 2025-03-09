@@ -13,7 +13,6 @@ import frc.robot.utilities.FileLog;
 
 public class WristElevatorSafeMove extends Command {
   // Subsystem and object references
-  private final ElevatorWristRegions elevatorWristRegions;
   private final Elevator elevator;
   private final Wrist wrist;
   private final FileLog log;
@@ -35,17 +34,14 @@ public class WristElevatorSafeMove extends Command {
    * Moves the wrist and elevator in sequence, accounting for interlocks and regions.
    * @param position position to move the elevator and wrist to (use ElevatorWwristConstants.ElevatorWristPosition)
    * @param type  Region type = CORAL_ONLY or STANDARD
-   * @param elevatorWristRegions ElevatorWristRegions calculator
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristElevatorSafeMove(ElevatorWristPosition position, 
-            ElevatorWristRegions.RegionType type, ElevatorWristRegions elevatorWristRegions,
+  public WristElevatorSafeMove(ElevatorWristPosition position, ElevatorWristRegions.RegionType type,
             Elevator elevator, Wrist wrist, FileLog log) {
     this.destPosition = position;
     this.type = type;
-    this.elevatorWristRegions = elevatorWristRegions;
     this.elevator = elevator;
     this.wrist = wrist;
     this.log = log;
@@ -65,8 +61,8 @@ public class WristElevatorSafeMove extends Command {
 
     log.writeLog(false, "WristElevatorSafeMove", "Init", "Calibrated", true, "Position", destPosition.toString(), "Type", type.toString());
 
-    curRegion = elevatorWristRegions.getRegion(type, elevator.getElevatorPosition());
-    destRegion = elevatorWristRegions.getRegion(type, destPosition.elevatorPosition);
+    curRegion = ElevatorWristRegions.GetRegion(type, elevator.getElevatorPosition());
+    destRegion = ElevatorWristRegions.GetRegion(type, destPosition.elevatorPosition);
 
     double curWristAngle = wrist.getWristAngle();
     if (curWristAngle <= curRegion.wristMin || curWristAngle >= curRegion.wristMax) {
