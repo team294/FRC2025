@@ -73,17 +73,18 @@ public class ElevatorWristRegions {
     }
 
     // Arrays for the regions
+    // Note that some regions have added 1-2" of margin on the elevator position for safety
     public static final Region[] CoralOnlyRegions = {
-        new Region(RegionType.CORAL_ONLY, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 10, 69.5, 90),
-        new Region(RegionType.CORAL_ONLY, 1, 10, 50, 50, 90),
-        new Region(RegionType.CORAL_ONLY, 2, 50, 67, 82, 90),
-        new Region(RegionType.CORAL_ONLY, 3, 67, 72, 20, 90),
+        new Region(RegionType.CORAL_ONLY, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 12, 69.5, 90),
+        new Region(RegionType.CORAL_ONLY, 1, 12, 48, 50, 90),
+        new Region(RegionType.CORAL_ONLY, 2, 48, 68, 82, 90),
+        new Region(RegionType.CORAL_ONLY, 3, 68, 72, 20, 90),
         new Region(RegionType.CORAL_ONLY, 4, 72, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, 27, 90)
     };
     private static final Region[] StandardRegions = {
         new Region(RegionType.STANDARD, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 5, 69.5, 90),
-        new Region(RegionType.STANDARD, 1, 5, 23, 50, 90),
-        new Region(RegionType.STANDARD, 2, 23, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, 82, 90)
+        new Region(RegionType.STANDARD, 1, 5, 25, -21, 90),
+        new Region(RegionType.STANDARD, 2, 25, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, -30, 90)
     };
 
     /**
