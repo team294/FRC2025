@@ -91,6 +91,7 @@ public final class Constants {
     public static final int usbCoPanel = 3;
 
     public static final double joystickDeadband = 0.01;
+    public static final double joystickJoggingDeadband = 10.0 * joystickDeadband;
     public static final double controllerDeadband = 0.05;
   }
   

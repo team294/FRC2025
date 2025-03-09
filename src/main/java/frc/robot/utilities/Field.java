@@ -142,7 +142,7 @@ public class Field {
     loadingStationAprilTagPositions.put(12, aprilTagFieldLayout.getTagPose(12).get().toPose2d()); // blue right
     loadingStationAprilTagPositions.put(13, aprilTagFieldLayout.getTagPose(13).get().toPose2d()); // blue left
     loadingStationAprilTagPositionList = new ArrayList<Pose2d>(loadingStationAprilTagPositions.values());
-  };
+  }
 
   /**
    * Flips the x, y, and rotation coordinates across the field, converting between field positions for the red and blue alliances.
@@ -169,7 +169,7 @@ public class Field {
    */
   public Pose2d getNearestReefScoringPosition(Pose2d currPos) {
     return getNearestReefScoringPositionWithOffset(currPos, new Transform2d(0, 0, Rotation2d.kZero));
-  };
+  }
 
   /**
    * Finds and returns the nearest reef scoring position (against the base) with an offset.
@@ -181,7 +181,7 @@ public class Field {
     Pose2d currPosBlue = (allianceSelection.getAlliance() == Alliance.Blue) ? currPos : flipPosition(currPos);
     Pose2d nearestBluePos = currPosBlue.nearest(reefScoringPositionListByAprilTag);
     Pose2d nearestBluePosWithOffset = nearestBluePos.transformBy(offset);
-    // log.writeLogEcho(false, "Field", "getNearestReefScoringPositionWithOffset",
+    // log.writeLog(false, "Field", "getNearestReefScoringPositionWithOffset",
     //     "Current X", currPosBlue.getX(),
     //     "Current Y", currPosBlue.getY(),
     //     "Current Rotation", currPosBlue.getRotation().getDegrees(),
@@ -196,11 +196,53 @@ public class Field {
     //     "Nearest with Offset Rotation", nearestBluePosWithOffset.getRotation().getDegrees()
     // );
     return (allianceSelection.getAlliance() == Alliance.Blue) ? nearestBluePosWithOffset : flipPosition(nearestBluePosWithOffset);
-  };
+  }
+
+  /**
+   * Finds and returns the nearest reef scoring position (against the base)
+   * @param currPos the robot's current positions
+   * @param left whether the robot should drive to the left (relative to the reef wall) scoring position
+   * @return The Pose2d of the nearest scoring position
+   */
+  public Pose2d getNearestReefScoringPosition(Pose2d currPos, boolean left) {
+    return getNearestReefScoringPositionWithOffset(currPos, new Transform2d(0, 0, Rotation2d.kZero), left);
+  }
+
+  /**
+   * Finds and returns the nearest reef scoring position (against the base) with an offset
+   * @param currPos the robot's current positions
+   * @param offset the offset by which the returned pose2d is tranformed
+   * @param left whether the robot should drive to the left (relative to the reef wall) scoring position
+   * @return The Pose2d of the nearest scoring position
+   */
+  public Pose2d getNearestReefScoringPositionWithOffset(Pose2d currPos, Transform2d offset, boolean left) {
+      Pose2d nearestReefAprilTag = getNearestAprilTagReef(currPos);
+      Pose2d nearestReefScoringPosition = nearestReefAprilTag.rotateAround(nearestReefAprilTag.getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffset * (left ? 1.0 : -1.0),  new Rotation2d(0)));
+      Pose2d nearestReefScoringPositionWithOffset = nearestReefScoringPosition.transformBy(offset);
+      // log.writeLog(false, "Field", "getNearestReefScoringPositionWithOffset", 
+      //     "Current X", currPos.getX(),
+      //     "Current Y", currPos.getY(),
+      //     "Current Rotation", currPos.getRotation().getDegrees(),
+      //     "Nearest April X", nearestReefAprilTag.getX(),
+      //     "Nearest April Y", nearestReefAprilTag.getY(),
+      //     "Nearest April Rotation", nearestReefAprilTag.getRotation().getDegrees(),
+      //     "Left Scoring Position?", left,
+      //     "Nearest Scoring X", nearestReefScoringPosition.getX(),
+      //     "Nearest Scoring Y", nearestReefScoringPosition.getY(),
+      //     "Nearest Scoring Rotation", nearestReefScoringPosition.getRotation().getDegrees(),
+      //     "Offset X", offset.getX(),
+      //     "Offset Y", offset.getY(),
+      //     "Offset Rotation", offset.getRotation().getDegrees(),
+      //     "Nearest with Offset X", nearestReefScoringPositionWithOffset.getX(),
+      //     "Nearest with Offset Y", nearestReefScoringPositionWithOffset.getY(),
+      //     "Nearest with Offset Rotation", nearestReefScoringPositionWithOffset.getRotation().getDegrees()
+      // );
+      return nearestReefScoringPositionWithOffset;
+  }
 
   /**
    * Gets the Pose2d of the given *Reef* AprilTag.
-   * @param position number value associated with the desired AprilTag
+   * @param tagNumber number value associated with the desired AprilTag
    * @return Pose2d of the given AprilTag
    */
   public Pose2d getReefScoringPosition(int tagNumber) {
@@ -208,21 +250,38 @@ public class Field {
   }
 
   /**
-   * Finds and returns the nearest *Reef* AprilTag position.
+   * Finds and returns the nearest *Reef* AprilTag position with an offset
    * @param currPos the robot's current positions
-   * @return Pose2d of the nearest reef AprilTag
+   * @return The Pose2d of the nearest reef AprilTag
    */
   public Pose2d getNearestAprilTagReef(Pose2d currPos) {
-    Pose2d nearestReefAprilTag = currPos.nearest(reefAprilTagPositionList);
-    // log.writeLogEcho(false, "Field", "getNearestAprilTag", 
-    //     "Current X", currPos.getX(),
-    //     "Current Y", currPos.getY(),
-    //     "Current Rotation", currPos.getRotation().getDegrees(),
-    //     "Nearest X", nearestReefAprilTag.getX(),
-    //     "Nearest Y", nearestReefAprilTag.getY(),
-    //     "Nearest Rotation", nearestReefAprilTag.getRotation().getDegrees()
-    // );
-    return nearestReefAprilTag;
+      return getNearestAprilTagReefWithOffset(currPos, new Transform2d(0, 0, Rotation2d.kZero));
+  }
+
+  /**
+   * Finds and returns the nearest *Reef* AprilTag position
+   * @param currPos the robot's current positions
+   * @param offset the offset by which the returned pose2d is tranformed
+   * @return The Pose2d of the nearest reef AprilTag
+   */
+  public Pose2d getNearestAprilTagReefWithOffset(Pose2d currPos, Transform2d offset) {
+      Pose2d nearestReefAprilTag = currPos.nearest(reefAprilTagPositionList);
+      Pose2d nearestReefAprilTagWithOffset = nearestReefAprilTag.transformBy(offset);
+      // log.writeLog(false, "Field", "getNearestAprilTagWithOffset", 
+      //     "Current X", currPos.getX(),
+      //     "Current Y", currPos.getY(),
+      //     "Current Rotation", currPos.getRotation().getDegrees(),
+      //     "Nearest X", nearestReefAprilTag.getX(),
+      //     "Nearest Y", nearestReefAprilTag.getY(),
+      //     "Nearest Rotation", nearestReefAprilTag.getRotation().getDegrees(),
+      //     "Offset X", offset.getX(),
+      //     "Offset Y", offset.getY(),
+      //     "Offset Rotation", offset.getRotation().getDegrees(),
+      //     "Nearest with Offset X", nearestReefAprilTagWithOffset.getX(),
+      //     "Nearest with Offset Y", nearestReefAprilTagWithOffset.getY(),
+      //     "Nearest with Offset Rotation", nearestReefAprilTagWithOffset.getRotation().getDegrees()
+      // );
+      return nearestReefAprilTagWithOffset;
   }
 
   /**
@@ -232,7 +291,7 @@ public class Field {
    */
   public Pose2d getNearestAprilTagLoadingStation(Pose2d currPos) {
     Pose2d nearestAprilTagLoadingStation = currPos.nearest(loadingStationAprilTagPositionList);
-    // log.writeLogEcho(false, "Field", "getNearestAprilTagLoadingStation", 
+    // log.writeLog(false, "Field", "getNearestAprilTagLoadingStation", 
     //     "Current X", currPos.getX(),
     //     "Current Y", currPos.getY(),
     //     "Current Rotation", currPos.getRotation().getDegrees(),
