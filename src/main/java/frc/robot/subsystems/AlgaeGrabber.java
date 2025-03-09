@@ -40,13 +40,13 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 	private final StatusSignal<AngularVelocity> algaeGrabberEncoderVelocity;	
 	private final StatusSignal<Voltage> algaeGrabberVoltage;
 
-  private final TalonFXS algaeGrabberMotor = new TalonFXS(Ports.CANCoralGrabber);
+  private final TalonFXS algaeGrabberMotor = new TalonFXS(Ports.CANAlgaeGrabber);
   private final TalonFXSConfigurator algaeGrabberConfigurator = algaeGrabberMotor.getConfigurator();
   private TalonFXSConfiguration algaeGrabberConfig;
   private VoltageOut algaeGrabberVoltageControl = new VoltageOut(0.0);
 
   // Create bump switches
-  private final DigitalInput bumpSwitch1 = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch);
+  private final DigitalInput bumpSwitch = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch);
 
   public AlgaeGrabber(String subsystemName, FileLog log) {
     this.log = log;
@@ -122,17 +122,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
    * @return true = algae is present, false = algae is not present or not triggering the bump switch
    */
   public boolean isAlgaePresent() {
-    return bumpSwitch1.get();
-  }
-
-  /**
-   * Gets whether an algae is triggering a specific bump switch in the algaeGrabber.
-   * @param bumpSwitch 1 = bumpSwitch1, 2 = bumpSwitch2
-   * @return true = bump switch is triggered, false = bump switch is not triggered
-   */
-  public boolean isAlgaePresent(int bumpSwitch) {
-    if (bumpSwitch == 1) return bumpSwitch1.get();
-    else return false;
+    return !bumpSwitch.get();
   }
 
   /**

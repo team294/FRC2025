@@ -91,9 +91,9 @@ public class DriveTrain extends SubsystemBase implements Loggable {
   // private LinearFilter lfRunningAvg = LinearFilter.movingAverage(4); // Calculate running average to smooth quantization error in angular velocity calc
 
   // Variables to store vision cameras
-  private PhotonCameraWrapper cameraLeft;
-  private PhotonCameraWrapper cameraRight;
-  List<PhotonCameraWrapper> cameras = new ArrayList<PhotonCameraWrapper>(2);
+  // private PhotonCameraWrapper cameraLeft;
+  // private PhotonCameraWrapper cameraRight;
+  // List<PhotonCameraWrapper> cameras = new ArrayList<PhotonCameraWrapper>(2);
   private boolean useVisionForOdometry = false; // false = will not use vision in odometry, true = uses vision for odometry
 
   private boolean lastCoastReading;
@@ -115,12 +115,12 @@ public class DriveTrain extends SubsystemBase implements Loggable {
     logRotationKey = log.allocateLogRotation();
 
     // Create and enable cameras
-    cameraLeft = new PhotonCameraWrapper(PhotonVisionConstants.robotToCamLeft, PhotonVisionConstants.leftAprilTagCameraName, log, logRotationKey);
-    cameraRight = new PhotonCameraWrapper(PhotonVisionConstants.robotToCamRight, PhotonVisionConstants.rightAprilTagCameraName, log, logRotationKey);
-    cameras.add(cameraLeft);
-    cameras.add(cameraRight);
-    cameraLeft.init();
-    cameraRight.init();
+    // cameraLeft = new PhotonCameraWrapper(PhotonVisionConstants.robotToCamLeft, PhotonVisionConstants.leftAprilTagCameraName, log, logRotationKey);
+    // cameraRight = new PhotonCameraWrapper(PhotonVisionConstants.robotToCamRight, PhotonVisionConstants.rightAprilTagCameraName, log, logRotationKey);
+    // cameras.add(cameraLeft);
+    // cameras.add(cameraRight);
+    // cameraLeft.init();
+    // cameraRight.init();
 
     // Create swerve modules
     swerveFrontLeft = new SwerveModule("FL",
@@ -700,30 +700,30 @@ public class DriveTrain extends SubsystemBase implements Loggable {
     poseEstimator.update(Rotation2d.fromDegrees(getGyroRotation()), getModulePositions());
 
     // Update odometry based on cameras
-    for (PhotonCameraWrapper camera : cameras) {
-      if (camera.hasInit()) {
-        PhotonPipelineResult camResult = camera.getLatestResult();
-        if (camResult != null) {
-          Optional<EstimatedRobotPose> result = camera.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition(), camResult);
-          if (result.isPresent()) {
-            EstimatedRobotPose camPose = result.get();
-            SmartDashboard.putNumber("Vision " + camera.getCameraName() + " X", camPose.estimatedPose.toPose2d().getX());
-            SmartDashboard.putNumber("Vision " + camera.getCameraName() + " Y", camPose.estimatedPose.toPose2d().getY());
-            SmartDashboard.putNumber("Vision " + camera.getCameraName() + " rot", camPose.estimatedPose.toPose2d().getRotation().getDegrees());
+    // for (PhotonCameraWrapper camera : cameras) {
+    //   if (camera.hasInit()) {
+    //     PhotonPipelineResult camResult = camera.getLatestResult();
+    //     if (camResult != null) {
+    //       Optional<EstimatedRobotPose> result = camera.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition(), camResult);
+    //       if (result.isPresent()) {
+    //         EstimatedRobotPose camPose = result.get();
+    //         SmartDashboard.putNumber("Vision " + camera.getCameraName() + " X", camPose.estimatedPose.toPose2d().getX());
+    //         SmartDashboard.putNumber("Vision " + camera.getCameraName() + " Y", camPose.estimatedPose.toPose2d().getY());
+    //         SmartDashboard.putNumber("Vision " + camera.getCameraName() + " rot", camPose.estimatedPose.toPose2d().getRotation().getDegrees());
   
-            // Only run camera updates for pose estimator if useVisionForOdometry is true
-            if (camResult.hasTargets() && useVisionForOdometry) {
-              PhotonTrackedTarget bestTarget = camResult.getBestTarget();
-              if (bestTarget.getBestCameraToTarget().getX() < 1.5) {
-                poseEstimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds, closeMatrix);
-              } else if (bestTarget.getBestCameraToTarget().getX() < 3) {
-                poseEstimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds, farMatrix);
-              }
-            }
-          }
-        }
-      }
-    }
+    //         // Only run camera updates for pose estimator if useVisionForOdometry is true
+    //         if (camResult.hasTargets() && useVisionForOdometry) {
+    //           PhotonTrackedTarget bestTarget = camResult.getBestTarget();
+    //           if (bestTarget.getBestCameraToTarget().getX() < 1.5) {
+    //             poseEstimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds, closeMatrix);
+    //           } else if (bestTarget.getBestCameraToTarget().getX() < 3) {
+    //             poseEstimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds, farMatrix);
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
     
     // Update robot average speed
     ChassisSpeeds robotSpeeds = getRobotSpeeds();

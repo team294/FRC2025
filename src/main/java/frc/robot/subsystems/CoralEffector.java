@@ -128,7 +128,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
    * @return true = coral is in entry, false = coral is not in entry
    */
   public boolean isCoralPresentInEntry() {
-    return entrySensor.get();
+    return !entrySensor.get();
   }
 
   /**
