@@ -101,13 +101,13 @@ public final class Constants {
     private static final double DrivetrainAdjustmentFactor = 0.9911;      // TODO CALIBRATE
 
     // Left-right distance between the drivetrain wheels, measured from center to center, in meters
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(24.25) * DrivetrainAdjustmentFactor;
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(23.75) * DrivetrainAdjustmentFactor;
 
     // Front-back distance between the drivetrain wheels, measured from center to center, in meters
-    public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(24.25) * DrivetrainAdjustmentFactor;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(23.75) * DrivetrainAdjustmentFactor;
     
     // Width of robot in meters plus bumpers, in meters
-    public static final double robotWidth = Units.inchesToMeters(36.5);
+    public static final double robotWidth = Units.inchesToMeters(36.5);   // TODO CALIBRATE (for DriveToReef)
 
     // Diagonal width of robot, in meters
     public static final double robotDiagonal = Math.sqrt(2) * robotWidth;
@@ -189,11 +189,10 @@ public final class Constants {
     // Update the offset angles in RobotPreferences (in Shuffleboard), not in this code!
     // After updating in RobotPreferences, you will need to re-start the robot code for the changes to take effect.
     // When calibrating offset, set the wheels to zero degrees with the bevel gear facing to the right
-    // TODO CALIBRATE FOR 2025
-    public static double offsetAngleFrontLeftMotor = 100.18;
-    public static double offsetAngleFrontRightMotor = -163.04;
-    public static double offsetAngleBackLeftMotor = 19.09;
-    public static double offsetAngleBackRightMotor = 2.96;
+    public static double offsetAngleFrontLeftMotor = -56.6;
+    public static double offsetAngleFrontRightMotor = -152.8;
+    public static double offsetAngleBackLeftMotor = -56.9;
+    public static double offsetAngleBackRightMotor = -8.3;
 
     // Theta kp value for joystick in rad/sec
     public static final double kPJoystickThetaController = 3;    
