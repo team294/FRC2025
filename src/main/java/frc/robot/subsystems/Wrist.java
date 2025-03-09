@@ -419,10 +419,10 @@ public class Wrist extends SubsystemBase implements Loggable {
   // ********** Internal Kraken calibration methods
 
   /**
-   * Gets whether the encoder is calibrated.
-   * @return true = encoder is calibrated and working, false = encoder is not calibrated
+   * Gets whether the wrist is calibrated.
+   * @return true = wrist is calibrated and working, false = wrist is not calibrated
    */
-  public boolean isEncoderCalibrated() {
+  public boolean isWristCalibrated() {
     return wristCalibrated;
   }  
 

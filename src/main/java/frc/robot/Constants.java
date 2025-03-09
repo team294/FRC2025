@@ -43,7 +43,7 @@ public final class Constants {
     // public static final int CANPneumaticHub = 1;
 
     // Specify which CANbus the drivetrain is on: "rio" or "CANivore"
-    public static final String CANDrivetrainBus = "rio";
+    public static final String CANDrivetrainBus = "CANivore";
 
     public static final int CANDriveFrontLeftMotor = 1;
     public static final int CANDriveFrontRightMotor = 2;
@@ -65,24 +65,24 @@ public final class Constants {
     public static final int CANWristEncoder = 13;
     public static final int CANClimberEncoder = 14;
 
-    public static final int CANElevator1 = 15;
-    public static final int CANElevator2 = 16;
+    public static final int CANElevator1 = 15;  // Right
+    public static final int CANElevator2 = 16;  // Left
     public static final int CANHopper = 17;
     public static final int CANCoralEffector = 18;
-    public static final int CANCoralGrabber = 19;
+    public static final int CANAlgaeGrabber = 19;
     public static final int CANWrist = 20;
     public static final int CANClimber = 21;
 
-    public static final int CANPigeonGyro = 23;
+    public static final int CANPigeonGyro = 22;
 
-    public static final int CANdle = 24;
+    public static final int CANdle = 23;
 
     // Digital IO Ports
-    public static final int DIOCoralEffectorEntrySensor = 0;
-    public static final int DIOCoralEffectorExitSensor = 1;
+    public static final int DIOElevatorLowerLimitSensor1 = 0; // Right
+    public static final int DIOElevatorLowerLimitSensor2 = 1; // Left
     public static final int DIOAlgaeGrabberBumpSwitch = 2;
-    public static final int DIOElevatorLowerLimitSensor1 = 3;
-    public static final int DIOElevatorLowerLimitSensor2 = 4; 
+    public static final int DIOCoralEffectorExitSensor = 3;
+    public static final int DIOCoralEffectorEntrySensor = 4;
   }
 
   public static final class OIConstants {
@@ -98,7 +98,7 @@ public final class Constants {
   // TODO CALIBRATE FOR 2025
   public static final class RobotDimensions {
     // Drivebase adjustment for path-of-wheel diameter when turning in place
-    private static final double DrivetrainAdjustmentFactor = 0.9911;
+    private static final double DrivetrainAdjustmentFactor = 0.9911;      // TODO CALIBRATE
 
     // Left-right distance between the drivetrain wheels, measured from center to center, in meters
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(24.25) * DrivetrainAdjustmentFactor;
@@ -121,7 +121,7 @@ public final class Constants {
     public static final double kEncoderCPR = 1.0;                                              // CALIBRATED Encoder counts per revolution of motor pinion gear
     public static final double kDriveGearRatio = (5.90 / 1.0);                                 // CALIBRATED Mk4n = 5.90:1 (L2+)
     public static final double kTurningGearRatio = (18.75 / 1.0);                              // CALIBRATED Mk4n = 18.75:1
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9739; // CALIBRATED Wheels are nominal 4"
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9739; // TODO CALIBRATE Wheels are nominal 4"
     public static final double kDriveEncoderMetersPerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR / kDriveGearRatio;
     public static final double kTurningEncoderDegreesPerTick = 360.0 / kEncoderCPR / kTurningGearRatio;
   
@@ -277,7 +277,7 @@ public final class Constants {
     public static final double reverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 
-  public static class CoralEffectorConstants {
+  public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;   // TODO CALIBRATE FOR 2025
     public static final double outtakePercent = -0.1; // TODO CALIBRATE FOR 2025
@@ -291,8 +291,8 @@ public final class Constants {
 
   public static final class ElevatorConstants {
     public static final double kEncoderCPR = 1.0;                 // Encoder counts per revolution of the motor pinion gear
-    public static final double kElevGearRatio = (9.0 / 1.0);      // Gear reduction ratio between Kraken and gear driving the elevator TODO CALIBRATE FOR 2025
-    public static final double kElevPulleyDiameterInches = 1.504; // Diameter of the pulley driving the elevator in inches TODO CALIBRATE FOR 2025
+    public static final double kElevGearRatio = (5.0 / 1.0);      // Gear reduction ratio between Kraken and gear driving the elevator CALIBRATED FOR 2025 (5:1)
+    public static final double kElevPulleyDiameterInches = 1.504; // Diameter of the pulley driving the elevator in inches TODO CALIBRATE FOR 2025 (1.504" nominal)
     public static final double kElevEncoderInchesPerTick = (kElevPulleyDiameterInches * Math.PI) / kEncoderCPR / kElevGearRatio;
     
     public static final double compensationVoltage = 12.0;
@@ -304,24 +304,10 @@ public final class Constants {
     // TODO CALIBRATE FOR 2025
     public enum ElevatorPosition {
       LOWER_LIMIT(0.0),
-      UPPER_LIMIT(90.0),
-
-      CORAL_HP(0.0),
-
-      CORAL_L1(14.0),
-      CORAL_L2(19.25),
-      CORAL_L3(35.25),
-      CORAL_L4(62.0),
-      
-      ALGAE_GROUND(14.0),
-      ALGAE_LOWER(19.25),
-      ALGAE_UPPER(35.25),
-      
-      ALGAE_PROCESSOR(10.0),
-      ALGAE_NET(80.0);
+      UPPER_LIMIT(82.0);
  
+      @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
-  
       ElevatorPosition(double value) { this.value = value; }
     }
   }
@@ -329,7 +315,7 @@ public final class Constants {
   public static final class WristConstants {
     // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
     // where a ratio greater than 1 is a reduction.
-    public static final double kWristGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // TODO CALIBRATE FOR 2025
+    public static final double kWristGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // CALIBRATED FOR 2025 (22.5:1)
     public static final double kWristDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
     
     public static final double compensationVoltage = 12.0;
@@ -362,21 +348,8 @@ public final class Constants {
 
     // TODO CALIBRATE FOR 2025
     public enum WristAngle {
-      LOWER_LIMIT(0.0),
-      UPPER_LIMIT(0.0),
-      CALIBRATE_MANUAL(0.0),
-
-      CORAL_HP(0.0),
-
-      CORAL_L1(0.0),
-      CORAL_L2_L3(0.0),
-      CORAL_L4(0.0),
-
-      ALGAE_GROUND(0.0),
-      ALGAE_REEF(0.0),
-
-      ALGAE_PROCESSOR(0.0),
-      ALGAE_NET(0.0);
+      LOWER_LIMIT(-30.0),
+      UPPER_LIMIT(90.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
@@ -384,11 +357,40 @@ public final class Constants {
     }
   }
 
+  public static final class ElevatorWristConstants {
+    public enum ElevatorWristPosition {
+      START_CONFIG(0.0, 90.0),
+
+      CORAL_HP(0.0, 69.0),
+
+      CORAL_L1(25.56, 55.0),
+      CORAL_L2(25.56, 55.0),
+      CORAL_L3(40.78, 55.0),
+      CORAL_L4(70.7, 20.0),
+
+      ALGAE_GROUND(5.8, -18.5),
+      ALGAE_LOWER(34.0, -15.0),
+      ALGAE_UPPER(49.7, -15.0),
+
+      ALGAE_PROCESSOR(9.84, 0.0),
+      ALGAE_NET(63.0, 70.0);
+
+      @SuppressWarnings({"MemberName", "PMD.SingularField"})
+      public final double elevatorPosition;
+      public final double wristAngle;
+
+      ElevatorWristPosition(double elevatorPosition, double wristAngle) {
+        this.elevatorPosition = elevatorPosition;
+        this.wristAngle = wristAngle;
+      }
+    }
+  }
+
   public static final class ClimberConstants {
     // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
     // where a ratio greater than 1 is a reduction.
     // TODO VERY IMPORTANT DONT EVEN THINK ABOUT COMITTING W/O CHANGING THIS GEAR RATIO (if necessary)
-    public static final double kClimberGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // TODO CALIBRATE FOR 2025
+    public static final double kClimberGearRatio = (135.0/1.0);          // CALIBRATED FOR 2025  (135:1)
     public static final double kClimberDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
     
     public static final double compensationVoltage = 12.0;

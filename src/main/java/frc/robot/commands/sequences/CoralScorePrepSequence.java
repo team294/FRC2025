@@ -7,20 +7,21 @@ package frc.robot.commands.sequences;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
-import frc.robot.Constants.WristConstants.WristAngle;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.commands.WristElevatorSafeMove;
 import frc.robot.subsystems.AlgaeGrabber;
 import frc.robot.subsystems.CoralEffector;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.FileLog;
+import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
 /**
  * Prepares to score coral by moving the wrist and elevator to the indicated scoring position.
  * If the robot is not holding coral, this sequence does nothing.
  * If the robot is holding coral, this sequence does nothing, since we cannot score coral while holding algae.
- * @param position position to move elevator to (use ElevatorConstants.ElevatorPosition.CORAL_...)
+ * @param position position to move the elevator and wrist to (use ElevatorWwristConstants.ElevatorWristPosition)
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
  * @param coralEffector CoralEffector subsystem
@@ -28,33 +29,13 @@ import frc.robot.utilities.FileLog;
  * @param log FileLog utility
  */
 public class CoralScorePrepSequence extends SequentialCommandGroup {
-  public CoralScorePrepSequence(ElevatorPosition position, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, FileLog log) {
-    WristAngle angle = null;
-
-    switch (position) {
-      case CORAL_HP:
-        angle = WristAngle.CORAL_HP;
-        break;
-      case CORAL_L2:
-      case CORAL_L3:
-        angle = WristAngle.CORAL_L2_L3;
-        break;
-      case CORAL_L4:
-        angle = WristAngle.CORAL_L4;
-      default:
-        break;
-    }
-
-    if (angle == null) {
-      addCommands(none());
-    } else {
-      addCommands(
-        either(
-          new WristElevatorPrepSequence(position, angle, elevator, wrist, log),
-          none(),
-          () -> !algaeGrabber.isAlgaePresent() && coralEffector.isCoralPresent()
-        )
-      );
-    }
+  public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, FileLog log) {
+    addCommands(
+      either(
+        new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist, log),
+        none(),
+        () -> !algaeGrabber.isAlgaePresent() && coralEffector.isCoralPresent()
+      )
+    );
   }
 }
