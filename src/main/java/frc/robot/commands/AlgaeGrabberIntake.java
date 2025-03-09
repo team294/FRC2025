@@ -31,8 +31,7 @@ public class AlgaeGrabberIntake extends Command {
     if (!algaeGrabber.isAlgaePresent()) algaeGrabber.setAlgaeGrabberPercentOutput(AlgaeGrabberConstants.intakePercent);
 
     log.writeLog(false, "AlgaeGrabberIntake", "Init",
-      "Algae Present 1", algaeGrabber.isAlgaePresent(1),
-      "Algae Present 2", algaeGrabber.isAlgaePresent(2)); 
+      "Algae Present", algaeGrabber.isAlgaePresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -42,7 +42,7 @@ public final class Constants {
     // public static final int CANPneumaticHub = 1;
 
     // Specify which CANbus the drivetrain is on: "rio" or "CANivore"
-    public static final String CANDrivetrainBus = "rio";
+    public static final String CANDrivetrainBus = "CANivore";
 
     public static final int CANDriveFrontLeftMotor = 1;
     public static final int CANDriveFrontRightMotor = 2;
@@ -64,24 +64,24 @@ public final class Constants {
     public static final int CANWristEncoder = 13;
     public static final int CANClimberEncoder = 14;
 
-    public static final int CANElevator1 = 15;
-    public static final int CANElevator2 = 16;
+    public static final int CANElevator1 = 15;  // Right
+    public static final int CANElevator2 = 16;  // Left
     public static final int CANHopper = 17;
     public static final int CANCoralEffector = 18;
-    public static final int CANCoralGrabber = 19;
+    public static final int CANAlgaeGrabber = 19;
     public static final int CANWrist = 20;
     public static final int CANClimber = 21;
 
-    public static final int CANPigeonGyro = 23;
+    public static final int CANPigeonGyro = 22;
 
-    public static final int CANdle = 24;
+    public static final int CANdle = 23;
 
     // Digital IO Ports
-    public static final int DIOCoralEffectorEntrySensor = 0;
-    public static final int DIOCoralEffectorExitSensor = 1;
+    public static final int DIOElevatorLowerLimitSensor1 = 0; // Right
+    public static final int DIOElevatorLowerLimitSensor2 = 1; // Left
     public static final int DIOAlgaeGrabberBumpSwitch = 2;
-    public static final int DIOElevatorLowerLimitSensor1 = 3;
-    public static final int DIOElevatorLowerLimitSensor2 = 4; 
+    public static final int DIOCoralEffectorExitSensor = 3;
+    public static final int DIOCoralEffectorEntrySensor = 4;
   }
 
   public static final class OIConstants {
