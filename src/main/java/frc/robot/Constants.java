@@ -97,7 +97,7 @@ public final class Constants {
   // TODO CALIBRATE FOR 2025
   public static final class RobotDimensions {
     // Drivebase adjustment for path-of-wheel diameter when turning in place
-    private static final double DrivetrainAdjustmentFactor = 0.9911;
+    private static final double DrivetrainAdjustmentFactor = 0.9911;      // TODO CALIBRATE
 
     // Left-right distance between the drivetrain wheels, measured from center to center, in meters
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(24.25) * DrivetrainAdjustmentFactor;
@@ -120,7 +120,7 @@ public final class Constants {
     public static final double kEncoderCPR = 1.0;                                              // CALIBRATED Encoder counts per revolution of motor pinion gear
     public static final double kDriveGearRatio = (5.90 / 1.0);                                 // CALIBRATED Mk4n = 5.90:1 (L2+)
     public static final double kTurningGearRatio = (18.75 / 1.0);                              // CALIBRATED Mk4n = 18.75:1
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9739; // CALIBRATED Wheels are nominal 4"
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9739; // TODO CALIBRATE Wheels are nominal 4"
     public static final double kDriveEncoderMetersPerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR / kDriveGearRatio;
     public static final double kTurningEncoderDegreesPerTick = 360.0 / kEncoderCPR / kTurningGearRatio;
   
@@ -290,8 +290,8 @@ public final class Constants {
 
   public static final class ElevatorConstants {
     public static final double kEncoderCPR = 1.0;                 // Encoder counts per revolution of the motor pinion gear
-    public static final double kElevGearRatio = (9.0 / 1.0);      // Gear reduction ratio between Kraken and gear driving the elevator TODO CALIBRATE FOR 2025
-    public static final double kElevPulleyDiameterInches = 1.504; // Diameter of the pulley driving the elevator in inches TODO CALIBRATE FOR 2025
+    public static final double kElevGearRatio = (5.0 / 1.0);      // Gear reduction ratio between Kraken and gear driving the elevator CALIBRATED FOR 2025 (5:1)
+    public static final double kElevPulleyDiameterInches = 1.504; // Diameter of the pulley driving the elevator in inches TODO CALIBRATE FOR 2025 (1.504" nominal)
     public static final double kElevEncoderInchesPerTick = (kElevPulleyDiameterInches * Math.PI) / kEncoderCPR / kElevGearRatio;
     
     public static final double compensationVoltage = 12.0;
@@ -314,7 +314,7 @@ public final class Constants {
   public static final class WristConstants {
     // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
     // where a ratio greater than 1 is a reduction.
-    public static final double kWristGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // TODO CALIBRATE FOR 2025
+    public static final double kWristGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // CALIBRATED FOR 2025 (22.5:1)
     public static final double kWristDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
     
     public static final double compensationVoltage = 12.0;
@@ -389,7 +389,7 @@ public final class Constants {
     // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
     // where a ratio greater than 1 is a reduction.
     // TODO VERY IMPORTANT DONT EVEN THINK ABOUT COMITTING W/O CHANGING THIS GEAR RATIO (if necessary)
-    public static final double kClimberGearRatio = ((60.0 / 8.0) * (48.0 / 16.0));          // TODO CALIBRATE FOR 2025
+    public static final double kClimberGearRatio = (135.0/1.0);          // CALIBRATED FOR 2025  (135:1)
     public static final double kClimberDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
     
     public static final double compensationVoltage = 12.0;
