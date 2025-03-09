@@ -68,7 +68,7 @@ public class WristSetAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Goal Angle", ElevatorWristPosition.CORAL_HP.wristAngle);
+    if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Set Angle", ElevatorWristPosition.CORAL_HP.wristAngle);
     wrist.setWristAngle(angle);
     log.writeLog(false, "WristSetAngle", "Init", "Target", angle);
 
@@ -89,6 +89,6 @@ public class WristSetAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !wrist.isEncoderCalibrated() || Math.abs(wrist.getWristAngle() - wrist.getCurrentWristTarget()) < tolerance;
+    return !wrist.isWristCalibrated() || Math.abs(wrist.getWristAngle() - wrist.getCurrentWristTarget()) < tolerance;
   }
 }
