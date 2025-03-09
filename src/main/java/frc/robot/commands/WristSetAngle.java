@@ -68,7 +68,7 @@ public class WristSetAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Goal Angle", ElevatorWristPosition.CORAL_HP.wristAngle);
+    if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Set Angle", ElevatorWristPosition.CORAL_HP.wristAngle);
     wrist.setWristAngle(angle);
     log.writeLog(false, "WristSetAngle", "Init", "Target", angle);
 
