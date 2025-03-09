@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import java.util.Currency;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
@@ -72,10 +70,12 @@ public class WristElevatorSafeMove extends Command {
       return;
     }
 
-    log.writeLog(false, "WristElevatorSafeMove", "Init", "Calibrated", true, "Position", destPosition.toString(), "Type", type.toString());
-
     curRegion = ElevatorWristRegions.GetRegion(type, elevator.getElevatorPosition());
     destRegion = ElevatorWristRegions.GetRegion(type, destPosition.elevatorPosition);
+
+    log.writeLog(false, "WristElevatorSafeMove", "Init", "Calibrated", true, "Position", 
+      "Type", type, "Dest Position", destPosition, 
+      "Dest Region", destRegion, "Cur Region", curRegion.regionIndex );
 
     double curWristAngle = wrist.getWristAngle();
     if (curWristAngle < curRegion.wristMin || curWristAngle > curRegion.wristMax) {
@@ -93,7 +93,10 @@ public class WristElevatorSafeMove extends Command {
     double curWristAngle = wrist.getWristAngle();
     double curElevPos = elevator.getElevatorPosition();
 
-    // TODO add some logging...
+    log.writeLog(false, "WristElevatorSafeMove", "Execute", "CurState", curState, 
+      "Wrist Target", wrist.getCurrentWristTarget(), "Wrist Angle", curWristAngle, 
+      "Elev Target", elevator.getCurrentElevatorTarget(), "Cur Elev Pos", curElevPos,
+      "Cur Region", curRegion.regionIndex );
 
     switch (curState) {
       case DONE:
@@ -259,6 +262,8 @@ public class WristElevatorSafeMove extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    log.writeLog(false, "WristElevatorSafeMove", "End", "Interrupted", interrupted, "CurState", curState);
+
     if (curState != MoveState.DONE) {
       // If there is an error (DONE_ERROR) of if this command is interrupted,
       // then stop the elevator and wrist at their current positions (or turn
