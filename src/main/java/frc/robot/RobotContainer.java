@@ -88,7 +88,7 @@ public class RobotContainer {
   }
 
   private void configureShuffleboard() {
-    // Display sticky faults
+    // Sticky Faults
     RobotPreferences.showStickyFaultsOnShuffleboard();
     SmartDashboard.putData("Clear Sticky Faults", new StickyFaultsClear(log));
 
@@ -106,46 +106,49 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Turn Calibration", new DriveTurnCalibration(0.2, 5.0, 0.2 / 5.0, driveTrain, log));
     SmartDashboard.putData("Drive Percent Speed", new DrivePercentSpeed(driveTrain, log));
     SmartDashboard.putData("Drive Straight", new DriveStraight(false, false, false, driveTrain, log));
-    
 
     // Hopper
-    SmartDashboard.putData("Hopper Set 10%", new HopperSetPercent(0.1, hopper, log));
-    SmartDashboard.putData("Hopper Set -10%", new HopperSetPercent(-0.1, hopper, log));
-    SmartDashboard.putData("Hopper Stop", new HopperStop(hopper, log));
+    SmartDashboard.putData("Hopper Forward", new HopperSetPercent(0.05, hopper, log));
+    SmartDashboard.putData("Hopper Reverse", new HopperSetPercent(-0.05, hopper, log));
+    SmartDashboard.putData("Hopper STOP", new HopperStop(hopper, log));
 
     // CoralEffector
-    SmartDashboard.putData("CoralEffector Set 10%", new CoralEffectorSetPercent(0.1, coralEffector, log));
-    SmartDashboard.putData("CoralEffector Set -10%", new CoralEffectorSetPercent(-0.1, coralEffector, log));
-    SmartDashboard.putData("CoralEffector Stop", new CoralEffectorStop(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Forward", new CoralEffectorSetPercent(0.05, coralEffector, log));
+    SmartDashboard.putData("CoralEffector Reverse", new CoralEffectorSetPercent(-0.05, coralEffector, log));
+    SmartDashboard.putData("CoralEffector STOP", new CoralEffectorStop(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Intake", new CoralEffectorIntake(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector, log));
 
     // AlgaeGrabber
-    SmartDashboard.putData("AlgaeGrabber Set 10%", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
-    SmartDashboard.putData("AlgaeGrabber Set -10%", new AlgaeGrabberSetPercent(-0.1, algaeGrabber, log));
-    SmartDashboard.putData("AlgaeGrabber Stop", new AlgaeGrabberStop(algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber In", new AlgaeGrabberSetPercent(-0.05, algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber Out", new AlgaeGrabberSetPercent(0.05, algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber STOP", new AlgaeGrabberStop(algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber Intake", new AlgaeGrabberIntake(algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber Outtake", new AlgaeGrabberOuttake(algaeGrabber, log));
 
     // Wrist
-    SmartDashboard.putData("Wrist Stop", new WristStop(wrist, log));
+    SmartDashboard.putData("Wrist STOP", new WristStop(wrist, log));
     SmartDashboard.putData("Wrist Set Percent", new WristSetPercent(wrist, log));
-    SmartDashboard.putData("Wrist Reset Angle", new WristSetAngle(wrist, log));
-    SmartDashboard.putData("Wrist Manually Calibrate", new WristCalibrateManual(ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
+    SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist, log));
+    SmartDashboard.putData("Wrist Cal. to START CONFIG", new WristCalibrateManual(ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
 
     // Elevator
-    SmartDashboard.putData("Elevator Move Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, true, elevator, log));
-    SmartDashboard.putData("Elevator Move Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, true, elevator, log));
-    SmartDashboard.putData("Elevator Stop Motors", new ElevatorStop(elevator, log));
-    SmartDashboard.putData("Elevator Move To 20 Inches", new ElevatorSetPosition(20.0, elevator, log));
+    SmartDashboard.putData("Elevator Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, true, elevator, log));
+    SmartDashboard.putData("Elevator Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, true, elevator, log));
+    SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator, log));
+    SmartDashboard.putData("Elevator Move To 20 In", new ElevatorSetPosition(20.0, elevator, log));
     SmartDashboard.putData("Elevator Move to HP", new ElevatorSetPosition(ElevatorWristPosition.CORAL_HP, elevator, log));
     SmartDashboard.putData("Elevator Move to L1", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L1, elevator, log));
     SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L2, elevator, log));
     SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L3, elevator, log));
     SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L4, elevator, log));
-    SmartDashboard.putData("Elevator Calibration", new ElevatorCalibration(0.1, elevator, log));
+    SmartDashboard.putData("Elevator Calibration Routine", new ElevatorCalibration(0.1, elevator, log));
 
     // Climber
-    SmartDashboard.putData("Climber Stop", new ClimberStop(climber, log));
-    SmartDashboard.putData("Climber Set Percent Output", new ClimberSetPercentOutput(climber, log));
-    SmartDashboard.putData("Climber Reset Angle", new ClimberSetAngle(climber, log));
-    SmartDashboard.putData("Climber Manually Calibrate", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
+    SmartDashboard.putData("Climber STOP", new ClimberStop(climber, log));
+    SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber, log));
+    SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber, log));
+    SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
     
     // Autos
 
@@ -342,7 +345,7 @@ public class RobotContainer {
 
     driveTrain.stopMotors();             // SAFETY: Turn off any closed loop control that may be running, so the robot does not move when re-enabled
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
-    driveTrain.setVisionForOdometryState(true);
+    // driveTrain.setVisionForOdometryState(true);
 
     elevator.stopElevatorMotors();
 
@@ -367,7 +370,7 @@ public class RobotContainer {
     log.writeLogEcho(true, "Auto", "Mode Init");
 
     driveTrain.setDriveModeCoast(false);
-    driveTrain.setVisionForOdometryState(false);
+    // driveTrain.setVisionForOdometryState(false);
 
     // NOTE: Do not reset the gyro or encoder here!
     // The first command in auto mode initializes before this code is run, and
@@ -388,7 +391,7 @@ public class RobotContainer {
 
     driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
-    driveTrain.setVisionForOdometryState(true);
+    // driveTrain.setVisionForOdometryState(true);
 
     matchTimer.reset();
     matchTimer.start();

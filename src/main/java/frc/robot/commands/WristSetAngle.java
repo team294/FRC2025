@@ -58,8 +58,8 @@ public class WristSetAngle extends Command {
     this.log = log;
     fromShuffleboard = true;
 
-    if (SmartDashboard.getNumber("Wrist Goal Angle", -9999) == -9999) {
-      SmartDashboard.putNumber("Wrist Goal Angle", ElevatorWristPosition.CORAL_HP.wristAngle);
+    if (SmartDashboard.getNumber("Wrist Set Angle", -9999) == -9999) {
+      SmartDashboard.putNumber("Wrist Set Angle", ElevatorWristPosition.CORAL_HP.wristAngle);
     }
 
     addRequirements(wrist);

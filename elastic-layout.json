@@ -10,7 +10,7 @@
             "title": "Autonomous",
             "x": 0.0,
             "y": 0.0,
-            "width": 512.0,
+            "width": 384.0,
             "height": 256.0,
             "type": "List Layout",
             "properties": {
@@ -48,13 +48,13 @@
           },
           {
             "title": "Alliance",
-            "x": 0.0,
-            "y": 256.0,
-            "width": 512.0,
-            "height": 384.0,
+            "x": 384.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "TOP"
+              "label_position": "LEFT"
             },
             "children": [
               {
@@ -95,10 +95,177 @@
                   "topic": "/SmartDashboard/Alliance Blue",
                   "period": 0.06,
                   "data_type": "boolean",
-                  "true_color": 4278215928,
+                  "true_color": 4279456444,
+                  "false_color": 4294901760,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Wrist Calibration",
+            "x": 0.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Wrist Calibrated",
+                "x": 384.0,
+                "y": 384.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist calibrated",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
                   "false_color": 4294198070,
                   "true_icon": "None",
                   "false_icon": "None"
+                }
+              },
+              {
+                "title": "Wrist Using CANcoder",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Using CANcoder",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Wrist Cal. to START CONFIG",
+                "x": 0.0,
+                "y": 512.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Cal. to START CONFIG",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Game Pieces",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "HIDDEN"
+            },
+            "children": [
+              {
+                "title": "Coral Safely In",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Coral Safely In",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4294901983,
+                  "false_color": 4278190080,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Algae Present",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Algae Present",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4278245567,
+                  "false_color": 4278190080,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Climber Calibration",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Climber Calibrated",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber calibrated",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Climber Using CANcoder",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Using CANcoder",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Climber Cal. to START CONFIG",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Cal. to START CONFIG",
+                  "period": 0.06,
+                  "show_type": false
                 }
               }
             ]
@@ -106,8 +273,8 @@
         ],
         "containers": [
           {
-            "title": "problemExists",
-            "x": 768.0,
+            "title": "No Problems Exists",
+            "x": 1024.0,
             "y": 128.0,
             "width": 256.0,
             "height": 128.0,
@@ -123,11 +290,11 @@
             }
           },
           {
-            "title": "Prefs Init?",
+            "title": "Prefs Init",
             "x": 1280.0,
             "y": 0.0,
             "width": 128.0,
-            "height": 256.0,
+            "height": 128.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/SmartDashboard/RobotPrefs Initialized",
@@ -140,10 +307,10 @@
             }
           },
           {
-            "title": "isGyroReading",
-            "x": 1024.0,
+            "title": "Gyro Reading",
+            "x": 1280.0,
             "y": 128.0,
-            "width": 256.0,
+            "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
@@ -158,7 +325,7 @@
           },
           {
             "title": "Clear Sticky Faults",
-            "x": 512.0,
+            "x": 640.0,
             "y": 0.0,
             "width": 256.0,
             "height": 128.0,
@@ -166,14 +333,14 @@
             "properties": {
               "topic": "/SmartDashboard/Clear Sticky Faults",
               "period": 0.06,
-              "show_type": true
+              "show_type": false
             }
           },
           {
-            "title": "problemSubsystem",
-            "x": 768.0,
+            "title": "Problem Subsystem(s)",
+            "x": 896.0,
             "y": 0.0,
-            "width": 512.0,
+            "width": 384.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
@@ -193,7 +360,7 @@
             "properties": {
               "topic": "/SmartDashboard/Field",
               "period": 0.06,
-              "field_game": "Reefscape",
+              "field_game": "Crescendo",
               "robot_width": 0.85,
               "robot_length": 0.85,
               "show_other_objects": true,
@@ -205,9 +372,9 @@
           },
           {
             "title": "Camera OK",
-            "x": 512.0,
+            "x": 896.0,
             "y": 128.0,
-            "width": 256.0,
+            "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
@@ -374,7 +541,7 @@
                   "topic": "/SmartDashboard/Drive Mode",
                   "period": 0.06,
                   "data_type": "string",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -518,7 +685,7 @@
                 }
               },
               {
-                "title": "isGyroReading",
+                "title": "Gyro Reading",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
@@ -557,7 +724,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Drive Calibration",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -570,7 +737,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Drive Turn Calibration",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -583,11 +750,11 @@
                 "properties": {
                   "topic": "/SmartDashboard/Drive Toggle Coast",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
-                "title": "isBrakeMode",
+                "title": "Brake Mode",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
@@ -668,7 +835,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Drive Reset Pose",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               }
             ]
@@ -750,7 +917,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Drive Straight",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               }
             ]
@@ -776,7 +943,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/DriveToPose Feedback",
                   "period": 0.06,
-                  "sort_options": false
+                  "sort_options": true
                 }
               },
               {
@@ -845,7 +1012,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Drive To Pose",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               }
             ]
@@ -927,7 +1094,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Drive Percent Speed",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               }
             ]
@@ -987,7 +1154,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Vision Enable Odometry Updates",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               },
               {
@@ -1000,7 +1167,7 @@
                 "properties": {
                   "topic": "/SmartDashboard/Vision Disable Odometry Updates",
                   "period": 0.06,
-                  "show_type": true
+                  "show_type": false
                 }
               }
             ]
@@ -1143,47 +1310,47 @@
             "x": 0.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 512.0,
+            "height": 384.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "TOP"
+              "label_position": "HIDDEN"
             },
             "children": [
               {
-                "title": "Intake Algae (-10%)",
+                "title": "AlgaeGrabber STOP",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/AlgaeGrabber Set -10%",
+                  "topic": "/SmartDashboard/AlgaeGrabber STOP",
                   "period": 0.06,
                   "show_type": false
                 }
               },
               {
-                "title": "Outtake Algae (+10%)",
+                "title": "AlgaeGrabber In",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/AlgaeGrabber Set 10%",
+                  "topic": "/SmartDashboard/AlgaeGrabber In",
                   "period": 0.06,
                   "show_type": false
                 }
               },
               {
-                "title": "Stop AlgaeGrabber",
+                "title": "AlgaeGrabber Out",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/AlgaeGrabber Stop",
+                  "topic": "/SmartDashboard/AlgaeGrabber Out",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -1199,8 +1366,8 @@
                   "topic": "/SmartDashboard/Algae Present",
                   "period": 0.06,
                   "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
+                  "true_color": 4278245567,
+                  "false_color": 4278190080,
                   "true_icon": "None",
                   "false_icon": "None"
                 }
@@ -1212,55 +1379,55 @@
             "x": 256.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 768.0,
+            "height": 384.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "TOP"
+              "label_position": "HIDDEN"
             },
             "children": [
               {
-                "title": "Intake/Outtake Coral (+10%)",
+                "title": "CoralEffector STOP",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/CoralEffector Set 10%",
+                  "topic": "/SmartDashboard/CoralEffector STOP",
                   "period": 0.06,
                   "show_type": false
                 }
               },
               {
-                "title": "Reverse (-10%)",
+                "title": "CoralEffector Reverse",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/CoralEffector Set -10%",
+                  "topic": "/SmartDashboard/CoralEffector Reverse",
                   "period": 0.06,
                   "show_type": false
                 }
               },
               {
-                "title": "Stop CoralEffector",
+                "title": "CoralEffector Forward",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/CoralEffector Stop",
+                  "topic": "/SmartDashboard/CoralEffector Forward",
                   "period": 0.06,
                   "show_type": false
                 }
               },
               {
                 "title": "Coral Safely In",
-                "x": 0.0,
-                "y": 0.0,
+                "x": 640.0,
+                "y": 768.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Boolean Box",
@@ -1268,42 +1435,8 @@
                   "topic": "/SmartDashboard/Coral Safely In",
                   "period": 0.06,
                   "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "Coral in Entry",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Coral in Entry",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "Coral in Exit",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Coral in Exit",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
+                  "true_color": 4294901983,
+                  "false_color": 4278190080,
                   "true_icon": "None",
                   "false_icon": "None"
                 }
@@ -1312,50 +1445,50 @@
           },
           {
             "title": "Hopper",
-            "x": 512.0,
-            "y": 0.0,
+            "x": 1280.0,
+            "y": 512.0,
             "width": 256.0,
-            "height": 384.0,
+            "height": 256.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "TOP"
+              "label_position": "HIDDEN"
             },
             "children": [
               {
-                "title": "Intake Coral (+10%)",
-                "x": 0.0,
-                "y": 0.0,
+                "title": "Hopper STOP",
+                "x": 1024.0,
+                "y": 640.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Hopper Set 10%",
+                  "topic": "/SmartDashboard/Hopper STOP",
                   "period": 0.06,
                   "show_type": false
                 }
               },
               {
-                "title": "Reverse (-10%)",
-                "x": 0.0,
-                "y": 0.0,
+                "title": "Hopper Forward",
+                "x": 1152.0,
+                "y": 640.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Hopper Set -10%",
+                  "topic": "/SmartDashboard/Hopper Forward",
                   "period": 0.06,
                   "show_type": false
                 }
               },
               {
-                "title": "Stop Hopper",
-                "x": 0.0,
-                "y": 0.0,
+                "title": "Hopper Reverse",
+                "x": 1152.0,
+                "y": 768.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Hopper Stop",
+                  "topic": "/SmartDashboard/Hopper Reverse",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -1367,34 +1500,48 @@
             "x": 1280.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 896.0,
+            "height": 512.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
             },
             "children": [
               {
-                "title": "Climber Reset Angle",
+                "title": "Climber STOP",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Climber Reset Angle",
+                  "topic": "/SmartDashboard/Climber STOP",
                   "period": 0.06,
                   "show_type": false
                 }
               },
               {
-                "title": "Climber Set Percent Output",
-                "x": 1408.0,
-                "y": 384.0,
+                "title": "Climber Set Angle",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber target angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Climber Set Angle to Target",
+                "x": 0.0,
+                "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Climber Set Percent Output",
+                  "topic": "/SmartDashboard/Climber Set Angle",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -1414,229 +1561,87 @@
                 }
               },
               {
-                "title": "Climber Stop",
+                "title": "Climber Set Percent to Target",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Climber Stop",
+                  "topic": "/SmartDashboard/Climber Set Percent",
                   "period": 0.06,
                   "show_type": false
-                }
-              },
-              {
-                "title": "Climber Calibrate ROTOR ENC",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Manually Calibrate",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Climber Calibrated",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber calibrated",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "Climber CANcoder Connected",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber CANcoder connected",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "Wrist Using CANcoder",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist Using CANcoder",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              }
-            ]
-          },
-          {
-            "title": "Wrist",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 896.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "Wrist Reset Angle",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist Reset Angle",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Wrist Set Percent Output",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist Set Percent Output",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Wrist Set Percent",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist Set Percent",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Wrist Stop",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist Stop",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Wrist Calibrate ROTOR ENC",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist Manually Calibrate",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Wrist Calibrated",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist calibrated",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "Wrist CANcoder Connected",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist CANcoder connected",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "Climber Using CANcoder",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Using CANcoder",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
                 }
               }
             ]
           },
           {
             "title": "Elevator",
-            "x": 1024.0,
+            "x": 768.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 896.0,
+            "height": 768.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "TOP"
+              "label_position": "HIDDEN"
             },
             "children": [
               {
+                "title": "Elevator Up",
+                "x": 896.0,
+                "y": 256.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator Up",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Elevator Down",
+                "x": 896.0,
+                "y": 256.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator Down",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Elevator STOP",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator STOP",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Elevator Move To 20 In",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator Move To 20 In",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
                 "title": "Elevator Move to HP",
-                "x": 768.0,
-                "y": 768.0,
+                "x": 0.0,
+                "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
@@ -1697,22 +1702,92 @@
                   "period": 0.06,
                   "show_type": false
                 }
-              },
+              }
+            ]
+          },
+          {
+            "title": "Elevator Readings",
+            "x": 1024.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 640.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "LEFT"
+            },
+            "children": [
               {
-                "title": "Elevator Stop Motors",
+                "title": "Elev Rotations 1",
                 "x": 0.0,
                 "y": 0.0,
-                "width": 256.0,
+                "width": 128.0,
                 "height": 128.0,
-                "type": "Command",
+                "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Elevator Stop Motors",
+                  "topic": "/SmartDashboard/Elev Rotations 1",
                   "period": 0.06,
-                  "show_type": false
+                  "data_type": "double",
+                  "show_submit_button": false
                 }
               },
               {
-                "title": "Elev Calibrated",
+                "title": "Elev Rotations 2",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Elev Rotations 2",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Elev Pos",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Elev Pos",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Elev Target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Elev Target",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Elev Velocity",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Elev Velocity",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Elevator Calibrated",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
@@ -1729,7 +1804,24 @@
                 }
               },
               {
-                "title": "Elev Lower Limit",
+                "title": "Elev Pos Control",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Elev Pos Control",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Elevator Lower Limit",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
@@ -1746,6 +1838,373 @@
                 }
               }
             ]
+          },
+          {
+            "title": "Wrist Readings",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 512.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "LEFT"
+            },
+            "children": [
+              {
+                "title": "Wrist Enc Raw",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist encoder raw",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Wrist CC Raw",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist CANcoder raw",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Wrist Target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist target angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Wrist Angle",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Wrist Cal",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist calibrated",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Wrist Using CC",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Using CANcoder",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Wrist CC Conn",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist CANcoder connected",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Climber Readings",
+            "x": 256.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 512.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "LEFT"
+            },
+            "children": [
+              {
+                "title": "Climber Enc Raw",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber encoder raw",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Climber CC Raw",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber CANcoder raw",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Climber Target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber target angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Climber Angle",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Climber Cal",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber calibrated",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Climber Using CC",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Using CANcoder",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Climber CC Conn",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber CANcoder connected",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Coral Effector Sensors",
+            "x": 512.0,
+            "y": 512.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "LEFT"
+            },
+            "children": [
+              {
+                "title": "In Entry",
+                "x": 640.0,
+                "y": 640.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Coral in Entry",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "In Exit",
+                "x": 896.0,
+                "y": 768.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Coral in Exit",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Wrist",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 512.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Wrist STOP",
+                "x": 512.0,
+                "y": 384.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist STOP",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Wrist Set Angle",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist target angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Wrist Set Angle to Target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Set Angle",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Wrist Set Percent",
+                "x": 512.0,
+                "y": 384.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Set Percent",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Wrist Set Percent to Target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Set Percent",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              }
+            ]
           }
         ],
         "containers": []
@@ -1758,12 +2217,12 @@
           {
             "title": "Algae Sequences (Moves Multiple Subsystems)",
             "x": 0.0,
-            "y": 0.0,
+            "y": 256.0,
             "width": 384.0,
-            "height": 640.0,
+            "height": 512.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "TOP"
+              "label_position": "HIDDEN"
             },
             "children": [
               {
@@ -1836,12 +2295,12 @@
           {
             "title": "Coral Sequences (Moves Multiple Subsystems)",
             "x": 384.0,
-            "y": 0.0,
+            "y": 256.0,
             "width": 384.0,
-            "height": 640.0,
+            "height": 512.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "TOP"
+              "label_position": "HIDDEN"
             },
             "children": [
               {
@@ -1914,12 +2373,12 @@
           {
             "title": "Climber Sequences (Moves Multiple Subsystems)",
             "x": 768.0,
-            "y": 0.0,
+            "y": 256.0,
             "width": 384.0,
-            "height": 640.0,
+            "height": 256.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "TOP"
+              "label_position": "HIDDEN"
             },
             "children": [
               {
@@ -1944,6 +2403,84 @@
                 "type": "Command",
                 "properties": {
                   "topic": "/SmartDashboard/Climber Set Angle to Lift",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Coral Commands",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "HIDDEN"
+            },
+            "children": [
+              {
+                "title": "CoralEffector Intake",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/CoralEffector Intake",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "CoralEffector Outtake",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/CoralEffector Outtake",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Algae Commands",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "HIDDEN"
+            },
+            "children": [
+              {
+                "title": "AlgaeGrabber Intake",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/AlgaeGrabber Intake",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "AlgaeGrabber Outtake",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/AlgaeGrabber Outtake",
                   "period": 0.06,
                   "show_type": false
                 }
