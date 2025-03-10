@@ -5,7 +5,9 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfigurator;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
@@ -62,7 +64,9 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
     // Configure the motor
     coralEffectorConfig = new TalonFXSConfiguration();
-    coralEffectorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    coralEffectorConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+    coralEffectorConfig.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Disabled;      // TODO  Should we enable this for the Minion?
+    coralEffectorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     coralEffectorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     coralEffectorConfig.Voltage.PeakForwardVoltage = CoralEffectorConstants.compensationVoltage;
     coralEffectorConfig.Voltage.PeakReverseVoltage = -CoralEffectorConstants.compensationVoltage;

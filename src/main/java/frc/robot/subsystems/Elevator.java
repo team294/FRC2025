@@ -383,6 +383,15 @@ public class Elevator extends SubsystemBase implements Loggable {
     return !lowerLimitSensor1.get() || !lowerLimitSensor2.get();
   }
 
+  /**
+   * Gets whether the elevator is at the lower limit.
+   * @return true = at lower limit, false = not at lower limit
+   */
+  public boolean isElevatorAtLowerLimit(int sensor) {
+    if (sensor == 1) return !lowerLimitSensor1.get();
+    else return !lowerLimitSensor2.get();
+  }
+
   // ************ Information methods
   
   /**
@@ -535,6 +544,8 @@ public class Elevator extends SubsystemBase implements Loggable {
       SmartDashboard.putNumber("Elev Velocity", getElevatorVelocity());
 
       SmartDashboard.putBoolean("Elev Lower Limit", isElevatorAtLowerLimit());
+      SmartDashboard.putBoolean("Elev Lower Limit 1", isElevatorAtLowerLimit(1));
+      SmartDashboard.putBoolean("Elev Lower Limit 2", isElevatorAtLowerLimit(2));
 
       SmartDashboard.putNumber("Elev Rotations 1", getElevatorEncoderRotations(1));
       SmartDashboard.putNumber("Elev Rotations 2", getElevatorEncoderRotations(2));

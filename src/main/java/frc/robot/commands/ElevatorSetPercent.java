@@ -65,7 +65,7 @@ public class ElevatorSetPercent extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator.stopElevatorMotors();
+    if (!endImmediately || interrupted) elevator.stopElevatorMotors();
   }
 
   // Returns true when the command should end.

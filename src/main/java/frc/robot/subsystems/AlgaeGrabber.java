@@ -9,7 +9,9 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfigurator;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
@@ -64,6 +66,8 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
     // Configure the motor
     algaeGrabberConfig = new TalonFXSConfiguration();
+    algaeGrabberConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+    algaeGrabberConfig.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Disabled;      // TODO  Should we enable this for the Minion?
     algaeGrabberConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     algaeGrabberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     algaeGrabberConfig.Voltage.PeakForwardVoltage = AlgaeGrabberConstants.compensationVoltage;

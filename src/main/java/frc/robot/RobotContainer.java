@@ -108,8 +108,8 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Straight", new DriveStraight(false, false, false, driveTrain, log));
 
     // Hopper
-    SmartDashboard.putData("Hopper Forward", new HopperSetPercent(0.05, hopper, log));
-    SmartDashboard.putData("Hopper Reverse", new HopperSetPercent(-0.05, hopper, log));
+    SmartDashboard.putData("Hopper Forward", new HopperSetPercent(0.4, hopper, log));
+    SmartDashboard.putData("Hopper Reverse", new HopperSetPercent(-0.4, hopper, log));
     SmartDashboard.putData("Hopper STOP", new HopperStop(hopper, log));
 
     // CoralEffector
@@ -120,8 +120,8 @@ public class RobotContainer {
     SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector, log));
 
     // AlgaeGrabber
-    SmartDashboard.putData("AlgaeGrabber In", new AlgaeGrabberSetPercent(-0.05, algaeGrabber, log));
-    SmartDashboard.putData("AlgaeGrabber Out", new AlgaeGrabberSetPercent(0.05, algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber In", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber Out", new AlgaeGrabberSetPercent(-0.1, algaeGrabber, log));
     SmartDashboard.putData("AlgaeGrabber STOP", new AlgaeGrabberStop(algaeGrabber, log));
     SmartDashboard.putData("AlgaeGrabber Intake", new AlgaeGrabberIntake(algaeGrabber, log));
     SmartDashboard.putData("AlgaeGrabber Outtake", new AlgaeGrabberOuttake(algaeGrabber, log));
@@ -133,8 +133,8 @@ public class RobotContainer {
     SmartDashboard.putData("Wrist Cal. to START CONFIG", new WristCalibrateManual(ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
 
     // Elevator
-    SmartDashboard.putData("Elevator Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, true, elevator, log));
-    SmartDashboard.putData("Elevator Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, true, elevator, log));
+    SmartDashboard.putData("Elevator Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator, log));
+    SmartDashboard.putData("Elevator Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator, log));
     SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator, log));
     SmartDashboard.putData("Elevator Move To 20 In", new ElevatorSetPosition(20.0, elevator, log));
     SmartDashboard.putData("Elevator Move to HP", new ElevatorSetPosition(ElevatorWristPosition.CORAL_HP, elevator, log));

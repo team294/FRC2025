@@ -77,8 +77,8 @@ public final class Constants {
     public static final int CANdle = 23;
 
     // Digital IO Ports
-    public static final int DIOElevatorLowerLimitSensor1 = 0; // Right
-    public static final int DIOElevatorLowerLimitSensor2 = 1; // Left
+    public static final int DIOElevatorLowerLimitSensor1 = 1; // Right
+    public static final int DIOElevatorLowerLimitSensor2 = 0; // Left
     public static final int DIOAlgaeGrabberBumpSwitch = 2;
     public static final int DIOCoralEffectorExitSensor = 3;
     public static final int DIOCoralEffectorEntrySensor = 4;
@@ -101,13 +101,13 @@ public final class Constants {
     private static final double DrivetrainAdjustmentFactor = 0.9911;      // TODO CALIBRATE
 
     // Left-right distance between the drivetrain wheels, measured from center to center, in meters
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(24.25) * DrivetrainAdjustmentFactor;
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(23.75) * DrivetrainAdjustmentFactor;
 
     // Front-back distance between the drivetrain wheels, measured from center to center, in meters
-    public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(24.25) * DrivetrainAdjustmentFactor;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(23.75) * DrivetrainAdjustmentFactor;
     
     // Width of robot in meters plus bumpers, in meters
-    public static final double robotWidth = Units.inchesToMeters(36.5);
+    public static final double robotWidth = Units.inchesToMeters(36.5);   // TODO CALIBRATE (for DriveToReef)
 
     // Diagonal width of robot, in meters
     public static final double robotDiagonal = Math.sqrt(2) * robotWidth;
@@ -121,7 +121,7 @@ public final class Constants {
     public static final double kEncoderCPR = 1.0;                                              // CALIBRATED Encoder counts per revolution of motor pinion gear
     public static final double kDriveGearRatio = (5.90 / 1.0);                                 // CALIBRATED Mk4n = 5.90:1 (L2+)
     public static final double kTurningGearRatio = (18.75 / 1.0);                              // CALIBRATED Mk4n = 18.75:1
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9739; // TODO CALIBRATE Wheels are nominal 4"
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9683;        // CALIBRATED Wheels are nominal 4"
     public static final double kDriveEncoderMetersPerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR / kDriveGearRatio;
     public static final double kTurningEncoderDegreesPerTick = 360.0 / kEncoderCPR / kTurningGearRatio;
   
@@ -189,11 +189,10 @@ public final class Constants {
     // Update the offset angles in RobotPreferences (in Shuffleboard), not in this code!
     // After updating in RobotPreferences, you will need to re-start the robot code for the changes to take effect.
     // When calibrating offset, set the wheels to zero degrees with the bevel gear facing to the right
-    // TODO CALIBRATE FOR 2025
-    public static double offsetAngleFrontLeftMotor = 100.18;
-    public static double offsetAngleFrontRightMotor = -163.04;
-    public static double offsetAngleBackLeftMotor = 19.09;
-    public static double offsetAngleBackRightMotor = 2.96;
+    public static double offsetAngleFrontLeftMotor = -56.6;
+    public static double offsetAngleFrontRightMotor = -152.8;
+    public static double offsetAngleBackLeftMotor = -56.9;
+    public static double offsetAngleBackRightMotor = -8.3;
 
     // Theta kp value for joystick in rad/sec
     public static final double kPJoystickThetaController = 3;    
@@ -279,14 +278,14 @@ public final class Constants {
 
   public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.1;   // TODO CALIBRATE FOR 2025
-    public static final double outtakePercent = -0.1; // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.1;   // CALIBRATED
+    public static final double outtakePercent = 0.4;  // CALIBRATED
   }
 
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.1;   // TODO CALIBRATE FOR 2025
-    public static final double outtakePercent = -0.1; // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.4; // CALIBRATED
+    public static final double outtakePercent = -1; // CALIBRATED
   }
 
   public static final class ElevatorConstants {
@@ -298,7 +297,7 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
 
     public static final double maxUncalibratedPercentOutput = 0.1;
-    public static final double maxManualPercentOutput = 0.2;  // Max elevator speed when driven using Xbox controller
+    public static final double maxManualPercentOutput = 0.05;  // Max elevator speed when driven using Xbox controller
     public static final double maxPercentOutput = 1.0;        // Absolute max output to elevator motors
 
     // TODO CALIBRATE FOR 2025
@@ -402,7 +401,7 @@ public final class Constants {
     public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
     // TODO update this value based on the center of the region of unallowed motion
-    public static double cancoderDiscontinuityPoint = 1.0;          // TODO CALIBRATE FOR 2025
+    public static double cancoderDiscontinuityPoint = 0.74;          // CALIBRATED FOR 2025
 
 
     public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025      kP = (desired-output-volts) / (error-in-wrist-rotations)
