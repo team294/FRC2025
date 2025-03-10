@@ -77,8 +77,8 @@ public final class Constants {
     public static final int CANdle = 23;
 
     // Digital IO Ports
-    public static final int DIOElevatorLowerLimitSensor1 = 0; // Right
-    public static final int DIOElevatorLowerLimitSensor2 = 1; // Left
+    public static final int DIOElevatorLowerLimitSensor1 = 1; // Right
+    public static final int DIOElevatorLowerLimitSensor2 = 0; // Left
     public static final int DIOAlgaeGrabberBumpSwitch = 2;
     public static final int DIOCoralEffectorExitSensor = 3;
     public static final int DIOCoralEffectorEntrySensor = 4;
@@ -121,7 +121,7 @@ public final class Constants {
     public static final double kEncoderCPR = 1.0;                                              // CALIBRATED Encoder counts per revolution of motor pinion gear
     public static final double kDriveGearRatio = (5.90 / 1.0);                                 // CALIBRATED Mk4n = 5.90:1 (L2+)
     public static final double kTurningGearRatio = (18.75 / 1.0);                              // CALIBRATED Mk4n = 18.75:1
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9739; // TODO CALIBRATE Wheels are nominal 4"
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9683;        // CALIBRATED Wheels are nominal 4"
     public static final double kDriveEncoderMetersPerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR / kDriveGearRatio;
     public static final double kTurningEncoderDegreesPerTick = 360.0 / kEncoderCPR / kTurningGearRatio;
   
@@ -278,14 +278,14 @@ public final class Constants {
 
   public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.1;   // TODO CALIBRATE FOR 2025
-    public static final double outtakePercent = -0.1; // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.1;   // CALIBRATED
+    public static final double outtakePercent = 0.4;  // CALIBRATED
   }
 
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.1;   // TODO CALIBRATE FOR 2025
-    public static final double outtakePercent = -0.1; // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.4; // CALIBRATED
+    public static final double outtakePercent = -1; // CALIBRATED
   }
 
   public static final class ElevatorConstants {
@@ -297,7 +297,7 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
 
     public static final double maxUncalibratedPercentOutput = 0.1;
-    public static final double maxManualPercentOutput = 0.2;  // Max elevator speed when driven using Xbox controller
+    public static final double maxManualPercentOutput = 0.05;  // Max elevator speed when driven using Xbox controller
     public static final double maxPercentOutput = 1.0;        // Absolute max output to elevator motors
 
     // TODO CALIBRATE FOR 2025
@@ -401,7 +401,7 @@ public final class Constants {
     public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
     // TODO update this value based on the center of the region of unallowed motion
-    public static double cancoderDiscontinuityPoint = 1.0;          // TODO CALIBRATE FOR 2025
+    public static double cancoderDiscontinuityPoint = 0.74;          // CALIBRATED FOR 2025
 
 
     public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025      kP = (desired-output-volts) / (error-in-wrist-rotations)

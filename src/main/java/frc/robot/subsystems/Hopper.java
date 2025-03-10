@@ -60,7 +60,7 @@ public class Hopper extends SubsystemBase implements Loggable {
 
     // Configure the motor
     hopperConfig = new TalonFXConfiguration();
-    hopperConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    hopperConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     hopperConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     hopperConfig.Voltage.PeakForwardVoltage = HopperConstants.compensationVoltage;
     hopperConfig.Voltage.PeakReverseVoltage = -HopperConstants.compensationVoltage;

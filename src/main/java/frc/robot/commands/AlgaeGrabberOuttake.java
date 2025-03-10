@@ -25,7 +25,7 @@ public class AlgaeGrabberOuttake extends Command {
     this.algaeGrabber = algaeGrabber;
     this.log = log;
     this.timer = new Timer();
-    this.seconds = 0.3;
+    this.seconds = 0.6;
     addRequirements(algaeGrabber);
   }
 
