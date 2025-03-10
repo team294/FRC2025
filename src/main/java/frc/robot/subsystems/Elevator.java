@@ -112,6 +112,8 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorMotor1Config.Voltage.PeakForwardVoltage = ElevatorConstants.compensationVoltage * ElevatorConstants.maxPercentOutput;
     elevatorMotor1Config.Voltage.PeakReverseVoltage = -ElevatorConstants.compensationVoltage * ElevatorConstants.maxPercentOutput;
     elevatorMotor1Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
     // If the current is above the supply current limit for the threshold time, the current is 
     // limited to the lower limit in order to prevent the breakers from tripping
@@ -130,14 +132,16 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorMotor2Config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevatorMotor2Config.Voltage.PeakForwardVoltage = ElevatorConstants.compensationVoltage;
     elevatorMotor2Config.Voltage.PeakReverseVoltage = -ElevatorConstants.compensationVoltage;
-    elevatorMotor1Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    elevatorMotor2Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
     // If the current is above the supply current limit for the threshold time, the current is 
     // limited to the lower limit in order to prevent the breakers from tripping
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Apply the configurations to motor 2
     // This is a blocking call and will wait up to 50ms-70ms for the config to apply
@@ -291,6 +295,24 @@ public class Elevator extends SubsystemBase implements Loggable {
       elevatorMotor2.setPosition(ElevatorPosition.LOWER_LIMIT.value);
       elevatorCalibrated = true;
   
+      // Set software limits after setting encoderZero
+      elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorPosition.UPPER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+      elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+      // Apply the configurations to motor 1
+      // This is a blocking call and will wait up to 50ms-70ms for the config to apply
+      elevatorMotor1Configurator.apply(elevatorMotor1Config);
+
+      // Set software limits after setting encoderZero
+      elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorPosition.UPPER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+      elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+      // Apply the configurations to motor 2
+      // This is a blocking call and will wait up to 50ms-70ms for the config to apply
+      elevatorMotor2Configurator.apply(elevatorMotor2Config);
+
       log.writeLog(true, subsystemName, "checkAndZeroElevatorEncoders", "Calibrated");
     }
   }
