@@ -27,8 +27,8 @@ public class WristSetPercent extends Command {
     this.fromShuffleboard = true;
     addRequirements(wrist);
 
-    if (SmartDashboard.getNumber("Wrist Set Percent", -9999) == -9999) {
-      SmartDashboard.putNumber("Wrist Set Percent", 0);
+    if (SmartDashboard.getNumber("Wrist Goal Percent", -9999) == -9999) {
+      SmartDashboard.putNumber("Wrist Goal Percent", 0);
     }
   }
 
@@ -50,7 +50,7 @@ public class WristSetPercent extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) percent = SmartDashboard.getNumber("Wrist Set Percent", 0);
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("Wrist Goal Percent", 0);
     wrist.setWristPercentOutput(percent);
     log.writeLog(false, "WristSetPercent", "Init", "Percent", percent);
   }
