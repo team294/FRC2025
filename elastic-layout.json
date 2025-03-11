@@ -1626,19 +1626,6 @@
                 }
               },
               {
-                "title": "Elevator Move To 20 In",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator Move To 20 In",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
                 "title": "Elevator Move to HP",
                 "x": 0.0,
                 "y": 0.0,
@@ -1647,6 +1634,19 @@
                 "type": "Command",
                 "properties": {
                   "topic": "/SmartDashboard/Elevator Move to HP",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Elevator Move To 20 In",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator Move To 20 In",
                   "period": 0.06,
                   "show_type": false
                 }

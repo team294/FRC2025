@@ -296,8 +296,8 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
 
-    public static final double maxUncalibratedPercentOutput = 0.1;
-    public static final double maxManualPercentOutput = 0.05;  // Max elevator speed when driven using Xbox controller
+    public static final double maxUncalibratedPercentOutput = 0.05;
+    public static final double maxManualPercentOutput = 0.1;  // Max elevator speed when driven using Xbox controller
     public static final double maxPercentOutput = 1.0;        // Absolute max output to elevator motors
 
     // TODO CALIBRATE FOR 2025
