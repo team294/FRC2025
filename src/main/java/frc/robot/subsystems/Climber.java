@@ -183,7 +183,7 @@ public class Climber extends SubsystemBase implements Loggable {
 
     // Create CANcoder configuration
     canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;          // TODO verify cancoder direction
+    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     canCoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = ClimberConstants.cancoderDiscontinuityPoint;
 
     // Apply the configurations to the CANcoder.

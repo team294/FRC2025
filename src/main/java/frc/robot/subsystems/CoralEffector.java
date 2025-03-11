@@ -10,7 +10,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
@@ -32,11 +31,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private final TalonFXS coralEffectorMotor = new TalonFXS(Ports.CANCoralEffector);
 
   // Create variables for the coralEffector Minion motor
-  private final StatusSignal<Voltage> coralEffectorSupplyVoltage;             // Incoming bus voltage to motor, in volts
   private final StatusSignal<Temperature> coralEffectorTemp;                  // Motor temperature, in degrees Celsius
-  private final StatusSignal<Double> coralEffectorDutyCycle;                  // Motor duty cycle percent power, -1 to 1
   private final StatusSignal<Current> coralEffectorStatorCurrent;             // Motor stator current, in amps (positive = forward, negative = reverse)
-  private final StatusSignal<Angle> coralEffectorEncoderPosition;             // Encoder position, in pinion rotations
   private final StatusSignal<AngularVelocity> coralEffectorEncoderVelocity;
   private final StatusSignal<Voltage> coralEffectorVoltage;
 
@@ -54,11 +50,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     logRotationKey = log.allocateLogRotation();
 
     // Get signal and sensor objects
-    coralEffectorSupplyVoltage = coralEffectorMotor.getSupplyVoltage();
     coralEffectorTemp = coralEffectorMotor.getDeviceTemp();
-    coralEffectorDutyCycle = coralEffectorMotor.getDutyCycle();
     coralEffectorStatorCurrent = coralEffectorMotor.getStatorCurrent();
-    coralEffectorEncoderPosition = coralEffectorMotor.getPosition();
     coralEffectorEncoderVelocity = coralEffectorMotor.getVelocity();
     coralEffectorVoltage = coralEffectorMotor.getMotorVoltage();
 
@@ -175,6 +168,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
    */
   public void updateLog(boolean logWhenDisabled) {
     log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
+      "CoralEffector Temp (C)", coralEffectorTemp.refresh().getValueAsDouble(),
+      "CoralEffector Voltage (V)", coralEffectorVoltage.refresh().getValueAsDouble(),
       "CoralEffector Current (Amps)", getCoralEffectorAmps(),
       "CoralEffector Velocity (RPM)", getCoralEffectorVelocity()
     );
@@ -187,6 +182,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
       SmartDashboard.putBoolean("Coral in Entry", isCoralPresentInEntry());
       SmartDashboard.putBoolean("Coral in Exit", isCoralPresentInExit());
       SmartDashboard.putBoolean("Coral Safely In", isCoralSafelyIn());
+      SmartDashboard.putNumber("Coral Velocity", getCoralEffectorVelocity());
     }
   }
 }
