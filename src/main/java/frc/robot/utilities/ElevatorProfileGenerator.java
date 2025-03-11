@@ -1,5 +1,6 @@
 package frc.robot.utilities;
 
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,19 +37,19 @@ public class ElevatorProfileGenerator {
   double percentPowerFB = 0;
 
   // TODO CALIBRATE FOR 2025
-  private double kFF = 0.00837;
-  private double kSu = 0.00524;
-  private double kVu = 0.01867;
-  private double kAu = 0.0006;
-  private double kPu = 0.2;
+  private double kFF = 0.35 / ElevatorConstants.compensationVoltage;     // In pct-output
+  private double kSu = 0.10 / ElevatorConstants.compensationVoltage;     // In pct-output
+  private double kVu = 0.126 / ElevatorConstants.compensationVoltage;     // In (pct-output)/(in/s)
+  private double kAu = 0.000;      // In (pct-output)/(in/s^2)     2023 = 0.0006
+  private double kPu = 0.0;       // 2023 = 0.2
   private double kIu = 0;    
-  private double kDu = 0.02;
-  private double kSd = 0.00524;
-  private double kVd = 0.01798;
-  private double kAd = 0.0006;
-  private double kPd = 0.2;
+  private double kDu = 0.0;      // 2023 = 0.02
+  private double kSd = 0.10 / ElevatorConstants.compensationVoltage;     // In pct-output
+  private double kVd = 0.126 / ElevatorConstants.compensationVoltage;     // In (pct-output)/(in/s)
+  private double kAd = 0.000;      // In (pct-output)/(in/s^2)     2023 = 0.0006
+  private double kPd = 0.0;       // 2023 = 0.2
   private double kId = 0;    
-  private double kDd = 0.02;
+  private double kDd = 0.0;      // 2023 = 0.02
 
   /**
    * Creates a new profile generator in disabled mode.
