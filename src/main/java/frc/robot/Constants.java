@@ -107,7 +107,7 @@ public final class Constants {
     public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(23.75) * DrivetrainAdjustmentFactor;
     
     // Width of robot in meters plus bumpers, in meters
-    public static final double robotWidth = Units.inchesToMeters(36.5);   // TODO CALIBRATE (for DriveToReef)
+    public static final double robotWidth = Units.inchesToMeters(35.5);   // CALIBRATED (for DriveToReef)
 
     // Diagonal width of robot, in meters
     public static final double robotDiagonal = Math.sqrt(2) * robotWidth;
