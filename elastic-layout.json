@@ -1212,14 +1212,14 @@
                 }
               },
               {
-                "title": "FXangle FL",
+                "title": "FXangle dpsFL",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Swerve FXangle FL",
+                  "topic": "/SmartDashboard/Swerve FXangle dpsFL",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -1520,33 +1520,6 @@
                 }
               },
               {
-                "title": "Climber Set Angle",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber target angle",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Climber Set Angle to Target",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Set Angle",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
                 "title": "Climber Set Percent",
                 "x": 0.0,
                 "y": 0.0,
@@ -1569,6 +1542,33 @@
                 "type": "Command",
                 "properties": {
                   "topic": "/SmartDashboard/Climber Set Percent",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Climber Goal Angle",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Goal Angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Climber Set Angle to Target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Set Angle",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -1961,8 +1961,8 @@
           },
           {
             "title": "Climber Readings",
-            "x": 256.0,
-            "y": 384.0,
+            "x": 1536.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 512.0,
             "type": "List Layout",
