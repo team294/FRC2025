@@ -149,6 +149,7 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber, log));
     SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber, log));
     SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
+    SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber, log));
     
     // Autos
 
