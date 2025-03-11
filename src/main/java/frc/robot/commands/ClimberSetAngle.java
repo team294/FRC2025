@@ -59,8 +59,8 @@ public class ClimberSetAngle extends Command {
     this.log = log;
     fromShuffleboard = true;
 
-    if (SmartDashboard.getNumber("Climber Set Angle", -9999) == -9999) {
-      SmartDashboard.putNumber("Climber Set Angle", ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
+    if (SmartDashboard.getNumber("Climber Goal Angle", -9999) == -9999) {
+      SmartDashboard.putNumber("Climber Goal Angle", ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
     }
 
     addRequirements(climber);
@@ -69,7 +69,7 @@ public class ClimberSetAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Set Angle", ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
+    if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Goal Angle", ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
     climber.setClimberAngle(angle);
     log.writeLog(false, "ClimberSetAngle", "Init", "Target", angle);
 

@@ -89,7 +89,7 @@ public class Climber extends SubsystemBase implements Loggable {
 
     // Create the motor configuration for using the rotor encoder
     climberMotor_RotorEncoderConfig = new TalonFXConfiguration();
-    climberMotor_RotorEncoderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;         // TODO verify motor direction
+    climberMotor_RotorEncoderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     climberMotor_RotorEncoderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     climberMotor_RotorEncoderConfig.Voltage.PeakForwardVoltage = ClimberConstants.compensationVoltage;
     climberMotor_RotorEncoderConfig.Voltage.PeakReverseVoltage = -ClimberConstants.compensationVoltage;
@@ -106,13 +106,6 @@ public class Climber extends SubsystemBase implements Loggable {
     climberMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
     climberMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
     climberMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-
-    // Configure PID for PositionVoltage control
-    // NOTE: In Phoenix 6, slots are selected in the ControlRequest (ex. PositionVoltage.Slot)
-    climberPositionControl.Slot = 0;
-    climberPositionControl.OverrideBrakeDurNeutral = true;
-    climberMMVoltageControl.Slot = 0;
-    climberMMVoltageControl.OverrideBrakeDurNeutral = true;
 
     climberMotor_RotorEncoderConfig.Slot0.kP = ClimberConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
     climberMotor_RotorEncoderConfig.Slot0.kI = 0.0;
@@ -132,12 +125,47 @@ public class Climber extends SubsystemBase implements Loggable {
     climberMotor_RotorEncoderConfig.Feedback.SensorToMechanismRatio = ClimberConstants.kClimberGearRatio;
     climberMotor_RotorEncoderConfig.ClosedLoopGeneral.ContinuousWrap = false;
 
+    // Configure PID for PositionVoltage control
+    // NOTE: In Phoenix 6, slots are selected in the ControlRequest (ex. PositionVoltage.Slot)
+    climberPositionControl.Slot = 0;
+    climberPositionControl.OverrideBrakeDurNeutral = true;
+    climberMMVoltageControl.Slot = 0;
+    climberMMVoltageControl.OverrideBrakeDurNeutral = true;
+
     // Create the motor configuration for using the CANcoder
     climberMotor_CANcoderConfig = new TalonFXConfiguration();
-    // Copy settings from the other motor configuration
-    climberMotor_CANcoderConfig.deserialize(climberMotor_RotorEncoderConfig.serialize());
-    // Update settings that are different for this configuration
-    // Configure encoder to user for feedbacvk
+
+    climberMotor_CANcoderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    climberMotor_CANcoderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    climberMotor_CANcoderConfig.Voltage.PeakForwardVoltage = ClimberConstants.compensationVoltage;
+    climberMotor_CANcoderConfig.Voltage.PeakReverseVoltage = -ClimberConstants.compensationVoltage;
+    climberMotor_CANcoderConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;     // Time from 0 to full power, in seconds
+    climberMotor_CANcoderConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+
+    // Turn off soft limits until encoder is calibrated
+    climberMotor_CANcoderConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    climberMotor_CANcoderConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+
+    // If the current is above the supply current limit for the threshold time, the current is 
+    // limited to the lower limit in order to prevent the breakers from tripping
+    climberMotor_CANcoderConfig.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
+    climberMotor_CANcoderConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
+    climberMotor_CANcoderConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
+    climberMotor_CANcoderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+    climberMotor_CANcoderConfig.Slot0.kP = ClimberConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
+    climberMotor_CANcoderConfig.Slot0.kI = 0.0;
+    climberMotor_CANcoderConfig.Slot0.kD = 0.0;
+    climberMotor_CANcoderConfig.Slot0.kS = ClimberConstants.kS;
+    climberMotor_CANcoderConfig.Slot0.kV = ClimberConstants.kV;
+    climberMotor_CANcoderConfig.Slot0.kA = 0.0;
+
+    // Configure Magic Motion settings
+    climberMotor_CANcoderConfig.MotionMagic.MotionMagicCruiseVelocity = ClimberConstants.MMCruiseVelocity;
+    climberMotor_CANcoderConfig.MotionMagic.MotionMagicAcceleration = ClimberConstants.MMAcceleration;
+    climberMotor_CANcoderConfig.MotionMagic.MotionMagicJerk = ClimberConstants.MMJerk;
+
+    // Configure encoder to user for feedback
     climberMotor_CANcoderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     climberMotor_CANcoderConfig.Feedback.FeedbackRemoteSensorID = Ports.CANClimberEncoder;
     climberMotor_CANcoderConfig.Feedback.RotorToSensorRatio = ClimberConstants.kClimberGearRatio;
