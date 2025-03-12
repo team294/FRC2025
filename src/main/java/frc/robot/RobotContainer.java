@@ -131,6 +131,7 @@ public class RobotContainer {
     SmartDashboard.putData("Wrist Set Percent", new WristSetPercent(wrist, log));
     SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist, log));
     SmartDashboard.putData("Wrist Cal. to START CONFIG", new WristCalibrateManual(ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
+    SmartDashboard.putData("Wrist Calibrate Ramp", new WristCalibrationRamp(0.01, 0.2, wrist, log));
 
     // Elevator
     SmartDashboard.putData("Elevator Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator, log));
@@ -149,6 +150,7 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber, log));
     SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber, log));
     SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
+    SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber, log));
     
     // Autos
 

@@ -107,7 +107,7 @@ public final class Constants {
     public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(23.75) * DrivetrainAdjustmentFactor;
     
     // Width of robot in meters plus bumpers, in meters
-    public static final double robotWidth = Units.inchesToMeters(36.5);   // TODO CALIBRATE (for DriveToReef)
+    public static final double robotWidth = Units.inchesToMeters(35.5);   // CALIBRATED (for DriveToReef)
 
     // Diagonal width of robot, in meters
     public static final double robotDiagonal = Math.sqrt(2) * robotWidth;
@@ -294,8 +294,8 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
 
-    public static final double maxUncalibratedPercentOutput = 0.1;
-    public static final double maxManualPercentOutput = 0.05;  // Max elevator speed when driven using Xbox controller
+    public static final double maxUncalibratedPercentOutput = 0.05;
+    public static final double maxManualPercentOutput = 0.1;  // Max elevator speed when driven using Xbox controller
     public static final double maxPercentOutput = 1.0;        // Absolute max output to elevator motors
 
     // TODO CALIBRATE FOR 2025
@@ -321,10 +321,12 @@ public final class Constants {
     public static final double maxPercentOutput = 0.2;              // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
-    public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
+    // When wrist CG (with coral) is vertical, wrist angle should read 90.0 degrees.
+    // When wrist coral top metal plate is horizontal (bubble level), wrist angle should read 100.6 degrees
+    public static double offsetAngleCANcoder = 27.0;                 // CALIBRATED.   CANCoder raw angle (in degrees) when arm is at 0 degrees.
 
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
-    public static double cancoderDiscontinuityPoint = 1.0;          // TODO CALIBRATE FOR 2025 - should be the center of the region of unallowed motion
+    public static double cancoderDiscontinuityPoint = 0.68;          // CALIBRATED - should be the center of the region of unallowed motion
 
     public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025    kP = (desired-output-volts) / (error-in-wrist-rotations)
     public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
@@ -345,8 +347,8 @@ public final class Constants {
 
     // TODO CALIBRATE FOR 2025
     public enum WristAngle {
-      LOWER_LIMIT(-30.0),
-      UPPER_LIMIT(90.0);
+      LOWER_LIMIT(-2.0),
+      UPPER_LIMIT(99.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
@@ -356,21 +358,21 @@ public final class Constants {
 
   public static final class ElevatorWristConstants {
     public enum ElevatorWristPosition {
-      START_CONFIG(0.0, 90.0),
+      START_CONFIG(0.0, 100.0),
 
-      CORAL_HP(0.0, 69.0),
+      CORAL_HP(0.0, 79.0),
 
-      CORAL_L1(25.56, 55.0),
-      CORAL_L2(25.56, 55.0),
-      CORAL_L3(40.78, 55.0),
-      CORAL_L4(70.7, 20.0),
+      CORAL_L1(25.56, 65.0),
+      CORAL_L2(25.56, 65.0),
+      CORAL_L3(40.78, 65.0),
+      CORAL_L4(70.7, 30.0),  //stop
 
-      ALGAE_GROUND(5.8, -18.5),
-      ALGAE_LOWER(34.0, -15.0),
-      ALGAE_UPPER(49.7, -15.0),
+      ALGAE_GROUND(5.8, -8.5),
+      ALGAE_LOWER(34.0, -5.0),
+      ALGAE_UPPER(49.7, -5.0),
 
-      ALGAE_PROCESSOR(9.84, 0.0),
-      ALGAE_NET(63.0, 70.0);
+      ALGAE_PROCESSOR(9.84, 10.0),
+      ALGAE_NET(63.0, 80.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double elevatorPosition;
@@ -386,41 +388,40 @@ public final class Constants {
   public static final class ClimberConstants {
     // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
     // where a ratio greater than 1 is a reduction.
-    // TODO VERY IMPORTANT DONT EVEN THINK ABOUT COMITTING W/O CHANGING THIS GEAR RATIO (if necessary)
     public static final double kClimberGearRatio = (135.0/1.0);          // CALIBRATED FOR 2025  (135:1)
     public static final double kClimberDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
     
     public static final double compensationVoltage = 12.0;
-    public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
-    public static final double maxManualPercentOutput = 0.05;       // TODO CALIBRATE FOR 2025
-    public static final double maxPercentOutput = 0.2;             // TODO CALIBRATE FOR 2025
+    public static final double maxUncalibratedPercentOutput = 0.1;  // CALIBRATED
+    public static final double maxManualPercentOutput = 0.2;        // CALIBRATED
+    public static final double maxPercentOutput = 0.2;              // CALIBRATED
 
     // Should be updated in RobotPreferences, so it cannot be final
-    public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
+    public static double offsetAngleCANcoder = 37.7;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  CALIBRATED
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
-    // TODO update this value based on the center of the region of unallowed motion
+    // This value is the center of the region of *unallowed* motion
     public static double cancoderDiscontinuityPoint = 0.74;          // CALIBRATED FOR 2025
 
 
     public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025      kP = (desired-output-volts) / (error-in-wrist-rotations)
-    public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
-    public static final double kD = 0.0;    // TODO CALIBRATE FOR 2025
-    public static final double kG = 0.0;    // TODO CALIBRATE FOR 2025      kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
-    public static final double kS = 0.0;    // TODO CALIBRATE FOR 2025
-    public static final double kV = 0.0;    // TODO CALIBRATE FOR 2025
+    public static final double kI = 0.0;    // CALIBRATED
+    public static final double kD = 0.0;    // CALIBRATED
+    public static final double kG = 0.0;    // CALIBRATED      kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
+    public static final double kS = 0.096;   // CALIBRATED   kS = (volts)
+    public static final double kV = 15.2;    // CALIBRATED   kV = (volts)/(wrist-rotations/sec)
 
-    public static final double MMCruiseVelocity = 0.25;                   // Max velocity in climber rotations / second TODO CALIBRATE FOR 2025
-    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in climber rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
-    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in climber rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
+    public static final double MMCruiseVelocity = 50.0/360.0;             // Max velocity in climber rotations / second
+    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in climber rotations / second^2. MMVel / MMAccel = seconds to full velocity.
+    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in climber rotations / second^3. MMAccel / MMJerk = seconds to full acceleration.
 
-    // TODO CALIBRATE FOR 2025
+    // CALIBRATED
     public enum ClimberAngle {
-      LOWER_LIMIT(-0),
-      UPPER_LIMIT(-0),
-      CALIBRATE_MANUAL(0.0),
+      LOWER_LIMIT(-82.0),
+      UPPER_LIMIT(176.0),
+      CALIBRATE_MANUAL(-84.0),
 
-      CLIMB_START(-0),
-      CLIMB_END(-0);
+      CLIMB_START(77.0),
+      CLIMB_END(176.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;

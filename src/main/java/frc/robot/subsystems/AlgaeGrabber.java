@@ -14,7 +14,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
@@ -34,11 +33,8 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   private String subsystemName;         // Subsystem name for use in file logging and dashboard
 
   // Create variables for the algaeGrabber Minion motor
-  private final StatusSignal<Voltage> algaeGrabberSupplyVoltage;  // Incoming bus voltage to motor, in volts
   private final StatusSignal<Temperature> algaeGrabberTemp;       // Motor temp, in degrees Celsius
-  private final StatusSignal<Double> algaeGrabberDutyCycle;       // Motor duty cycle percent power, -1 to 1
 	private final StatusSignal<Current> algaeGrabberStatorCurrent;  // Motor stator current, in amps (positive = forward, negative = reverse)
-	private final StatusSignal<Angle> algaeGrabberEncoderPosition;  // Encoder position, in pinion rotations
 	private final StatusSignal<AngularVelocity> algaeGrabberEncoderVelocity;	
 	private final StatusSignal<Voltage> algaeGrabberVoltage;
 
@@ -56,11 +52,8 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
     this.subsystemName = subsystemName;
 
     // Get signal and sensor objects
-    algaeGrabberSupplyVoltage = algaeGrabberMotor.getSupplyVoltage();
     algaeGrabberTemp = algaeGrabberMotor.getDeviceTemp();
-    algaeGrabberDutyCycle = algaeGrabberMotor.getDutyCycle();
     algaeGrabberStatorCurrent = algaeGrabberMotor.getStatorCurrent();
-    algaeGrabberEncoderPosition = algaeGrabberMotor.getPosition();
     algaeGrabberEncoderVelocity = algaeGrabberMotor.getVelocity();
     algaeGrabberVoltage = algaeGrabberMotor.getMotorVoltage();
 
@@ -151,7 +144,9 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, subsystemName, "Update variables", 
+    log.writeLog(logWhenDisabled, subsystemName, "Update variables",
+      "AlgaeGrabber Temp (C)", algaeGrabberTemp.refresh().getValueAsDouble(),
+      "AlgaeGrabber Voltage (V)", algaeGrabberVoltage.refresh().getValueAsDouble(),
       "AlgaeGrabber Current (Amps)", getAlgaeGrabberAmps(),
       "AlgaeGrabber Velocity (RPM)", getAlgaeGrabberVelocity());
   }
@@ -161,6 +156,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
     if (fastLogging || log.isMyLogRotation(logRotationKey)) {
       updateLog(false);
       SmartDashboard.putBoolean("Algae Present", isAlgaePresent());
+      SmartDashboard.putNumber("AlgaeGrabber Velocity", getAlgaeGrabberVelocity());
     }
   }
 }

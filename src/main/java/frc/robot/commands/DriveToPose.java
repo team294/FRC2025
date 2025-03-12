@@ -14,13 +14,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import frc.robot.Constants;
 import frc.robot.Constants.CoordType;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TrajectoryConstants;
@@ -36,7 +34,6 @@ public class DriveToPose extends Command {
   private final FileLog log;
   
   private final Timer timer = new Timer();
-  private SwerveDriveKinematics kinematics;
   private HolonomicDriveControllerBCR controller;
   private boolean openLoopSwerve = false; // true = turn off feedback on swerve modules
 
@@ -284,9 +281,6 @@ public class DriveToPose extends Command {
   private void constructorCommonCode() {
     addRequirements(driveTrain);
 
-    // Define the swerve drive kinematics
-    kinematics = Constants.DriveConstants.kDriveKinematics;
-
     // Define the controller for robot rotation
     ProfiledPIDController thetaController = new ProfiledPIDController(
         TrajectoryConstants.kPThetaController, 0, 0, TrajectoryConstants.kThetaControllerConstraints);
@@ -415,7 +409,7 @@ public class DriveToPose extends Command {
     ChassisSpeeds targetChassisSpeeds = controller.calculate(robotPose, desiredPose, desiredVelocityMetersPerSecond, desiredRotation);
 
     driveTrain.drive(targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond,
-        targetChassisSpeeds.omegaRadiansPerSecond, true, false);
+        targetChassisSpeeds.omegaRadiansPerSecond, true, openLoopSwerve);
 
     ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
     log.writeLog(false, "DriveToPose", "Execute", 
