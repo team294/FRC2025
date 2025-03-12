@@ -389,7 +389,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the velocity of the elevator using the average of the motors.
-   * @return double -1.0 to +1.0 (positive = up, negative = down)
+   * @return velocity, in in/s (positive = up, negative = down)
    */
   public double getElevatorVelocity() {
     return (getElevatorVelocity(1) + getElevatorVelocity(2)) / 2.0;
