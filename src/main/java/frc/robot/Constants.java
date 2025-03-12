@@ -333,9 +333,9 @@ public final class Constants {
     public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025    kP = (desired-output-volts) / (error-in-wrist-rotations)
     public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
     public static final double kD = 0.0;    // TODO CALIBRATE FOR 2025
-    public static final double kG = 0.0;  // TODO CALIBRATE FOR 2025    kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
-    public static final double kS = 0.0; // TODO CALIBRATE FOR 2025
-    public static final double kV = 0.0; // TODO CALIBRATE FOR 2025
+    public static final double kG = 0.46;   // CALIBRATED    kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
+    public static final double kS = 0.16;   // CALIBRATED    kS = (volts)
+    public static final double kV = 2.66;   // CALIBRATED    kV = (volts)/(wrist-rotations/sec)
 
     public static final double MMCruiseVelocity = 0.25;                   // Max velocity in wrist rotations / second TODO CALIBRATE FOR 2025
     public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in wrist rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
