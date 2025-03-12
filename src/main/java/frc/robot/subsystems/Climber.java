@@ -170,6 +170,7 @@ public class Climber extends SubsystemBase implements Loggable {
     climberMotor_CANcoderConfig.Feedback.FeedbackRemoteSensorID = Ports.CANClimberEncoder;
     climberMotor_CANcoderConfig.Feedback.RotorToSensorRatio = ClimberConstants.kClimberGearRatio;
     climberMotor_CANcoderConfig.Feedback.SensorToMechanismRatio = 1.0;
+    climberMotor_CANcoderConfig.ClosedLoopGeneral.ContinuousWrap = false;
 
     // Configure CANcoder and rotor encoder to be synced
     // climberMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.SyncCANcoder;

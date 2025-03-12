@@ -323,10 +323,12 @@ public final class Constants {
     public static final double maxPercentOutput = 0.2;              // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
-    public static double offsetAngleCANcoder = 0.0;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  TODO CALIBRATE FOR 2025
+    // When wrist CG (with coral) is vertical, wrist angle should read 90.0 degrees.
+    // When wrist coral top metal plate is horizontal (bubble level), wrist angle should read 100.6 degrees
+    public static double offsetAngleCANcoder = 27.0;                 // CALIBRATED.   CANCoder raw angle (in degrees) when arm is at 0 degrees.
 
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
-    public static double cancoderDiscontinuityPoint = 1.0;          // TODO CALIBRATE FOR 2025 - should be the center of the region of unallowed motion
+    public static double cancoderDiscontinuityPoint = 0.68;          // CALIBRATED - should be the center of the region of unallowed motion
 
     public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025    kP = (desired-output-volts) / (error-in-wrist-rotations)
     public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
@@ -347,8 +349,8 @@ public final class Constants {
 
     // TODO CALIBRATE FOR 2025
     public enum WristAngle {
-      LOWER_LIMIT(-30.0),
-      UPPER_LIMIT(90.0);
+      LOWER_LIMIT(-2.0),
+      UPPER_LIMIT(99.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
@@ -358,21 +360,21 @@ public final class Constants {
 
   public static final class ElevatorWristConstants {
     public enum ElevatorWristPosition {
-      START_CONFIG(0.0, 90.0),
+      START_CONFIG(0.0, 100.0),
 
-      CORAL_HP(0.0, 69.0),
+      CORAL_HP(0.0, 79.0),
 
-      CORAL_L1(25.56, 55.0),
-      CORAL_L2(25.56, 55.0),
-      CORAL_L3(40.78, 55.0),
-      CORAL_L4(70.7, 20.0),
+      CORAL_L1(25.56, 65.0),
+      CORAL_L2(25.56, 65.0),
+      CORAL_L3(40.78, 65.0),
+      CORAL_L4(70.7, 30.0),  //stop
 
-      ALGAE_GROUND(5.8, -18.5),
-      ALGAE_LOWER(34.0, -15.0),
-      ALGAE_UPPER(49.7, -15.0),
+      ALGAE_GROUND(5.8, -8.5),
+      ALGAE_LOWER(34.0, -5.0),
+      ALGAE_UPPER(49.7, -5.0),
 
-      ALGAE_PROCESSOR(9.84, 0.0),
-      ALGAE_NET(63.0, 70.0);
+      ALGAE_PROCESSOR(9.84, 10.0),
+      ALGAE_NET(63.0, 80.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double elevatorPosition;

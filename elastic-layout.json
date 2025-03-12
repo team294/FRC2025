@@ -1520,6 +1520,33 @@
                 }
               },
               {
+                "title": "Climber Set Angle",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber target angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Climber Set Angle to Target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Set Angle",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
                 "title": "Climber Set Percent",
                 "x": 0.0,
                 "y": 0.0,
@@ -1542,33 +1569,6 @@
                 "type": "Command",
                 "properties": {
                   "topic": "/SmartDashboard/Climber Set Percent",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Climber Goal Angle",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Goal Angle",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Climber Set Angle to Target",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Set Angle",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -1626,19 +1626,6 @@
                 }
               },
               {
-                "title": "Elevator Move to HP",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator Move to HP",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
                 "title": "Elevator Move To 20 In",
                 "x": 0.0,
                 "y": 0.0,
@@ -1647,6 +1634,19 @@
                 "type": "Command",
                 "properties": {
                   "topic": "/SmartDashboard/Elevator Move To 20 In",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Elevator Move to HP",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator Move to HP",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -1961,8 +1961,8 @@
           },
           {
             "title": "Climber Readings",
-            "x": 1536.0,
-            "y": 0.0,
+            "x": 256.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 512.0,
             "type": "List Layout",
@@ -2151,41 +2151,14 @@
                 }
               },
               {
-                "title": "Wrist Set Angle",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist target angle",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Wrist Set Angle to Target",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist Set Angle",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Wrist Set Percent",
-                "x": 512.0,
+                "title": "Wrist Goal Percent",
+                "x": 640.0,
                 "y": 384.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Wrist Set Percent",
+                  "topic": "/SmartDashboard/Wrist Goal Percent",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
@@ -2200,6 +2173,33 @@
                 "type": "Command",
                 "properties": {
                   "topic": "/SmartDashboard/Wrist Set Percent",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Wrist Goal Angle",
+                "x": 640.0,
+                "y": 256.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Goal Angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Wrist Set Angle to Target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Set Angle",
                   "period": 0.06,
                   "show_type": false
                 }

@@ -90,7 +90,7 @@ public class Wrist extends SubsystemBase implements Loggable {
 
     // Create the motor configuration for using the rotor encoder
     wristMotor_RotorEncoderConfig = new TalonFXConfiguration();
-    wristMotor_RotorEncoderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;         // TODO verify motor direction
+    wristMotor_RotorEncoderConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;         // CALIBRATED
     wristMotor_RotorEncoderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     wristMotor_RotorEncoderConfig.Voltage.PeakForwardVoltage = WristConstants.compensationVoltage;
     wristMotor_RotorEncoderConfig.Voltage.PeakReverseVoltage = -WristConstants.compensationVoltage;
@@ -107,13 +107,6 @@ public class Wrist extends SubsystemBase implements Loggable {
     wristMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
     wristMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
     wristMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-
-    // Configure PID for PositionVoltage control
-    // NOTE: In Phoenix 6, slots are selected in the ControlRequest (ex. PositionVoltage.Slot)
-    wristPositionControl.Slot = 0;
-    wristPositionControl.OverrideBrakeDurNeutral = true;
-    wristMMVoltageControl.Slot = 0;
-    wristMMVoltageControl.OverrideBrakeDurNeutral = true;
 
     wristMotor_RotorEncoderConfig.Slot0.kP = WristConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
     wristMotor_RotorEncoderConfig.Slot0.kI = 0.0;
@@ -133,9 +126,16 @@ public class Wrist extends SubsystemBase implements Loggable {
     wristMotor_RotorEncoderConfig.Feedback.SensorToMechanismRatio = WristConstants.kWristGearRatio;
     wristMotor_RotorEncoderConfig.ClosedLoopGeneral.ContinuousWrap = false;
 
+    // Configure PID for PositionVoltage control
+    // NOTE: In Phoenix 6, slots are selected in the ControlRequest (ex. PositionVoltage.Slot)
+    wristPositionControl.Slot = 0;
+    wristPositionControl.OverrideBrakeDurNeutral = true;
+    wristMMVoltageControl.Slot = 0;
+    wristMMVoltageControl.OverrideBrakeDurNeutral = true;
+
     // Create the motor configuration for using the CANcoder
     wristMotor_CANcoderConfig = new TalonFXConfiguration();
-    wristMotor_CANcoderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;         // TODO verify motor direction
+    wristMotor_CANcoderConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;         // CALIBRATED
     wristMotor_CANcoderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     wristMotor_CANcoderConfig.Voltage.PeakForwardVoltage = WristConstants.compensationVoltage;
     wristMotor_CANcoderConfig.Voltage.PeakReverseVoltage = -WristConstants.compensationVoltage;
@@ -153,13 +153,6 @@ public class Wrist extends SubsystemBase implements Loggable {
     wristMotor_CANcoderConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
     wristMotor_CANcoderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-    // Configure PID for PositionVoltage control
-    // NOTE: In Phoenix 6, slots are selected in the ControlRequest (ex. PositionVoltage.Slot)
-    wristPositionControl.Slot = 0;
-    wristPositionControl.OverrideBrakeDurNeutral = true;
-    wristMMVoltageControl.Slot = 0;
-    wristMMVoltageControl.OverrideBrakeDurNeutral = true;
-
     wristMotor_CANcoderConfig.Slot0.kP = WristConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
     wristMotor_CANcoderConfig.Slot0.kI = 0.0;
     wristMotor_CANcoderConfig.Slot0.kD = 0.0;
@@ -174,6 +167,7 @@ public class Wrist extends SubsystemBase implements Loggable {
 
     // Configure encoder to user for feedback
     wristMotor_CANcoderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    wristMotor_CANcoderConfig.Feedback.FeedbackRemoteSensorID = Ports.CANWristEncoder;
     wristMotor_CANcoderConfig.Feedback.RotorToSensorRatio = WristConstants.kWristGearRatio;
     wristMotor_CANcoderConfig.Feedback.SensorToMechanismRatio = 1.0;
     wristMotor_CANcoderConfig.ClosedLoopGeneral.ContinuousWrap = false;
