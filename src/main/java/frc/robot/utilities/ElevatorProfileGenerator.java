@@ -17,7 +17,7 @@ public class ElevatorProfileGenerator {
   private double initialPosition;     // Initial position from the bottom of the elevator, in inches
   private double finalPosition;       // Final position from the bottom of the elevator, in inches
 
-  private double maxVelocity = 75.0;  // Max velocity, in inches/second CALIBRATED (75.0)
+  private double maxVelocity = 75.0;  // Max velocity, in inches/second CALIBRATED (75.0)  TODO set back to 75  (use 5 for safety)
   private double currentMPVelocity;   // Velocity that it should be at in the current motion profile
 
   private double maxAcceleration = 180.0;                       // Max acceleration, in inches/second^2 CALIBRATED (180.0)

@@ -36,8 +36,8 @@ public class WristElevatorSafeMove extends Command {
   private MoveState curState;
   private ElevatorWristRegions.Region curRegion, nextRegion, destRegion;
   private boolean movingDown;     // True if elevator is moving down, false if moving up
-  private final double wristBuffer = 3.0;       // How much to target to keep the wrist within min/max for each region, in degrees
-  private final double wristTargetTol = 3.0;    // Wrist tolerance to goal postion for this command to end, in degrees
+  private final double wristBuffer = 1.5;       // How much to target to keep the wrist within min/max for each region, in degrees
+  private final double wristTargetTol = 2.0;    // Wrist tolerance to goal postion for this command to end, in degrees
   private final double elevatorMovingTol = 2.0; // Elevator tolerances when moving between regions, in inches
   private final double elevatorTargetTol = 1.0; // Elevator tolerance to goal postion for this command to end, in inches
 
@@ -238,7 +238,7 @@ public class WristElevatorSafeMove extends Command {
         // Note that curRegion should always be destRegion if we arrived in this state
 
         elevator.setElevatorProfileTarget(destPosition.elevatorPosition);
-        wrist.setWristAngle(destPosition.wristAngle);
+        wrist.setWristAngle(MathUtil.clamp(destPosition.wristAngle, curRegion.wristMin + wristBuffer, curRegion.wristMax -wristBuffer ) );
 
         // Advance state to wait for wrist and elevator to get to target
         curState = MoveState.MOVE_TO_POSITION_IN_THIS_REGION_CONT;
@@ -247,7 +247,7 @@ public class WristElevatorSafeMove extends Command {
       case MOVE_TO_POSITION_IN_THIS_REGION_CONT:
         // State description:  We are in destRegion!  Wait for the elevator and wrist to get to our target
 
-        if ( (Math.abs(curWristAngle - destPosition.wristAngle) <= wristTargetTol) &&
+        if ( (Math.abs(curWristAngle - MathUtil.clamp(destPosition.wristAngle, curRegion.wristMin + wristBuffer, curRegion.wristMax -wristBuffer )) <= wristTargetTol) &&
              (Math.abs(curElevPos - destPosition.elevatorPosition) <= elevatorTargetTol) ) {
           curState = MoveState.DONE;
         }

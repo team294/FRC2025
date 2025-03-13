@@ -9,6 +9,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.WristElevatorSafeMove;
+import frc.robot.commands.WristSetAngle;
 import frc.robot.subsystems.AlgaeGrabber;
 import frc.robot.subsystems.CoralEffector;
 import frc.robot.subsystems.Elevator;
@@ -32,7 +33,10 @@ public class CoralScorePrepSequence extends SequentialCommandGroup {
   public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, FileLog log) {
     addCommands(
       either(
-        new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist, log),
+        sequence(
+          new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist, log),
+          new WristSetAngle(position, wrist, log)
+        ),
         none(),
         () -> !algaeGrabber.isAlgaePresent() && coralEffector.isCoralPresent()
       )
