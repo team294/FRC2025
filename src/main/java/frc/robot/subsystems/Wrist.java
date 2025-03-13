@@ -554,6 +554,7 @@ public class Wrist extends SubsystemBase implements Loggable {
       "Wrist Angle (Deg)", getWristAngle(),
       "Wrist Vel dps", wristEncoderVelocity.refresh().getValueAsDouble() * WristConstants.kWristDegreesPerRotation,
       "Wrist Accel dps2", wristEncoderAcceleration.refresh().getValueAsDouble() * WristConstants.kWristDegreesPerRotation,
+      "Wrist calibrated", isWristCalibrated(),
       "CANcoder Connected", isCANcoderConnected()
     );
   }
