@@ -17,10 +17,10 @@ public class ElevatorProfileGenerator {
   private double initialPosition;     // Initial position from the bottom of the elevator, in inches
   private double finalPosition;       // Final position from the bottom of the elevator, in inches
 
-  private double maxVelocity = 45.0;  // Max velocity, in inches/second TODO CALIBRATE FOR 2025
+  private double maxVelocity = 75.0;  // Max velocity, in inches/second CALIBRATED (75.0)
   private double currentMPVelocity;   // Velocity that it should be at in the current motion profile
 
-  private double maxAcceleration = 128.0;                       // Max acceleration, in inches/second^2 TODO CALIBRATE FOR 2025
+  private double maxAcceleration = 180.0;                       // Max acceleration, in inches/second^2 CALIBRATED (180.0)
   private double stoppingAcceleration = .75 * maxAcceleration;  // Limit the stopping acceleration to 75% of the max acceleration
   private double currentMPAcceleration;                         // Acceleration that it should be at in the current motion profile
   private boolean approachingTarget = false;                    // true = close enough to target to be decelerating, false = not close enough
