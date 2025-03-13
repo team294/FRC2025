@@ -24,6 +24,7 @@ import frc.robot.commands.*;
 import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
+import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 
@@ -138,6 +139,7 @@ public class RobotContainer {
     SmartDashboard.putData("Elevator Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator, log));
     SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator, log));
     SmartDashboard.putData("Elevator Move To 20 In", new ElevatorSetPosition(20.0, elevator, log));
+    SmartDashboard.putData("Elevator Move To 65 In", new ElevatorSetPosition(65.0, elevator, log));
     SmartDashboard.putData("Elevator Move to HP", new ElevatorSetPosition(ElevatorWristPosition.CORAL_HP, elevator, log));
     SmartDashboard.putData("Elevator Move to L1", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L1, elevator, log));
     SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L2, elevator, log));
@@ -212,8 +214,8 @@ public class RobotContainer {
     // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
     xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log));
 
-    // Prep and intake coral from HP with X
-    xbX.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_HP, elevator, wrist, coralEffector, algaeGrabber, log));
+    // Move wrist and elevator to home
+    xbX.onTrue(new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist, log));
 
     // Prep to score coral on L2 with A, L3 with B, and L4 with Y
     xbA.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, coralEffector, algaeGrabber, log));
@@ -267,7 +269,7 @@ public class RobotContainer {
         () -> allianceSelection.getAlliance() == Alliance.Red
       )
     );
-    left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, log));
+    left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log));
 
     right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
   }
@@ -350,6 +352,7 @@ public class RobotContainer {
     // driveTrain.setVisionForOdometryState(true);
 
     elevator.stopElevatorMotors();
+    wrist.stopWrist();
 
     matchTimer.stop();
     SignalLogger.stop();

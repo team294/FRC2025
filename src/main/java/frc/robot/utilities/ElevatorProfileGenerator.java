@@ -17,10 +17,10 @@ public class ElevatorProfileGenerator {
   private double initialPosition;     // Initial position from the bottom of the elevator, in inches
   private double finalPosition;       // Final position from the bottom of the elevator, in inches
 
-  private double maxVelocity = 45.0;  // Max velocity, in inches/second TODO CALIBRATE FOR 2025
+  private double maxVelocity = 75.0;  // Max velocity, in inches/second CALIBRATED (75.0)  TODO set back to 75  (use 5 for safety)
   private double currentMPVelocity;   // Velocity that it should be at in the current motion profile
 
-  private double maxAcceleration = 128.0;                       // Max acceleration, in inches/second^2 TODO CALIBRATE FOR 2025
+  private double maxAcceleration = 180.0;                       // Max acceleration, in inches/second^2 CALIBRATED (180.0)
   private double stoppingAcceleration = .75 * maxAcceleration;  // Limit the stopping acceleration to 75% of the max acceleration
   private double currentMPAcceleration;                         // Acceleration that it should be at in the current motion profile
   private boolean approachingTarget = false;                    // true = close enough to target to be decelerating, false = not close enough
@@ -36,18 +36,18 @@ public class ElevatorProfileGenerator {
   double percentPowerFF = 0;
   double percentPowerFB = 0;
 
-  // TODO CALIBRATE FOR 2025
-  private double kFF = 0.35 / ElevatorConstants.compensationVoltage;     // In pct-output
+  // CALIBRATED
+  private double kFF = 0.30 / ElevatorConstants.compensationVoltage;     // In pct-output.  Was 0.35
   private double kSu = 0.10 / ElevatorConstants.compensationVoltage;     // In pct-output
   private double kVu = 0.126 / ElevatorConstants.compensationVoltage;     // In (pct-output)/(in/s)
   private double kAu = 0.000;      // In (pct-output)/(in/s^2)     2023 = 0.0006
-  private double kPu = 0.0;       // 2023 = 0.2
+  private double kPu = 0.1;        // In (pct-output)/(in)
   private double kIu = 0;    
   private double kDu = 0.0;      // 2023 = 0.02
   private double kSd = 0.10 / ElevatorConstants.compensationVoltage;     // In pct-output
   private double kVd = 0.126 / ElevatorConstants.compensationVoltage;     // In (pct-output)/(in/s)
   private double kAd = 0.000;      // In (pct-output)/(in/s^2)     2023 = 0.0006
-  private double kPd = 0.0;       // 2023 = 0.2
+  private double kPd = 0.1;       
   private double kId = 0;    
   private double kDd = 0.0;      // 2023 = 0.02
 

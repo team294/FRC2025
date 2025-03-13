@@ -39,7 +39,7 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
       new ParallelCommandGroup(
         new HopperSetPercent(HopperConstants.intakePercent, hopper, log),
         new CoralEffectorIntake(coralEffector, log)
-      ),
+      ).handleInterrupt(hopper::stopHopperMotor),
       new HopperStop(hopper, log)
     );
   }
