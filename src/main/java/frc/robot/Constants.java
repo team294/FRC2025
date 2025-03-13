@@ -303,7 +303,7 @@ public final class Constants {
     // TODO CALIBRATE FOR 2025
     public enum ElevatorPosition {
       LOWER_LIMIT(0.0),
-      UPPER_LIMIT(82.0);
+      UPPER_LIMIT(75.0);
  
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
@@ -330,16 +330,16 @@ public final class Constants {
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
     public static double cancoderDiscontinuityPoint = 0.68;          // CALIBRATED - should be the center of the region of unallowed motion
 
-    public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025    kP = (desired-output-volts) / (error-in-wrist-rotations)
-    public static final double kI = 0.0;    // TODO CALIBRATE FOR 2025
-    public static final double kD = 0.0;    // TODO CALIBRATE FOR 2025
-    public static final double kG = 0.0;  // TODO CALIBRATE FOR 2025    kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
-    public static final double kS = 0.0; // TODO CALIBRATE FOR 2025
-    public static final double kV = 0.0; // TODO CALIBRATE FOR 2025
+    public static final double kP = 40.0;    // CALIBRATED    kP = (desired-output-volts) / (error-in-wrist-rotations)
+    public static final double kI = 0.0;    // CALIBRATED
+    public static final double kD = 0.0;    // CALIBRATED
+    public static final double kG = 0.522;   // CALIBRATED    kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
+    public static final double kS = 0.17;   // CALIBRATED    kS = (volts)
+    public static final double kV = 2.66;   // CALIBRATED    kV = (volts)/(wrist-rotations/sec)
 
-    public static final double MMCruiseVelocity = 0.25;                   // Max velocity in wrist rotations / second TODO CALIBRATE FOR 2025
-    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in wrist rotations / second^2. MMVel / MMAccel = seconds to full velocity. TODO CALIBRATE FOR 2025
-    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in wrist rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. TODO CALIBRATE FOR 2025
+    public static final double MMCruiseVelocity = 0.80;                   // Max velocity in wrist rotations / second CALIBRATED  TODO opportunity to make this faster
+    public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in wrist rotations / second^2. MMVel / MMAccel = seconds to full velocity. CALIBRATED
+    public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in wrist rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. CALIBRATED
 
     // TODO add wrist regions
     public enum WristRegion {
@@ -349,7 +349,7 @@ public final class Constants {
 
     // TODO CALIBRATE FOR 2025
     public enum WristAngle {
-      LOWER_LIMIT(-2.0),
+      LOWER_LIMIT(-13.0),
       UPPER_LIMIT(99.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
@@ -362,12 +362,12 @@ public final class Constants {
     public enum ElevatorWristPosition {
       START_CONFIG(0.0, 100.0),
 
-      CORAL_HP(0.0, 79.0),
+      CORAL_HP(0.0, 77.0),
 
       CORAL_L1(25.56, 65.0),
       CORAL_L2(25.56, 65.0),
-      CORAL_L3(40.78, 65.0),
-      CORAL_L4(70.7, 30.0),  //stop
+      CORAL_L3(40.28, 65.0),
+      CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30
 
       ALGAE_GROUND(5.8, -8.5),
       ALGAE_LOWER(34.0, -5.0),
