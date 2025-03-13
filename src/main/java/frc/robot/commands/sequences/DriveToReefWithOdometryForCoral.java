@@ -54,13 +54,11 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
 
       //Joystick has been pushed opposite to the robot's position on the reef, determine the opposite reef position and switch to it
       either(
-        sequence(
           //Drives to nearest left scoring position (which is on the wall), with an offset of half the robot's diameter plus 5cm
-          new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotDiagonal / 2.0) + 0.25, 0, new Rotation2d(0)), true)), 0.1, 5, driveTrain, log),
+        new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotDiagonal / 2.0) + 0.25, 0, new Rotation2d(0)), true)), 0.1, 5, driveTrain, log),
           
           //Drives to nearest left scoring position (offset off the wall half the robot's width)
           //new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d(-RobotDimensions.robotWidth / 2.0, 0, new Rotation2d(0)), true)), 0.02, 1, driveTrain, log)
-        ),
 
         either(
           //Drives to nearest right scoring position (which is on the wall), with an offset of half the robot's diameter plus 5cm
