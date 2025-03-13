@@ -4,22 +4,28 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
 import frc.robot.utilities.FileLog;
 
-public class CoralEffectorIntake extends Command {
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class CoralEffectorIntakeEnhanced extends Command {
   private final CoralEffector coralEffector;
+  private final Timer timer;
+  private final double seconds;
   private final FileLog log;
-
+  
   /**
-   * Intake coral into the coralEffector by running the motor until the coral is safely in the mechanism.
-   * @param coralEffector CoralEffector subsystem
-   * @param log FileLog utility
+   * Intakes coral quickly, then slows down the intake motor 0.3 seconds after coral is detected in entry.
+   * @param coralEffector CoralEffector
+   * @param log FileLog
    */
-  public CoralEffectorIntake(CoralEffector coralEffector, FileLog log) {
+  public CoralEffectorIntakeEnhanced(CoralEffector coralEffector, FileLog log) {
     this.coralEffector = coralEffector;
+    timer = new Timer();
+    seconds = 0.3; // number of seconds before changing from fast intake speed to slow intake speed
     this.log = log;
     addRequirements(coralEffector);
   }
@@ -30,10 +36,10 @@ public class CoralEffectorIntake extends Command {
     // If there is no coral present or the coral is not safely in the mechanism, run the motor
     coralEffector.setCoralHoldMode(false);
     if (!coralEffector.isCoralPresent() || !coralEffector.isCoralSafelyIn()) {
-      coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.intakePercent); 
+      coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.fastIntakePercent); 
     }
 
-    log.writeLog(false, "CoralEffectorIntake", "Init", 
+    log.writeLog(false, "CoralEffectorIntakeEnhanced", "Init", 
       "Coral in Entry", (coralEffector.isCoralPresentInEntry() ? "TRUE" : "FALSE"),
       "Coral in Exit", (coralEffector.isCoralPresentInExit() ? "TRUE" : "FALSE"));
   }
@@ -41,19 +47,31 @@ public class CoralEffectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // Start the timer when coral is first detected
+    if (coralEffector.isCoralPresent() && !timer.isRunning()) {
+      timer.start();
+    }
+    
+    // After 0.3 seconds, slow intaking speed 
+    if (timer.get() >= seconds) {
+      coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.slowIntakePercent); 
+    }
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // TODO check if the coral is safely in before stopping the motor, especially if interrupted
     coralEffector.stopCoralEffectorMotor();
+    timer.stop();
+    timer.reset();
     coralEffector.setCoralHoldMode(true);
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return coralEffector.isCoralSafelyIn();
+    return coralEffector.isCoralPresentInExit();  
   }
 }

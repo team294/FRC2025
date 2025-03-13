@@ -44,9 +44,9 @@ public class RobotContainer {
   // private final LED led = new LED(Constants.Ports.CANdle, "LED", matchTimer, log);
   private final DriveTrain driveTrain = new DriveTrain(allianceSelection, log);
   private final Hopper hopper = new Hopper("Hopper", log);
-  private final CoralEffector coralEffector = new CoralEffector("CoralEffector", log);
-  private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
   private final Wrist wrist = new Wrist("Wrist", log);
+  private final CoralEffector coralEffector = new CoralEffector("CoralEffector", wrist, log);
+  private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
   private final Elevator elevator = new Elevator("Elevator", log);
   private final Climber climber = new Climber("Climber", log);
 
