@@ -138,6 +138,7 @@ public class RobotContainer {
     SmartDashboard.putData("Elevator Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator, log));
     SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator, log));
     SmartDashboard.putData("Elevator Move To 20 In", new ElevatorSetPosition(20.0, elevator, log));
+    SmartDashboard.putData("Elevator Move To 65 In", new ElevatorSetPosition(65.0, elevator, log));
     SmartDashboard.putData("Elevator Move to HP", new ElevatorSetPosition(ElevatorWristPosition.CORAL_HP, elevator, log));
     SmartDashboard.putData("Elevator Move to L1", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L1, elevator, log));
     SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L2, elevator, log));

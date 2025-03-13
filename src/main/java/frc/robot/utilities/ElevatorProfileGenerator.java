@@ -36,18 +36,18 @@ public class ElevatorProfileGenerator {
   double percentPowerFF = 0;
   double percentPowerFB = 0;
 
-  // TODO CALIBRATE FOR 2025
-  private double kFF = 0.35 / ElevatorConstants.compensationVoltage;     // In pct-output
+  // CALIBRATED
+  private double kFF = 0.30 / ElevatorConstants.compensationVoltage;     // In pct-output.  Was 0.35
   private double kSu = 0.10 / ElevatorConstants.compensationVoltage;     // In pct-output
   private double kVu = 0.126 / ElevatorConstants.compensationVoltage;     // In (pct-output)/(in/s)
   private double kAu = 0.000;      // In (pct-output)/(in/s^2)     2023 = 0.0006
-  private double kPu = 0.0;       // 2023 = 0.2
+  private double kPu = 0.1;        // In (pct-output)/(in)
   private double kIu = 0;    
   private double kDu = 0.0;      // 2023 = 0.02
   private double kSd = 0.10 / ElevatorConstants.compensationVoltage;     // In pct-output
   private double kVd = 0.126 / ElevatorConstants.compensationVoltage;     // In (pct-output)/(in/s)
   private double kAd = 0.000;      // In (pct-output)/(in/s^2)     2023 = 0.0006
-  private double kPd = 0.0;       // 2023 = 0.2
+  private double kPd = 0.1;       
   private double kId = 0;    
   private double kDd = 0.0;      // 2023 = 0.02
 
