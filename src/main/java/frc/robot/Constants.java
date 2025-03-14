@@ -250,16 +250,14 @@ public final class Constants {
   public static class VisionConstants {
     public static class PhotonVisionConstants {        
       public static final Transform3d robotToCamLeft = new Transform3d(
-        new Translation3d(Units.inchesToMeters(7.25), Units.inchesToMeters(13.75), Units.inchesToMeters(14.5)),
-        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-28)) // Mounted facing forward-right on left side of robot
-      );
+        new Translation3d(Units.inchesToMeters(11.9470), Units.inchesToMeters(9.4928), Units.inchesToMeters(12.7204)),
+        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-32.141))); // Cam mounted facing forward-right on the left side of the robot
       public static final Transform3d robotToCamRight = new Transform3d(
-        new Translation3d(Units.inchesToMeters(8), Units.inchesToMeters(-14), Units.inchesToMeters(15)),
-        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(26))  // Mounted facing forward-left on right side of robot
-      );
+        new Translation3d(Units.inchesToMeters(11.9470), Units.inchesToMeters(-9.4928), Units.inchesToMeters(12.7204)),
+        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(32.141))); // Cam mounted facing forward-left on the right side of the robot
 
-      public static final String leftAprilTagCameraName = "AprilTagCameraLeft";
-      public static final String rightAprilTagCameraName = "AprilTagCameraRight";
+      public static final String leftAprilTagCameraName = "LeftCamera";
+      public static final String rightAprilTagCameraName = "RightCamera";
     }
   }
 
