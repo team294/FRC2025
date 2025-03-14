@@ -42,6 +42,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new FileLogWrite(false, false, "DriveToReefWithOdometryForCoral", "Start", log),
+      
       sequence(
           deadline(
             //If the joystick is pushed opposite to the robot's position on the reef, this command ends (ending this command group)
@@ -54,18 +55,21 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
 
       //Joystick has been pushed opposite to the robot's position on the reef, determine the opposite reef position and switch to it
       either(
+        sequence(
           //Drives to nearest left scoring position (which is on the wall), with an offset of half the robot's diameter plus 5cm
-        new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotDiagonal / 2.0) - 0.25, 0, new Rotation2d(0)), true)), 0.1, 5, driveTrain, log),
+          // new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotDiagonal / 2.0) - 0.25, 0, new Rotation2d(0)), true)), 0.1, 5, driveTrain, log),
           
-          //Drives to nearest left scoring position (offset off the wall half the robot's width)
-          //new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d(-RobotDimensions.robotWidth / 2.0, 0, new Rotation2d(0)), true)), 0.02, 1, driveTrain, log)
-
+          //Drives to nearest left scoring position (offset off the wall half the robot's width plus 25cm)
+          new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotWidth / 2.0) - 0.25, 0, new Rotation2d(0)), true)), 0.02, 1, driveTrain, log)
+        ),
         either(
-          //Drives to nearest right scoring position (which is on the wall), with an offset of half the robot's diameter plus 25cm
-          new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotDiagonal / 2.0) - 0.25, 0, new Rotation2d(0)), false)), 0.1, 5, driveTrain, log),
-            
-          //Drives to nearest right scoring position (offset off the wall half the robot's width)
-          //new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d(-RobotDimensions.robotWidth / 2.0, 0, new Rotation2d(0)), false)), 0.02, 1, driveTrain, log) 
+          sequence(
+            //Drives to nearest right scoring position (which is on the wall), with an offset of half the robot's diameter plus 25cm
+            //new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotDiagonal / 2.0) - 0.25, 0, new Rotation2d(0)), false)), 0.1, 5, driveTrain, log),
+              
+            //Drives to nearest right scoring position (offset off the wall half the robot's width plus 25cm)
+            new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotWidth / 2.0) - 0.25, 0, new Rotation2d(0)), false)), 0.02, 1, driveTrain, log) 
+          ),
           sequence(
             // If you are at the same position the joystick is at, or the joystick is in the deadband (Which shouldn't occur, as these have to be false for this section to run), do nothing
           ), 
