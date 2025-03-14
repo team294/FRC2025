@@ -75,7 +75,7 @@ public class WristElevatorSafeMove extends Command {
 
     log.writeLog(false, "WristElevatorSafeMove", "Init", "Calibrated", true, "Position", 
       "Type", type, "Dest Position", destPosition, 
-      "Dest Region", destRegion, "Cur Region", curRegion.regionIndex );
+      "Dest Region", destRegion, "Cur Region", (curRegion != null ? curRegion.regionIndex : ""));
 
     double curWristAngle = wrist.getWristAngle();
     if (curWristAngle < curRegion.wristMin || curWristAngle > curRegion.wristMax) {
@@ -96,7 +96,7 @@ public class WristElevatorSafeMove extends Command {
     log.writeLog(false, "WristElevatorSafeMove", "Execute", "CurState", curState, 
       "Wrist Target", wrist.getCurrentWristTarget(), "Wrist Angle", curWristAngle, 
       "Elev Target", elevator.getCurrentElevatorTarget(), "Cur Elev Pos", curElevPos,
-      "Cur Region", curRegion.regionIndex );
+      "Cur Region", (curRegion != null ? curRegion.regionIndex : ""));
 
     switch (curState) {
       case DONE:
