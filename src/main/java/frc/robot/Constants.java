@@ -194,7 +194,13 @@ public final class Constants {
     public static double offsetAngleBackRightMotor = -8.3;
 
     // Theta kp value for joystick in rad/sec
-    public static final double kPJoystickThetaController = 3;    
+    public static final double kPJoystickThetaController = 3;
+
+    // How far to back the robot off from the reef after scoring coral or intaking algae
+    public static final double driveBackFromReefDistance = 0.25;
+
+    // Back offset for robot to pick up algae, in meters
+    public static final double ReefAlgaePickupPositionOffset = 0.2;
   }
 
   public static class FieldConstants {
@@ -303,24 +309,24 @@ public final class Constants {
 
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.15;        // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.45;        // TODO CALIBRATE FOR 2025
     public static final double reverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 
   public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;       // CALIBRATED
-    public static final double fastIntakePercent = 0.15;  // TODO CALIBRATE FOR 2025
-    public static final double slowIntakePercent = 0.05;  // TODO CALIBRATE FOR 2025
+    public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
+    public static final double slowIntakePercent = 0.05;  // CALIBRATED for LAR
     public static final double outtakePercent = 0.4;      // CALIBRATED
-    public static final double holdingPercent = -0.009;   // TODO CALIBRATE  (was -0.009)
-    public static final double centeringPercent = 0.025;   // TODO CALIBRATE
+    public static final double holdingPercent = -0.009;   // CALIBRATED for LAR
+    public static final double centeringPercent = 0.025;  // CALIBRATED for LAR
   }
 
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.4; // CALIBRATED
-    public static final double outtakePercent = -1; // CALIBRATED
+    public static final double intakePercent = 0.4;   // CALIBRATED
+    public static final double outtakePercent = -1.0; // CALIBRATED
   }
 
   public static final class ElevatorConstants {
@@ -376,12 +382,6 @@ public final class Constants {
     public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in wrist rotations / second^2. MMVel / MMAccel = seconds to full velocity. CALIBRATED
     public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in wrist rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. CALIBRATED
 
-    // TODO add wrist regions
-    public enum WristRegion {
-      main,
-      uncalibrated;
-    }
-
     // CALIBRATED
     public enum WristAngle {
       LOWER_LIMIT(-13.0),
@@ -397,7 +397,7 @@ public final class Constants {
     public enum ElevatorWristPosition {
       START_CONFIG(0.0, 100.0),
 
-      CORAL_HP(0.0, 77.0),
+      CORAL_HP(0.0, 75.0),
 
       CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
@@ -425,7 +425,7 @@ public final class Constants {
   public static final class ClimberConstants {
     // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
     // where a ratio greater than 1 is a reduction.
-    public static final double kClimberGearRatio = (135.0/1.0);          // CALIBRATED FOR 2025  (135:1)
+    public static final double kClimberGearRatio = (263.0/1.0);          // CALIBRATED FOR 2025  A4:  Was 135:1, now 263:1
     public static final double kClimberDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
     
     public static final double compensationVoltage = 12.0;
@@ -445,7 +445,7 @@ public final class Constants {
     public static final double kD = 0.0;    // CALIBRATED
     public static final double kG = 0.0;    // CALIBRATED      kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
     public static final double kS = 0.096;   // CALIBRATED   kS = (volts)
-    public static final double kV = 15.2;    // CALIBRATED   kV = (volts)/(wrist-rotations/sec)
+    public static final double kV = 15.2 * 263.0/135.0;    // CALIBRATED   kV = (volts)/(wrist-rotations/sec)
 
     public static final double MMCruiseVelocity = 50.0/360.0;             // Max velocity in climber rotations / second
     public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in climber rotations / second^2. MMVel / MMAccel = seconds to full velocity.

@@ -7,21 +7,17 @@ package frc.robot.commands.sequences;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
-import frc.robot.commands.WristElevatorSafeMove;
-import frc.robot.commands.WristSetAngle;
-import frc.robot.subsystems.AlgaeGrabber;
-import frc.robot.subsystems.CoralEffector;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Wrist;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.utilities.FileLog;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
 /**
  * Prepares to score coral by moving the wrist and elevator to the indicated scoring position.
- * If the robot is not holding coral, this sequence does nothing.
- * If the robot is holding coral, this sequence does nothing, since we cannot score coral while holding algae.
+ * If the robot is holding algae, this sequence does nothing, since we cannot score coral while holding algae.
  * @param position position to move the elevator and wrist to (use ElevatorWwristConstants.ElevatorWristPosition)
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
@@ -30,7 +26,7 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
  * @param log FileLog utility
  */
 public class CoralScorePrepSequence extends SequentialCommandGroup {
-  public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, FileLog log) {
+  public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
     addCommands(
       either(
         sequence(
@@ -38,7 +34,7 @@ public class CoralScorePrepSequence extends SequentialCommandGroup {
           new WristSetAngle(position, wrist, log)
         ),
         none(),
-        () -> !algaeGrabber.isAlgaePresent() && coralEffector.isCoralPresent()
+        () -> !algaeGrabber.isAlgaePresent()
       )
     );
   }
