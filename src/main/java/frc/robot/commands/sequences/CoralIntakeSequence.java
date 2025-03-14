@@ -6,21 +6,14 @@ package frc.robot.commands.sequences;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
-import frc.robot.commands.CoralEffectorIntake;
-import frc.robot.commands.HopperSetPercent;
-import frc.robot.commands.HopperStop;
-import frc.robot.commands.WristElevatorSafeMove;
-import frc.robot.subsystems.CoralEffector;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Wrist;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.utilities.FileLog;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
-import frc.robot.commands.*;
 
 
 public class CoralIntakeSequence extends SequentialCommandGroup {

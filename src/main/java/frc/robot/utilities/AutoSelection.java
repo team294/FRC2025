@@ -17,11 +17,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 
 import frc.robot.Constants.CoordType;
-import frc.robot.Constants.FieldConstants.ReefLevel;
-import frc.robot.Constants.FieldConstants.ReefLocation;
+import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
 import frc.robot.commands.autos.*;
-import frc.robot.commands.autos.AutoCoralCycleLoop;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 

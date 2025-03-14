@@ -21,8 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.commands.*;
-import frc.robot.commands.autos.components.AutoCoralDriveAndIntakeSequence;
-import frc.robot.commands.autos.components.AutoCoralDriveAndScoreSequence;
+import frc.robot.commands.autos.components.*;
 import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
