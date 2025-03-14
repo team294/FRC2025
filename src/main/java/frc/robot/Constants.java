@@ -197,7 +197,7 @@ public final class Constants {
     public static final double kPJoystickThetaController = 3;
 
     // How far to back the robot off from the reef after scoring coral or intaking algae
-    public static final double driveBackFromReefDistance = 2.5;
+    public static final double driveBackFromReefDistance = 0.35;
   }
 
   public static class FieldConstants {
