@@ -281,6 +281,8 @@ public class RobotContainer {
     left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log));
 
     right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
+
+    right[2].whileTrue(new DriveToReefWithOdometryForAlgae(driveTrain, field, log));
   }
 
   /**
@@ -307,8 +309,8 @@ public class RobotContainer {
     coP[1].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator, log));
     coP[2].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator, log));
 
-    coP[3].onTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist, log));
-    coP[4].onTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist, log));
+    coP[3].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist, log));
+    coP[4].whileTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist, log));
 
     coP[16].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
 
