@@ -95,10 +95,9 @@ public final class Constants {
     public static final double controllerDeadband = 0.05;
   }
   
-  // TODO CALIBRATE FOR 2025
   public static final class RobotDimensions {
     // Drivebase adjustment for path-of-wheel diameter when turning in place
-    private static final double DrivetrainAdjustmentFactor = 0.9911;      // TODO CALIBRATE
+    private static final double DrivetrainAdjustmentFactor = 1.0071;      // CALIBRATED
 
     // Left-right distance between the drivetrain wheels, measured from center to center, in meters
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(23.75) * DrivetrainAdjustmentFactor;
@@ -132,15 +131,15 @@ public final class Constants {
     // and ensures that the robot travels in the requested direction.  So, use min value of all 4 motors,
     // and further derate (initial test by 5%) to account for some battery droop under heavy loads.
 
-    public static final double kMaxSpeedMetersPerSecond = 5.1;  // TODO CALIBRATE FOR 2025
+    public static final double kMaxSpeedMetersPerSecond = 5.;  // CALIBRATED
     public static final double kFullSpeedMetersPerSecond = 0.95 * kMaxSpeedMetersPerSecond;
     public static final double kNominalSpeedMetersPerSecond = 0.5 * kMaxSpeedMetersPerSecond;
 
     public static final double kFineControlMaxSpeedMetersPerSecond = 1;
     public static final double kFineControlMaxTurningRadiansPerSecond = 1;
 
-    // TODO CALIBRATE FOR 2025
-    public static final double kMaxAccelerationMetersPerSecondSquare = 7.5;
+    // CALIBRATED
+    public static final double kMaxAccelerationMetersPerSecondSquare = 6.0;
     public static final double kFullAccelerationMetersPerSecondSquare = 0.9 * kMaxAccelerationMetersPerSecondSquare;
     public static final double kNominalAccelerationMetersPerSecondSquare = 3.5;
     public static final double kMaxTurningRadiansPerSecond = 11.0;
@@ -148,8 +147,8 @@ public final class Constants {
     public static final double kMaxAngularAccelerationRadiansPerSecondSquared = 35.0;     // Not used in code currently
     public static final double kNominalAngularAccelerationRadiansPerSecondSquared = Math.PI;
 
-    // TODO CALIBRATE FOR 2025
-    public static final double kVDriveAvg = 2.350;  // In voltage per meters/second
+    // CALIBRATED
+    public static final double kVDriveAvg = 2.251;  // In voltage per meters/second
     private static final double kVmFLrel = 1.0;     // kV modifier for FL drive motor
     private static final double kVmFRrel = 1.0;     // kV modifier for FR drive motor
     private static final double kVmBLrel = 1.0;     // kV modifier for BL drive motor
@@ -163,9 +162,9 @@ public final class Constants {
     public static final double kVmBR = kVmBRrel / kVmAvg;
 
     public static final double dt = 0.02;             // CALIBRATED Timestep for discretizing robot motion, in seconds (scheduler time period = 20ms)
-    public static final double kADrive = 0.1203;      // In voltage per meters per second^2 TODO CALIBRATE FOR 2025
+    public static final double kADrive = 0.2692;      // CALIBRATED In voltage per meters per second^2
     public static final double kADriveToPose = 0.050; // CALIBRATED on ETU in 3/2/2025 In seconds (On the ETU, DriveToPose behaves better with a small value for kADriveToPose)
-    public static final double kSDrive = 0.002;       // In voltage TODO CALIBRATE FOR 2025
+    public static final double kSDrive = 0.030;       // CALIBRATED In voltage
 
     // Minimum abs delta (in m/sec) between actual wheel velocity and desired wheel velocity for kADrive to be applied.
     // If the delta is less than this, then don't use kADrive. This prevents the drive motors from jittering.
@@ -207,7 +206,41 @@ public final class Constants {
     }
 
     public static enum ReefLocation {
-      A, B, C, D, E, F, G, H, I, J, K, L
+      A(false, false), 
+      B(true, false), 
+      C(false, true), 
+      D(true, true), 
+      E(false, false), 
+      F(true, false), 
+      G(false, true), 
+      H(true, true), 
+      I(false, false), 
+      J(true, false), 
+      K(false, true), 
+      L(true, true);
+
+      public final boolean onRightSide;
+      public final boolean isAlgaeLower;
+
+      ReefLocation(boolean onRightSide, boolean isAlgaeLower) {
+        this.onRightSide = onRightSide;
+        this.isAlgaeLower = isAlgaeLower;
+      }
+    }
+
+    public static enum AlgaeLocation {
+      AB(false), 
+      CD(true), 
+      EF(false), 
+      GH(true), 
+      IJ(false), 
+      KL(true);
+
+      public final boolean isLower;
+
+      AlgaeLocation(boolean isLower) {
+        this.isLower = isLower;
+      }
     }
 
     // Calculated by measuring y distance between center of reef wall and reef pole (6.469731 in), converted to meters
@@ -295,7 +328,7 @@ public final class Constants {
   public static final class ElevatorConstants {
     public static final double kEncoderCPR = 1.0;                 // Encoder counts per revolution of the motor pinion gear
     public static final double kElevGearRatio = (5.0 / 1.0);      // Gear reduction ratio between Kraken and gear driving the elevator CALIBRATED FOR 2025 (5:1)
-    public static final double kElevPulleyDiameterInches = 1.504; // Diameter of the pulley driving the elevator in inches TODO CALIBRATE FOR 2025 (1.504" nominal)
+    public static final double kElevPulleyDiameterInches = 1.504; // Diameter of the pulley driving the elevator in inches (1.504" nominal)  GOAL HIEGHTS CALIBRATED USING THIS VALUE
     public static final double kElevEncoderInchesPerTick = (kElevPulleyDiameterInches * Math.PI) / kEncoderCPR / kElevGearRatio;
     
     public static final double compensationVoltage = 12.0;
@@ -304,7 +337,7 @@ public final class Constants {
     public static final double maxManualPercentOutput = 0.1;  // Max elevator speed when driven using Xbox controller
     public static final double maxPercentOutput = 1.0;        // Absolute max output to elevator motors
 
-    // TODO CALIBRATE FOR 2025
+    // CALIBRATED
     public enum ElevatorPosition {
       LOWER_LIMIT(0.0),
       UPPER_LIMIT(75.0);
@@ -322,8 +355,8 @@ public final class Constants {
     public static final double kWristDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
     
     public static final double compensationVoltage = 12.0;
-    public static final double maxUncalibratedPercentOutput = 0.1;  // TODO CALIBRATE FOR 2025
-    public static final double maxManualPercentOutput = 0.05;       // TODO CALIBRATE FOR 2025
+    public static final double maxUncalibratedPercentOutput = 0.1;  // CALIBRATED
+    public static final double maxManualPercentOutput = 0.05;       // CALIBRATED
     public static final double maxPercentOutput = 0.2;              // TODO CALIBRATE FOR 2025
 
     // Should be updated in RobotPreferences, so it cannot be final
@@ -351,7 +384,7 @@ public final class Constants {
       uncalibrated;
     }
 
-    // TODO CALIBRATE FOR 2025
+    // CALIBRATED
     public enum WristAngle {
       LOWER_LIMIT(-13.0),
       UPPER_LIMIT(99.0);
@@ -368,7 +401,7 @@ public final class Constants {
 
       CORAL_HP(0.0, 77.0),
 
-      CORAL_L1(25.56, 65.0),
+      CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
       CORAL_L3(40.28, 65.0),
       CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30
