@@ -397,7 +397,7 @@ public final class Constants {
 
       CORAL_HP(0.0, 77.0),
 
-      CORAL_L1(25.56, 65.0),
+      CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
       CORAL_L3(40.28, 65.0),
       CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30
