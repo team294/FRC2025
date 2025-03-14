@@ -313,17 +313,17 @@ public final class Constants {
   public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;       // CALIBRATED
-    public static final double fastIntakePercent = 0.15;  // TODO CALIBRATE FOR 2025
-    public static final double slowIntakePercent = 0.05;  // TODO CALIBRATE FOR 2025
+    public static final double fastIntakePercent = 0.15;  // CALIBRATED for LAR
+    public static final double slowIntakePercent = 0.05;  // CALIBRATED for LAR
     public static final double outtakePercent = 0.4;      // CALIBRATED
-    public static final double holdingPercent = -0.009;   // TODO CALIBRATE  (was -0.009)
-    public static final double centeringPercent = 0.025;   // TODO CALIBRATE
+    public static final double holdingPercent = -0.009;   // CALIBRATED for LAR
+    public static final double centeringPercent = 0.025;  // CALIBRATED for LAR
   }
 
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.4; // CALIBRATED
-    public static final double outtakePercent = -1; // CALIBRATED
+    public static final double intakePercent = 0.4;   // CALIBRATED
+    public static final double outtakePercent = -1.0; // CALIBRATED
   }
 
   public static final class ElevatorConstants {
@@ -378,12 +378,6 @@ public final class Constants {
     public static final double MMCruiseVelocity = 0.80;                   // Max velocity in wrist rotations / second CALIBRATED  TODO opportunity to make this faster
     public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in wrist rotations / second^2. MMVel / MMAccel = seconds to full velocity. CALIBRATED
     public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in wrist rotations / second^3. MMAccel / MMJerk = seconds to full acceleration. CALIBRATED
-
-    // TODO add wrist regions
-    public enum WristRegion {
-      main,
-      uncalibrated;
-    }
 
     // CALIBRATED
     public enum WristAngle {
