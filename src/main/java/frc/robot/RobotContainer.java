@@ -403,6 +403,17 @@ public class RobotContainer {
     // NOTE: Do not reset the gyro or encoder here!
     // The first command in auto mode initializes before this code is run, and
     // it will read the gyro/encoder before the reset goes into effect.
+
+    if (elevator.isElevatorCalibrated()) {
+      elevator.setElevatorProfileTarget(elevator.getElevatorPosition());
+    } else {
+      elevator.stopElevatorMotors();
+    }
+    if (wrist.isWristCalibrated()) {
+      wrist.setWristAngle(wrist.getWristAngle());
+    } else {
+      wrist.stopWrist();
+    }
   }
 
   /**
@@ -420,6 +431,17 @@ public class RobotContainer {
     driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
     // driveTrain.setVisionForOdometryState(true);
+
+    if (elevator.isElevatorCalibrated()) {
+      elevator.setElevatorProfileTarget(elevator.getElevatorPosition());
+    } else {
+      elevator.stopElevatorMotors();
+    }
+    if (wrist.isWristCalibrated()) {
+      wrist.setWristAngle(wrist.getWristAngle());
+    } else {
+      wrist.stopWrist();
+    }
 
     matchTimer.reset();
     matchTimer.start();
