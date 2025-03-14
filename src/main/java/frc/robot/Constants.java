@@ -425,7 +425,7 @@ public final class Constants {
   public static final class ClimberConstants {
     // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
     // where a ratio greater than 1 is a reduction.
-    public static final double kClimberGearRatio = (135.0/1.0);          // CALIBRATED FOR 2025  (135:1)
+    public static final double kClimberGearRatio = (263.0/1.0);          // CALIBRATED FOR 2025  A4:  Was 135:1, now 263:1
     public static final double kClimberDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
     
     public static final double compensationVoltage = 12.0;
@@ -445,7 +445,7 @@ public final class Constants {
     public static final double kD = 0.0;    // CALIBRATED
     public static final double kG = 0.0;    // CALIBRATED      kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
     public static final double kS = 0.096;   // CALIBRATED   kS = (volts)
-    public static final double kV = 15.2;    // CALIBRATED   kV = (volts)/(wrist-rotations/sec)
+    public static final double kV = 15.2 * 263.0/135.0;    // CALIBRATED   kV = (volts)/(wrist-rotations/sec)
 
     public static final double MMCruiseVelocity = 50.0/360.0;             // Max velocity in climber rotations / second
     public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in climber rotations / second^2. MMVel / MMAccel = seconds to full velocity.

@@ -259,9 +259,9 @@ public class Elevator extends SubsystemBase implements Loggable {
       elevatorPositionControl = true;
       position = MathUtil.clamp(position, ElevatorPosition.LOWER_LIMIT.value, ElevatorPosition.UPPER_LIMIT.value);
       elevatorProfile.setProfileTarget(position);
-      log.writeLog(false, subsystemName, "setProfileTarget", "Target", position, "Allowed", "TRUE");
+      log.writeLog(true, subsystemName, "setProfileTarget", "Target", position, "Allowed", "TRUE");
     } else {
-      log.writeLog(false, subsystemName, "setProfileTarget", "Target", position, "Allowed", "FALSE");
+      log.writeLog(true, subsystemName, "setProfileTarget", "Target", position, "Allowed", "FALSE");
     }
   }
 
