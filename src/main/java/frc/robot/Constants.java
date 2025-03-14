@@ -308,14 +308,18 @@ public final class Constants {
 
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.1;         // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.15;        // TODO CALIBRATE FOR 2025
     public static final double reverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 
   public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.1;   // CALIBRATED
-    public static final double outtakePercent = 0.4;  // CALIBRATED
+    public static final double intakePercent = 0.1;       // CALIBRATED
+    public static final double fastIntakePercent = 0.15;  // TODO CALIBRATE FOR 2025
+    public static final double slowIntakePercent = 0.05;  // TODO CALIBRATE FOR 2025
+    public static final double outtakePercent = 0.4;      // CALIBRATED
+    public static final double holdingPercent = -0.009;   // TODO CALIBRATE  (was -0.009)
+    public static final double centeringPercent = 0.025;   // TODO CALIBRATE
   }
 
   public static final class AlgaeGrabberConstants {
@@ -400,7 +404,7 @@ public final class Constants {
 
       CORAL_HP(0.0, 77.0),
 
-      CORAL_L1(25.56, 65.0),
+      CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
       CORAL_L3(40.28, 65.0),
       CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30

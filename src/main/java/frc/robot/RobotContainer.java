@@ -49,9 +49,9 @@ public class RobotContainer {
   // private final LED led = new LED(Constants.Ports.CANdle, "LED", matchTimer, log);
   private final DriveTrain driveTrain = new DriveTrain(allianceSelection, log);
   private final Hopper hopper = new Hopper("Hopper", log);
-  private final CoralEffector coralEffector = new CoralEffector("CoralEffector", log);
-  private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
   private final Wrist wrist = new Wrist("Wrist", log);
+  private final CoralEffector coralEffector = new CoralEffector("CoralEffector", wrist, log);
+  private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
   private final Elevator elevator = new Elevator("Elevator", log);
   private final Climber climber = new Climber("Climber", log);
 
@@ -123,6 +123,7 @@ public class RobotContainer {
     SmartDashboard.putData("CoralEffector STOP", new CoralEffectorStop(coralEffector, log));
     SmartDashboard.putData("CoralEffector Intake", new CoralEffectorIntake(coralEffector, log));
     SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Intake Enhanced", new CoralEffectorIntakeEnhanced(coralEffector, log));
 
     // AlgaeGrabber
     SmartDashboard.putData("AlgaeGrabber In", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
@@ -222,10 +223,8 @@ public class RobotContainer {
     // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
     xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log));
 
-    // Move wrist and elevator to home
-    xbX.onTrue(new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist, log));
-
-    // Prep to score coral on L2 with A, L3 with B, and L4 with Y
+    // Prep to score coral on L1 with X, L2 with A, L3 with B, and L4 with Y
+    xbX.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, coralEffector, algaeGrabber, log));
     xbA.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, coralEffector, algaeGrabber, log));
     xbB.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, coralEffector, algaeGrabber, log));
     xbY.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, coralEffector, algaeGrabber, log));
@@ -253,6 +252,9 @@ public class RobotContainer {
       new WristStop(wrist, log),
       new ElevatorStop(elevator, log)
     ));
+
+    // Move wrist and elevator to home
+    xbRB.onTrue(new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist, log));
   }
 
   /**
@@ -309,11 +311,15 @@ public class RobotContainer {
     coP[3].onTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist, log));
     coP[4].onTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist, log));
 
+    coP[16].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
+
     coP[5].onTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber, log));
     coP[6].onTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber, log));
 
     coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber, log));
     coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
+
+    coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
 
     coP[9].onTrue(new CoralEffectorOuttake(coralEffector, log));
     coP[10].onTrue(new CoralEffectorIntake(coralEffector, log));
