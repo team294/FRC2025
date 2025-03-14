@@ -76,7 +76,7 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoDriveToReefAndPrep(ReefLevel level, boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
-      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {
     // Start from either HP or barge
     Trajectory<SwerveSample> trajectory = fromHP ? AutoSelection.getHPToReef(end) : AutoSelection.getBargeToReef(end);
     addCommands(
@@ -85,7 +85,9 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
         new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log),
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance, log)
       ),
-      new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist, log)
+      new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist, log),
+
+      new DriveToPose(CoordType.kAbsolute, () -> (field.getRobotReefScoringPosition(end)), 0.5, 1.0, TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, true, true, driveTrain, log)
       // TODO add DriveToPose here, check these parameters
       // new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
       //         0.5, 1.0, 

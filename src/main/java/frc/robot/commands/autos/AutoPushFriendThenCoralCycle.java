@@ -38,7 +38,7 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
    * @param log FileLog utility
    */
   public AutoPushFriendThenCoralCycle(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, boolean grabAlgae, DriveTrain driveTrain, 
-      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {    
+      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {    
     // Different starting pose based on if we are blue or red alliance
     Pose2d startingPose = AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get();
     
@@ -53,8 +53,8 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
 
       // Based on whether grabAlgae is true or not, do coral cycle loop with or without ending by grabbing coral
       either(
-        new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache, log),
-        new AutoCoralCycleLoop(reefLocations, reefLevels, endAtHP, driveTrain, elevator, wrist,coralEffector, algaeGrabber, hopper, alliance, cache, log),
+        new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache, field, log),
+        new AutoCoralCycleLoop(reefLocations, reefLevels, endAtHP, driveTrain, elevator, wrist,coralEffector, algaeGrabber, hopper, alliance, cache, field, log),
         () -> grabAlgae
       )
     );

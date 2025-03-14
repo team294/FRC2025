@@ -32,7 +32,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
@@ -49,7 +49,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
         new FileLogWrite(false, false, "AutoCoralCycleLoopThenAlgae", "Start", log, lastCoralLocation, lastCoralLocation.toString(), "onRightSide", lastCoralLocation.onRightSide, "yRelativeOffset", yRelativeOffset),
 
         // First, do the loop for the coral cycles (ends at reef)
-        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache, log),
+        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache, field, log),
         
         // Grab algae from current position (back up, prep wrist and elevator, and then go forward and intake) and back up
 
