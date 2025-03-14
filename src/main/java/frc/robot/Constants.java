@@ -206,7 +206,41 @@ public final class Constants {
     }
 
     public static enum ReefLocation {
-      A, B, C, D, E, F, G, H, I, J, K, L
+      A(false, false), 
+      B(true, false), 
+      C(false, true), 
+      D(true, true), 
+      E(false, false), 
+      F(true, false), 
+      G(false, true), 
+      H(true, true), 
+      I(false, false), 
+      J(true, false), 
+      K(false, true), 
+      L(true, true);
+
+      public final boolean onRightSide;
+      public final boolean isAlgaeLower;
+
+      ReefLocation(boolean onRightSide, boolean isAlgaeLower) {
+        this.onRightSide = onRightSide;
+        this.isAlgaeLower = isAlgaeLower;
+      }
+    }
+
+    public static enum AlgaeLocation {
+      AB(false), 
+      CD(true), 
+      EF(false), 
+      GH(true), 
+      IJ(false), 
+      KL(true);
+
+      public final boolean isLower;
+
+      AlgaeLocation(boolean isLower) {
+        this.isLower = isLower;
+      }
     }
 
     // Calculated by measuring y distance between center of reef wall and reef pole (6.469731 in), converted to meters
