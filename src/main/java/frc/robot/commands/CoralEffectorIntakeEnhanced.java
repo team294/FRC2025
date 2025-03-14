@@ -15,6 +15,7 @@ public class CoralEffectorIntakeEnhanced extends Command {
   private final Timer timer;
   private final FileLog log;
   private final double seconds;
+  private boolean centering;
   
   /**
    * Intakes coral quickly, then slows down the intake motor 0.3 seconds after coral is detected in entry.
@@ -26,6 +27,7 @@ public class CoralEffectorIntakeEnhanced extends Command {
     this.timer = new Timer();
     this.seconds = 0.3; // number of seconds before changing from fast intake speed to slow intake speed
     this.log = log;
+    this.centering = false;
     addRequirements(coralEffector);
   }
 
@@ -47,14 +49,27 @@ public class CoralEffectorIntakeEnhanced extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // Start the timer when coral is first detected
-    if (coralEffector.isCoralPresent() && !timer.isRunning()) {
-      timer.start();
-    }
-    
-    // After 0.3 seconds, slow intaking speed 
-    if (timer.get() >= seconds) {
-      coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.slowIntakePercent); 
+    if (centering) {
+      if (coralEffector.isCoralPresentInEntry() && !coralEffector.isCoralPresentInExit()) {
+        coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.centeringPercent);
+      } else if (!coralEffector.isCoralPresentInEntry() && coralEffector.isCoralPresentInExit()) {
+        coralEffector.setCoralEffectorPercentOutput(-CoralEffectorConstants.centeringPercent);
+      }
+    } else {
+      // Start the timer when coral is first detected
+      if (coralEffector.isCoralPresent() && !timer.isRunning()) {
+        timer.start();
+      }
+      
+      // After 0.3 seconds, slow intaking speed
+      if (timer.get() >= seconds) {
+        coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.slowIntakePercent); 
+      }
+
+      // When coral hits the exit, trigger the centering to start
+      if (coralEffector.isCoralPresentInExit()) {
+        centering = true;
+      }
     }
   }
 
@@ -70,6 +85,6 @@ public class CoralEffectorIntakeEnhanced extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return coralEffector.isCoralPresentInExit();  
+    return coralEffector.isCoralPresentInExit() && coralEffector.isCoralPresentInEntry();
   }
 }

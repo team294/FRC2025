@@ -272,7 +272,7 @@ public final class Constants {
 
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.1;         // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.15;        // TODO CALIBRATE FOR 2025
     public static final double reverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
   }
 
@@ -282,8 +282,8 @@ public final class Constants {
     public static final double fastIntakePercent = 0.15;  // TODO CALIBRATE FOR 2025
     public static final double slowIntakePercent = 0.05;  // TODO CALIBRATE FOR 2025
     public static final double outtakePercent = 0.4;      // CALIBRATED
-    public static final double holdingPercent = -0.01;    // TODO CALIBRATE
-    public static final double centeringPercent = 0.05;   // TODO CALIBRATE
+    public static final double holdingPercent = -0.009;   // TODO CALIBRATE  (was -0.009)
+    public static final double centeringPercent = 0.025;   // TODO CALIBRATE
   }
 
   public static final class AlgaeGrabberConstants {

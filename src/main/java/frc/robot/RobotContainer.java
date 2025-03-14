@@ -119,6 +119,7 @@ public class RobotContainer {
     SmartDashboard.putData("CoralEffector STOP", new CoralEffectorStop(coralEffector, log));
     SmartDashboard.putData("CoralEffector Intake", new CoralEffectorIntake(coralEffector, log));
     SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Intake Enhanced", new CoralEffectorIntakeEnhanced(coralEffector, log));
 
     // AlgaeGrabber
     SmartDashboard.putData("AlgaeGrabber In", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
