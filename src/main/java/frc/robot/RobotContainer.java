@@ -21,12 +21,15 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.commands.*;
+import frc.robot.commands.autos.components.*;
 import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.Constants.FieldConstants.ReefLevel;
+import frc.robot.Constants.FieldConstants.ReefLocation;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -52,8 +55,8 @@ public class RobotContainer {
   private final Climber climber = new Climber("Climber", log);
 
   // Define other utilities
-  // private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
-  // private final AutoSelection autoSelection = new AutoSelection(trajectoryCache, allianceSelection, log);
+  private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
+  private final AutoSelection autoSelection = new AutoSelection(trajectoryCache, allianceSelection, field, log);
 
   // Define controllers
   private final Joystick leftJoystick = new Joystick(OIConstants.usbLeftJoystick);
@@ -156,6 +159,10 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber, log));
     
     // Autos
+    SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper));
+    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache, log));
+    SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, allianceSelection, trajectoryCache, log));
+    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache, log));
 
     // Copanel buttons
 
@@ -164,9 +171,9 @@ public class RobotContainer {
     SmartDashboard.putData("Vision Disable Odometry Updates", new VisionOdometryStateSet(false, driveTrain, log));
 
     // Sequences
-    SmartDashboard.putData("Algae Intake Sequence Ground", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, elevator, wrist, algaeGrabber, log));
-    SmartDashboard.putData("Algae Intake Sequence Lower", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, elevator, wrist, algaeGrabber, log));
-    SmartDashboard.putData("Algae Intake Sequence Upper", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, elevator, wrist, algaeGrabber, log));
+    SmartDashboard.putData("Algae Intake Sequence Ground", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber, log));
+    SmartDashboard.putData("Algae Intake Sequence Lower", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, log));
+    SmartDashboard.putData("Algae Intake Sequence Upper", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, log));
     SmartDashboard.putData("Algae Score Prep Sequence Processor", new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber, log));
     SmartDashboard.putData("Algae Score Prep Sequence Net", new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET, elevator, wrist, algaeGrabber, log));
 
@@ -222,9 +229,9 @@ public class RobotContainer {
     xbY.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, coralEffector, algaeGrabber, log));
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
-    xbLT.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, elevator, wrist, algaeGrabber, log));
-    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, elevator, wrist, algaeGrabber, log));
-    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, elevator, wrist, algaeGrabber, log));
+    xbLT.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber, log));
+    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, log));
+    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, log));
 
     // Prep to score algae in Net with D-Pad Up and Processor with D-Pad Right
     xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET,elevator, wrist, algaeGrabber, log));
@@ -334,8 +341,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // return autoSelection.getAutoCommand(log);
-    return none();
+    return autoSelection.getAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
   }
 
   /**
