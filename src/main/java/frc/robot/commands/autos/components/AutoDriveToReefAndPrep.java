@@ -55,6 +55,11 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(trajectoryName), driveTrain, alliance, log)
       ),
       new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist, log)
+      // TODO add DriveToPose here, check these parameters
+      // new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
+      //         0.5, 1.0, 
+      //         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+      //         true, true, driveTrain, log)
     );
   }
 
@@ -81,6 +86,11 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance, log)
       ),
       new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist, log)
+      // TODO add DriveToPose here, check these parameters
+      // new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
+      //         0.5, 1.0, 
+      //         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+      //         true, true, driveTrain, log)
     );
   }
 }

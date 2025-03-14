@@ -31,6 +31,7 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
           AllianceSelection alliance, TrajectoryCache cache, FileLog log) {    
     addCommands(
       new FileLogWrite(false, false, "AutoDriveToHPAndPrep", "Init", log, "trajectoryName", trajectoryName.toString()),
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist, log),
       new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(trajectoryName), driveTrain, alliance, log),
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist, log)
     );
@@ -52,6 +53,7 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
           AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
     addCommands(
       new FileLogWrite(false, false, "AutoDriveToHPAndPrep", "Init", log, "startingReefLocation", start.toString()),
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist, log),
       new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance, log),
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist, log)
     );
