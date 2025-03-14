@@ -16,7 +16,7 @@ public class ClimberSetPercentOutput extends Command {
   private boolean fromShuffleboard;
 
   /**
-   * Sets the percent output of the coralEffector from Shuffleboard.
+   * Sets the percent output of the climber from Shuffleboard.
    * <b>NOTE: This command does not end. When interrupted, it turns off the climber motor.
    * @param climber Climber subsystem
    * @param log FileLog utility
