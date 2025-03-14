@@ -25,7 +25,7 @@ public class DriveToReefWithOdometryForAlgae extends SequentialCommandGroup {
       new FileLogWrite(false, false, "DriveToReefWithOdometryForAlgae", "Start", log),
 
       new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestAlgaePickupPositionWithOffset(driveTrain.getPose(), 
-          new Transform2d((-RobotDimensions.robotWidth / 2.0) - TrajectoryConstants.ReefAlgaePickupPositionOffset, 0, new Rotation2d(0)))),
+          new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.ReefAlgaePickupPositionOffset, 0, new Rotation2d(0)))),
           0.02, 1, driveTrain, log),
 
       new FileLogWrite(false, false, "DriveToReefWithOdometryForAlgae", "End", log)
