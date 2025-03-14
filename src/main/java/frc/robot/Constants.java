@@ -194,7 +194,10 @@ public final class Constants {
     public static double offsetAngleBackRightMotor = -8.3;
 
     // Theta kp value for joystick in rad/sec
-    public static final double kPJoystickThetaController = 3;    
+    public static final double kPJoystickThetaController = 3;
+
+    // How far away from the reef we are when putting the elevator up for scoring
+    public static final double driveBackFromReefDistance = 0.25;
   }
 
   public static class FieldConstants {

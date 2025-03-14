@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.CoordType;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -29,7 +30,7 @@ public class ScorePieceSequence extends SequentialCommandGroup {
         new AlgaeGrabberOuttake(algaeGrabber, log),
         sequence( 
           new CoralEffectorOuttake(coralEffector, log),
-          new DriveToPose(CoordType.kRelative, () -> new Pose2d(-0.25, 0, Rotation2d.kZero), 0.5, 1.0, 
+          new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 0.5, 1.0, 
                 TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
                 true, true, driveTrain, log)
           // new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist, log)

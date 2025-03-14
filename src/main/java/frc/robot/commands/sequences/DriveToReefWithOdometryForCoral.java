@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import frc.robot.Constants.CoordType;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RobotDimensions;
 import frc.robot.commands.DriveToPose;
@@ -49,7 +50,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
             waitUntil(() -> ((-rightJoystick.getX() < -OIConstants.joystickJoggingDeadband && new Transform2d(field.getNearestAprilTagReef(driveTrain.getPose()), driveTrain.getPose()).getY() < 0) || (-rightJoystick.getX() > OIConstants.joystickJoggingDeadband && new Transform2d(field.getNearestAprilTagReef(driveTrain.getPose()), driveTrain.getPose()).getY() > 0))),
 
             //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus 0.25 m
-            new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotWidth / 2.0) - 0.25, 0, new Rotation2d(0)))), 0.02, 1, driveTrain, log)
+            new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)))), 0.02, 1, driveTrain, log)
           )
       ),
 
@@ -57,18 +58,18 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
       either(
         sequence(
           //Drives to nearest left scoring position (which is on the wall), with an offset of half the robot's diameter plus 5cm
-          // new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotDiagonal / 2.0) - 0.25, 0, new Rotation2d(0)), true)), 0.1, 5, driveTrain, log),
+          // new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotDiagonal / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)), true)), 0.1, 5, driveTrain, log),
           
           //Drives to nearest left scoring position (offset off the wall half the robot's width plus 25cm)
-          new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotWidth / 2.0) - 0.25, 0, new Rotation2d(0)), true)), 0.02, 1, driveTrain, log)
+          new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)), true)), 0.02, 1, driveTrain, log)
         ),
         either(
           sequence(
             //Drives to nearest right scoring position (which is on the wall), with an offset of half the robot's diameter plus 25cm
-            //new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotDiagonal / 2.0) - 0.25, 0, new Rotation2d(0)), false)), 0.1, 5, driveTrain, log),
+            //new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotDiagonal / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)), false)), 0.1, 5, driveTrain, log),
               
             //Drives to nearest right scoring position (offset off the wall half the robot's width plus 25cm)
-            new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotWidth / 2.0) - 0.25, 0, new Rotation2d(0)), false)), 0.02, 1, driveTrain, log) 
+            new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)), false)), 0.02, 1, driveTrain, log) 
           ),
           sequence(
             // If you are at the same position the joystick is at, or the joystick is in the deadband (Which shouldn't occur, as these have to be false for this section to run), do nothing
