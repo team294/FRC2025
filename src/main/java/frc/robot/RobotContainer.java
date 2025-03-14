@@ -302,11 +302,15 @@ public class RobotContainer {
     coP[3].onTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist, log));
     coP[4].onTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist, log));
 
+    coP[16].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
+
     coP[5].onTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber, log));
     coP[6].onTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber, log));
 
     coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber, log));
     coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
+
+    coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
 
     coP[9].onTrue(new CoralEffectorOuttake(coralEffector, log));
     coP[10].onTrue(new CoralEffectorIntake(coralEffector, log));
