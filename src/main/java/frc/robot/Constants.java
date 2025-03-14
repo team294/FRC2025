@@ -397,7 +397,7 @@ public final class Constants {
     public enum ElevatorWristPosition {
       START_CONFIG(0.0, 100.0),
 
-      CORAL_HP(0.0, 77.0),
+      CORAL_HP(0.0, 75.0),
 
       CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),

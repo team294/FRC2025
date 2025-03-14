@@ -25,7 +25,7 @@ public class CoralEffectorIntakeEnhanced extends Command {
   public CoralEffectorIntakeEnhanced(CoralEffector coralEffector, FileLog log) {
     this.coralEffector = coralEffector;
     this.timer = new Timer();
-    this.seconds = 0.3; // number of seconds before changing from fast intake speed to slow intake speed
+    this.seconds = 0.15; // number of seconds before changing from fast intake speed to slow intake speed
     this.log = log;
     this.centering = false;
     addRequirements(coralEffector);
