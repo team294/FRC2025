@@ -30,7 +30,7 @@ public class ScorePieceSequence extends SequentialCommandGroup {
         new AlgaeGrabberOuttake(algaeGrabber, log),
         sequence( 
           new CoralEffectorOuttake(coralEffector, log),
-          new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
+          new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
               0.5, 1.0, 
               TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
               true, true, driveTrain, log)
