@@ -36,7 +36,7 @@ public class ScorePieceSequence extends SequentialCommandGroup {
               true, true, driveTrain, log).asProxy()
           // new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist, log)
         ), 
-        () -> !coralEffector.isCoralPresent()
+        () -> algaeGrabber.isAlgaePresent() || !coralEffector.isCoralPresent()
       )
     );
   }
