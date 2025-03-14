@@ -34,10 +34,14 @@ public class CoralEffectorIntakeEnhanced extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.stop();
+    timer.reset();
+
+    centering = false;
     coralEffector.setCoralHoldMode(false);
 
     // If there is no coral present or the coral is not safely in the mechanism, run the motor
-    if (!coralEffector.isCoralPresent() || !coralEffector.isCoralSafelyIn()) {
+    if (!coralEffector.isCoralPresent()) {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.fastIntakePercent); 
     }
 

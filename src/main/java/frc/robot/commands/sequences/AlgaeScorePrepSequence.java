@@ -17,7 +17,6 @@ import frc.robot.utilities.FileLog;
 
 /**
  * Prepares to score algae by moving the wrist and elevator to the indicated scoring position.
- * If the robot is not holding algae, this sequence does nothing.
  * @param position position to move elevator to (use ElevatorWristConstants.ElevatorWristPosition.ALGAE_...)
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
@@ -27,11 +26,7 @@ import frc.robot.utilities.FileLog;
 public class AlgaeScorePrepSequence extends SequentialCommandGroup {
   public AlgaeScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
     addCommands(
-      either(
-        new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist, log),
-        none(),
-        () -> algaeGrabber.isAlgaePresent()
-      )
+      new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist, log)
     );
   }
 }

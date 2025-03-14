@@ -36,7 +36,7 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
         new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
             0.5, 1.0,
             TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees,
-            true, true, driveTrain, log),
+            true, true, driveTrain, log).asProxy(),
         none(),
         () -> position == ElevatorWristPosition.ALGAE_LOWER || position == ElevatorWristPosition.ALGAE_UPPER
       )
