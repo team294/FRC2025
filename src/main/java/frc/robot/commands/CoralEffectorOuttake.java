@@ -32,6 +32,7 @@ public class CoralEffectorOuttake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    coralEffector.setCoralHoldMode(false);
     coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.outtakePercent);
 
     log.writeLog(false, "CoralEffectorOuttake", "Init", 
