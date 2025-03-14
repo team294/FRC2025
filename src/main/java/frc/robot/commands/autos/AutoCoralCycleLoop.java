@@ -10,10 +10,9 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.FieldConstants.ReefLevel;
-import frc.robot.Constants.FieldConstants.ReefLocation;
+import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
-import frc.robot.commands.sequences.*;
+import frc.robot.commands.autos.components.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 
@@ -28,12 +27,16 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * @param endAtHP true = end at the coral loading station, false = end at the reef 
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem
-   * @param alliance AllianceSelection alliance
-   * @param cache TrajectoryCache cache
-   * @param log FileLog log
+   * @param wrist Wrist subsystem
+   * @param coralEffector CoralEffector subsystem
+   * @param algaeGrabber AlgaeGrabber subsystem
+   * @param hopper Hopper subsystem
+   * @param alliance AllianceSelection utility
+   * @param cache TrajectoryCache utility
+   * @param log FileLog utility
    */
-  public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, 
-          Elevator elevator, CoralEffector coralEffector, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+  public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
@@ -41,12 +44,14 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
     }
 
     else {
-      addCommands(new DriveResetPose(AutoSelection.getBargeToReef(reefLocations.get(0))
-                  .getInitialPose(alliance.getAlliance() == Alliance.Red).get(), true, driveTrain, log));
+      addCommands(
+        new DriveResetPose(AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get(), true, driveTrain, log)
+      );
+
       // Score the pre-loaded coral with the first reef location
       if (reefLocations.size() >= 1 && reefLevels.size() >= 1) {
         addCommands(
-          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, coralEffector, alliance, cache, log)
+          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache, log)
         );
       }
 
@@ -56,15 +61,21 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
         // looping until the second-to-last element to ensure we do not go out of bounds
         for (int i = 0; i < reefLocations.size() - 1; i++) {
           if (i >= reefLevels.size()) break;
+
           ReefLocation start = reefLocations.get(i);
           ReefLocation end = reefLocations.get(i + 1);
-          addCommands(new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, coralEffector, alliance, cache, log));
+
+          addCommands(
+            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache, log)
+          );
         }
       }
 
       // Drive back to and end at HP after the last reef location if we are to end at HP. Otherwise, we are ending at reef 
       if (endAtHP && reefLocations.size() > 0) {
-        addCommands(new AutoCoralDriveAndIntakeSequence(reefLocations.get(reefLocations.size() - 1), driveTrain, elevator, coralEffector, alliance, cache, log));
+        addCommands(
+          new AutoCoralDriveAndIntakeSequence(reefLocations.get(reefLocations.size() - 1), driveTrain, elevator, wrist, coralEffector, hopper, alliance, cache, log)
+        );
       }
     }
   }

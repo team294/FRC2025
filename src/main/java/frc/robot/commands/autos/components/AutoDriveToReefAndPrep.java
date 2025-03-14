@@ -2,33 +2,34 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.sequences;
+package frc.robot.commands.autos.components;
+
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.CoordType;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
-import frc.robot.Constants.FieldConstants.ReefLevel;
-import frc.robot.Constants.FieldConstants.ReefLocation;
-import frc.robot.Constants.StopType;
+import frc.robot.Constants.*;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
+import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
+import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 
 public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
   // Map to link ReefLevels to ElevatorPositions
-  final static Map<ReefLevel, ElevatorPosition> reefToElevatorMap = new EnumMap<>(ReefLevel.class);
+  final static Map<ReefLevel, ElevatorWristPosition> reefToElevatorMap = new EnumMap<>(ReefLevel.class);
   static {
-    reefToElevatorMap.put(ReefLevel.L1, ElevatorPosition.CORAL_REEF_L1);
-    reefToElevatorMap.put(ReefLevel.L2, ElevatorPosition.CORAL_REEF_L2);
-    reefToElevatorMap.put(ReefLevel.L3, ElevatorPosition.CORAL_REEF_L3);
-    reefToElevatorMap.put(ReefLevel.L4, ElevatorPosition.CORAL_REEF_L4);
+    reefToElevatorMap.put(ReefLevel.L1, ElevatorWristPosition.CORAL_L1);
+    reefToElevatorMap.put(ReefLevel.L2, ElevatorWristPosition.CORAL_L2);
+    reefToElevatorMap.put(ReefLevel.L3, ElevatorWristPosition.CORAL_L3);
+    reefToElevatorMap.put(ReefLevel.L4, ElevatorWristPosition.CORAL_L4);
   }
   
   /**
@@ -38,20 +39,22 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
    * @param trajectoryName TrajectoryName name of trajectory to follow 
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
+   * @param wrist Wrist subsystem
    * @param coralEffector CoralEffector subsystem
+   * @param hopper Hopper subsystem
    * @param alliance AllianceSelection alliance 
    * @param cache TrajectoryCache cache
    * @param log FileLog log
    */
-  public AutoDriveToReefAndPrep(ReefLevel level, TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, 
-        CoralEffector coralEffector, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+  public AutoDriveToReefAndPrep(ReefLevel level, TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
+        CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
     addCommands(
       new FileLogWrite(false, false, "AutoDriveToReefAndPrep", "Init", log, "trajectoryName", trajectoryName.toString()),
-      new ParallelCommandGroup(
-        new EndEffectorCoralIntake(coralEffector, log),
+      parallel(
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log),
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(trajectoryName), driveTrain, alliance, log)
-      ), // this constructor not really used, second one below is used
-      new ElevatorSetPosition(reefToElevatorMap.get(level).value, elevator, coralEffector, log)
+      ),
+      new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist, log)
     );
   }
 
@@ -67,17 +70,17 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
    * @param cache TrajectoryCache cache
    * @param log FileLog log
    */
-  public AutoDriveToReefAndPrep(ReefLevel level, boolean fromHP, ReefLocation end, DriveTrain driveTrain, 
-          Elevator elevator, CoralEffector coralEffector, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+  public AutoDriveToReefAndPrep(ReefLevel level, boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
+      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
     // Start from either HP or barge
     Trajectory<SwerveSample> trajectory = fromHP ? AutoSelection.getHPToReef(end) : AutoSelection.getBargeToReef(end);
     addCommands(
       new FileLogWrite(false, false, "AutoDriveToReefAndPrep", "Init", log, "trajectory", trajectory.name()),
-      new ParallelCommandGroup(
-        //new EndEffectorCoralIntake(endEffector, log),
+      parallel(
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log),
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance, log)
-      )
-      //new ElevatorSetPosition(reefToElevatorMap.get(level).value, elevator, endEffector, log)
+      ),
+      new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist, log)
     );
   }
 }
