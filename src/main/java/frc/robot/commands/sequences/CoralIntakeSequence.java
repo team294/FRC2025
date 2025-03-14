@@ -4,7 +4,7 @@
 
 package frc.robot.commands.sequences;
 
-import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -36,7 +36,7 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
   public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, FileLog log) {
     addCommands(
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log),
-      new ParallelCommandGroup(
+      parallel(
         new HopperSetPercent(HopperConstants.intakePercent, hopper, log),
         new CoralEffectorIntake(coralEffector, log)
       ).handleInterrupt(hopper::stopHopperMotor),

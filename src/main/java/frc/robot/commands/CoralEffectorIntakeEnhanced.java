@@ -10,22 +10,21 @@ import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
 import frc.robot.utilities.FileLog;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralEffectorIntakeEnhanced extends Command {
   private final CoralEffector coralEffector;
   private final Timer timer;
-  private final double seconds;
   private final FileLog log;
+  private final double seconds;
   
   /**
    * Intakes coral quickly, then slows down the intake motor 0.3 seconds after coral is detected in entry.
-   * @param coralEffector CoralEffector
-   * @param log FileLog
+   * @param coralEffector CoralEffector subsystem
+   * @param log FileLog utility
    */
   public CoralEffectorIntakeEnhanced(CoralEffector coralEffector, FileLog log) {
     this.coralEffector = coralEffector;
-    timer = new Timer();
-    seconds = 0.3; // number of seconds before changing from fast intake speed to slow intake speed
+    this.timer = new Timer();
+    this.seconds = 0.3; // number of seconds before changing from fast intake speed to slow intake speed
     this.log = log;
     addRequirements(coralEffector);
   }
@@ -33,8 +32,9 @@ public class CoralEffectorIntakeEnhanced extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // If there is no coral present or the coral is not safely in the mechanism, run the motor
     coralEffector.setCoralHoldMode(false);
+
+    // If there is no coral present or the coral is not safely in the mechanism, run the motor
     if (!coralEffector.isCoralPresent() || !coralEffector.isCoralSafelyIn()) {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.fastIntakePercent); 
     }
@@ -56,17 +56,15 @@ public class CoralEffectorIntakeEnhanced extends Command {
     if (timer.get() >= seconds) {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.slowIntakePercent); 
     }
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     coralEffector.stopCoralEffectorMotor();
+    coralEffector.setCoralHoldMode(true);
     timer.stop();
     timer.reset();
-    coralEffector.setCoralHoldMode(true);
-
   }
 
   // Returns true when the command should end.

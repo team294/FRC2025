@@ -278,12 +278,12 @@ public final class Constants {
 
   public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.1;   // CALIBRATED
-    public static final double fastIntakePercent = 0.2; // TODO CALIBRATE FOR 2025
-    public static final double slowIntakePercent = 0.05; // TODO CALIBRATE FOR 2025
-    public static final double outtakePercent = 0.4;  // CALIBRATED
-    public static final double holdingPercent = 0;    // TODO CALIBRATE
-    public static final double centeringPercent = 0;    // TODO CALIBRATE
+    public static final double intakePercent = 0.1;       // CALIBRATED
+    public static final double fastIntakePercent = 0.15;  // TODO CALIBRATE FOR 2025
+    public static final double slowIntakePercent = 0.05;  // TODO CALIBRATE FOR 2025
+    public static final double outtakePercent = 0.4;      // CALIBRATED
+    public static final double holdingPercent = -0.01;    // TODO CALIBRATE
+    public static final double centeringPercent = 0.05;   // TODO CALIBRATE
   }
 
   public static final class AlgaeGrabberConstants {

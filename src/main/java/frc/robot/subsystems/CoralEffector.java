@@ -151,15 +151,13 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Turns on or off coral hold mode whether or not we want to hold coral in place
-   * @param newState boolean; true = turn on coralHoldMode, false = turn off coralHoldMode
+   * Turns on or off coral hold mode whether or not we want to hold coral in place.
+   * @param newState true = turn on coralHoldMode, false = turn off coralHoldMode
    */
   public void setCoralHoldMode(boolean newState) {
     coralHoldMode = newState;
     // If turning off coral hold mode, turn off effector motors as well
-    if (!newState) {
-      stopCoralEffectorMotor();
-    }
+    if (!newState) stopCoralEffectorMotor();
   }
 
   /**
@@ -204,21 +202,17 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
     // If we need to keep hold of the coral, make sure it is held in a safe position
     if (coralHoldMode) {
-      // Coral is too far forward, so move it back until it's in a safe position
+      // Coral is too far forward, so move it back until it is in a safe position
       if (isCoralPresentInExit() && !isCoralPresentInEntry()) {
         setCoralEffectorPercentOutput(-CoralEffectorConstants.centeringPercent);
       }
-      // Coral is too far back, so move it forward until it's in a safe position
+      // Coral is too far back, so move it forward until it is in a safe position
       if (!isCoralPresentInExit() && isCoralPresentInEntry()) {
         setCoralEffectorPercentOutput(CoralEffectorConstants.centeringPercent);
       }
       // Coral is in a safe position, so apply power to keep it in place
       if (isCoralPresentInEntry() && isCoralPresentInExit()) {
         setCoralEffectorPercentOutput(CoralEffectorConstants.holdingPercent * Math.cos(Units.degreesToRadians(wrist.getWristAngle()))); 
-      }
-      // If no coral is present, turn off the motors (does this allow the coral to actually be intaked at all?)
-      if (!isCoralPresentInEntry() && !isCoralPresentInExit()) {
-        setCoralEffectorPercentOutput(0); 
       }
     }
   }

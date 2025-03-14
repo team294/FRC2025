@@ -27,8 +27,9 @@ public class CoralEffectorIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // If there is no coral present or the coral is not safely in the mechanism, run the motor
     coralEffector.setCoralHoldMode(false);
+
+    // If there is no coral present or the coral is not safely in the mechanism, run the motor
     if (!coralEffector.isCoralPresent() || !coralEffector.isCoralSafelyIn()) {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.intakePercent); 
     }
@@ -48,7 +49,9 @@ public class CoralEffectorIntake extends Command {
   public void end(boolean interrupted) {
     // TODO check if the coral is safely in before stopping the motor, especially if interrupted
     coralEffector.stopCoralEffectorMotor();
-    coralEffector.setCoralHoldMode(true);
+    if (coralEffector.isCoralPresent()) {
+      coralEffector.setCoralHoldMode(true);
+    }
   }
 
   // Returns true when the command should end.
