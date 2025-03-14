@@ -27,6 +27,8 @@ import frc.robot.utilities.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.Constants.FieldConstants.ReefLevel;
+import frc.robot.Constants.FieldConstants.ReefLocation;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -52,8 +54,8 @@ public class RobotContainer {
   private final Climber climber = new Climber("Climber", log);
 
   // Define other utilities
-  // private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
-  // private final AutoSelection autoSelection = new AutoSelection(trajectoryCache, allianceSelection, log);
+  private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
+  private final AutoSelection autoSelection = new AutoSelection(trajectoryCache, allianceSelection, log);
 
   // Define controllers
   private final Joystick leftJoystick = new Joystick(OIConstants.usbLeftJoystick);
@@ -155,6 +157,10 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber, log));
     
     // Autos
+    SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand(driveTrain, elevator, endEffector));
+    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, endEffector, allianceSelection, trajectoryCache, log));
+    SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, endEffector, allianceSelection, trajectoryCache, log));
+    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, endEffector, allianceSelection, trajectoryCache, log));
 
     // Copanel buttons
 
@@ -328,7 +334,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // return autoSelection.getAutoCommand(log);
+    return autoSelection.getAutoCommand(driveTrain, elevator, coralEffector);
     return none();
   }
 
