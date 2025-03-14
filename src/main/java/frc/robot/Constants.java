@@ -288,6 +288,9 @@ public final class Constants {
     // Theta-velocity controller kP. Units = (rad/sec of velocity) / (radians of angle error)
     public static final double kPThetaController = 3;
 
+    // Back offset for robot to pick up algae, in meters
+    public static final double ReefAlgaePickupPositionOffset = 0.2;
+
     public static final TrajectoryConfig swerveTrajectoryConfig = new TrajectoryConfig(
         SwerveConstants.kNominalSpeedMetersPerSecond,
         SwerveConstants.kNominalAccelerationMetersPerSecondSquare)
