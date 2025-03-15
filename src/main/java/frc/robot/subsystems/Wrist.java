@@ -107,6 +107,7 @@ public class Wrist extends SubsystemBase implements Loggable {
     wristMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
     wristMotor_RotorEncoderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
+    // Configure PID for MotionMagicVoltage control
     wristMotor_RotorEncoderConfig.Slot0.kP = WristConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
     wristMotor_RotorEncoderConfig.Slot0.kI = 0.0;
     wristMotor_RotorEncoderConfig.Slot0.kD = 0.0;
@@ -125,7 +126,6 @@ public class Wrist extends SubsystemBase implements Loggable {
     wristMotor_RotorEncoderConfig.Feedback.SensorToMechanismRatio = WristConstants.kWristGearRatio;
     wristMotor_RotorEncoderConfig.ClosedLoopGeneral.ContinuousWrap = false;
 
-    // Configure PID for PositionVoltage control
     // NOTE: In Phoenix 6, slots are selected in the ControlRequest (ex. PositionVoltage.Slot)
     wristPositionControl.Slot = 0;
     wristPositionControl.OverrideBrakeDurNeutral = true;

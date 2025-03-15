@@ -317,10 +317,17 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;       // CALIBRATED
     public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
-    public static final double slowIntakePercent = 0.05;  // CALIBRATED for LAR
     public static final double outtakePercent = 0.4;      // CALIBRATED
-    public static final double holdingPercent = -0.009;   // CALIBRATED for LAR
-    public static final double centeringPercent = 0.025;  // CALIBRATED for LAR
+
+    public static final double centerRotationsOvershoot = 0.0;  // TODO CALIBRATE #3  (maybe 5x the tolerance?).  Measure the typical overshoot with kP.
+    public static final double centeringTolerance = 0.02;  // TODO CALIBRATE #1  Position tolerance (in rotations) for holding coral [smaller than 1/2 of the position window where both sensors see the coral]
+    public static final double centeringStepSize = centeringTolerance * 0;  // * 0.5;   // TODO #4 If the autoHold oscillates (not setPosition oscillating), then reduce this step size.
+
+    public static final double kP = 0.0;    // TODO CALIBRATE #2 (in Phoenix tuner, maybe 0.3V/0.01rot = 30)   kP = (desired-output-volts) / (error-in-encoder-rotations)
+    public static final double kI = 0.0;    // CALIBRATED
+    public static final double kD = 0.0;    // CALIBRATED
+    public static final double kG = 0.0;    // TODO CALIBRATE #5 if needed.  (start with +0.009 * 12 = +0.108 ?)  Or measure holding voltage to keep coral when vertical (and kP turned off)
+          // TODO #6 For kG, add an offset angle to true vertical coral, if needed.  (in coral.setposition inside the cosine function)
   }
 
   public static final class AlgaeGrabberConstants {
