@@ -566,7 +566,8 @@ public class DriveTrain extends SubsystemBase implements Loggable {
     // Calculate angVel in degrees per second
     // angularVelocity =  lfRunningAvg.calculate( (currAng - prevAng) / (currTime - prevTime) * 1000 );
 
-    updateOdometry();
+    // TODO Turn odometry back on!  Turned off for now to check contributors to loop overruns
+    // updateOdometry();
     
     if (fastLogging || log.isMyLogRotation(logRotationKey)) {
       updateDriveLog(false);
