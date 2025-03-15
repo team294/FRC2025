@@ -293,7 +293,7 @@ public class RobotContainer {
 
     right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
 
-    right[2].whileTrue(new DriveToReefWithOdometryForAlgae(driveTrain, field, log));
+    // right[2] will enable fine control while held, see DriveWithJoysticksAdvanced
   }
 
   /**
@@ -319,6 +319,8 @@ public class RobotContainer {
     
     coP[1].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator, log));
     coP[2].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator, log));
+
+    coP[20].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator, log));
 
     coP[3].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist, log));
     coP[4].whileTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist, log));

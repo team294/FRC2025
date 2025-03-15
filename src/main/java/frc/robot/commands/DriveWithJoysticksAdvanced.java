@@ -36,10 +36,11 @@ public class DriveWithJoysticksAdvanced extends Command {
   private double fwdVelocity, leftVelocity, turnRate, nextTurnRate;
   private double goalAngle;                   // In radians
   private double startTime;
-  private boolean loadingStationLock;         // Whether we are locking our angle to the closest loading station
-  private boolean previousLoadingStationLock; // Whether we were locking our angle to a loading station in the previous loop
-  private boolean reefLock;                   // Whether we are locking our angle to the closest reef face
-  private boolean previousReefLock;           // Whether we were locking our angle to a reef in the previous loop
+  // private boolean loadingStationLock;         // Whether we are locking our angle to the closest loading station
+  // private boolean previousLoadingStationLock; // Whether we were locking our angle to a loading station in the previous loop
+  // private boolean reefLock;                   // Whether we are locking our angle to the closest reef face
+  // private boolean previousReefLock;           // Whether we were locking our angle to a reef in the previous loop
+  private boolean fineControl;
 
   /**
    * Control the driveTrain with joysticks using arcade drive and advanced controls.
@@ -74,11 +75,13 @@ public class DriveWithJoysticksAdvanced extends Command {
     turnRateController.reset(goalAngle);    // Set the current setpoint for the controller
     turnRateController.setGoal(goalAngle);  // Set the goal for the controller
 
-    loadingStationLock = false;
-    previousLoadingStationLock = false;
+    // loadingStationLock = false;
+    // previousLoadingStationLock = false;
 
-    reefLock = false;
-    previousReefLock = false;
+    // reefLock = false;
+    // previousReefLock = false;
+
+    fineControl = false;
 
     if (Math.abs(driveTrain.getAngularVelocity()) < 0.5) {
       // Robot is rotating < 0.5 deg/sec. Assume the robot is not rotating, so use the current robot theta as the goal angle
@@ -97,12 +100,14 @@ public class DriveWithJoysticksAdvanced extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    reefLock = rightJoystick.getRawButton(1);
-    loadingStationLock = rightJoystick.getRawButton(2);
+    // reefLock = rightJoystick.getRawButton(1);
+    // loadingStationLock = rightJoystick.getRawButton(2);
+    fineControl = rightJoystick.getRawButton(2);
+
 
     fwdVelocity = allianceSelection.getAlliance() == Alliance.Blue ? -leftJoystick.getY() : leftJoystick.getY();
     leftVelocity = allianceSelection.getAlliance() == Alliance.Blue ? -leftJoystick.getX() : leftJoystick.getX();
-    turnRate = (loadingStationLock || reefLock) ? 0 : -rightJoystick.getX();
+    turnRate = /*(loadingStationLock || reefLock) ? 0 : */ -rightJoystick.getX();
 
     if (log.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putNumber("Joystick Left-Y", fwdVelocity);
@@ -111,9 +116,9 @@ public class DriveWithJoysticksAdvanced extends Command {
     }
 
     // Apply deadbands and limits for fine control
-    fwdVelocity = (Math.abs(fwdVelocity) < OIConstants.joystickDeadband) ? 0 : scaleJoystick(fwdVelocity) * ((reefLock) ? SwerveConstants.kFineControlMaxSpeedMetersPerSecond : SwerveConstants.kMaxSpeedMetersPerSecond);
-    leftVelocity = (Math.abs(leftVelocity) < OIConstants.joystickDeadband) ? 0 : scaleJoystick(leftVelocity) * ((reefLock) ? SwerveConstants.kFineControlMaxSpeedMetersPerSecond : SwerveConstants.kMaxSpeedMetersPerSecond);
-    turnRate = (Math.abs(turnRate) < OIConstants.joystickDeadband) ? 0 : scaleTurn(turnRate) * ((reefLock) ? SwerveConstants.kFineControlMaxTurningRadiansPerSecond : SwerveConstants.kMaxTurningRadiansPerSecond);
+    fwdVelocity = (Math.abs(fwdVelocity) < OIConstants.joystickDeadband) ? 0 : scaleJoystick(fwdVelocity) * ((fineControl) ? SwerveConstants.kFineControlMaxSpeedMetersPerSecond : SwerveConstants.kMaxSpeedMetersPerSecond);
+    leftVelocity = (Math.abs(leftVelocity) < OIConstants.joystickDeadband) ? 0 : scaleJoystick(leftVelocity) * ((fineControl) ? SwerveConstants.kFineControlMaxSpeedMetersPerSecond : SwerveConstants.kMaxSpeedMetersPerSecond);
+    turnRate = (Math.abs(turnRate) < OIConstants.joystickDeadband) ? 0 : scaleTurn(turnRate) * ((fineControl) ? SwerveConstants.kFineControlMaxTurningRadiansPerSecond : SwerveConstants.kMaxTurningRadiansPerSecond);
 
     // If the driver moves any joystick, then turn off the "stopped" feature that prevents jittering when the robot is supposed to be sitting still.
     if (stopped && (fwdVelocity != 0.0 || leftVelocity != 0.0 || turnRate != 0.0)) {
@@ -121,7 +126,7 @@ public class DriveWithJoysticksAdvanced extends Command {
       firstCorrecting = true; // Set to true to reset the goal angle before starting correcting (accounts for gyro drift, odometry updates, physically moving the robot, etc)
     }
 
-    if (turnRate == 0 || loadingStationLock || reefLock) {
+    if (turnRate == 0 /*|| loadingStationLock || reefLock*/) {
       // Use angle controller system if the theta joystick is in the deadband
       if (firstInDeadband) {
         firstInDeadband = false;
@@ -231,8 +236,8 @@ public class DriveWithJoysticksAdvanced extends Command {
     }
 
     // Remember whether we were doing any angle locking
-    previousLoadingStationLock = loadingStationLock;
-    previousReefLock = reefLock;
+    // previousLoadingStationLock = loadingStationLock;
+    // previousReefLock = reefLock;
   }
 
   // Called once the command ends or is interrupted.
