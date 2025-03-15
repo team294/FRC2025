@@ -25,7 +25,7 @@ public class AlgaeGrabberOuttake extends Command {
     this.algaeGrabber = algaeGrabber;
     this.log = log;
     this.timer = new Timer();
-    this.seconds = 0.6;
+    this.seconds = 2.0;
     addRequirements(algaeGrabber);
   }
 
@@ -33,6 +33,8 @@ public class AlgaeGrabberOuttake extends Command {
   @Override
   public void initialize() {
     algaeGrabber.setAlgaeGrabberPercentOutput(AlgaeGrabberConstants.outtakePercent);
+    timer.stop();
+    timer.reset();
 
     log.writeLog(false, "AlgaeGrabberOuttake", "Init",
       "Algae Present", algaeGrabber.isAlgaePresent());
@@ -58,7 +60,7 @@ public class AlgaeGrabberOuttake extends Command {
       // If the timer has not been started, start it
       if (!timer.isRunning()) timer.start();
       // Run the motor for slightly longer as a safety measure
-      else if (timer.get() >= seconds) return true;
+      else if (timer.get() >= seconds) return true;     // TODO can we turn off the motor by detecting current?
     }
     return false;
   }

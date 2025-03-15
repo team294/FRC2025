@@ -23,7 +23,6 @@ import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.Wait;
 import frc.robot.Constants.*;
 import frc.robot.Constants.WristConstants.WristAngle;
-import frc.robot.Constants.WristConstants.WristRegion;
 
 public class Wrist extends SubsystemBase implements Loggable {
   private final FileLog log;
@@ -314,7 +313,6 @@ public class Wrist extends SubsystemBase implements Loggable {
       // Keep the wrist in usable range
       safeAngle = MathUtil.clamp(angle, WristConstants.WristAngle.LOWER_LIMIT.value, WristConstants.WristAngle.UPPER_LIMIT.value);
 
-      // WristRegion curRegion = getRegion(getWristAngle());
       // TODO add interlocks with elevator, algaeGrabber, and coralEffector
       
       // Phoenix6 PositionVoltage control:  Position is in rotor rotations, FeedFoward is in Volts
@@ -349,29 +347,6 @@ public class Wrist extends SubsystemBase implements Loggable {
       // do not know where the wrist is at.
       return WristAngle.LOWER_LIMIT.value;
     }
-  }
-
-  // ********** Wrist region methods
-
-  /**
-   * Gets the wrist region for a given angle.
-   * NOTE: This is for internal subsystem use only. Use getWristRegion() when calling from outside.
-   * @param degrees angle, in degrees
-   * @return corresponding wrist region
-   */
-  private WristRegion getRegion(double degrees) {
-    // TODO add wrist regions
-    return WristRegion.main; 
-  }
-
-  /**
-   * Gets the wrist region for a given angle.
-   * @param degrees angle, in degrees
-   * @return corresponding wrist region
-   */
-  public WristRegion getWristRegion() {
-    if (!wristCalibrated) return WristRegion.uncalibrated;
-    return getRegion(getWristAngle());
   }
 
   //****** CANcoder methods

@@ -7,6 +7,7 @@ package frc.robot.commands.sequences;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
@@ -31,10 +32,14 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
     addCommands(
       new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist, log),
       new AlgaeGrabberIntake(algaeGrabber, log),
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
-          0.5, 1.0,
-          TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees,
-          true, true, driveTrain, log)
+      either(
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
+            0.5, 1.0,
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees,
+            true, true, driveTrain, log).asProxy(),
+        none(),
+        () -> position == ElevatorWristPosition.ALGAE_LOWER || position == ElevatorWristPosition.ALGAE_UPPER
+      )
     );
   }
 }

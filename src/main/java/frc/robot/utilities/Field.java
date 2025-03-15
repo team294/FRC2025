@@ -23,6 +23,8 @@ public class Field {
     private final HashMap<ReefLocation, Pose2d> reefScoringPositions;
     private final HashMap<ReefLocation, Pose2d> reefScoringPositionsByAprilTag;
     private final ArrayList<Pose2d> reefScoringPositionListByAprilTag;
+    private final HashMap<String, Pose2d> reefAlgaePickupPositions;
+    private final ArrayList<Pose2d> reefAlgaePickupPositionsList;
     private final HashMap<Integer, Pose2d> reefAprilTagPositions;
     private final ArrayList<Pose2d> reefAprilTagPositionList;
     private final HashMap<Integer, Pose2d> loadingStationAprilTagPositions;
@@ -105,6 +107,15 @@ public class Field {
         reefScoringPositionsByAprilTag.put(ReefLocation.K, aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffset,  new Rotation2d(0))));
         reefScoringPositionsByAprilTag.put(ReefLocation.L, aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
         reefScoringPositionListByAprilTag = new ArrayList<Pose2d>(reefScoringPositionsByAprilTag.values());
+
+        reefAlgaePickupPositions = new HashMap<String, Pose2d>(6);
+        reefAlgaePickupPositions.put("AB", aprilTagFieldLayout.getTagPose(18).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions.put("CD", aprilTagFieldLayout.getTagPose(17).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions.put("EF", aprilTagFieldLayout.getTagPose(22).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions.put("GH", aprilTagFieldLayout.getTagPose(21).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions.put("IJ", aprilTagFieldLayout.getTagPose(20).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions.put("KL", aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositionsList = new ArrayList<Pose2d>(reefAlgaePickupPositions.values());
 
         reefAprilTagPositions = new HashMap<Integer, Pose2d>(18);
         if (aprilTagFieldLayout.getTagPose(1).isEmpty()) {
@@ -259,6 +270,28 @@ public class Field {
      */
     public Pose2d getReefScoringPosition(int tagNumber) {
         return reefAprilTagPositions.get(tagNumber);
+    }
+
+    /**
+     * Finds and returns the nearest Algae pickup position (against the base)
+     * @param currPos the robot's current positions
+     * @return The Pose2d of the nearest pickup position
+     */
+    public Pose2d getNearestAlgaePickupPosition(Pose2d currPos) {
+        return getNearestAlgaePickupPositionWithOffset(currPos, new Transform2d(0, 0, Rotation2d.kZero));
+    };
+
+    /**
+     * Finds and returns the nearest Algae pickup position (against the base) with an offset
+     * @param currPos the robot's current positions
+     * @param offset the offset by which the returned pose2d is tranformed
+     * @return The Pose2d of the nearest pickup position
+     */
+    public Pose2d getNearestAlgaePickupPositionWithOffset(Pose2d currPos, Transform2d offset){
+        Pose2d currPosBlue = (allianceSelection.getAlliance() == Alliance.Blue) ? currPos : flipPosition(currPos);
+        Pose2d nearestBluePos = currPosBlue.nearest(reefAlgaePickupPositionsList);   
+        Pose2d nearestBluePosWithOffset = nearestBluePos.transformBy(offset);
+        return (allianceSelection.getAlliance() == Alliance.Blue) ? nearestBluePosWithOffset : flipPosition(nearestBluePosWithOffset);
     }
 
     /**
