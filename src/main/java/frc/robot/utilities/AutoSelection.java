@@ -39,7 +39,9 @@ public class AutoSelection {
 		BargeLeft_JK_AlgaeKL("BargeLeft_JK_AlgaeKL", 5),
 		
 		PushFriend_JK("PushFriend_JK", 6),
-		PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 7);
+		PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 7),
+		
+		AutoCenterL1("AutoCenterL1", 8);
 
 
 		@SuppressWarnings({ "MemberName", "PMD.SingularField" })
@@ -229,6 +231,11 @@ public class AutoSelection {
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
 			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
+			log.writeLogEcho(true, "AutoSelect", "run AutoCenterL1");
+			autonomousCommandMain = new AutoCenterL1(driveTrain, elevator, wrist, coralEffector, algaeGrabber, allianceSelection, log);
 		}
 
 		else {
