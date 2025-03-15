@@ -29,12 +29,11 @@ public class ScorePieceSequence extends SequentialCommandGroup {
       either(
         new AlgaeGrabberOuttake(algaeGrabber, log),
         sequence( 
-          new CoralEffectorOuttake(coralEffector, log),
-          new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
-              0.5, 1.0, 
-              TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-              true, true, driveTrain, log).asProxy()
-          // new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist, log)
+          new CoralEffectorOuttake(coralEffector, log)
+          // new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
+          //     0.5, 1.0, 
+          //     TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+          //     true, true, driveTrain, log).asProxy()
         ), 
         () -> algaeGrabber.isAlgaePresent() || !coralEffector.isCoralPresent()
       )

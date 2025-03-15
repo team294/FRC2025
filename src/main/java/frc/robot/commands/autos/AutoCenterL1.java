@@ -15,6 +15,7 @@ import frc.robot.commands.*;
 import frc.robot.commands.sequences.CoralScorePrepSequence;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
+import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 public class AutoCenterL1 extends SequentialCommandGroup {
   /**
@@ -40,7 +41,13 @@ public class AutoCenterL1 extends SequentialCommandGroup {
       new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, log),
 
       // Score coral on L1
-      new CoralEffectorOuttake(coralEffector, log)
+      new CoralEffectorOuttake(coralEffector, log),
+
+      // Back up from the reef
+      new DriveToPose(CoordType.kRelative, new Pose2d(-Units.inchesToMeters(2), 0, new Rotation2d(0)), driveTrain, log),
+
+      // Move the elevator and wrist to intake position
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist, log)
     );
   }
 }

@@ -39,7 +39,7 @@ import frc.robot.Constants.FieldConstants.ReefLocation;
  */
 public class RobotContainer {
   // Define Key robot utilities (DO THIS FIRST)
-  private final FileLog log = new FileLog("A5");
+  private final FileLog log = new FileLog("A6");
   private final AllianceSelection allianceSelection = new AllianceSelection(log);
   private final Field field = new Field(allianceSelection, log);
   private final Timer matchTimer = new Timer();
@@ -286,13 +286,14 @@ public class RobotContainer {
     // left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log));
 
     left[1].onTrue(new AlgaeGrabberOuttake(algaeGrabber, log));
-    left[2].onTrue(sequence( 
-      new CoralEffectorOuttake(coralEffector, log),
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
-          0.5, 1.0, 
-          TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          true, true, driveTrain, log).asProxy()
-    ));
+    left[2].onTrue(new CoralEffectorOuttake(coralEffector, log));
+    // left[2].onTrue(sequence( 
+    //   new CoralEffectorOuttake(coralEffector, log)
+    //   new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
+    //       0.5, 1.0, 
+    //       TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+    //       true, true, driveTrain, log).asProxy()
+    // ));
 
     right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
 
