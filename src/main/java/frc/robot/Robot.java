@@ -21,13 +21,36 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
 
   // Timer for the garbage collector
-  Timer m_gcTimer = new Timer();
+  // Timer m_gcTimer = new Timer();
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
+      /* roboRIO settings to optimize Java memory use:
+        echo "vm.overcommit_memory=1" >> /etc/sysctl.conf
+        echo "vm.vfs_cache_pressure=1000" >> /etc/sysctl.conf
+        echo "vm.swappiness=100" >> /etc/sysctl.conf
+        sync
+        power cycle the RIO
+
+      To restiore default settings, edit /etc/sysctl.conf to set the
+      following values:
+        vm.overcommit_memory=2
+        vm.vfs_cache_pressure=100
+        vm.swappiness=60
+        power cycle the RIO
+
+      To stop the web server to save memory:
+      /etc/init.d/systemWebServer stop; update-rc.d -f systemWebServer remove; sync
+      chmod a-x /usr/local/natinst/etc/init.d/systemWebServer; sync
+
+      To restart the web server in order to image the RIO:
+      chmod a+x /usr/local/natinst/etc/init.d/systemWebServer; sync
+      power cycle the RIO
+    */
+
     // Read robot Preferences from the RoboRIO to the Constants class.  Be sure to do this
     // before creating the robotContainer, so that all of the subsystems see the values
     // from the RoboRIO instead of the default values.
@@ -38,7 +61,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     // Start the timer for the garbage collector
-    m_gcTimer.start();
+    // m_gcTimer.start();
   }
 
   /**
@@ -58,9 +81,9 @@ public class Robot extends TimedRobot {
     m_robotContainer.robotPeriodic();
 
     // Run the garbage collector every second
-    if (m_gcTimer.advanceIfElapsed(1)) {
-      System.gc();
-    }
+    // if (m_gcTimer.advanceIfElapsed(1)) {
+    //   System.gc();
+    // }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
