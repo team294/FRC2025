@@ -140,7 +140,7 @@ public class Hopper extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
     if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-      updateLog(false);
+      // updateLog(false);
       SmartDashboard.putNumber("Hopper Velocity", getHopperVelocity());
     }
   }
