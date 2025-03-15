@@ -17,9 +17,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 
 import frc.robot.Constants.CoordType;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
 import frc.robot.commands.autos.*;
+import frc.robot.commands.sequences.ScorePieceSequence;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 
@@ -30,6 +32,7 @@ import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 public class AutoSelection {
 	public enum RoutineSelectionOption {
 		NONE("None", -1),
+		DriveForwardL1ForRP("DriveForwardL1ForRP", 0),
 		DriveForwardOneMeter("DriveForwardOneMeter", 1),
 
 		BargeRight_EDC("BargeRight_EDC", 2),
@@ -180,6 +183,16 @@ public class AutoSelection {
 			// Starting position = facing drivers
 			log.writeLogEcho(true, "AutoSelect", "run None");
 			autonomousCommandMain = new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.DriveForwardL1ForRP.value) {
+			log.writeLogEcho(true, "AutoSelect", "run DriveForwardL1ForRP");
+			autonomousCommandMain = new SequentialCommandGroup(
+										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log),
+										new DriveToPose(CoordType.kRelative, new Pose2d(1.35, 0, new Rotation2d(0)), driveTrain, log),
+										new ElevatorSetPosition(ElevatorWristPosition.CORAL_L1, elevator, log),
+										new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log)
+			);				
 		}
 
 		else if (autoPlan == RoutineSelectionOption.DriveForwardOneMeter.value) {
