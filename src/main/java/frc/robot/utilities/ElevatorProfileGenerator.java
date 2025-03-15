@@ -163,9 +163,9 @@ public class ElevatorProfileGenerator {
   public double trackProfilePeriodic() {
     if (!profileEnabled) return 0.0;
 
-    if (currentMPVelocity > 0 || Math.abs(percentPowerFB) > 0.08) {
-      updateElevatorProfileLog(false);
-    }
+    // if (currentMPVelocity > 0 || Math.abs(percentPowerFB) > 0.08) {
+    //   updateElevatorProfileLog(false);
+    // }
 
     updateProfileCalcs();
     error = getCurrentPosition() - elevator.getElevatorPosition();
