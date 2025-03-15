@@ -26,7 +26,6 @@ public class CoralEffectorStop extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    coralEffector.setCoralHoldMode(false);
     coralEffector.stopCoralEffectorMotor();
     log.writeLog(false, "CoralEffectorStop", "Init");
   }
