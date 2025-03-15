@@ -167,7 +167,7 @@ public class SwerveModule {
 
     // Start with factory default TalonFX configuration
 		turningMotorConfig = new TalonFXConfiguration();
-    turningMotorConfig.MotorOutput.Inverted = driveMotorInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+    turningMotorConfig.MotorOutput.Inverted = turningMotorInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 		turningMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;  // Boot to brake mode, so robot starts quickly in auto
     turningMotorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.1;
 		turningMotorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.1;

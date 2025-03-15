@@ -4,18 +4,14 @@
 
 package frc.robot.commands.sequences;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
-import frc.robot.commands.CoralEffectorIntake;
-import frc.robot.commands.HopperSetPercent;
-import frc.robot.commands.HopperStop;
-import frc.robot.commands.WristElevatorSafeMove;
-import frc.robot.subsystems.CoralEffector;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Wrist;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.utilities.FileLog;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
@@ -34,10 +30,10 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
   public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, FileLog log) {
     addCommands(
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log),
-      new ParallelCommandGroup(
+      parallel(
         new HopperSetPercent(HopperConstants.intakePercent, hopper, log),
-        new CoralEffectorIntake(coralEffector, log)
-      ),
+        new CoralEffectorIntakeEnhanced(coralEffector, log)
+      ).handleInterrupt(hopper::stopHopperMotor),
       new HopperStop(hopper, log)
     );
   }

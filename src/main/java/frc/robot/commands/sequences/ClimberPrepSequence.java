@@ -5,13 +5,11 @@
 package frc.robot.commands.sequences;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
-import frc.robot.commands.ClimberSetAngle;
-import frc.robot.commands.WristElevatorSafeMove;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Wrist;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.utilities.FileLog;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 

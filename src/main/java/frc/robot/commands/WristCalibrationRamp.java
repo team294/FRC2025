@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.WristConstants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.FileLog;
 
@@ -61,6 +62,8 @@ public class WristCalibrationRamp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(percent) >= maxPercent;
+    return Math.abs(percent) >= maxPercent || 
+        (percent > 0 && wrist.getWristAngle() >= WristConstants.WristAngle.UPPER_LIMIT.value - 10.0) ||
+        (percent < 0 && wrist.getWristAngle() <= WristConstants.WristAngle.LOWER_LIMIT.value + 10.0);
   }
 }

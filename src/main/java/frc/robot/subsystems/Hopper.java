@@ -4,11 +4,11 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.HopperConstants;
@@ -32,11 +32,8 @@ public class Hopper extends SubsystemBase implements Loggable {
   private final TalonFX hopperMotor = new TalonFX(Constants.Ports.CANHopper);
 
   // Create variables for the hopper Kraken motor
-  private final StatusSignal<Voltage> hopperSupplyVoltage;            // Incoming bus voltage to motor, in volts
   private final StatusSignal<Temperature> hopperTemp;                 // Motor temperature, in degrees Celsius
-  private final StatusSignal<Double> hopperDutyCycle;                 // Motor duty cycle percent power, -1 to 1
   private final StatusSignal<Current> hopperStatorCurrent;            // Motor stator current, in amps (positive = forward, negative = reverse)
-  private final StatusSignal<Angle> hopperEncoderPosition;            // Encoder position, in pinion rotations
   private final StatusSignal<AngularVelocity> hopperEncoderVelocity;
   private final StatusSignal<Voltage> hopperVoltage;
 
@@ -50,17 +47,14 @@ public class Hopper extends SubsystemBase implements Loggable {
     logRotationKey = log.allocateLogRotation();
 
     // Get signal and sensor objects
-    hopperSupplyVoltage = hopperMotor.getSupplyVoltage();
     hopperTemp = hopperMotor.getDeviceTemp();
-    hopperDutyCycle = hopperMotor.getDutyCycle();
     hopperStatorCurrent = hopperMotor.getStatorCurrent();
-    hopperEncoderPosition = hopperMotor.getPosition();
     hopperEncoderVelocity = hopperMotor.getVelocity();
     hopperVoltage = hopperMotor.getMotorVoltage();
 
     // Configure the motor
     hopperConfig = new TalonFXConfiguration();
-    hopperConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    hopperConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     hopperConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     hopperConfig.Voltage.PeakForwardVoltage = HopperConstants.compensationVoltage;
     hopperConfig.Voltage.PeakReverseVoltage = -HopperConstants.compensationVoltage;
@@ -136,6 +130,8 @@ public class Hopper extends SubsystemBase implements Loggable {
    */
   public void updateLog(boolean logWhenDisabled) {
     log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
+      "Hopper Temp (C)", hopperTemp.refresh().getValueAsDouble(),
+      "Hopper Voltage (V)", hopperVoltage.refresh().getValueAsDouble(),
       "Hopper Current (Amps)", getHopperAmps(),
       "Hopper Velocity (RPM)", getHopperVelocity()
     );
@@ -145,6 +141,7 @@ public class Hopper extends SubsystemBase implements Loggable {
   public void periodic() {
     if (fastLogging || log.isMyLogRotation(logRotationKey)) {
       updateLog(false);
+      SmartDashboard.putNumber("Hopper Velocity", getHopperVelocity());
     }
   }
 }

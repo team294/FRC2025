@@ -5,10 +5,12 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfigurator;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
@@ -30,11 +32,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private final TalonFXS coralEffectorMotor = new TalonFXS(Ports.CANCoralEffector);
 
   // Create variables for the coralEffector Minion motor
-  private final StatusSignal<Voltage> coralEffectorSupplyVoltage;             // Incoming bus voltage to motor, in volts
   private final StatusSignal<Temperature> coralEffectorTemp;                  // Motor temperature, in degrees Celsius
-  private final StatusSignal<Double> coralEffectorDutyCycle;                  // Motor duty cycle percent power, -1 to 1
   private final StatusSignal<Current> coralEffectorStatorCurrent;             // Motor stator current, in amps (positive = forward, negative = reverse)
-  private final StatusSignal<Angle> coralEffectorEncoderPosition;             // Encoder position, in pinion rotations
   private final StatusSignal<AngularVelocity> coralEffectorEncoderVelocity;
   private final StatusSignal<Voltage> coralEffectorVoltage;
 
@@ -46,23 +45,26 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private final DigitalInput entrySensor = new DigitalInput(Ports.DIOCoralEffectorEntrySensor);
   private final DigitalInput exitSensor = new DigitalInput(Ports.DIOCoralEffectorExitSensor);
 
-  public CoralEffector(String subsystemName, FileLog log) {
+  private final Wrist wrist;
+  private boolean coralHoldMode = false;
+
+  public CoralEffector(String subsystemName, Wrist wrist, FileLog log) {
     this.subsystemName = subsystemName;
     this.log = log;
     logRotationKey = log.allocateLogRotation();
+    this.wrist = wrist;
 
     // Get signal and sensor objects
-    coralEffectorSupplyVoltage = coralEffectorMotor.getSupplyVoltage();
     coralEffectorTemp = coralEffectorMotor.getDeviceTemp();
-    coralEffectorDutyCycle = coralEffectorMotor.getDutyCycle();
     coralEffectorStatorCurrent = coralEffectorMotor.getStatorCurrent();
-    coralEffectorEncoderPosition = coralEffectorMotor.getPosition();
     coralEffectorEncoderVelocity = coralEffectorMotor.getVelocity();
     coralEffectorVoltage = coralEffectorMotor.getMotorVoltage();
 
     // Configure the motor
     coralEffectorConfig = new TalonFXSConfiguration();
-    coralEffectorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    coralEffectorConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
+    coralEffectorConfig.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Disabled;      // TODO  Should we enable this for the Minion?
+    coralEffectorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     coralEffectorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     coralEffectorConfig.Voltage.PeakForwardVoltage = CoralEffectorConstants.compensationVoltage;
     coralEffectorConfig.Voltage.PeakReverseVoltage = -CoralEffectorConstants.compensationVoltage;
@@ -149,6 +151,16 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   }
 
   /**
+   * Turns on or off coral hold mode whether or not we want to hold coral in place.
+   * @param newState true = turn on coralHoldMode, false = turn off coralHoldMode
+   */
+  public void setCoralHoldMode(boolean newState) {
+    coralHoldMode = newState;
+    // If turning off coral hold mode, turn off effector motors as well
+    if (!newState) stopCoralEffectorMotor();
+  }
+
+  /**
    * Gets the name of the subsystem.
    * @return the subsystem name
    */
@@ -171,6 +183,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
    */
   public void updateLog(boolean logWhenDisabled) {
     log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
+      "CoralEffector Temp (C)", coralEffectorTemp.refresh().getValueAsDouble(),
+      "CoralEffector Voltage (V)", coralEffectorVoltage.refresh().getValueAsDouble(),
       "CoralEffector Current (Amps)", getCoralEffectorAmps(),
       "CoralEffector Velocity (RPM)", getCoralEffectorVelocity()
     );
@@ -183,6 +197,23 @@ public class CoralEffector extends SubsystemBase implements Loggable {
       SmartDashboard.putBoolean("Coral in Entry", isCoralPresentInEntry());
       SmartDashboard.putBoolean("Coral in Exit", isCoralPresentInExit());
       SmartDashboard.putBoolean("Coral Safely In", isCoralSafelyIn());
+      SmartDashboard.putNumber("Coral Velocity", getCoralEffectorVelocity());
+    }
+
+    // If we need to keep hold of the coral, make sure it is held in a safe position
+    if (coralHoldMode) {
+      // Coral is too far forward, so move it back until it is in a safe position
+      if (isCoralPresentInExit() && !isCoralPresentInEntry()) {
+        setCoralEffectorPercentOutput(-CoralEffectorConstants.centeringPercent);
+      }
+      // Coral is too far back, so move it forward until it is in a safe position
+      if (!isCoralPresentInExit() && isCoralPresentInEntry()) {
+        setCoralEffectorPercentOutput(CoralEffectorConstants.centeringPercent);
+      }
+      // Coral is in a safe position, so apply power to keep it in place
+      if (isCoralPresentInEntry() && isCoralPresentInExit()) {
+        setCoralEffectorPercentOutput(CoralEffectorConstants.holdingPercent * Math.cos(Units.degreesToRadians(wrist.getWristAngle()))); 
+      }
     }
   }
 }

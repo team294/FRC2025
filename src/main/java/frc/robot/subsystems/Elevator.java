@@ -112,6 +112,8 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorMotor1Config.Voltage.PeakForwardVoltage = ElevatorConstants.compensationVoltage * ElevatorConstants.maxPercentOutput;
     elevatorMotor1Config.Voltage.PeakReverseVoltage = -ElevatorConstants.compensationVoltage * ElevatorConstants.maxPercentOutput;
     elevatorMotor1Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
     // If the current is above the supply current limit for the threshold time, the current is 
     // limited to the lower limit in order to prevent the breakers from tripping
@@ -130,14 +132,16 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorMotor2Config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevatorMotor2Config.Voltage.PeakForwardVoltage = ElevatorConstants.compensationVoltage;
     elevatorMotor2Config.Voltage.PeakReverseVoltage = -ElevatorConstants.compensationVoltage;
-    elevatorMotor1Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    elevatorMotor2Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
     // If the current is above the supply current limit for the threshold time, the current is 
     // limited to the lower limit in order to prevent the breakers from tripping
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Apply the configurations to motor 2
     // This is a blocking call and will wait up to 50ms-70ms for the config to apply
@@ -255,9 +259,9 @@ public class Elevator extends SubsystemBase implements Loggable {
       elevatorPositionControl = true;
       position = MathUtil.clamp(position, ElevatorPosition.LOWER_LIMIT.value, ElevatorPosition.UPPER_LIMIT.value);
       elevatorProfile.setProfileTarget(position);
-      log.writeLog(false, subsystemName, "setProfileTarget", "Target", position, "Allowed", "TRUE");
+      log.writeLog(true, subsystemName, "setProfileTarget", "Target", position, "Allowed", "TRUE");
     } else {
-      log.writeLog(false, subsystemName, "setProfileTarget", "Target", position, "Allowed", "FALSE");
+      log.writeLog(true, subsystemName, "setProfileTarget", "Target", position, "Allowed", "FALSE");
     }
   }
 
@@ -291,6 +295,24 @@ public class Elevator extends SubsystemBase implements Loggable {
       elevatorMotor2.setPosition(ElevatorPosition.LOWER_LIMIT.value);
       elevatorCalibrated = true;
   
+      // Set software limits after setting encoderZero
+      elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorPosition.UPPER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+      elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+      // Apply the configurations to motor 1
+      // This is a blocking call and will wait up to 50ms-70ms for the config to apply
+      elevatorMotor1Configurator.apply(elevatorMotor1Config);
+
+      // Set software limits after setting encoderZero
+      elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorPosition.UPPER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+      elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+      // Apply the configurations to motor 2
+      // This is a blocking call and will wait up to 50ms-70ms for the config to apply
+      elevatorMotor2Configurator.apply(elevatorMotor2Config);
+
       log.writeLog(true, subsystemName, "checkAndZeroElevatorEncoders", "Calibrated");
     }
   }
@@ -367,7 +389,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the velocity of the elevator using the average of the motors.
-   * @return double -1.0 to +1.0 (positive = up, negative = down)
+   * @return velocity, in in/s (positive = up, negative = down)
    */
   public double getElevatorVelocity() {
     return (getElevatorVelocity(1) + getElevatorVelocity(2)) / 2.0;
@@ -381,6 +403,15 @@ public class Elevator extends SubsystemBase implements Loggable {
    */
   public boolean isElevatorAtLowerLimit() {
     return !lowerLimitSensor1.get() || !lowerLimitSensor2.get();
+  }
+
+  /**
+   * Gets whether the elevator is at the lower limit.
+   * @return true = at lower limit, false = not at lower limit
+   */
+  public boolean isElevatorAtLowerLimit(int sensor) {
+    if (sensor == 1) return !lowerLimitSensor1.get();
+    else return !lowerLimitSensor2.get();
   }
 
   // ************ Information methods
@@ -535,6 +566,8 @@ public class Elevator extends SubsystemBase implements Loggable {
       SmartDashboard.putNumber("Elev Velocity", getElevatorVelocity());
 
       SmartDashboard.putBoolean("Elev Lower Limit", isElevatorAtLowerLimit());
+      SmartDashboard.putBoolean("Elev Lower Limit 1", isElevatorAtLowerLimit(1));
+      SmartDashboard.putBoolean("Elev Lower Limit 2", isElevatorAtLowerLimit(2));
 
       SmartDashboard.putNumber("Elev Rotations 1", getElevatorEncoderRotations(1));
       SmartDashboard.putNumber("Elev Rotations 2", getElevatorEncoderRotations(2));
