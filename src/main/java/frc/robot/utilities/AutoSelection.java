@@ -30,7 +30,7 @@ import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 public class AutoSelection {
 	public enum RoutineSelectionOption {
 		NONE("None", -1),
-		DriveForwardOneMeter("DriveForwardOneMeter", 1),
+		DriveForwardTwoMeters("DriveForwardTwoMeters", 1),
 
 		BargeRight_EDC("BargeRight_EDC", 2),
 		BargeLeft_JKL("BargeLeft_JKL", 3),
@@ -184,11 +184,11 @@ public class AutoSelection {
 			autonomousCommandMain = new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log);
 		}
 
-		else if (autoPlan == RoutineSelectionOption.DriveForwardOneMeter.value) {
-			log.writeLogEcho(true, "AutoSelect", "run DriveForwardOneMeter");
+		else if (autoPlan == RoutineSelectionOption.DriveForwardTwoMeters.value) {
+			log.writeLogEcho(true, "AutoSelect", "run DriveForwardTwoMeters");
 			autonomousCommandMain = new SequentialCommandGroup(
 										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log),
-										new DriveToPose(CoordType.kRelative, new Pose2d(1, 0, new Rotation2d(0)), driveTrain, log));
+										new DriveToPose(CoordType.kRelative, new Pose2d(2, 0, new Rotation2d(0)), driveTrain, log));
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeRight_EDC.value) {
