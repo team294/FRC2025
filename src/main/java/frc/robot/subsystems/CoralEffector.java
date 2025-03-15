@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfigurator;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
@@ -11,6 +12,7 @@ import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
@@ -34,12 +36,14 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   // Create variables for the coralEffector Minion motor
   private final StatusSignal<Temperature> coralEffectorTemp;                  // Motor temperature, in degrees Celsius
   private final StatusSignal<Current> coralEffectorStatorCurrent;             // Motor stator current, in amps (positive = forward, negative = reverse)
+  private final StatusSignal<Angle> coralEffectorEncoderPosition;                     // Encoder position, in pinion rotations
   private final StatusSignal<AngularVelocity> coralEffectorEncoderVelocity;
   private final StatusSignal<Voltage> coralEffectorVoltage;
 
   private final TalonFXSConfigurator coralEffectorConfigurator = coralEffectorMotor.getConfigurator();
   private TalonFXSConfiguration coralEffectorConfig;
   private VoltageOut coralEffectorVoltageControl = new VoltageOut(0.0);
+  private PositionVoltage coralEffectorPositionControl = new PositionVoltage(0.0);
 
   // Create entry and exit banner sensors
   private final DigitalInput entrySensor = new DigitalInput(Ports.DIOCoralEffectorEntrySensor);
@@ -57,6 +61,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     // Get signal and sensor objects
     coralEffectorTemp = coralEffectorMotor.getDeviceTemp();
     coralEffectorStatorCurrent = coralEffectorMotor.getStatorCurrent();
+    coralEffectorEncoderPosition = coralEffectorMotor.getPosition();
     coralEffectorEncoderVelocity = coralEffectorMotor.getVelocity();
     coralEffectorVoltage = coralEffectorMotor.getMotorVoltage();
 
@@ -81,6 +86,10 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     // This is a blocking call and will wait up to 200ms for the zero to apply.
     coralEffectorConfigurator.apply(coralEffectorConfig);
 
+    // Set feedback behaviors for position control
+    coralEffectorPositionControl.Slot = 0;
+    coralEffectorPositionControl.OverrideBrakeDurNeutral = true;
+
     stopCoralEffectorMotor();
   }
 
@@ -97,6 +106,15 @@ public class CoralEffector extends SubsystemBase implements Loggable {
    */
   public void stopCoralEffectorMotor() {
     setCoralEffectorPercentOutput(0);
+  }
+
+  /**
+   * Gets the angle (position) of the coralEffector motor.
+   * @return motor position, in rotations
+   */
+  public double getCoralEffectorPosition() {
+    coralEffectorEncoderPosition.refresh();
+    return coralEffectorEncoderPosition.getValueAsDouble();
   }
 
   /**
