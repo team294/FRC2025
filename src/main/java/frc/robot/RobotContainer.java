@@ -291,7 +291,7 @@ public class RobotContainer {
 
     right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
 
-    right[2].whileTrue(new DriveToReefWithOdometryForAlgae(driveTrain, field, log));
+    // right[2] will enable fine control while held, see DriveWithJoysticksAdvanced
   }
 
   /**
