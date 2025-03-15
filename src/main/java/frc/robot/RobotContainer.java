@@ -380,6 +380,7 @@ public class RobotContainer {
 
     elevator.stopElevatorMotors();
     wrist.stopWrist();
+    coralEffector.stopCoralEffectorMotor();
 
     matchTimer.stop();
     SignalLogger.stop();
@@ -408,6 +409,8 @@ public class RobotContainer {
     // The first command in auto mode initializes before this code is run, and
     // it will read the gyro/encoder before the reset goes into effect.
 
+    coralEffector.stopCoralEffectorMotor();
+
     if (elevator.isElevatorCalibrated()) {
       elevator.setElevatorProfileTarget(elevator.getElevatorPosition());
     } else {
@@ -435,6 +438,8 @@ public class RobotContainer {
     driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
     // driveTrain.setVisionForOdometryState(true);
+
+    coralEffector.stopCoralEffectorMotor();
 
     if (elevator.isElevatorCalibrated()) {
       elevator.setElevatorProfileTarget(elevator.getElevatorPosition());

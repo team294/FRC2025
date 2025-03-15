@@ -50,7 +50,7 @@ public class CoralEffectorIntakeEnhanced extends Command {
       coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition(), true);
     } else {
       // Back off the position, since due to coral velocity it likely overshot the balanced position between the sensors.
-      coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition() - CoralEffectorConstants.centerRotationsOvershoot, true);
+      coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition() + CoralEffectorConstants.centerRotationsOvershoot, true);
     }
   }
 

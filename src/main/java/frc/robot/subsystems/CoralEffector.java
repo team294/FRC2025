@@ -76,8 +76,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     coralEffectorConfig.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Disabled;      // TODO  Enable this for the Minion after turning on PhoenixPro.  Improves velocity measurement.
     coralEffectorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     coralEffectorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    coralEffectorConfig.Voltage.PeakForwardVoltage = CoralEffectorConstants.compensationVoltage;
-    coralEffectorConfig.Voltage.PeakReverseVoltage = -CoralEffectorConstants.compensationVoltage;
+    coralEffectorConfig.Voltage.PeakForwardVoltage = 2.0;  // Voltage limit needed to cap feedback during PositionVoltage control to prevent oscillation
+    coralEffectorConfig.Voltage.PeakReverseVoltage = -2.0;  // Voltage limit needed to cap feedback during PositionVoltage control to prevent oscillation
     coralEffectorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;  // Time from 0 to full power, in seconds
     coralEffectorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3;  // Time from 0 to full power, in seconds
 
@@ -102,7 +102,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     // Set feedback behaviors for position control
     coralEffectorPositionControl.Slot = 0;
     coralEffectorPositionControl.OverrideBrakeDurNeutral = true;
-
+  
     // Apply the configurations to the motor.
     // This is a blocking call and will wait up to 200ms for the zero to apply.
     coralEffectorConfigurator.apply(coralEffectorConfig);
@@ -144,7 +144,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
    */
   public void setCoralEffectorPosition(double position, boolean autoHold) {
     coralEffectorMotor.setControl(coralEffectorPositionControl.withPosition(position)
-          .withFeedForward(-CoralEffectorConstants.kG * Math.cos(Units.degreesToRadians(wrist.getWristAngle()))));  // TODO add an offset angle to true vertical coral, if needed.
+          .withFeedForward(-CoralEffectorConstants.kG * Math.cos(Units.degreesToRadians(wrist.getWristAngle()))));  // add an offset angle to true vertical coral, if needed.
     targetPosition = position;
     autoHoldMode = autoHold;
   }
@@ -273,7 +273,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
       if (!isCoralPresentInExit() && isCoralPresentInEntry()) {
         setCoralEffectorPosition(targetPosition + CoralEffectorConstants.centeringStepSize, autoHoldMode);
       }
-      //TODO if this is too slow, then set % power slow (0.025%) to center the coral, then set the position
+      // Note: if this is too slow, then set % power slow (0.025%) to center the coral, then set the position
     }
   }
 }
