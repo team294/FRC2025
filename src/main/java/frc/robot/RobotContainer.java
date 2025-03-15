@@ -39,7 +39,7 @@ import frc.robot.Constants.FieldConstants.ReefLocation;
  */
 public class RobotContainer {
   // Define Key robot utilities (DO THIS FIRST)
-  private final FileLog log = new FileLog("A6");
+  private final FileLog log = new FileLog("A7");
   private final AllianceSelection allianceSelection = new AllianceSelection(log);
   private final Field field = new Field(allianceSelection, log);
   private final Timer matchTimer = new Timer();
@@ -52,7 +52,7 @@ public class RobotContainer {
   private final CoralEffector coralEffector = new CoralEffector("CoralEffector", wrist, log);
   private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
   private final Elevator elevator = new Elevator("Elevator", log);
-  private final Climber climber = new Climber("Climber", log);
+  // private final Climber climber = new Climber("Climber", log);
 
   // Define other utilities
   private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
@@ -154,11 +154,11 @@ public class RobotContainer {
     SmartDashboard.putData("Elevator Calibration Routine", new ElevatorCalibration(0.1, elevator, log));
 
     // Climber
-    SmartDashboard.putData("Climber STOP", new ClimberStop(climber, log));
-    SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber, log));
-    SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber, log));
-    SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
-    SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber, log));
+    // SmartDashboard.putData("Climber STOP", new ClimberStop(climber, log));
+    // SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber, log));
+    // SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber, log));
+    // SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
+    // SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber, log));
     
     // Autos
     SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper));
@@ -185,8 +185,8 @@ public class RobotContainer {
     SmartDashboard.putData("Coral Score Prep Sequence L3", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, log));
     SmartDashboard.putData("Coral Score Prep Sequence L4", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, log));
 
-    SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber, log));
-    SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
+    // SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber, log));
+    // SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
   }
  
    private void configureButtonBindings() {
@@ -331,13 +331,13 @@ public class RobotContainer {
 
     coP[16].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
 
-    coP[5].whileTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber, log));
-    coP[6].whileTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber, log));
+    // coP[5].whileTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber, log));
+    // coP[6].whileTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber, log));
 
-    coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber, log));
-    coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
+    // coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber, log));
+    // coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
 
-    coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
+    // coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
 
     coP[9].onTrue(new CoralEffectorOuttake(coralEffector, log));
     coP[10].onTrue(new CoralEffectorIntakeEnhanced(coralEffector, log));
