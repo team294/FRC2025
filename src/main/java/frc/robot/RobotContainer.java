@@ -149,6 +149,7 @@ public class RobotContainer {
     SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L2, elevator, log));
     SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L3, elevator, log));
     SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L4, elevator, log));
+    SmartDashboard.putData("Elevator Set Position", new ElevatorSetPosition(elevator, log));
     SmartDashboard.putData("Elevator Calibration Routine", new ElevatorCalibration(0.1, elevator, log));
 
     // Climber

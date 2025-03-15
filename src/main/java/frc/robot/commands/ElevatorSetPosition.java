@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Elevator;
@@ -15,6 +16,7 @@ public class ElevatorSetPosition extends Command {
   private double target;
   private double tolerance = 0.5;
   private int toleranceCount = 0;
+  private boolean fromShuffleboard;
 
   /**
    * Sets the target position of the elevator to run a generated profile.
@@ -44,10 +46,23 @@ public class ElevatorSetPosition extends Command {
     addRequirements(elevator);
   }
 
+  public ElevatorSetPosition(Elevator elevator, FileLog log) {
+    this.elevator = elevator;
+    this.log = log;
+    fromShuffleboard = true;
+    addRequirements(elevator);
+
+    if (SmartDashboard.getNumber("Elevator Position", -9999.9) == -9999.9) {
+      SmartDashboard.putNumber("Elevator Position", 0);
+    }
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     // TODO add interlocks with wrist, algaeGrabber, and coralEffector
+    if (fromShuffleboard) target = SmartDashboard.getNumber("Elevator Position", 0.0);
+
     elevator.setElevatorProfileTarget(target);
     toleranceCount = 0;
 
