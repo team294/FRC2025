@@ -313,7 +313,7 @@ public final class Constants {
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.45;        // TODO CALIBRATE FOR 2025
-    public static final double reverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
+    public static final double reverseIntakePercent = -0.2; // TODO CALIBRATE FOR 2025
   }
 
   public static final class CoralEffectorConstants {
