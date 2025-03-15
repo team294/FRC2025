@@ -37,7 +37,7 @@ public class DriveWithJoysticksAdvanced extends Command {
   private double goalAngle;                   // In radians
   private double startTime;
   // private boolean loadingStationLock;         // Whether we are locking our angle to the closest loading station
-  // // private boolean previousLoadingStationLock; // Whether we were locking our angle to a loading station in the previous loop
+  // private boolean previousLoadingStationLock; // Whether we were locking our angle to a loading station in the previous loop
   // private boolean reefLock;                   // Whether we are locking our angle to the closest reef face
   // private boolean previousReefLock;           // Whether we were locking our angle to a reef in the previous loop
   private boolean fineControl;
