@@ -108,6 +108,9 @@ public final class Constants {
     // Width of robot in meters plus bumpers, in meters
     public static final double robotWidth = Units.inchesToMeters(35.5);   // CALIBRATED (for DriveToReef)
 
+    // Length of the robot in meters plus bumpers, in meters
+    public static final double robotLength = Units.inchesToMeters(36.0);
+
     // Diagonal width of robot, in meters
     public static final double robotDiagonal = Math.sqrt(2) * robotWidth;
   }
