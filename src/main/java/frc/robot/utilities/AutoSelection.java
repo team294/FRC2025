@@ -32,8 +32,8 @@ import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 public class AutoSelection {
 	public enum RoutineSelectionOption {
 		NONE("None", -1),
-		DriveForwardL1ForRP("DriveForwardL1ForRP", 0),
-		DriveForwardOneMeter("DriveForwardOneMeter", 1),
+
+		DriveForwardTwoMeters("DriveForwardTwoMeters", 1),
 
 		BargeRight_EDC("BargeRight_EDC", 2),
 		BargeLeft_JKL("BargeLeft_JKL", 3),
@@ -42,7 +42,9 @@ public class AutoSelection {
 		BargeLeft_JK_AlgaeKL("BargeLeft_JK_AlgaeKL", 5),
 		
 		PushFriend_JK("PushFriend_JK", 6),
-		PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 7);
+		PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 7),
+		
+		AutoCenterL1("AutoCenterL1", 8);
 
 
 		@SuppressWarnings({ "MemberName", "PMD.SingularField" })
@@ -185,21 +187,11 @@ public class AutoSelection {
 			autonomousCommandMain = new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log);
 		}
 
-		else if (autoPlan == RoutineSelectionOption.DriveForwardL1ForRP.value) {
-			log.writeLogEcho(true, "AutoSelect", "run DriveForwardL1ForRP");
+		else if (autoPlan == RoutineSelectionOption.DriveForwardTwoMeters.value) {
+			log.writeLogEcho(true, "AutoSelect", "run DriveForwardTwoMeters");
 			autonomousCommandMain = new SequentialCommandGroup(
 										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log),
-										new DriveToPose(CoordType.kRelative, new Pose2d(1.35, 0, new Rotation2d(0)), driveTrain, log),
-										new ElevatorSetPosition(ElevatorWristPosition.CORAL_L1, elevator, log),
-										new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log)
-			);				
-		}
-
-		else if (autoPlan == RoutineSelectionOption.DriveForwardOneMeter.value) {
-			log.writeLogEcho(true, "AutoSelect", "run DriveForwardOneMeter");
-			autonomousCommandMain = new SequentialCommandGroup(
-										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log),
-										new DriveToPose(CoordType.kRelative, new Pose2d(1, 0, new Rotation2d(0)), driveTrain, log));
+										new DriveToPose(CoordType.kRelative, new Pose2d(2, 0, new Rotation2d(0)), driveTrain, log));
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeRight_EDC.value) {
@@ -242,6 +234,11 @@ public class AutoSelection {
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
 			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache, field, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
+			log.writeLogEcho(true, "AutoSelect", "run AutoCenterL1");
+			autonomousCommandMain = new AutoCenterL1(driveTrain, elevator, wrist, coralEffector, algaeGrabber, allianceSelection, log);
 		}
 
 		else {

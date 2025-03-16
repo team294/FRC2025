@@ -154,7 +154,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
     if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-      updateLog(false);
+      // updateLog(false);
       SmartDashboard.putBoolean("Algae Present", isAlgaePresent());
       SmartDashboard.putNumber("AlgaeGrabber Velocity", getAlgaeGrabberVelocity());
     }
