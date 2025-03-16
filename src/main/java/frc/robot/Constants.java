@@ -108,6 +108,9 @@ public final class Constants {
     // Width of robot in meters plus bumpers, in meters
     public static final double robotWidth = Units.inchesToMeters(35.5);   // CALIBRATED (for DriveToReef)
 
+    // Length of the robot in meters plus bumpers, in meters
+    public static final double robotLength = Units.inchesToMeters(36.0);
+
     // Diagonal width of robot, in meters
     public static final double robotDiagonal = Math.sqrt(2) * robotWidth;
   }
@@ -310,7 +313,7 @@ public final class Constants {
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.45;        // TODO CALIBRATE FOR 2025
-    public static final double reverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
+    public static final double reverseIntakePercent = -0.2; // TODO CALIBRATE FOR 2025
   }
 
   public static final class CoralEffectorConstants {
@@ -404,7 +407,7 @@ public final class Constants {
     public enum ElevatorWristPosition {
       START_CONFIG(0.0, 100.0),
 
-      CORAL_HP(0.0, 75.0),
+      CORAL_HP(0.0, 78.0),
 
       CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),

@@ -93,10 +93,10 @@ public class WristElevatorSafeMove extends Command {
     double curWristAngle = wrist.getWristAngle();
     double curElevPos = elevator.getElevatorPosition();
 
-    log.writeLog(false, "WristElevatorSafeMove", "Execute", "CurState", curState, 
-      "Wrist Target", wrist.getCurrentWristTarget(), "Wrist Angle", curWristAngle, 
-      "Elev Target", elevator.getCurrentElevatorTarget(), "Cur Elev Pos", curElevPos,
-      "Cur Region", (curRegion != null ? curRegion.regionIndex : ""));
+    // log.writeLog(false, "WristElevatorSafeMove", "Execute", "CurState", curState, 
+    //   "Wrist Target", wrist.getCurrentWristTarget(), "Wrist Angle", curWristAngle, 
+    //   "Elev Target", elevator.getCurrentElevatorTarget(), "Cur Elev Pos", curElevPos,
+    //   "Cur Region", (curRegion != null ? curRegion.regionIndex : ""));
 
     switch (curState) {
       case DONE:

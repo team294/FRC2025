@@ -518,9 +518,9 @@ public class Climber extends SubsystemBase implements Loggable {
       SmartDashboard.putNumber("Climber temp", climberTemp.refresh().getValueAsDouble());
     }
 
-    if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-      updateClimberLog(false);
-    }
+    // if (fastLogging || log.isMyLogRotation(logRotationKey)) {
+    //   updateClimberLog(false);
+    // }
 
     // If the CANcoder stops reading, apply RotorEncoder configuration and stop using the CANcoder
     // This condition should only occur one time (if at all)
