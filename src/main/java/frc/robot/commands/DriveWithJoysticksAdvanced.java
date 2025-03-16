@@ -38,7 +38,7 @@ public class DriveWithJoysticksAdvanced extends Command {
   private double startTime;
   // private boolean loadingStationLock;         // Whether we are locking our angle to the closest loading station
   // private boolean previousLoadingStationLock; // Whether we were locking our angle to a loading station in the previous loop
-  // private boolean reefLock;                   // Whether we are locking our angle to the closest reef face
+  private boolean reefBasedControl;                   // Fine control, robot-oriented control (not field-relative), and turn off theta joystick
   // private boolean previousReefLock;           // Whether we were locking our angle to a reef in the previous loop
   private boolean fineControl;
 
@@ -78,7 +78,7 @@ public class DriveWithJoysticksAdvanced extends Command {
     // loadingStationLock = false;
     // previousLoadingStationLock = false;
 
-    // reefLock = false;
+    reefBasedControl = false;
     // previousReefLock = false;
 
     fineControl = false;
@@ -100,14 +100,14 @@ public class DriveWithJoysticksAdvanced extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // reefLock = rightJoystick.getRawButton(1);
+    reefBasedControl = rightJoystick.getRawButton(1);        // Turn on fine control, robot-oriented control (not field-relative), and turn off theta joystick
     // loadingStationLock = rightJoystick.getRawButton(2);
-    fineControl = rightJoystick.getRawButton(2);
+    fineControl = rightJoystick.getRawButton(2) || reefBasedControl;
 
 
     fwdVelocity = allianceSelection.getAlliance() == Alliance.Blue ? -leftJoystick.getY() : leftJoystick.getY();
     leftVelocity = allianceSelection.getAlliance() == Alliance.Blue ? -leftJoystick.getX() : leftJoystick.getX();
-    turnRate = /*(loadingStationLock || reefLock) ? 0 : */ -rightJoystick.getX();
+    turnRate = (reefBasedControl) ? 0 : -rightJoystick.getX();
 
     if (log.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putNumber("Joystick Left-Y", fwdVelocity);
@@ -212,14 +212,14 @@ public class DriveWithJoysticksAdvanced extends Command {
           SmartDashboard.putNumber("DriveWJAdv Angle Error", Math.toDegrees(angleError));
           SmartDashboard.putBoolean("DriveWJAdv In Tolerance", angleInTolerance);
         }
-        driveTrain.drive(fwdVelocity, leftVelocity, nextTurnRate, true, false);
+        driveTrain.drive(fwdVelocity, leftVelocity, nextTurnRate, !reefBasedControl, false);
 
       } else {
         // Uses the regular turnRate if the theta joystick is in the deadband less than 100ms
 
         log.writeLog(false, "DriveWithJoystickAdvance", "Joystick", "Fwd", fwdVelocity, "Left", leftVelocity, "Turn", turnRate, 
             "Robot angle", Math.toDegrees(driveTrain.getPose().getRotation().getRadians()), "Goal Angle", "N/A", "Stopped", stopped);
-        driveTrain.drive(fwdVelocity, leftVelocity, turnRate, true, false);
+        driveTrain.drive(fwdVelocity, leftVelocity, turnRate, !reefBasedControl, false);
       }
 
     } else {
@@ -229,7 +229,7 @@ public class DriveWithJoysticksAdvanced extends Command {
             "Robot angle", Math.toDegrees(driveTrain.getPose().getRotation().getRadians()) );
       }
       
-      driveTrain.drive(fwdVelocity, leftVelocity, turnRate, true, false);
+      driveTrain.drive(fwdVelocity, leftVelocity, turnRate, !reefBasedControl, false);
       
       firstInDeadband = true;
       firstCorrecting = true;
