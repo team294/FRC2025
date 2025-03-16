@@ -35,12 +35,14 @@ public class AutoCenterL1 extends SequentialCommandGroup {
       // Reset pose so robot is facing the correct direction
       new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log),
 
-      // Drive to the reef using relative DriveToPose
-      // The distance between the back of the start line and front of the reef is 89.95 inches (increased to prevent undershoot)
-      new DriveToPose(CoordType.kRelative, new Pose2d(Units.inchesToMeters(91 - RobotDimensions.robotLength / 2.0), 0, new Rotation2d(0)), driveTrain, log),
-      
-      // Prep to score coral on L1
-      new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, log),
+      parallel(
+        // Drive to the reef using relative DriveToPose
+        // The distance between the back of the start line and front of the reef is 89.95 inches (increased to prevent undershoot)
+        new DriveToPose(CoordType.kRelative, new Pose2d(Units.inchesToMeters(91 - RobotDimensions.robotLength / 2.0), 0, new Rotation2d(0)), driveTrain, log),
+        
+        // Prep to score coral on L1
+        new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, log)
+      ),
 
       // Score coral on L1
       new CoralEffectorOuttake(coralEffector, log),
@@ -49,7 +51,7 @@ public class AutoCenterL1 extends SequentialCommandGroup {
       waitSeconds(2.0),
 
       // Back up from the reef
-      new DriveToPose(CoordType.kRelative, new Pose2d(-Units.inchesToMeters(2), 0, new Rotation2d(0)), driveTrain, log),
+      new DriveToPose(CoordType.kRelative, new Pose2d(-Units.inchesToMeters(20), 0, new Rotation2d(0)), driveTrain, log),
 
       // Move the elevator and wrist to intake position
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist, log)
