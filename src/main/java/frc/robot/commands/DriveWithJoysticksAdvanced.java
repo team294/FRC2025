@@ -105,8 +105,8 @@ public class DriveWithJoysticksAdvanced extends Command {
     fineControl = rightJoystick.getRawButton(2) || reefBasedControl;
 
 
-    fwdVelocity = allianceSelection.getAlliance() == Alliance.Blue ? -leftJoystick.getY() : leftJoystick.getY();
-    leftVelocity = allianceSelection.getAlliance() == Alliance.Blue ? -leftJoystick.getX() : leftJoystick.getX();
+    fwdVelocity = (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getY() : leftJoystick.getY();
+    leftVelocity = (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getX() : leftJoystick.getX();
     turnRate = (reefBasedControl) ? 0 : -rightJoystick.getX();
 
     if (log.isMyLogRotation(logRotationKey)) {
