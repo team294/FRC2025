@@ -61,13 +61,13 @@ public class AutoCenterL4 extends SequentialCommandGroup {
           true, true, driveTrain, log),
 
       // Wait for elevator to stabilize
-      new WaitCommand(1.5),
+      new WaitCommand(0.75),
 
       // Score coral on L4
       new CoralEffectorOuttake(coralEffector, log),
 
       // Wait after scoring
-      new WaitCommand(1),
+      new WaitCommand(0.5),
 
       // Back up for save elevator move
       new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance - 0.6, 0, new Rotation2d(0)), 
