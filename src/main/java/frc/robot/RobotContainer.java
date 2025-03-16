@@ -54,15 +54,15 @@ public class RobotContainer {
   private final Elevator elevator = new Elevator("Elevator", log);
   // private final Climber climber = new Climber("Climber", log);
 
-  // Define other utilities
-  private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
-  private final AutoSelection autoSelection = new AutoSelection(trajectoryCache, allianceSelection, field, log);
-
   // Define controllers
   private final Joystick leftJoystick = new Joystick(OIConstants.usbLeftJoystick);
   private final Joystick rightJoystick = new Joystick(OIConstants.usbRightJoystick);
   private final Joystick coPanel = new Joystick(OIConstants.usbCoPanel);
   private final CommandXboxController xboxController = new CommandXboxController(OIConstants.usbXboxController);
+
+  // Define other utilities
+  private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
+  private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field, log);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -387,7 +387,7 @@ public class RobotContainer {
 
     driveTrain.stopMotors();             // SAFETY: Turn off any closed loop control that may be running, so the robot does not move when re-enabled
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
-    driveTrain.setVisionForOdometryState(false);
+    driveTrain.setVisionForOdometryState(true);
 
     elevator.stopElevatorMotors();
     wrist.stopWrist();
@@ -414,7 +414,7 @@ public class RobotContainer {
     log.writeLogEcho(true, "Auto", "Mode Init");
 
     driveTrain.setDriveModeCoast(false);
-    driveTrain.setVisionForOdometryState(false);
+    driveTrain.setVisionForOdometryState(true);
 
     // NOTE: Do not reset the gyro or encoder here!
     // The first command in auto mode initializes before this code is run, and
