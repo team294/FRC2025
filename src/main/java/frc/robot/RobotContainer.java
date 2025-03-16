@@ -296,6 +296,10 @@ public class RobotContainer {
     // ));
 
     right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
+    // right[1] after DriveToReefWithOdometryForCoral ends, if right[1] is still being held,
+    // then DriveWithJoystickAdvanced will stay in fine control mode, robot-relative control (not field relative),
+    // and theta locked (right joystick inactive).
+    // Normal behavior resmes when button is released.
 
     // right[2] will enable fine control while held, see DriveWithJoysticksAdvanced
   }
@@ -410,7 +414,7 @@ public class RobotContainer {
     log.writeLogEcho(true, "Auto", "Mode Init");
 
     driveTrain.setDriveModeCoast(false);
-    // driveTrain.setVisionForOdometryState(false);
+    driveTrain.setVisionForOdometryState(false);
 
     // NOTE: Do not reset the gyro or encoder here!
     // The first command in auto mode initializes before this code is run, and
@@ -444,7 +448,7 @@ public class RobotContainer {
 
     driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
-    // driveTrain.setVisionForOdometryState(true);
+    driveTrain.setVisionForOdometryState(true);
 
     coralEffector.stopCoralEffectorMotor();
 

@@ -32,6 +32,9 @@ public class AutoCenterL1 extends SequentialCommandGroup {
    */
   public AutoCenterL1(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, AllianceSelection allianceSelection, FileLog log) {
     addCommands(
+      // Turn off vision odometry
+      new VisionOdometryStateSet(false, driveTrain, log),
+
       // Reset pose so robot is facing the correct direction
       new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log),
 
