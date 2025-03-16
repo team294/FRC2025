@@ -346,7 +346,7 @@ public class RobotContainer {
     coP[12].onTrue(new AlgaeGrabberIntake(algaeGrabber, log));
 
     coP[15].onTrue(new HopperSetPercent(HopperConstants.reverseIntakePercent, hopper, log));
-    coP[15].onTrue(new HopperStop(hopper, log));
+    coP[15].onFalse(new HopperStop(hopper, log));
 
     // 180 if we are red, 0 if we are blue
     coP[7].onTrue(either(
