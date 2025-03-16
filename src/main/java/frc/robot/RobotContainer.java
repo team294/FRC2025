@@ -123,6 +123,8 @@ public class RobotContainer {
     SmartDashboard.putData("CoralEffector Intake", new CoralEffectorIntake(coralEffector, log));
     SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector, log));
     SmartDashboard.putData("CoralEffector Intake Enhanced", new CoralEffectorIntakeEnhanced(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Set Percent", new CoralEffectorSetPercent(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Set Position", new CoralEffectorSetPosition(false, coralEffector, log));
 
     // AlgaeGrabber
     SmartDashboard.putData("AlgaeGrabber In", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
@@ -234,6 +236,9 @@ public class RobotContainer {
     xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, log));
     xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, log));
 
+    // Prep and intake algae from Lolipop with Back
+    xbBack.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOLIPOP, driveTrain, elevator, wrist, algaeGrabber, log));
+
     // Prep to score algae in Net with D-Pad Up and Processor with D-Pad Right
     xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET,elevator, wrist, algaeGrabber, log));
     xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber, log));
@@ -335,7 +340,7 @@ public class RobotContainer {
     coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
 
     coP[9].onTrue(new CoralEffectorOuttake(coralEffector, log));
-    coP[10].onTrue(new CoralEffectorIntake(coralEffector, log));
+    coP[10].onTrue(new CoralEffectorIntakeEnhanced(coralEffector, log));
 
     coP[11].onTrue(new AlgaeGrabberOuttake(algaeGrabber, log));
     coP[12].onTrue(new AlgaeGrabberIntake(algaeGrabber, log));
@@ -379,6 +384,7 @@ public class RobotContainer {
 
     elevator.stopElevatorMotors();
     wrist.stopWrist();
+    coralEffector.stopCoralEffectorMotor();
 
     matchTimer.stop();
     SignalLogger.stop();
@@ -407,6 +413,8 @@ public class RobotContainer {
     // The first command in auto mode initializes before this code is run, and
     // it will read the gyro/encoder before the reset goes into effect.
 
+    coralEffector.stopCoralEffectorMotor();
+
     if (elevator.isElevatorCalibrated()) {
       elevator.setElevatorProfileTarget(elevator.getElevatorPosition());
     } else {
@@ -434,6 +442,8 @@ public class RobotContainer {
     driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
     // driveTrain.setVisionForOdometryState(true);
+
+    coralEffector.stopCoralEffectorMotor();
 
     if (elevator.isElevatorCalibrated()) {
       elevator.setElevatorProfileTarget(elevator.getElevatorPosition());
