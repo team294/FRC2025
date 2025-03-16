@@ -252,8 +252,11 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-      updateLog(false);
+    // if (fastLogging || log.isMyLogRotation(logRotationKey)) {
+    //   updateLog(false);
+    // }
+
+    if (log.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Coral in Entry", isCoralPresentInEntry());
       SmartDashboard.putBoolean("Coral in Exit", isCoralPresentInExit());
       SmartDashboard.putBoolean("Coral Safely In", isCoralSafelyIn());

@@ -31,15 +31,15 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
   public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
     addCommands(
       new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist, log),
-      new AlgaeGrabberIntake(algaeGrabber, log),
-      either(
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
-            0.5, 1.0,
-            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees,
-            true, true, driveTrain, log).asProxy(),
-        none(),
-        () -> position == ElevatorWristPosition.ALGAE_LOWER || position == ElevatorWristPosition.ALGAE_UPPER
-      )
+      new AlgaeGrabberIntake(algaeGrabber, log)
+      // either(
+      //   new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
+      //       0.5, 1.0,
+      //       TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees,
+      //       true, true, driveTrain, log).asProxy(),
+      //   none(),
+      //   () -> position == ElevatorWristPosition.ALGAE_LOWER || position == ElevatorWristPosition.ALGAE_UPPER
+      // )
     );
   }
 }

@@ -53,4 +53,9 @@ public class WristCalibrateManual extends InstantCommand {
 
     log.writeLog(true, "WristCalibrateManual", "Init", "Angle", angle);
   }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }
