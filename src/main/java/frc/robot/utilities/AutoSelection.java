@@ -12,6 +12,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -30,7 +31,7 @@ import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 public class AutoSelection {
 	public enum RoutineSelectionOption {
 		NONE("None", -1),
-		DriveForwardOneMeter("DriveForwardOneMeter", 1),
+		DriveForwardTwoMeters("DriveForwardTwoMeters", 1),
 
 		BargeRight_EDC("BargeRight_EDC", 2),
 		BargeLeft_JKL("BargeLeft_JKL", 3),
@@ -39,7 +40,10 @@ public class AutoSelection {
 		BargeLeft_JK_AlgaeKL("BargeLeft_JK_AlgaeKL", 5),
 		
 		PushFriend_JK("PushFriend_JK", 6),
-		PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 7);
+		PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 7),
+		
+		AutoCenterL1("AutoCenterL1", 8),
+		AutoCenterL4("AutoCenterL4", 9);
 
 
 		@SuppressWarnings({ "MemberName", "PMD.SingularField" })
@@ -69,6 +73,7 @@ public class AutoSelection {
 	private final AllianceSelection allianceSelection;
 	private final TrajectoryCache trajectoryCache;
 	private final Field field;
+	private final Joystick rightJoystick;
 	private final FileLog log;
 
 	private SendableChooser<Integer> autoRoutineChooser = new SendableChooser<>();
@@ -84,7 +89,8 @@ public class AutoSelection {
 	 * @param allianceSelection AllianceSelection alliance
 	 * @param log FileLog log
 	 */
-	public AutoSelection(TrajectoryCache trajectoryCache, AllianceSelection allianceSelection, Field field, FileLog log) {
+	public AutoSelection(Joystick rightJoystick, TrajectoryCache trajectoryCache, AllianceSelection allianceSelection, Field field, FileLog log) {
+		this.rightJoystick = rightJoystick;
 		this.trajectoryCache = trajectoryCache;
 		this.allianceSelection = allianceSelection;
 		this.field = field;
@@ -182,11 +188,11 @@ public class AutoSelection {
 			autonomousCommandMain = new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log);
 		}
 
-		else if (autoPlan == RoutineSelectionOption.DriveForwardOneMeter.value) {
-			log.writeLogEcho(true, "AutoSelect", "run DriveForwardOneMeter");
+		else if (autoPlan == RoutineSelectionOption.DriveForwardTwoMeters.value) {
+			log.writeLogEcho(true, "AutoSelect", "run DriveForwardTwoMeters");
 			autonomousCommandMain = new SequentialCommandGroup(
 										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log),
-										new DriveToPose(CoordType.kRelative, new Pose2d(1, 0, new Rotation2d(0)), driveTrain, log));
+										new DriveToPose(CoordType.kRelative, new Pose2d(2, 0, new Rotation2d(0)), driveTrain, log));
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeRight_EDC.value) {
@@ -229,6 +235,16 @@ public class AutoSelection {
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
 			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
+			log.writeLogEcho(true, "AutoSelect", "run AutoCenterL1");
+			autonomousCommandMain = new AutoCenterL1(driveTrain, elevator, wrist, coralEffector, algaeGrabber, allianceSelection, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.AutoCenterL4.value) {
+			log.writeLogEcho(true, "AutoSelect", "run AutoCenterL4");
+			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, field, rightJoystick, allianceSelection, log);
 		}
 
 		else {

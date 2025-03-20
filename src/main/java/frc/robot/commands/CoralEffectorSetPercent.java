@@ -26,8 +26,8 @@ public class CoralEffectorSetPercent extends Command {
     this.fromShuffleboard = true;
     addRequirements(coralEffector);
 
-    if (SmartDashboard.getNumber("CoralEffector Percent", -9999.9) == -9999.9) {
-      SmartDashboard.putNumber("CoralEffector Percent", 0);
+    if (SmartDashboard.getNumber("CoralEffector Goal Percent", -9999.9) == -9999.9) {
+      SmartDashboard.putNumber("CoralEffector Goal Percent", 0);
     }
   }
 
@@ -49,8 +49,7 @@ public class CoralEffectorSetPercent extends Command {
   @Override
   public void initialize() {
     // TODO check if elevator is in correct position before running motor
-    coralEffector.setCoralHoldMode(false);
-    if (fromShuffleboard) percent = SmartDashboard.getNumber("CoralEffector Percent", 0.0);
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("CoralEffector Goal Percent", 0.0);
     coralEffector.setCoralEffectorPercentOutput(percent);
 
     log.writeLog(false, "CoralEffectorSetPercent", "Init", "Percent", percent);

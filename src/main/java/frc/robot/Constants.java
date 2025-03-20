@@ -109,6 +109,9 @@ public final class Constants {
     // Width of robot in meters plus bumpers, in meters
     public static final double robotWidth = Units.inchesToMeters(35.5);   // CALIBRATED (for DriveToReef)
 
+    // Length of the robot in meters plus bumpers, in meters
+    public static final double robotLength = Units.inchesToMeters(36.0);
+
     // Diagonal width of robot, in meters
     public static final double robotDiagonal = Math.sqrt(2) * robotWidth;
   }
@@ -257,11 +260,11 @@ public final class Constants {
   public static class VisionConstants {
     public static class PhotonVisionConstants {        
       public static final Transform3d robotToCamLeft = new Transform3d(
-        new Translation3d(Units.inchesToMeters(11.9470), Units.inchesToMeters(9.4928), Units.inchesToMeters(12.7204)),
-        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-32.141))); // Cam mounted facing forward-right on the left side of the robot
+        new Translation3d(Units.inchesToMeters(9.72 - 0.8), Units.inchesToMeters(12.02), Units.inchesToMeters(12.7204)),
+        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-34.5))); // Cam mounted facing forward-right on the left side of the robot
       public static final Transform3d robotToCamRight = new Transform3d(
-        new Translation3d(Units.inchesToMeters(11.9470), Units.inchesToMeters(-9.4928), Units.inchesToMeters(12.7204)),
-        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(32.141))); // Cam mounted facing forward-left on the right side of the robot
+        new Translation3d(Units.inchesToMeters(9.72 + 0.8), Units.inchesToMeters(-12.02), Units.inchesToMeters(12.7204)),
+        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(30.5))); // Cam mounted facing forward-left on the right side of the robot
 
       public static final String leftAprilTagCameraName = "LeftCamera";
       public static final String rightAprilTagCameraName = "RightCamera";
@@ -311,17 +314,24 @@ public final class Constants {
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.45;        // TODO CALIBRATE FOR 2025
-    public static final double reverseIntakePercent = -0.1; // TODO CALIBRATE FOR 2025
+    public static final double reverseIntakePercent = -0.2; // TODO CALIBRATE FOR 2025
   }
 
   public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;       // CALIBRATED
     public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
-    public static final double slowIntakePercent = 0.05;  // CALIBRATED for LAR
     public static final double outtakePercent = 0.4;      // CALIBRATED
-    public static final double holdingPercent = -0.009;   // CALIBRATED for LAR
-    public static final double centeringPercent = 0.025;  // CALIBRATED for LAR
+
+    public static final double centerRotationsOvershoot = 0.0;  // CALIBRATED #3  Measure the typical overshoot with kP.
+    public static final double centeringTolerance = 0.07;  // CALIBRATED #1  Position tolerance (in rotations) for holding coral [smaller than 1/2 of the position window where both sensors see the coral]
+    public static final double centeringStepSize = centeringTolerance * 0.5; // #4 If the autoHold oscillates (not setPosition oscillating), then reduce this step size.
+
+    public static final double kP = 5.0;    // CALIBRATE #2 (in Phoenix tuner)   kP = (desired-output-volts) / (error-in-encoder-rotations)
+    public static final double kI = 0.0;    // CALIBRATED
+    public static final double kD = 0.0;    // CALIBRATED
+    public static final double kG = 0.0;    // CALIBRATED #5 if needed.  (start with +0.009 * 12 = +0.108 ?)  Or measure holding voltage to keep coral when vertical (and kP turned off)
+          //  #6 For kG, add an offset angle to true vertical coral, if needed.  (in coral.setposition inside the cosine function)
   }
 
   public static final class AlgaeGrabberConstants {
@@ -398,7 +408,7 @@ public final class Constants {
     public enum ElevatorWristPosition {
       START_CONFIG(0.0, 100.0),
 
-      CORAL_HP(0.0, 75.0),
+      CORAL_HP(0.0, 78.0),
 
       CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
@@ -408,6 +418,7 @@ public final class Constants {
       ALGAE_GROUND(5.8, -8.5),
       ALGAE_LOWER(34.0, -5.0),
       ALGAE_UPPER(49.7, -5.0),
+      ALGAE_LOLIPOP(10.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
       ALGAE_NET(63.0, 80.0);

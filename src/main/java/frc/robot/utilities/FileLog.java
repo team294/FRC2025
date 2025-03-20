@@ -133,17 +133,17 @@ public class FileLog {
 	 */
 	public void writeLog(boolean logWhenDisabled, String subsystemOrCommand, String event, Object... paramArray) {
     // If system clock has reset by more than 24 hours (like when the clock is set at the start of a match), then fix the filename
-		if (System.currentTimeMillis() - startTime > 1000 * 3600 * 24) {
-			updateFilenameDateTime();
-		}
+	// 	if (System.currentTimeMillis() - startTime > 1000 * 3600 * 24) {
+	// 		updateFilenameDateTime();
+	// 	}
 
-		// Write the message to the file
-		if (logWhenDisabled || DriverStation.isEnabled()) {
-      try {
-				fileWriter.write(buildStringWithCommas((dateFormat.format(System.currentTimeMillis())), subsystemOrCommand, event, buildStringWithCommas((Object [])paramArray).concat("\n")));
-        fileWriter.flush();
-		  } catch (IOException exception) {}
-		}
+	// 	// Write the message to the file
+	// 	if (logWhenDisabled || DriverStation.isEnabled()) {
+    //   try {
+	// 			fileWriter.write(buildStringWithCommas((dateFormat.format(System.currentTimeMillis())), subsystemOrCommand, event, buildStringWithCommas((Object [])paramArray).concat("\n")));
+    //     fileWriter.flush();
+	// 	  } catch (IOException exception) {}
+	// 	}
 	}
 	
   /**
@@ -154,8 +154,8 @@ public class FileLog {
 	 * @param paramArray... List of descriptions and values (variable number of parameters)
 	 */
 	public void writeLogEcho(boolean logWhenDisabled, String subsystemOrCommand, String event, Object... paramArray) {
-		writeLog(logWhenDisabled, subsystemOrCommand, event, (Object [])paramArray);
-		System.out.println(buildStringWithCommas("Log", subsystemOrCommand, event, buildStringWithCommas((Object [])paramArray)));
+		// writeLog(logWhenDisabled, subsystemOrCommand, event, (Object [])paramArray);
+		// System.out.println(buildStringWithCommas("Log", subsystemOrCommand, event, buildStringWithCommas((Object [])paramArray)));
 	}
 	
   /**

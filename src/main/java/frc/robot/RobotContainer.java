@@ -39,7 +39,7 @@ import frc.robot.Constants.FieldConstants.ReefLocation;
  */
 public class RobotContainer {
   // Define Key robot utilities (DO THIS FIRST)
-  private final FileLog log = new FileLog("A4");
+  private final FileLog log = new FileLog("A7");
   private final AllianceSelection allianceSelection = new AllianceSelection(log);
   private final Field field = new Field(allianceSelection, log);
   private final Timer matchTimer = new Timer();
@@ -52,17 +52,17 @@ public class RobotContainer {
   private final CoralEffector coralEffector = new CoralEffector("CoralEffector", wrist, log);
   private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
   private final Elevator elevator = new Elevator("Elevator", log);
-  private final Climber climber = new Climber("Climber", log);
-
-  // Define other utilities
-  private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
-  private final AutoSelection autoSelection = new AutoSelection(trajectoryCache, allianceSelection, field, log);
+  // private final Climber climber = new Climber("Climber", log);
 
   // Define controllers
   private final Joystick leftJoystick = new Joystick(OIConstants.usbLeftJoystick);
   private final Joystick rightJoystick = new Joystick(OIConstants.usbRightJoystick);
   private final Joystick coPanel = new Joystick(OIConstants.usbCoPanel);
   private final CommandXboxController xboxController = new CommandXboxController(OIConstants.usbXboxController);
+
+  // Define other utilities
+  private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
+  private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field, log);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -123,6 +123,8 @@ public class RobotContainer {
     SmartDashboard.putData("CoralEffector Intake", new CoralEffectorIntake(coralEffector, log));
     SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector, log));
     SmartDashboard.putData("CoralEffector Intake Enhanced", new CoralEffectorIntakeEnhanced(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Set Percent", new CoralEffectorSetPercent(coralEffector, log));
+    SmartDashboard.putData("CoralEffector Set Position", new CoralEffectorSetPosition(false, coralEffector, log));
 
     // AlgaeGrabber
     SmartDashboard.putData("AlgaeGrabber In", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
@@ -152,11 +154,11 @@ public class RobotContainer {
     SmartDashboard.putData("Elevator Calibration Routine", new ElevatorCalibration(0.1, elevator, log));
 
     // Climber
-    SmartDashboard.putData("Climber STOP", new ClimberStop(climber, log));
-    SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber, log));
-    SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber, log));
-    SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
-    SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber, log));
+    // SmartDashboard.putData("Climber STOP", new ClimberStop(climber, log));
+    // SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber, log));
+    // SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber, log));
+    // SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
+    // SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber, log));
     
     // Autos
     SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper));
@@ -183,8 +185,8 @@ public class RobotContainer {
     SmartDashboard.putData("Coral Score Prep Sequence L3", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, log));
     SmartDashboard.putData("Coral Score Prep Sequence L4", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, log));
 
-    SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber, log));
-    SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
+    // SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber, log));
+    // SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
   }
  
    private void configureButtonBindings() {
@@ -232,6 +234,9 @@ public class RobotContainer {
     xbLT.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber, log));
     xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, log));
     xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, log));
+
+    // Prep and intake algae from Lolipop with Back
+    xbBack.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOLIPOP, driveTrain, elevator, wrist, algaeGrabber, log));
 
     // Prep to score algae in Net with D-Pad Up and Processor with D-Pad Right
     xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET,elevator, wrist, algaeGrabber, log));
@@ -281,15 +286,20 @@ public class RobotContainer {
     // left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log));
 
     left[1].onTrue(new AlgaeGrabberOuttake(algaeGrabber, log));
-    left[2].onTrue(sequence( 
-      new CoralEffectorOuttake(coralEffector, log),
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
-          0.5, 1.0, 
-          TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          true, true, driveTrain, log).asProxy()
-    ));
+    left[2].onTrue(new CoralEffectorOuttake(coralEffector, log));
+    // left[2].onTrue(sequence( 
+    //   new CoralEffectorOuttake(coralEffector, log)
+    //   new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
+    //       0.5, 1.0, 
+    //       TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+    //       true, true, driveTrain, log).asProxy()
+    // ));
 
     right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
+    // right[1] after DriveToReefWithOdometryForCoral ends, if right[1] is still being held,
+    // then DriveWithJoystickAdvanced will stay in fine control mode, robot-relative control (not field relative),
+    // and theta locked (right joystick inactive).
+    // Normal behavior resmes when button is released.
 
     // right[2] will enable fine control while held, see DriveWithJoysticksAdvanced
   }
@@ -325,19 +335,22 @@ public class RobotContainer {
 
     coP[16].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
 
-    coP[5].whileTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber, log));
-    coP[6].whileTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber, log));
+    // coP[5].whileTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber, log));
+    // coP[6].whileTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber, log));
 
-    coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber, log));
-    coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
+    // coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber, log));
+    // coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
 
-    coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
+    // coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
 
     coP[9].onTrue(new CoralEffectorOuttake(coralEffector, log));
-    coP[10].onTrue(new CoralEffectorIntake(coralEffector, log));
+    coP[10].onTrue(new CoralEffectorIntakeEnhanced(coralEffector, log));
 
     coP[11].onTrue(new AlgaeGrabberOuttake(algaeGrabber, log));
     coP[12].onTrue(new AlgaeGrabberIntake(algaeGrabber, log));
+
+    coP[15].onTrue(new HopperSetPercent(HopperConstants.reverseIntakePercent, hopper, log));
+    coP[15].onFalse(new HopperStop(hopper, log));
 
     // 180 if we are red, 0 if we are blue
     coP[7].onTrue(either(
@@ -374,10 +387,11 @@ public class RobotContainer {
 
     driveTrain.stopMotors();             // SAFETY: Turn off any closed loop control that may be running, so the robot does not move when re-enabled
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
-    driveTrain.setVisionForOdometryState(false);
+    driveTrain.setVisionForOdometryState(true);
 
     elevator.stopElevatorMotors();
     wrist.stopWrist();
+    coralEffector.stopCoralEffectorMotor();
 
     matchTimer.stop();
     SignalLogger.stop();
@@ -400,11 +414,13 @@ public class RobotContainer {
     log.writeLogEcho(true, "Auto", "Mode Init");
 
     driveTrain.setDriveModeCoast(false);
-    // driveTrain.setVisionForOdometryState(false);
+    driveTrain.setVisionForOdometryState(true);
 
     // NOTE: Do not reset the gyro or encoder here!
     // The first command in auto mode initializes before this code is run, and
     // it will read the gyro/encoder before the reset goes into effect.
+
+    coralEffector.stopCoralEffectorMotor();
 
     if (elevator.isElevatorCalibrated()) {
       elevator.setElevatorProfileTarget(elevator.getElevatorPosition());
@@ -432,7 +448,9 @@ public class RobotContainer {
 
     driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
-    // driveTrain.setVisionForOdometryState(true);
+    driveTrain.setVisionForOdometryState(true);
+
+    coralEffector.stopCoralEffectorMotor();
 
     if (elevator.isElevatorCalibrated()) {
       elevator.setElevatorProfileTarget(elevator.getElevatorPosition());

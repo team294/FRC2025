@@ -585,14 +585,14 @@ public class SwerveModule {
    */
   public String getLogString() {
     return buildString(
-      swName, " CCangle deg,", getCanCoderDegrees(), ",",
-      swName, " CCangle DPS,", getCanCoderVelocityDPS(), ",",
+      // swName, " CCangle deg,", getCanCoderDegrees(), ",",
+      // swName, " CCangle DPS,", getCanCoderVelocityDPS(), ",",
       swName, " FXangle deg,", MathBCR.normalizeAngle(getTurningEncoderDegrees()), ",",
-      swName, " FXangle DPS,", getTurningEncoderVelocityDPS(), ",",
-      swName, " turn output,", getTurningOutputPercent(), ",",
+      // swName, " FXangle DPS,", getTurningEncoderVelocityDPS(), ",",
+      // swName, " turn output,", getTurningOutputPercent(), ",",
       swName, " drive meters,", getDriveEncoderMeters(), ",",
-      swName, " drive mps,", getDriveEncoderVelocity(), ",",
-      swName, " drive output,", getDriveOutputPercent(), ",",
+      // swName, " drive mps,", getDriveEncoderVelocity(), ",",
+      // swName, " drive output,", getDriveOutputPercent(), ",",
       swName, " drive temp,", getDriveTemp(), ",",
       swName, " turn temp,", getTurningTemp()
     );
