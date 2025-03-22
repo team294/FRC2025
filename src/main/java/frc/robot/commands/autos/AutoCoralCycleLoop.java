@@ -37,7 +37,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * @param log FileLog utility
    */
   public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {
+      Wrist wrist, CoralEffector coralEffector, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field, FileLog log) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
@@ -52,7 +52,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
       // Score the pre-loaded coral with the first reef location
       if (reefLocations.size() >= 1 && reefLevels.size() >= 1) {
         addCommands(
-          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, cache, field, log)
+          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, hopper, rightJoystick, alliance, field, log)
         );
       }
 
@@ -67,7 +67,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
           ReefLocation end = reefLocations.get(i + 1);
 
           addCommands(
-            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, cache, field, log)
+            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, hopper, rightJoystick, alliance, field, log)
           );
         }
       }
@@ -75,7 +75,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
       // Drive back to and end at HP after the last reef location if we are to end at HP. Otherwise, we are ending at reef 
       if (endAtHP && reefLocations.size() > 0) {
         addCommands(
-          new AutoCoralDriveAndIntakeSequence(reefLocations.get(reefLocations.size() - 1), driveTrain, elevator, wrist, coralEffector, hopper, alliance, cache, field, log)
+          new AutoCoralDriveAndIntakeSequence(reefLocations.get(reefLocations.size() - 1), driveTrain, elevator, wrist, coralEffector, hopper, alliance, log)
         );
       }
     }

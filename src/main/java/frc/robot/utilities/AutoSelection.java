@@ -34,7 +34,7 @@ public class AutoSelection {
 	public enum RoutineSelectionOption {
 		NONE("None", -1),
 
-		DriveForwardTwoMeters("DriveForwardTwoMeters", 1),
+		DriveForwardOneMeter("DriveForwardTwoMeters", 1),
 
 		BargeRight_EDC("BargeRight_EDC", 2),
 		BargeLeft_JKL("BargeLeft_JKL", 3),
@@ -191,39 +191,39 @@ public class AutoSelection {
 			autonomousCommandMain = new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log);
 		}
 
-		else if (autoPlan == RoutineSelectionOption.DriveForwardTwoMeters.value) {
+		else if (autoPlan == RoutineSelectionOption.DriveForwardOneMeter.value) {
 			log.writeLogEcho(true, "AutoSelect", "run DriveForwardTwoMeters");
 			autonomousCommandMain = new SequentialCommandGroup(
 										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log),
-										new DriveToPose(CoordType.kRelative, new Pose2d(2, 0, new Rotation2d(0)), driveTrain, log));
+										new DriveToPose(CoordType.kRelative, new Pose2d(1, 0, new Rotation2d(0)), driveTrain, log));
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeRight_EDC.value) {
 			log.writeLogEcho(true, "AutoSelect", "run BargeRight_EDC");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, trajectoryCache, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, hopper, rightJoystick, allianceSelection, field, log);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeLeft_JKL.value) {
 			log.writeLogEcho(true, "AutoSelect", "run BargeLeft_JKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K, ReefLocation.L));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, trajectoryCache, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, hopper, rightJoystick, allianceSelection, field, log);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeRight_ED_AlgaeCD.value) {
 			log.writeLogEcho(true, "AutoSelect", "run BargeRight_ED_AlgaeCD");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, trajectoryCache, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeLeft_JK_AlgaeKL.value) {
 			log.writeLogEcho(true, "AutoSelect", "run BargeLeft_JK_AlgaeKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, trajectoryCache, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.PushFriend_JK.value) {

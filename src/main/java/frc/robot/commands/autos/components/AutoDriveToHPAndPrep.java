@@ -46,11 +46,10 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
    * @param alliance AllianceSelection alliance 
-   * @param cache TrajectoryCache cache
    * @param log FileLog log
    */
   public AutoDriveToHPAndPrep(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
-          AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {
+          AllianceSelection alliance, FileLog log) {
     addCommands(
       new FileLogWrite(false, false, "AutoDriveToHPAndPrep", "Init", log, "startingReefLocation", start.toString()),
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist, log),

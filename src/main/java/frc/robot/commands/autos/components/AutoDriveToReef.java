@@ -54,19 +54,20 @@ public class AutoDriveToReef extends SequentialCommandGroup {
   } */
 
   /**
-   * Drives to reef location, trajectory gets cut off early to allow for smooth transition into AutomatedDriveToReefAndScoreCoral (does not move elevator)
+   * Drives to reef location, <b> trajectory gets cut off early </b> to allow for smooth transition into AutomatedDriveToReefAndScoreCoral (does not move elevator)
    * Runs intake command while driving to ensure coral is fully in, and then move the elevator after done driving.
-   * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param fromHP true = starting at HP, false = starting at barge
    * @param end ReefLocation (A-L) to drive to
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
+   * @param wrist Wrist subsystem
+   * @param coralEffector CoralEffector subsystem
+   * @param hopper Hopper subsystem
    * @param alliance AllianceSelection alliance 
-   * @param cache TrajectoryCache cache
    * @param log FileLog log
    */
-  public AutoDriveToReef(ReefLevel level, boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
-      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {
+  public AutoDriveToReef(boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
+      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, FileLog log) {
 
     // Choose trajectory to drive (Start from either HP or barge)
     Trajectory<SwerveSample> trajectory = fromHP ? AutoSelection.getHPToReef(end) : AutoSelection.getBargeToReef(end);
@@ -74,8 +75,9 @@ public class AutoDriveToReef extends SequentialCommandGroup {
       new FileLogWrite(false, false, "AutoDriveToReefAndPrep", "Init", log, "trajectory", trajectory.name()),
       parallel(
         new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log),
-        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance, log)
-      )// TODO make trajectory cut itself off (timeout = get time - 0.3 ish seconds, use .withTimeout(timeout))
+        // Drives the trajectory, cutting it off 0.3 seconds before it ends
+        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance, log).withTimeout(trajectory.getTotalTime() - 0.3)
+      ) 
 
 
 
