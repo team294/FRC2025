@@ -12,6 +12,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -44,7 +45,8 @@ public class AutoSelection {
 		PushFriend_JK("PushFriend_JK", 6),
 		PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 7),
 		
-		AutoCenterL1("AutoCenterL1", 8);
+		AutoCenterL1("AutoCenterL1", 8),
+		AutoCenterL4("AutoCenterL4", 9);
 
 
 		@SuppressWarnings({ "MemberName", "PMD.SingularField" })
@@ -74,6 +76,7 @@ public class AutoSelection {
 	private final AllianceSelection allianceSelection;
 	private final TrajectoryCache trajectoryCache;
 	private final Field field;
+	private final Joystick rightJoystick;
 	private final FileLog log;
 
 	private SendableChooser<Integer> autoRoutineChooser = new SendableChooser<>();
@@ -89,7 +92,8 @@ public class AutoSelection {
 	 * @param allianceSelection AllianceSelection alliance
 	 * @param log FileLog log
 	 */
-	public AutoSelection(TrajectoryCache trajectoryCache, AllianceSelection allianceSelection, Field field, FileLog log) {
+	public AutoSelection(Joystick rightJoystick, TrajectoryCache trajectoryCache, AllianceSelection allianceSelection, Field field, FileLog log) {
+		this.rightJoystick = rightJoystick;
 		this.trajectoryCache = trajectoryCache;
 		this.allianceSelection = allianceSelection;
 		this.field = field;
@@ -239,6 +243,11 @@ public class AutoSelection {
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
 			log.writeLogEcho(true, "AutoSelect", "run AutoCenterL1");
 			autonomousCommandMain = new AutoCenterL1(driveTrain, elevator, wrist, coralEffector, algaeGrabber, allianceSelection, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.AutoCenterL4.value) {
+			log.writeLogEcho(true, "AutoSelect", "run AutoCenterL4");
+			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, field, rightJoystick, allianceSelection, log);
 		}
 
 		else {

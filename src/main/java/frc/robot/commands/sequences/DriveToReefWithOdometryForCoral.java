@@ -33,6 +33,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
    * If the joystick is pushed in the direction opposite to the robot's relative position along the reef, the robot will switch to the other position on that side of the reef
    * (Robot on left position, joystick pushed right -> robot moves to the right position)
    * 
+   * <p> Command ends when robot reaches final position (all jogs need to occur before getting to final position)
    * @param driveTrain DriveTrain subsystem
    * @param field Field utility
    * @param rightJoystick
@@ -45,7 +46,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
       new FileLogWrite(false, false, "DriveToReefWithOdometryForCoral", "Start", log),
       
       sequence(
-          deadline(
+          race(
             //If the joystick is pushed opposite to the robot's position on the reef, this command ends (ending this command group)
             waitUntil(() -> ((-rightJoystick.getX() < -OIConstants.joystickJoggingDeadband && 
                       new Transform2d(field.getNearestAprilTagReef(driveTrain.getPose()), driveTrain.getPose()).getY() < 0) || 
