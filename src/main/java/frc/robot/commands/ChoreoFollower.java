@@ -18,6 +18,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -122,9 +123,11 @@ public class ChoreoFollower extends Command {
       yFeedback = yController.calculate(poseCurr.getY(), sampleCurr.y);
       rotationFeedback = rotationController.calculate(poseCurr.getRotation().getRadians(), sampleCurr.heading);
 
-      pose2DEntry.append(poseCurr);
-      trajXEntry.append(sampleCurr.x);
-      trajYEntry.append(sampleCurr.y);
+      long timeNow = RobotController.getFPGATime();
+      pose2DEntry.append(poseCurr, timeNow);
+      trajXEntry.append(sampleCurr.x, timeNow);
+      trajYEntry.append(sampleCurr.y, timeNow);
+      
 
       ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
       log.writeLog(false, "ChoreoFollower", "Execute", 

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.*;
 
 import frc.robot.Constants.CoordType;
 import frc.robot.Constants.FieldConstants.*;
+import frc.robot.Constants.StopType;
 import frc.robot.commands.*;
 import frc.robot.commands.autos.*;
 import frc.robot.subsystems.*;
@@ -31,6 +32,13 @@ import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 public class AutoSelection {
 	public enum RoutineSelectionOption {
 		NONE("None", -1),
+		Rel4mRotate180("Relative4m-180", 101),
+		RelArcLeft("RelativeArcLeft", 102),
+		RelStraight4m("RelativeStraight4m", 103),
+		RelCirclePath("RelativeCirclePath", 104),
+		RelRotate180("RelativeRotate180", 105),
+		AbsDiagonalTest("AbsoluteDiagonalTest", 106),
+
 		DriveForwardTwoMeters("DriveForwardTwoMeters", 1),
 
 		BargeRight_EDC("BargeRight_EDC", 2),
@@ -245,6 +253,36 @@ public class AutoSelection {
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL4.value) {
 			log.writeLogEcho(true, "AutoSelect", "run AutoCenterL4");
 			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, field, rightJoystick, allianceSelection, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.Rel4mRotate180.value) {
+			log.writeLogEcho(true, "AutoSelect", "run Choreo Test straight rotating path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.Relative4mRotate180), driveTrain, allianceSelection, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.RelArcLeft.value) {
+			log.writeLogEcho(true, "AutoSelect", "run Choreo Test curve path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeArcLeft), driveTrain, allianceSelection, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.RelStraight4m.value) {
+			log.writeLogEcho(true, "AutoSelect", "run Choreo Test Straight path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeStraight4m), driveTrain, allianceSelection, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.RelCirclePath.value) {
+			log.writeLogEcho(true, "AutoSelect", "run Choreo Test Circle path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeCirclePath), driveTrain, allianceSelection, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.RelRotate180.value) {
+			log.writeLogEcho(true, "AutoSelect", "run Choreo Test Rotate180 path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeRotate180), driveTrain, allianceSelection, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.AbsDiagonalTest.value) {
+			log.writeLogEcho(true, "AutoSelect", "run Choreo Absolute Diagonal path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.AbsoluteDiagonalTest), driveTrain, allianceSelection, log);
 		}
 
 		else {

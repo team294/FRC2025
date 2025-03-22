@@ -24,6 +24,12 @@ import frc.robot.Constants.FieldConstants;
     public enum TrajectoryName {
         // Add Choreo trajectories here.  Syntax:
         //   TrajectoryConstantName("Trajectory file name"),
+        Relative4mRotate180("Relative4mRotate180"),
+        RelativeArcLeft("RelativeArcLeft"),
+        RelativeStraight4m("RelativeStraight4m"),
+        RelativeCirclePath("RelativeCirclePath"),
+        RelativeRotate180("RelativeRotate180"),
+        AbsoluteDiagonalTest("AbsoluteDiagonalTest"),
         BargeRightToC("BargeRightToC"),
         CToHP("CToHP"),
         HPToC("HPToC"),
