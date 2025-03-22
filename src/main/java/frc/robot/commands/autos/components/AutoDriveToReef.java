@@ -54,7 +54,7 @@ public class AutoDriveToReef extends SequentialCommandGroup {
   } */
 
   /**
-   * Drives to reef location and prepares elevator based on the reef level.
+   * Drives to reef location, trajectory gets cut off early to allow for smooth transition into AutomatedDriveToReefAndScoreCoral (does not move elevator)
    * Runs intake command while driving to ensure coral is fully in, and then move the elevator after done driving.
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param fromHP true = starting at HP, false = starting at barge
