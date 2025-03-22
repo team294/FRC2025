@@ -6,6 +6,7 @@ package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.autos.components.*;
 import frc.robot.subsystems.*;
@@ -30,12 +31,12 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoCoralCycle(ReefLocation start, ReefLocation end, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
-          CoralEffector coralEffector, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field, FileLog log) {
+          CoralEffector coralEffector, Hopper hopper, CommandXboxController xboxController, Joystick rightJoystick, AllianceSelection alliance, Field field, FileLog log) {
     addCommands(
       // Drives from start reef location to HP and intakes coral  
       new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, alliance, log),
       // Drives from HP to end reef location and scores coral
-      new AutoCoralDriveAndScoreSequence(true, end, level, driveTrain, elevator, wrist, coralEffector, hopper, rightJoystick, alliance, field, log)
+      new AutoCoralDriveAndScoreSequence(true, end, level, driveTrain, elevator, wrist, coralEffector, hopper, xboxController, rightJoystick, alliance, field, log)
     );
   }
 }

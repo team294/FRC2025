@@ -6,21 +6,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.FieldConstants.ReefLevel;
-import frc.robot.subsystems.AlgaeGrabber;
-import frc.robot.subsystems.CoralEffector;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.AllianceSelection;
-import frc.robot.utilities.Field;
-import frc.robot.utilities.FileLog;
-import frc.robot.utilities.TrajectoryCache;
 
 public class TriggerAutomatedDriveToReefAndScoreCoral extends Command {
-  JoystickButton joystickButton;
+  CommandXboxController xboxController;
+  Joystick rightJoystick;
   Trigger xboxButton;
 
   /**
@@ -37,11 +29,24 @@ public class TriggerAutomatedDriveToReefAndScoreCoral extends Command {
    * @param field Field field
    * @param log FileLog log
    */
-  public TriggerAutomatedDriveToReefAndScoreCoral(Trigger xboxButton, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
-  CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Joystick rightJoystick, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {
+  public TriggerAutomatedDriveToReefAndScoreCoral(CommandXboxController xboxController, Joystick rightJoystick, ReefLevel level) {
+    this.rightJoystick = rightJoystick;
+    this.xboxController = xboxController;
 
-    joystickButton = new JoystickButton(rightJoystick, 1);
-    this.xboxButton = xboxButton;
+    switch (level) {
+      case L1:
+        xboxButton = xboxController.x();
+        break;
+      case L2:
+        xboxButton = xboxController.a();
+        break;
+      case L3:
+        xboxButton = xboxController.b();
+        break;
+      case L4:
+        xboxButton = xboxController.y();
+        break;
+    }
   }
 
   @Override
@@ -51,21 +56,11 @@ public class TriggerAutomatedDriveToReefAndScoreCoral extends Command {
   public void execute() {}
 
   @Override
-  public void end(boolean interrupted) {
-    if (interrupted) {
-      
-    } else {
-
-    }
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
-    if (xboxButton.getAsBoolean() && joystickButton.getAsBoolean()) {
-      return true;
-    } else if (!xboxButton.getAsBoolean() && !joystickButton.getAsBoolean()) {
-      end(true);
-      return true;
-    } else { return false; }
+    return xboxButton.getAsBoolean() && rightJoystick.getRawButton(1);
+    // if both buttons are not pressed, command will be interrupted
   }
 }

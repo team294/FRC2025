@@ -161,10 +161,10 @@ public class RobotContainer {
     // SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber, log));
     
     // Autos
-    SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper));
-    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, hopper, rightJoystick, allianceSelection, field, log));
+    SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand(xboxController, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper));
+    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, hopper, xboxController, rightJoystick, allianceSelection, field, log));
     SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, allianceSelection, log));
-    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, hopper, rightJoystick, allianceSelection, field, log));
+    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, hopper, xboxController, rightJoystick, allianceSelection, field, log));
 
     // Copanel buttons
 
@@ -297,6 +297,7 @@ public class RobotContainer {
     //       true, true, driveTrain, log).asProxy()
     // ));
 
+    // TODO
     right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
     // right[1] after DriveToReefWithOdometryForCoral ends, if right[1] is still being held,
     // then DriveWithJoystickAdvanced will stay in fine control mode, robot-relative control (not field relative),
@@ -369,7 +370,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoSelection.getAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
+    return autoSelection.getAutoCommand(xboxController, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
   }
 
   /**

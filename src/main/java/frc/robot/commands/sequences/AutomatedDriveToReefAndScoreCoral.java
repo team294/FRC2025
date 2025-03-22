@@ -11,25 +11,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLevel;
-import frc.robot.Constants.RobotDimensions;
-import frc.robot.Constants.CoordType;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.commands.CoralEffectorOuttake;
-import frc.robot.commands.DriveToPose;
-import frc.robot.commands.WristElevatorSafeMove;
-import frc.robot.subsystems.AlgaeGrabber;
-import frc.robot.subsystems.CoralEffector;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.AllianceSelection;
+import frc.robot.Constants.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
-import frc.robot.utilities.Field;
-import frc.robot.utilities.FileLog;
-import frc.robot.utilities.TrajectoryCache;
+import frc.robot.utilities.*;
 
 public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
   // Map to link ReefLevels to ElevatorPositions
@@ -54,9 +43,12 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, Joystick rightJoystick, Field field, FileLog log) {
+      Wrist wrist, CoralEffector coralEffector, CommandXboxController xboxController, Joystick rightJoystick, Field field, FileLog log) {
     
     addCommands(
+      // Wait for both buttons to be held
+      new TriggerAutomatedDriveToReefAndScoreCoral(xboxController, rightJoystick, level),
+
       // Drive to nearest reef position
       new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log),
 
