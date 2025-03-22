@@ -14,6 +14,10 @@ import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StructLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -33,6 +37,8 @@ public class ChoreoFollower extends Command {
   private boolean mirrorTrajectoryThisInit;
   private DriveTrain driveTrain;
   private FileLog log;
+  private StructLogEntry<Pose2d> pose2DEntry;
+  private DoubleLogEntry trajXEntry, trajYEntry;
 
   /**
    * Choreo follower used to follow Choreo trajectories. 
@@ -62,6 +68,11 @@ public class ChoreoFollower extends Command {
     this.mirrorTrajectory = mirrorTrajectory;
     this.driveTrain = driveTrain;
     this.log = log;
+
+    DataLog logD = DataLogManager.getLog();
+    pose2DEntry = StructLogEntry.create(logD, "/ChoreoFollower/curPose2d", Pose2d.struct);
+    trajXEntry = new DoubleLogEntry(logD, "/ChoreoFollower/trajX");
+    trajYEntry = new DoubleLogEntry(logD, "/ChoreoFollower/trajY");
 
     addRequirements(driveTrain);
   }
@@ -110,6 +121,10 @@ public class ChoreoFollower extends Command {
       xFeedback = xController.calculate(poseCurr.getX(), sampleCurr.x);
       yFeedback = yController.calculate(poseCurr.getY(), sampleCurr.y);
       rotationFeedback = rotationController.calculate(poseCurr.getRotation().getRadians(), sampleCurr.heading);
+
+      pose2DEntry.append(poseCurr);
+      trajXEntry.append(sampleCurr.x);
+      trajYEntry.append(sampleCurr.y);
 
       ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
       log.writeLog(false, "ChoreoFollower", "Execute", 
