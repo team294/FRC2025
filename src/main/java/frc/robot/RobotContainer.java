@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -226,11 +228,69 @@ public class RobotContainer {
 
     // Prep to score coral on L1 with X, L2 with A, L3 with B, and L4 with Y
     //TODO CHANGE TO TRIGGERAUTOMATEDDRIVETOREEFANDSCORECORAL !!
-    xbX.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, log));
-    xbA.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber, log));
-    xbB.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, log));
-    xbY.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, log));
+    // xbX.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, log));
+    // xbA.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber, log));
+    // xbB.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, log));
+    // xbY.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, log));
     // ------------------------------------------------------------------------
+
+    xbX.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, xboxController, rightJoystick, field, false, log));
+    xbA.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, xboxController, rightJoystick, field, false, log));
+    xbB.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, xboxController, rightJoystick, field, false, log));
+    xbY.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, xboxController, rightJoystick, field, false, log));
+
+    // xbX.onFalse(new WristElevatorSafeMove(elevator.getElevatorPosition(), wrist.getWristAngle(), RegionType.CORAL_ONLY, elevator, wrist, log));
+    xbX.onFalse(
+      sequence(
+        // Back up 
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
+        0.5, 1.0, 
+        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+        true, true, driveTrain, log),
+
+        // Move elevator/wrist to HP position
+        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
+      )
+    );
+
+    xbA.onFalse(
+      sequence(
+        // Back up 
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
+        0.5, 1.0, 
+        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+        true, true, driveTrain, log),
+
+        // Move elevator/wrist to HP position
+        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
+      )
+    );
+
+    xbB.onFalse(
+      sequence(
+        // Back up 
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
+        0.5, 1.0, 
+        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+        true, true, driveTrain, log),
+
+        // Move elevator/wrist to HP position
+        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
+      )
+    );
+
+    xbY.onFalse(
+      sequence(
+        // Back up 
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
+        0.5, 1.0, 
+        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+        true, true, driveTrain, log),
+
+        // Move elevator/wrist to HP position
+        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
+      )
+    );
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
     xbLT.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber, log));
@@ -297,12 +357,21 @@ public class RobotContainer {
     //       true, true, driveTrain, log).asProxy()
     // ));
 
-    // TODO
-    right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
-    // right[1] after DriveToReefWithOdometryForCoral ends, if right[1] is still being held,
-    // then DriveWithJoystickAdvanced will stay in fine control mode, robot-relative control (not field relative),
-    // and theta locked (right joystick inactive).
-    // Normal behavior resmes when button is released.
+    // right[1], when held down in combination with xbox (x, a, b, y) will automatically drive
+    // to the nearest scoring position and score coral based on which xbox button is held,
+    // see TriggerAutomatedDriveToReefAndScoreCoral
+    right[1].onFalse(
+      sequence(
+        // Back up 
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
+        0.5, 1.0, 
+        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+        true, true, driveTrain, log),
+
+        // Move elevator/wrist to HP position
+        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
+      )
+    );
 
     // right[2] will enable fine control while held, see DriveWithJoysticksAdvanced
   }

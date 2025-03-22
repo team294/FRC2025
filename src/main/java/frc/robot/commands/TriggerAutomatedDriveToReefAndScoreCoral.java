@@ -19,20 +19,11 @@ public class TriggerAutomatedDriveToReefAndScoreCoral extends Command {
    * @param xboxController Xbox Controller
    * @param joystickButton Joystick
    * @param level ReefLevel (L1, L2, L3, L4) to score on
-   * @param driveTrain DriveTrain subsystem
-   * @param elevator Elevator subsystem
-   * @param wrist Wrist subsystem
-   * @param coralEffector EndEffector subsystem
-   * @param algaeGrabber AlgaeGrabber subsystem
-   * @param alliance AllianceSelection alliance
-   * @param cache TrajectoryCache cache
-   * @param field Field field
-   * @param log FileLog log
    */
   public TriggerAutomatedDriveToReefAndScoreCoral(CommandXboxController xboxController, Joystick rightJoystick, ReefLevel level) {
     this.rightJoystick = rightJoystick;
     this.xboxController = xboxController;
-
+    
     switch (level) {
       case L1:
         xboxButton = xboxController.x();
@@ -45,6 +36,9 @@ public class TriggerAutomatedDriveToReefAndScoreCoral extends Command {
         break;
       case L4:
         xboxButton = xboxController.y();
+        break;
+      default:
+        xboxButton = xboxController.x();
         break;
     }
   }
