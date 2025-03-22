@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.CoordType;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.*;
+import frc.robot.Constants.StopType;
 import frc.robot.commands.*;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.sequences.ScorePieceSequence;
@@ -35,6 +36,7 @@ public class AutoSelection {
 		NONE("None", -1),
 
 		DriveForwardOneMeter("DriveForwardTwoMeters", 1),
+		BargeToE("BargeToE", 10), // TODO remove test auto
 
 		BargeRight_EDC("BargeRight_EDC", 2),
 		BargeLeft_JKL("BargeLeft_JKL", 3),
@@ -248,6 +250,13 @@ public class AutoSelection {
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL4.value) {
 			log.writeLogEcho(true, "AutoSelect", "run AutoCenterL4");
 			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, field, rightJoystick, allianceSelection, log);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.BargeToE.value) {
+			autonomousCommandMain = new SequentialCommandGroup(
+										new DriveResetPose(trajectoryCache.getTrajectory(TrajectoryName.BargeRightToE).getInitialPose(allianceSelection.getAlliance() == Alliance.Red).get(), true, driveTrain, log),
+										new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.BargeRightToE), driveTrain, allianceSelection, log)
+									);
 		}
 
 		else {
