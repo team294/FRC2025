@@ -17,6 +17,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.FieldConstants.ReefLocation;
+import frc.robot.Constants.RobotDimensions;
 
 public class Field {
     private final HashMap<ReefLocation, Pose2d> reefScoringPositions;
@@ -172,6 +173,16 @@ public class Field {
      */
     public Pose2d getReefScoringPosition(ReefLocation position) {
         return allianceSelection.getAlliance() == Alliance.Blue ? reefScoringPositionsByAprilTag.get(position) : flipPosition(reefScoringPositionsByAprilTag.get(position));
+    }
+
+     /**
+     * Returns the robot scoring position that the robot should score at at the reef.
+     * @param location ReefLocation reef location to get 
+     * @return robot position to score at with offset for half of width
+     */
+    public Pose2d getRobotReefScoringPosition(ReefLocation location) {
+        Pose2d pos = allianceSelection.getAlliance() == Alliance.Blue ? reefScoringPositionsByAprilTag.get(location) : flipPosition(reefScoringPositionsByAprilTag.get(location));
+        return pos.transformBy(new Transform2d(-RobotDimensions.robotWidth / 2.0, 0, new Rotation2d(0)));
     }
 
     /**
