@@ -20,19 +20,9 @@ import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
-import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 
-public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
-  // Map to link ReefLevels to ElevatorPositions
-  final static Map<ReefLevel, ElevatorWristPosition> reefToElevatorMap = new EnumMap<>(ReefLevel.class);
-  static {
-    reefToElevatorMap.put(ReefLevel.L1, ElevatorWristPosition.CORAL_L1);
-    reefToElevatorMap.put(ReefLevel.L2, ElevatorWristPosition.CORAL_L2);
-    reefToElevatorMap.put(ReefLevel.L3, ElevatorWristPosition.CORAL_L3);
-    reefToElevatorMap.put(ReefLevel.L4, ElevatorWristPosition.CORAL_L4);
-  }
-  
-  /**
+public class AutoDriveToReef extends SequentialCommandGroup {
+  /** Below constructor is outdated and not used anywhere
    * Drives to reef location (using trajectory) and prepares elevator based on the reef level.
    * Runs intake command while driving to ensure coral is fully in, and then move the elevator after done driving.
    * @param level ReefLevel (L1, L2, L3, L4) to score on
@@ -45,8 +35,8 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance 
    * @param cache TrajectoryCache cache
    * @param log FileLog log
-   */
-  public AutoDriveToReefAndPrep(ReefLevel level, TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
+   */ /* 
+  public AutoDriveToReef(ReefLevel level, TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
         CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
     addCommands(
       new FileLogWrite(false, false, "AutoDriveToReefAndPrep", "Init", log, "trajectoryName", trajectoryName.toString()),
@@ -61,7 +51,7 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
       //         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
       //         true, true, driveTrain, log)
     );
-  }
+  } */
 
   /**
    * Drives to reef location and prepares elevator based on the reef level.
@@ -75,24 +65,25 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
    * @param cache TrajectoryCache cache
    * @param log FileLog log
    */
-  public AutoDriveToReefAndPrep(ReefLevel level, boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
+  public AutoDriveToReef(ReefLevel level, boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
       CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {
-    // Start from either HP or barge
+
+    // Choose trajectory to drive (Start from either HP or barge)
     Trajectory<SwerveSample> trajectory = fromHP ? AutoSelection.getHPToReef(end) : AutoSelection.getBargeToReef(end);
     addCommands(
       new FileLogWrite(false, false, "AutoDriveToReefAndPrep", "Init", log, "trajectory", trajectory.name()),
       parallel(
         new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log),
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance, log)
-      ),
-      new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist, log),
+      )// TODO make trajectory cut itself off (timeout = get time - 0.3 ish seconds, use .withTimeout(timeout))
 
-      new DriveToPose(CoordType.kAbsolute, () -> (field.getRobotReefScoringPosition(end)), 0.5, 1.0, TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, true, true, driveTrain, log)
-      // TODO add DriveToPose here, check these parameters
-      // new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
-      //         0.5, 1.0, 
-      //         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-      //         true, true, driveTrain, log)
+
+
+
+      //new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist, log)
+
+      // Drive to the given reef position 
+      // new DriveToPose(CoordType.kAbsolute, () -> (field.getRobotReefScoringPosition(end)), 0.5, 1.0, TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, true, true, driveTrain, log)
     );
   }
 }

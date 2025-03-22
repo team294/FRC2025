@@ -9,6 +9,7 @@ import java.util.List;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
@@ -36,7 +37,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * @param log FileLog utility
    */
   public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
@@ -51,7 +52,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
       // Score the pre-loaded coral with the first reef location
       if (reefLocations.size() >= 1 && reefLevels.size() >= 1) {
         addCommands(
-          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache, field, log)
+          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, cache, field, log)
         );
       }
 
@@ -66,7 +67,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
           ReefLocation end = reefLocations.get(i + 1);
 
           addCommands(
-            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache, field, log)
+            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, cache, field, log)
           );
         }
       }
