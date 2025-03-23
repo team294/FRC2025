@@ -25,11 +25,15 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * Scores each coral in the locations of the given list at the given level, then grabs the algae at the ending position and backs up.
    * @param reefLocations list of ReefLocation to visit, in order
    * @param reefLevels list of ReefLevel to score on, in order
-   * @param reefLevel ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem
+   * @param wrist Wrist subsystem
+   * @param coralEffector CoralEffector subsystem
+   * @param algaeGrabber AlgaeGrabber subsystem
+   * @param hopper Hopper subsystem
+   * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection alliance
-   * @param cache TrajectoryCache cache
+   * @param field Field field
    * @param log FileLog log
    */
   public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, DriveTrain driveTrain, Elevator elevator, 

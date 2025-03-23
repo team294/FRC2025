@@ -25,7 +25,6 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
    * <p> Pushes friend :) into our alliance barge to secure auto RP, then goes back to starting location and does AutoCoralCycleLoop as normal
    * @param reefLocations list of ReefLocation to visit, in order
    * @param reefLevels list of ReefLevel to score on, in order
-   * @param reefLevel ReefLevel (L1, L2, L3, L4) to score on
    * @param endAtHP true = end at the coral loading station, false = end at the reef 
    * @param grabAlgae true = grab algae at the end of coral cycle loop <b>(currently cannot end at HP)</b>, false = do not grab algae 
    * @param driveTrain DriveTrain subsytem
@@ -34,12 +33,13 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
+   * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection utility
-   * @param cache TrajectoryCache utility
+   * @param field Field utility
    * @param log FileLog utility
    */
   public AutoPushFriendThenCoralCycle(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, boolean grabAlgae, DriveTrain driveTrain, 
-      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {    
+      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field, FileLog log) {    
     // Different starting pose based on if we are blue or red alliance
     Pose2d startingPose = AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get();
     

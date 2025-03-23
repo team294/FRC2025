@@ -23,10 +23,10 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
-   * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
+   * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection alliance
-   * @param cache TrajectoryCache cache
+   * @param field Field field
    * @param log FileLog log
    */
   public AutoCoralCycle(ReefLocation start, ReefLocation end, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,

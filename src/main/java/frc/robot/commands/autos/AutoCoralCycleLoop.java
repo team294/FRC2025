@@ -24,16 +24,15 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * TODO Figure out proper exit conditions and timeouts
    * @param reefLocations list of ReefLocation to visit, in order
    * @param reefLevels list of ReefLevel to score on, in order
-   * @param reefLevel ReefLevel (L1, L2, L3, L4) to score on
    * @param endAtHP true = end at the coral loading station, false = end at the reef 
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
    * @param coralEffector CoralEffector subsystem
-   * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
+   * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection utility
-   * @param cache TrajectoryCache utility
+   * @param field Field utility
    * @param log FileLog utility
    */
   public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 

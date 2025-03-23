@@ -47,9 +47,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
-   * @param algaeGrabber AlgaeGrabber subsystem
-   * @param alliance AllianceSelection alliance
-   * @param cache TrajectoryCache cache
+   * @param rightJoystick Joystick joystick
    * @param field Field field
    * @param log FileLog log
    */
