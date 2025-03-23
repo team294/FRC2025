@@ -6,15 +6,9 @@ package frc.robot.commands.autos.components;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.CoordType;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants.*;
-import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.commands.*;
 import frc.robot.commands.sequences.AutomatedDriveToReefAndScoreCoral;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
@@ -36,12 +30,12 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoCoralDriveAndScoreSequence(boolean fromHP, ReefLocation end, ReefLevel level, DriveTrain driveTrain,
-      Elevator elevator, Wrist wrist, CoralEffector coralEffector, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
+      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
       Field field, FileLog log) {
     addCommands(
       
       new AutoDriveToReef(fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, alliance, log),
-      new AutomatedDriveToReefAndScoreCoral(level, driveTrain, elevator, wrist, coralEffector, rightJoystick, field, log)
+      new AutomatedDriveToReefAndScoreCoral(level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field, log)
 
       
       // // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log),

@@ -6,20 +6,15 @@ package frc.robot.commands.autos.components;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
-import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
 import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
-import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 public class AutoDriveToReef extends SequentialCommandGroup {
   /** Below constructor is outdated and not used anywhere

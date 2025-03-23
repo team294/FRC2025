@@ -4,6 +4,8 @@
 
 package frc.robot.commands.sequences;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -13,23 +15,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLevel;
-import frc.robot.Constants.RobotDimensions;
-import frc.robot.Constants.CoordType;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.commands.CoralEffectorOuttake;
-import frc.robot.commands.DriveToPose;
-import frc.robot.commands.WristElevatorSafeMove;
-import frc.robot.subsystems.AlgaeGrabber;
-import frc.robot.subsystems.CoralEffector;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.AllianceSelection;
-import frc.robot.utilities.ElevatorWristRegions.RegionType;
-import frc.robot.utilities.Field;
-import frc.robot.utilities.FileLog;
-import frc.robot.utilities.TrajectoryCache;
+import frc.robot.Constants.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
+import frc.robot.utilities.*;
 
 public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
   // Map to link ReefLevels to ElevatorPositions
@@ -47,22 +36,22 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
+   * @param algaeGrabber AlgaeGrabber subsystem
    * @param rightJoystick Joystick joystick
    * @param field Field field
    * @param log FileLog log
    */
-  public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, Joystick rightJoystick, Field field, FileLog log) {
-    
+  public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
+      AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field, FileLog log) {
     addCommands(
       // Drive to nearest reef position
       new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log),
 
       // Move elevator/wrist to correct position based on given level
-      new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist, log),
+      new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, log),
 
       // Drive forward to get to the reef (offset copied from DriveToReefWithOdometryForCoral and made positive)
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d((RobotDimensions.robotWidth / 2.0) + DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)), 
+      new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)),
         0.5, 1.0, 
         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
         true, true, driveTrain, log),
@@ -74,10 +63,10 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
         0.5, 1.0, 
         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain, log),
+        true, true, driveTrain, log)
 
       // Move elevator/wrist to HP position
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
+      // new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
     );
   }
 }
