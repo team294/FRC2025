@@ -26,12 +26,12 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.Ports;
 import frc.robot.utilities.ElevatorProfileGenerator;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 import frc.robot.utilities.Wait;
 
 public class Elevator extends SubsystemBase implements Loggable {
-  private final FileLog log;
+  private final DataLogUtil log;
   private final int logRotationKey;
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
   private final String subsystemName;   // Subsystem name for use in file logging and dashboarrd
@@ -79,7 +79,7 @@ public class Elevator extends SubsystemBase implements Loggable {
    * @param subsystemName name of the subsystem for file logging
    * @param log FileLog utility
    */
-  public Elevator(String subsystemName, FileLog log) {
+  public Elevator(String subsystemName, DataLogUtil log) {
     this.log = log;
     logRotationKey = log.allocateLogRotation();
     this.subsystemName = subsystemName;

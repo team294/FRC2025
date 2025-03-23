@@ -30,7 +30,7 @@ public class DriveStraight extends Command {
   private double angleInput, angleTarget; // angleTarget is relative to the starting robot facing
   private Translation2d startLocation;
   private SwerveModuleState[] desiredStates;
-  private FileLog log;
+  private DataLogUtil log;
   private boolean isOpenLoop;
 
   private int accuracyCounter = 0;
@@ -54,7 +54,7 @@ public class DriveStraight extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveStraight(double target, boolean fieldRelative, double angle, double maxVel, double maxAccel, boolean regenerate, boolean isOpenLoop, DriveTrain driveTrain, FileLog log) {
+  public DriveStraight(double target, boolean fieldRelative, double angle, double maxVel, double maxAccel, boolean regenerate, boolean isOpenLoop, DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     this.fieldRelative = fieldRelative;
@@ -78,7 +78,7 @@ public class DriveStraight extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveStraight(boolean fieldRelative, boolean regenerate, boolean isOpenLoop, DriveTrain driveTrain, FileLog log) {
+  public DriveStraight(boolean fieldRelative, boolean regenerate, boolean isOpenLoop, DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     this.fieldRelative = fieldRelative;

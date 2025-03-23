@@ -6,18 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ClimberStop extends Command {
   private final Climber climber;
-  private final FileLog log;
+  private final DataLogUtil log;
  
   /**
    * Sets the percent output of the climber to 0 and ends immediately.
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberStop(Climber climber, FileLog log) {
+  public ClimberStop(Climber climber, DataLogUtil log) {
     this.climber = climber;
     this.log = log;
     addRequirements(climber);

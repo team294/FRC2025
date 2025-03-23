@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.WristConstants;
 import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristCalibrationRamp extends Command {
   private final Wrist wrist;
-  private final FileLog log;
+  private final DataLogUtil log;
 
   private double rate;        // Ramp rate per execute() cycle = every 20ms
   private double maxPercent;
@@ -25,7 +25,7 @@ public class WristCalibrationRamp extends Command {
    * @param wrist Wrist subsytsem
    * @param log FileLog utility
    */
-  public WristCalibrationRamp(double rate, double maxPercent, Wrist wrist, FileLog log) {
+  public WristCalibrationRamp(double rate, double maxPercent, Wrist wrist, DataLogUtil log) {
     this.wrist = wrist;
     this.log = log;
     this.rate = rate * 0.020; // convert to execute() cycles = every 20ms

@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorSetPosition extends Command {
   private final CoralEffector coralEffector;
-  private final FileLog log;
+  private final DataLogUtil log;
   private final boolean autoHold;
   private double position = 0.0;
   private boolean fromShuffleboard;
@@ -24,7 +24,7 @@ public class CoralEffectorSetPosition extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorSetPosition(boolean autoHold, CoralEffector coralEffector, FileLog log) {
+  public CoralEffectorSetPosition(boolean autoHold, CoralEffector coralEffector, DataLogUtil log) {
     this.autoHold = autoHold;
     this.coralEffector = coralEffector;
     this.log = log;
@@ -44,7 +44,7 @@ public class CoralEffectorSetPosition extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorSetPosition(double position, boolean autoHold, CoralEffector coralEffector, FileLog log) {
+  public CoralEffectorSetPosition(double position, boolean autoHold, CoralEffector coralEffector, DataLogUtil log) {
     this.coralEffector = coralEffector;
     this.log = log;
     this.position = position;

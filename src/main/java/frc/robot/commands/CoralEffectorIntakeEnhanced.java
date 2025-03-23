@@ -7,18 +7,18 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorIntakeEnhanced extends Command {
   private final CoralEffector coralEffector;
-  private final FileLog log;
+  private final DataLogUtil log;
   
   /**
    * Intakes coral quickly, then ends and auto-holds after the tip of the coral reaches the exit.
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorIntakeEnhanced(CoralEffector coralEffector, FileLog log) {
+  public CoralEffectorIntakeEnhanced(CoralEffector coralEffector, DataLogUtil log) {
     this.coralEffector = coralEffector;
     this.log = log;
     addRequirements(coralEffector);

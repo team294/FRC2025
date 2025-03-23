@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralEffector;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorSetPercent extends Command {
   private final CoralEffector coralEffector;
-  private final FileLog log;
+  private final DataLogUtil log;
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
@@ -20,7 +20,7 @@ public class CoralEffectorSetPercent extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorSetPercent(CoralEffector coralEffector, FileLog log) {
+  public CoralEffectorSetPercent(CoralEffector coralEffector, DataLogUtil log) {
     this.coralEffector = coralEffector;
     this.log = log;
     this.fromShuffleboard = true;
@@ -37,7 +37,7 @@ public class CoralEffectorSetPercent extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorSetPercent(double percent, CoralEffector coralEffector, FileLog log) {
+  public CoralEffectorSetPercent(double percent, CoralEffector coralEffector, DataLogUtil log) {
     this.coralEffector = coralEffector;
     this.log = log;
     this.percent = percent;

@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class DrivePercentSpeed extends Command {
   private DriveTrain driveTrain;
-  private FileLog log;
+  private DataLogUtil log;
   private double angleFacing, percentSpeed, maxDistance;
   private boolean fromShuffleboard;
   private final Timer timer = new Timer();
@@ -31,7 +31,7 @@ public class DrivePercentSpeed extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-   public DrivePercentSpeed(double angleFacing, double percentSpeed, double maxDistance, DriveTrain driveTrain, FileLog log) {
+   public DrivePercentSpeed(double angleFacing, double percentSpeed, double maxDistance, DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     this.angleFacing = angleFacing;
@@ -49,7 +49,7 @@ public class DrivePercentSpeed extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DrivePercentSpeed(DriveTrain driveTrain, FileLog log){
+  public DrivePercentSpeed(DriveTrain driveTrain, DataLogUtil log){
     this.driveTrain = driveTrain;
     this.log = log;
     fromShuffleboard = true;

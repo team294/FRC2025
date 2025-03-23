@@ -58,7 +58,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class DriveTrain extends SubsystemBase implements Loggable {
-  private FileLog log;
+  private DataLogUtil log;
   private int logRotationKey;
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
   private final AllianceSelection allianceSelection;
@@ -109,7 +109,7 @@ public class DriveTrain extends SubsystemBase implements Loggable {
   // Cache a copy of the DriveStop command for using to cancel the default command (typically DriveWithJoystickAdvanced)
   Command driveStopCommand = new DriveStop(this, log);
 
-  public DriveTrain(AllianceSelection allianceSelection, FileLog log) {
+  public DriveTrain(AllianceSelection allianceSelection, DataLogUtil log) {
     this.allianceSelection = allianceSelection;
     this.log = log;
     logRotationKey = log.allocateLogRotation();

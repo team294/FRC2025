@@ -21,7 +21,7 @@ public class DriveWithJoysticks extends Command {
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
   private final AllianceSelection allianceSelection;
-  private final FileLog log;
+  private final DataLogUtil log;
   private int logRotationKey;
   
   private double fwdVelocity, leftVelocity, turnRate;
@@ -38,7 +38,7 @@ public class DriveWithJoysticks extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveWithJoysticks(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain, FileLog log) {
+  public DriveWithJoysticks(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     this.allianceSelection = allianceSelection;

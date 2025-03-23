@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hopper;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class HopperSetPercent extends Command {
   private final Hopper hopper;
-  private final FileLog log;
+  private final DataLogUtil log;
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
@@ -20,7 +20,7 @@ public class HopperSetPercent extends Command {
    * @param hopper Hopper subsystem
    * @param log FileLog utility
    */
-  public HopperSetPercent(Hopper hopper, FileLog log) {
+  public HopperSetPercent(Hopper hopper, DataLogUtil log) {
     this.hopper = hopper;
     this.log = log;
     this.fromShuffleboard = true;
@@ -37,7 +37,7 @@ public class HopperSetPercent extends Command {
    * @param hopper Hopper subsystem
    * @param log FileLog utility
    */  
-  public HopperSetPercent(double percent, Hopper hopper, FileLog log) {
+  public HopperSetPercent(double percent, Hopper hopper, DataLogUtil log) {
     this.hopper = hopper;
     this.log = log;
     this.percent = percent;

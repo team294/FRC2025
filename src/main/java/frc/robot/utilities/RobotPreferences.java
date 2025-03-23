@@ -96,7 +96,7 @@ public class RobotPreferences {
    * (only records if the subsystem was not already flagged).
    * @param subsystem String name of subsystem in which a problem exists
    */
-  public static void recordStickyFaults(String subsystem, FileLog log) {
+  public static void recordStickyFaults(String subsystem, DataLogUtil log) {
     // Record that we have a sticky fault
     problemExists = true;
 
@@ -117,7 +117,7 @@ public class RobotPreferences {
   /**
    * Clears any sticky faults in robotPreferences and Shuffleboard.
    */
-  public static void clearStickyFaults(FileLog log) {
+  public static void clearStickyFaults(DataLogUtil log) {
     problemSubsystem = "";
     problemExists = false;
     saveStickyFaultsInPrefs(problemSubsystem, problemExists);

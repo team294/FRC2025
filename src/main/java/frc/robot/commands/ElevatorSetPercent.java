@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorSetPercent extends Command {
   private final Elevator elevator;
-  private final FileLog log;
+  private final DataLogUtil log;
   private double percent = 0.0;
   private boolean fromShuffleboard;
   private boolean endImmediately;
@@ -22,7 +22,7 @@ public class ElevatorSetPercent extends Command {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorSetPercent(double percent, boolean endImmediately, Elevator elevator, FileLog log) {
+  public ElevatorSetPercent(double percent, boolean endImmediately, Elevator elevator, DataLogUtil log) {
     this.percent = percent;
     this.endImmediately = endImmediately;
     this.elevator = elevator;
@@ -36,7 +36,7 @@ public class ElevatorSetPercent extends Command {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorSetPercent(boolean endImmediately, Elevator elevator, FileLog log) {
+  public ElevatorSetPercent(boolean endImmediately, Elevator elevator, DataLogUtil log) {
     this.endImmediately = endImmediately;
     this.elevator = elevator;
     this.log = log;

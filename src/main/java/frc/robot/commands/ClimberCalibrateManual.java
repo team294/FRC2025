@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Climber;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ClimberCalibrateManual extends InstantCommand {
   private final Climber climber;
-  private FileLog log;
+  private DataLogUtil log;
   private double angle;
   private boolean fromShuffleboard;
 
@@ -21,7 +21,7 @@ public class ClimberCalibrateManual extends InstantCommand {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberCalibrateManual(double angle, Climber climber, FileLog log) {
+  public ClimberCalibrateManual(double angle, Climber climber, DataLogUtil log) {
     this.climber = climber;
     this.log = log;
     this.angle = angle;
@@ -34,7 +34,7 @@ public class ClimberCalibrateManual extends InstantCommand {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberCalibrateManual(Climber climber, FileLog log) {
+  public ClimberCalibrateManual(Climber climber, DataLogUtil log) {
     this.climber = climber;
     this.log = log;
     fromShuffleboard = true;

@@ -19,7 +19,7 @@ import frc.robot.Constants.FieldConstants;
  * Create one object instance of this class when the robot initializes to build the trajectories. 
  */
  public class TrajectoryCache {
-    private FileLog log;
+    private DataLogUtil log;
    
     public enum TrajectoryName {
         // Add Choreo trajectories here.  Syntax:
@@ -52,7 +52,7 @@ import frc.robot.Constants.FieldConstants;
      * Load all trajectories when the robot starts up into a cache for trajectory-following commands.
      * @param log
      */
-    public TrajectoryCache(FileLog log) {
+    public TrajectoryCache(DataLogUtil log) {
         this.log = log;
         for (TrajectoryName tt : TrajectoryName.values() ) {
             cacheTrajectory(tt);

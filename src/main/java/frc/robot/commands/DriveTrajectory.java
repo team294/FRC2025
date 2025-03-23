@@ -5,7 +5,7 @@ import frc.robot.Constants.CoordType;
 import frc.robot.Constants.StopType;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.AllianceSelection;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.controller.PIDController;
@@ -40,7 +40,7 @@ public class DriveTrajectory extends SequentialCommandGroup {
    * @param alliance AllianceSelection utility
    * @param log FileLog utility
    */
-  public DriveTrajectory(CoordType trajectoryType, StopType stopAtEnd, Trajectory<SwerveSample> trajectory, DriveTrain driveTrain, AllianceSelection alliance, FileLog log) { 
+  public DriveTrajectory(CoordType trajectoryType, StopType stopAtEnd, Trajectory<SwerveSample> trajectory, DriveTrain driveTrain, AllianceSelection alliance, DataLogUtil log) { 
     addCommands(new FileLogWrite(false, false, "DriveTrajectory", "Start", log));
 
     // Define the controller for robot rotation

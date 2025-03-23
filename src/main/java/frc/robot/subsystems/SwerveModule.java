@@ -31,7 +31,7 @@ import static frc.robot.utilities.StringUtil.*;
 
 public class SwerveModule {
   private final String swName;  // Name for this swerve module
-  private final FileLog log;
+  private final DataLogUtil log;
   private final double turningOffsetDegrees;
 
   // Drive motor objects
@@ -100,7 +100,7 @@ public class SwerveModule {
    */
   public SwerveModule(String swName, int driveMotorAddress, int turningMotorAddress, int cancoderAddress,
       boolean driveMotorInverted, boolean turningMotorInverted, boolean cancoderReversed, double turningOffsetDegrees,
-      double kVm, FileLog log) {
+      double kVm, DataLogUtil log) {
     this.swName = swName;
     this.log = log;
     this.turningOffsetDegrees = turningOffsetDegrees;

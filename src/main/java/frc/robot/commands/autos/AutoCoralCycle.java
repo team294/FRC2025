@@ -29,7 +29,7 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoCoralCycle(ReefLocation start, ReefLocation end, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
-          CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+          CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, DataLogUtil log) {
     addCommands(
       // Drives from start reef location to HP and intakes coral  
       new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, alliance, cache, log),

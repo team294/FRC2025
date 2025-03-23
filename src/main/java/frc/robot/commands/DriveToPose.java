@@ -23,7 +23,7 @@ import frc.robot.Constants.CoordType;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.HolonomicDriveControllerBCR;
 import frc.robot.utilities.MathBCR;
 import frc.robot.utilities.Translation2dBCR;
@@ -31,7 +31,7 @@ import frc.robot.utilities.TrapezoidProfileBCR;
 
 public class DriveToPose extends Command {
   private final DriveTrain driveTrain;
-  private final FileLog log;
+  private final DataLogUtil log;
   
   private final Timer timer = new Timer();
   private HolonomicDriveControllerBCR controller;
@@ -83,7 +83,7 @@ public class DriveToPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log file for logging
    */
-   public DriveToPose(CoordType poseType, Pose2d goalPose, DriveTrain driveTrain, FileLog log) {
+   public DriveToPose(CoordType poseType, Pose2d goalPose, DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     this.poseType = poseType;
@@ -122,7 +122,7 @@ public class DriveToPose extends Command {
   public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, double maxVelMetersPerSecond, double maxAccelMetersPerSecondSquare, 
       double maxPositionErrorMeters, double maxThetaErrorDegrees, 
       boolean closedLoopSwerve, boolean usePositionFeedback,
-      DriveTrain driveTrain, FileLog log) {
+      DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     this.maxPositionErrorMeters = maxPositionErrorMeters;
@@ -162,7 +162,7 @@ public class DriveToPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, DriveTrain driveTrain, FileLog log) {
+  public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     this.poseType = poseType;
@@ -195,7 +195,7 @@ public class DriveToPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, double maxPositionErrorMeters, double maxThetaErrorDegrees, DriveTrain driveTrain, FileLog log) {
+  public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, double maxPositionErrorMeters, double maxThetaErrorDegrees, DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     this.poseType = poseType;
@@ -218,7 +218,7 @@ public class DriveToPose extends Command {
    * @param driveTrain DriveTrain subsytem
    * @param log FileLog utility
    */
-  public DriveToPose(CoordType type, double rotation, DriveTrain driveTrain, FileLog log ){
+  public DriveToPose(CoordType type, double rotation, DriveTrain driveTrain, DataLogUtil log ){
     this.driveTrain = driveTrain;
     this.log = log;
     this.rotation = Rotation2d.fromDegrees(rotation);
@@ -245,7 +245,7 @@ public class DriveToPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveToPose(CoordType poseType, DriveTrain driveTrain, FileLog log) {
+  public DriveToPose(CoordType poseType, DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     this.poseType = poseType;

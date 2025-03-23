@@ -22,7 +22,7 @@ import static frc.robot.utilities.StringUtil.*;
 /**
  * A utility to write information to a file for loggin.
  */
-public class FileLog {
+public class DataLogUtil {
   private FileWriter fileWriter;
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	private static final SimpleDateFormat fileDateFormat = new SimpleDateFormat("yyyy-MM-dd.HH-mm-ss");
@@ -42,7 +42,7 @@ public class FileLog {
 	 * When running a robot simulation on a laptop, the log file is placed in the VSCode project in the "sim" subdirectory.
      * @param version Version of robot code (i.e. A1)
 	 */
-	public FileLog(String version) {
+	public DataLogUtil(String version) {
 		// When running on a RoboRio: Logfile is placed in /home/lvuser/
 		// When running in simulation: Logfile is placed in the VSCode project in the "sim" subdirectory
 
@@ -66,7 +66,7 @@ public class FileLog {
 	 * @param filenameBase Path and name of log file
      * @param version Version of robot code (i.e. A1)
 	 */
-	public FileLog(String filenameBase, String version) {
+	public DataLogUtil(String filenameBase, String version) {
 		createLog(filenameBase, version);
 	}
 

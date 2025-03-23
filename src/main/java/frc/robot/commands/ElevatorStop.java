@@ -6,13 +6,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorStop extends Command {
   private final Elevator elevator;
-  private final FileLog log;
+  private final DataLogUtil log;
 
-  public ElevatorStop(Elevator elevator, FileLog log) {
+  public ElevatorStop(Elevator elevator, DataLogUtil log) {
     this.elevator = elevator;
     this.log = log;
     addRequirements(elevator);

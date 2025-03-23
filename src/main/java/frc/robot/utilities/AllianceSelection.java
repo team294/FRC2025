@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AllianceSelection {
-  private final FileLog log;
+  private final DataLogUtil log;
   private int logRotationKey;
   private Alliance alliance;  // Red or Blue
   private List<Consumer<Alliance>> newAllianceCalls;
@@ -28,7 +28,7 @@ public class AllianceSelection {
 
   private SendableChooser<AllianceChoice> allianceChooser = new SendableChooser<>();
 
-  public AllianceSelection(FileLog log) {
+  public AllianceSelection(DataLogUtil log) {
     this.log = log;
     newAllianceCalls = new ArrayList<Consumer<Alliance>>();
     logRotationKey = log.allocateLogRotation();

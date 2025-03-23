@@ -32,7 +32,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, DataLogUtil log) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {

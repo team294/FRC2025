@@ -17,7 +17,7 @@ import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.AllianceSelection;
 import frc.robot.utilities.Field;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 import java.lang.Math;
 
@@ -26,7 +26,7 @@ public class DriveWithJoysticksAdvanced extends Command {
   private final Joystick rightJoystick;
   private final AllianceSelection allianceSelection;
   private final DriveTrain driveTrain;
-  private final FileLog log;
+  private final DataLogUtil log;
   private final Field field;
 
   private ProfiledPIDController turnRateController;
@@ -51,7 +51,7 @@ public class DriveWithJoysticksAdvanced extends Command {
    * @param field Field utility
    * @param log FileLog utility
    */
-  public DriveWithJoysticksAdvanced(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain, Field field, FileLog log) {
+  public DriveWithJoysticksAdvanced(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain, Field field, DataLogUtil log) {
     this.leftJoystick = leftJoystick;
     this.rightJoystick = rightJoystick;
     this.allianceSelection = allianceSelection;

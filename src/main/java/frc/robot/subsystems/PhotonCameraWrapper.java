@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,14 +23,14 @@ public class PhotonCameraWrapper extends SubsystemBase {
   public PhotonCamera photonCamera;
   public PhotonPoseEstimator photonPoseEstimatorCamera;
   private AprilTagFieldLayout aprilTagFieldLayout;
-  private FileLog log;
+  private DataLogUtil log;
   private boolean hasInit = false;
   private int logRotationKey;
   private boolean fastLogging = false;
   private Transform3d robotToCam;
   private String cameraName;
 
-  public PhotonCameraWrapper(Transform3d robotToCam, String cameraName, FileLog log, int logRotationKey) {
+  public PhotonCameraWrapper(Transform3d robotToCam, String cameraName, DataLogUtil log, int logRotationKey) {
     this.log = log;
     this.logRotationKey = logRotationKey;
     this.robotToCam = robotToCam;

@@ -7,18 +7,18 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AlgaeGrabberConstants;
 import frc.robot.subsystems.AlgaeGrabber;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class AlgaeGrabberIntake extends Command {
   private final AlgaeGrabber algaeGrabber;
-  private final FileLog log;
+  private final DataLogUtil log;
 
   /**
    * Intake algae into the AlgaeGrabber by running the motor until an algae is detected.
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */
-  public AlgaeGrabberIntake(AlgaeGrabber algaeGrabber, FileLog log) {
+  public AlgaeGrabberIntake(AlgaeGrabber algaeGrabber, DataLogUtil log) {
     this.algaeGrabber = algaeGrabber;
     this.log = log;
     addRequirements(algaeGrabber);

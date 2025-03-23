@@ -6,18 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class DriveToggleCoastMode extends Command {
   private final DriveTrain driveTrain;
-  private final FileLog log;
+  private final DataLogUtil log;
 
   /**
    * Toggle between coast mode and brake mode on the driveTrain.
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveToggleCoastMode(DriveTrain driveTrain, FileLog log) {
+  public DriveToggleCoastMode(DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     addRequirements(driveTrain);

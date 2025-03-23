@@ -28,7 +28,7 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
  * @param log FileLog utility
  */
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
-  public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
+  public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, DataLogUtil log) {
     addCommands(
       new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist, log),
       new AlgaeGrabberIntake(algaeGrabber, log)

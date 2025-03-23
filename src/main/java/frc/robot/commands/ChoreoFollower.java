@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.MathBCR;
 
 public class ChoreoFollower extends Command {
@@ -37,7 +37,7 @@ public class ChoreoFollower extends Command {
   private BooleanSupplier mirrorTrajectory;
   private boolean mirrorTrajectoryThisInit;
   private DriveTrain driveTrain;
-  private FileLog log;
+  private DataLogUtil log;
   private StructLogEntry<Pose2d> pose2DEntry;
   private DoubleLogEntry trajXEntry, trajYEntry;
 
@@ -59,7 +59,7 @@ public class ChoreoFollower extends Command {
    */
   public ChoreoFollower(Trajectory<SwerveSample> trajectory, PIDController xController, PIDController yController,
       PIDController rotationController, Consumer<ChassisSpeeds> outputChassisSpeeds,
-      Supplier<Pose2d> poseSupplier, BooleanSupplier mirrorTrajectory, DriveTrain driveTrain, FileLog log) {
+      Supplier<Pose2d> poseSupplier, BooleanSupplier mirrorTrajectory, DriveTrain driveTrain, DataLogUtil log) {
     this.trajectory = trajectory;
     this.xController = xController;
     this.yController = yController;

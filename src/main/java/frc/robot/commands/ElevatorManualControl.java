@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Elevator;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorManualControl extends Command {
   private final Elevator elevator;
   private final CommandXboxController xboxController;
-  private final FileLog log;
+  private final DataLogUtil log;
   private boolean rightJoystick;
 
   /**
@@ -24,7 +24,7 @@ public class ElevatorManualControl extends Command {
    * @param log FileLog utility
    * @param rightJoystick true = use right joystick, false = use left joystick
    */
-  public ElevatorManualControl(CommandXboxController xboxController, Elevator elevator, FileLog log, boolean rightJoystick) {
+  public ElevatorManualControl(CommandXboxController xboxController, Elevator elevator, DataLogUtil log, boolean rightJoystick) {
     this.elevator = elevator;
     this.xboxController = xboxController;
     this.log = log;

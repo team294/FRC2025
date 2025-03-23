@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorProfileGenerator {
   Elevator elevator;
-  FileLog log;
+  DataLogUtil log;
 
   private boolean profileEnabled = false;
 
@@ -56,7 +56,7 @@ public class ElevatorProfileGenerator {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorProfileGenerator(Elevator elevator, FileLog log) {
+  public ElevatorProfileGenerator(Elevator elevator, DataLogUtil log) {
     disableProfileControl();
     this.log = log;
     this.elevator = elevator;

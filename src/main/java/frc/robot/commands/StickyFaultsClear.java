@@ -8,19 +8,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.RobotPreferences;
 
 public class StickyFaultsClear extends Command {
 
-  private FileLog log;
+  private DataLogUtil log;
 
   /**
    * Clears the sticky faults in RobotPreferences.
    * NOTE: This command can run while the robot is disabled.
    * @param log
    */
-  public StickyFaultsClear(FileLog log) {
+  public StickyFaultsClear(DataLogUtil log) {
     this.log = log;
   }
 

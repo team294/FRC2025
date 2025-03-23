@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristManualControl extends Command {
   private final Wrist wrist;
   private final CommandXboxController xboxController;
-  private final FileLog log;
+  private final DataLogUtil log;
   private boolean rightJoystick;
 
   /**
@@ -24,7 +24,7 @@ public class WristManualControl extends Command {
    * @param log FileLog utility
    * @param rightJoystick true = use right joystick, false = use left joystick
    */
-  public WristManualControl(CommandXboxController xboxController, Wrist wrist, FileLog log, boolean rightJoystick) {
+  public WristManualControl(CommandXboxController xboxController, Wrist wrist, DataLogUtil log, boolean rightJoystick) {
     this.wrist = wrist;
     this.xboxController = xboxController;
     this.log = log;

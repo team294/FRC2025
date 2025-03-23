@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Elevator;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorSetPosition extends Command {
   private final Elevator elevator;
-  private final FileLog log;
+  private final DataLogUtil log;
   private double target;
   private double tolerance = 0.5;
   private int toleranceCount = 0;
@@ -23,7 +23,7 @@ public class ElevatorSetPosition extends Command {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorSetPosition(double target, Elevator elevator, FileLog log) {
+  public ElevatorSetPosition(double target, Elevator elevator, DataLogUtil log) {
     this.elevator = elevator;
     this.log = log;
     this.target = target;
@@ -37,7 +37,7 @@ public class ElevatorSetPosition extends Command {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorSetPosition(ElevatorWristPosition target, Elevator elevator, FileLog log) {
+  public ElevatorSetPosition(ElevatorWristPosition target, Elevator elevator, DataLogUtil log) {
     this.elevator = elevator;
     this.log = log;
     this.target = target.elevatorPosition;

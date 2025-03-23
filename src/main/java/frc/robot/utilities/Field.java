@@ -31,7 +31,7 @@ public class Field {
 
     private AllianceSelection allianceSelection;
     private AprilTagFieldLayout aprilTagFieldLayout;
-    private final FileLog log;
+    private final DataLogUtil log;
 
     /**
      * Creates a field object that can provide various field locations.
@@ -43,7 +43,7 @@ public class Field {
    * @param allianceSelection AllianceSelection utility
    * @param log FileLog utility
      */
-    public Field(AllianceSelection allianceSelection, FileLog log){
+    public Field(AllianceSelection allianceSelection, DataLogUtil log){
         this.allianceSelection = allianceSelection;
         this.log = log;
 

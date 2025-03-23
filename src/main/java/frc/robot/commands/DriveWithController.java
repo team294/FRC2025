@@ -11,13 +11,13 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.AllianceSelection;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class DriveWithController extends Command {
   private DriveTrain driveTrain;
   private CommandXboxController xboxController;
   private final AllianceSelection allianceSelection;
-  private FileLog log;
+  private DataLogUtil log;
   private double fwdVelocity, leftVelocity, turnRate;
 
   /**
@@ -28,7 +28,7 @@ public class DriveWithController extends Command {
    * @param allianceSelection AllianceSelection utility
    * @param log FileLog utility
    */
-  public DriveWithController(DriveTrain driveTrain, CommandXboxController xboxController, AllianceSelection allianceSelection, FileLog log) {
+  public DriveWithController(DriveTrain driveTrain, CommandXboxController xboxController, AllianceSelection allianceSelection, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.xboxController = xboxController;
     this.allianceSelection = allianceSelection;

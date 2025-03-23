@@ -8,14 +8,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class FileLogWrite extends Command {
   boolean echo;
   boolean logWhenDisabled;
   String subsystemOrCommand;
   String event;
-  FileLog log;
+  DataLogUtil log;
   Object[] paramArray;
 
   /**
@@ -27,7 +27,7 @@ public class FileLogWrite extends Command {
    * @param log FileLog utility
    * @param paramArray List of descriptions and values (variable number of parameters)
    */
-  public FileLogWrite(boolean echo, boolean logWhenDisabled, String subsystemOrCommand, String event, FileLog log, Object... paramArray) {
+  public FileLogWrite(boolean echo, boolean logWhenDisabled, String subsystemOrCommand, String event, DataLogUtil log, Object... paramArray) {
     this.echo = echo;
     this.logWhenDisabled = logWhenDisabled;
     this.subsystemOrCommand = subsystemOrCommand;

@@ -47,7 +47,7 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoDriveToReefAndPrep(ReefLevel level, TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
-        CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+        CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, DataLogUtil log) {
     addCommands(
       new FileLogWrite(false, false, "AutoDriveToReefAndPrep", "Init", log, "trajectoryName", trajectoryName.toString()),
       parallel(
@@ -76,7 +76,7 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoDriveToReefAndPrep(ReefLevel level, boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
-      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, DataLogUtil log) {
     // Start from either HP or barge
     Trajectory<SwerveSample> trajectory = fromHP ? AutoSelection.getHPToReef(end) : AutoSelection.getBargeToReef(end);
     addCommands(

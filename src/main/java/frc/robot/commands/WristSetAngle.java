@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristSetAngle extends Command {
   private final Wrist wrist;
-  private final FileLog log;
+  private final DataLogUtil log;
   private double angle;
   private final double tolerance = 3.0; // tolerance of 5 degrees
   private boolean fromShuffleboard;
@@ -24,7 +24,7 @@ public class WristSetAngle extends Command {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristSetAngle(double angle, Wrist wrist, FileLog log) {
+  public WristSetAngle(double angle, Wrist wrist, DataLogUtil log) {
     this.wrist = wrist;
     this.log = log;
     this.angle = angle;
@@ -39,7 +39,7 @@ public class WristSetAngle extends Command {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristSetAngle(ElevatorWristPosition angle, Wrist wrist, FileLog log) {
+  public WristSetAngle(ElevatorWristPosition angle, Wrist wrist, DataLogUtil log) {
     this.wrist = wrist;
     this.log = log;
     this.angle = angle.wristAngle;
@@ -53,7 +53,7 @@ public class WristSetAngle extends Command {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristSetAngle(Wrist wrist, FileLog log) {
+  public WristSetAngle(Wrist wrist, DataLogUtil log) {
     this.wrist = wrist;
     this.log = log;
     fromShuffleboard = true;

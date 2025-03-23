@@ -31,11 +31,11 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.utilities.AllianceSelection;
 import frc.robot.utilities.Field;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 
 public class AutoCenterL4 extends SequentialCommandGroup {
-  public AutoCenterL4(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Field field, Joystick rightJoystick, AllianceSelection allianceSelection, FileLog log) {
+  public AutoCenterL4(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Field field, Joystick rightJoystick, AllianceSelection allianceSelection, DataLogUtil log) {
     addCommands(
 
       // Turn on vision odometry

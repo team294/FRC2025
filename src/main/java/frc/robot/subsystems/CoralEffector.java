@@ -24,11 +24,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.Constants.Ports;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 
 public class CoralEffector extends SubsystemBase implements Loggable {
-  private final FileLog log;
+  private final DataLogUtil log;
   private final int logRotationKey;
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;           // Subsystem name for use in file logging and dashboard
@@ -56,7 +56,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private boolean autoHoldMode = false;
   private double targetPosition = 0;
 
-  public CoralEffector(String subsystemName, Wrist wrist, FileLog log) {
+  public CoralEffector(String subsystemName, Wrist wrist, DataLogUtil log) {
     this.subsystemName = subsystemName;
     this.log = log;
     logRotationKey = log.allocateLogRotation();

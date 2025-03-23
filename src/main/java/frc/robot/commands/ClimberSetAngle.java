@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
 import frc.robot.subsystems.Climber;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ClimberSetAngle extends Command {
   private final Climber climber;
-  private final FileLog log;
+  private final DataLogUtil log;
   private double angle;
   private final double tolerance = 3.0; // tolerance of 3 degrees
   private boolean fromShuffleboard;
@@ -25,7 +25,7 @@ public class ClimberSetAngle extends Command {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberSetAngle(double angle, Climber climber, FileLog log) {
+  public ClimberSetAngle(double angle, Climber climber, DataLogUtil log) {
     this.climber = climber;
     this.log = log;
     this.angle = angle;
@@ -40,7 +40,7 @@ public class ClimberSetAngle extends Command {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberSetAngle(ClimberAngle pos, Climber climber, FileLog log) {
+  public ClimberSetAngle(ClimberAngle pos, Climber climber, DataLogUtil log) {
     this.climber = climber;
     this.log = log;
     this.angle = pos.value;
@@ -54,7 +54,7 @@ public class ClimberSetAngle extends Command {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberSetAngle(Climber climber, FileLog log) {
+  public ClimberSetAngle(Climber climber, DataLogUtil log) {
     this.climber = climber;
     this.log = log;
     fromShuffleboard = true;

@@ -6,18 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class DriveStop extends Command {
   private DriveTrain drivetrain;
-  private FileLog log;
+  private DataLogUtil log;
 
   /**
    * Stops all of the driveTrain motors.
    * @param drivetrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveStop(DriveTrain drivetrain, FileLog log) {
+  public DriveStop(DriveTrain drivetrain, DataLogUtil log) {
     this.drivetrain = drivetrain;
     this.log = log;
     addRequirements(drivetrain);

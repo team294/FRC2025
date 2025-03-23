@@ -30,7 +30,7 @@ public class AutoCenterL1 extends SequentialCommandGroup {
    * @param allianceSelection AllianceSelection utility
    * @param log FileLog utility
    */
-  public AutoCenterL1(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, AllianceSelection allianceSelection, FileLog log) {
+  public AutoCenterL1(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, AllianceSelection allianceSelection, DataLogUtil log) {
     addCommands(
       // Turn off vision odometry
       new VisionOdometryStateSet(false, driveTrain, log),

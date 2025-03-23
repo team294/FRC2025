@@ -6,18 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hopper;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class HopperStop extends Command {
   private final Hopper hopper;
-  private final FileLog log;
+  private final DataLogUtil log;
  
   /**
    * Sets the percent output of the hopper to 0 and ends immediately.
    * @param hopper Hopper subsystem
    * @param log FileLog utility
    */
-  public HopperStop(Hopper hopper, FileLog log) {
+  public HopperStop(Hopper hopper, DataLogUtil log) {
     this.hopper = hopper;
     this.log = log;
     addRequirements(hopper);

@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristCalibrateManual extends InstantCommand {
   private final Wrist wrist;
-  private FileLog log;
+  private DataLogUtil log;
   private double angle;
   private boolean fromShuffleboard;
 
@@ -21,7 +21,7 @@ public class WristCalibrateManual extends InstantCommand {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristCalibrateManual(double angle, Wrist wrist, FileLog log) {
+  public WristCalibrateManual(double angle, Wrist wrist, DataLogUtil log) {
     this.wrist = wrist;
     this.log = log;
     this.angle = angle;
@@ -34,7 +34,7 @@ public class WristCalibrateManual extends InstantCommand {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristCalibrateManual(Wrist wrist, FileLog log) {
+  public WristCalibrateManual(Wrist wrist, DataLogUtil log) {
     this.wrist = wrist;
     this.log = log;
     fromShuffleboard = true;

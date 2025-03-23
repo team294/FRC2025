@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ScorePieceSequence extends SequentialCommandGroup {
   /**
@@ -24,7 +24,7 @@ public class ScorePieceSequence extends SequentialCommandGroup {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public ScorePieceSequence(CoralEffector coralEffector, AlgaeGrabber algaeGrabber, DriveTrain driveTrain, FileLog log) {
+  public ScorePieceSequence(CoralEffector coralEffector, AlgaeGrabber algaeGrabber, DriveTrain driveTrain, DataLogUtil log) {
     addCommands(
       either(
         new AlgaeGrabberOuttake(algaeGrabber, log),

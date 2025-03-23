@@ -82,7 +82,7 @@ public class AutoSelection {
 	private final TrajectoryCache trajectoryCache;
 	private final Field field;
 	private final Joystick rightJoystick;
-	private final FileLog log;
+	private final DataLogUtil log;
 
 	private SendableChooser<Integer> autoRoutineChooser = new SendableChooser<>();
 	// private SendableChooser<Integer> startPositionChooser = new SendableChooser<>();
@@ -97,7 +97,7 @@ public class AutoSelection {
 	 * @param allianceSelection AllianceSelection alliance
 	 * @param log FileLog log
 	 */
-	public AutoSelection(Joystick rightJoystick, TrajectoryCache trajectoryCache, AllianceSelection allianceSelection, Field field, FileLog log) {
+	public AutoSelection(Joystick rightJoystick, TrajectoryCache trajectoryCache, AllianceSelection allianceSelection, Field field, DataLogUtil log) {
 		this.rightJoystick = rightJoystick;
 		this.trajectoryCache = trajectoryCache;
 		this.allianceSelection = allianceSelection;

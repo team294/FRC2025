@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaeGrabber;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class AlgaeGrabberSetPercent extends Command {
   private final AlgaeGrabber algaeGrabber;
-  private final FileLog log;
+  private final DataLogUtil log;
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
@@ -20,7 +20,7 @@ public class AlgaeGrabberSetPercent extends Command {
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */
-  public AlgaeGrabberSetPercent(AlgaeGrabber algaeGrabber, FileLog log) {
+  public AlgaeGrabberSetPercent(AlgaeGrabber algaeGrabber, DataLogUtil log) {
     this.algaeGrabber = algaeGrabber;
     this.log = log;
     this.fromShuffleboard = true;
@@ -37,7 +37,7 @@ public class AlgaeGrabberSetPercent extends Command {
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */
-  public AlgaeGrabberSetPercent(double percent, AlgaeGrabber algaeGrabber, FileLog log) {
+  public AlgaeGrabberSetPercent(double percent, AlgaeGrabber algaeGrabber, DataLogUtil log) {
     this.algaeGrabber = algaeGrabber;
     this.log = log;
     this.percent = percent;

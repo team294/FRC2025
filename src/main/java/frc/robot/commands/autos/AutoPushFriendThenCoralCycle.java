@@ -38,7 +38,7 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
    * @param log FileLog utility
    */
   public AutoPushFriendThenCoralCycle(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, boolean grabAlgae, DriveTrain driveTrain, 
-      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {    
+      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, DataLogUtil log) {    
     // Different starting pose based on if we are blue or red alliance
     Pose2d startingPose = AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get();
     

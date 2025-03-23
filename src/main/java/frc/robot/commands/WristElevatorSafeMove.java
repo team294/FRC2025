@@ -10,13 +10,13 @@ import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.ElevatorWristRegions;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristElevatorSafeMove extends Command {
   // Subsystem and object references
   private final Elevator elevator;
   private final Wrist wrist;
-  private final FileLog log;
+  private final DataLogUtil log;
   // Input parameters
   private final ElevatorWristPosition destPosition;
   private final ElevatorWristRegions.RegionType type;
@@ -50,7 +50,7 @@ public class WristElevatorSafeMove extends Command {
    * @param log FileLog utility
    */
   public WristElevatorSafeMove(ElevatorWristPosition position, ElevatorWristRegions.RegionType type,
-            Elevator elevator, Wrist wrist, FileLog log) {
+            Elevator elevator, Wrist wrist, DataLogUtil log) {
     this.destPosition = position;
     this.type = type;
     this.elevator = elevator;

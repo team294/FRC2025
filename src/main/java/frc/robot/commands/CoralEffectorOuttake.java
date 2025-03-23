@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorOuttake extends Command {
   private final CoralEffector coralEffector;
-  private final FileLog log;
+  private final DataLogUtil log;
   private final Timer timer;
   private final double seconds;
 
@@ -21,7 +21,7 @@ public class CoralEffectorOuttake extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorOuttake(CoralEffector coralEffector, FileLog log) {
+  public CoralEffectorOuttake(CoralEffector coralEffector, DataLogUtil log) {
     this.coralEffector = coralEffector;
     this.log = log;
     this.timer = new Timer();

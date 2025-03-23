@@ -7,18 +7,18 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorIntake extends Command {
   private final CoralEffector coralEffector;
-  private final FileLog log;
+  private final DataLogUtil log;
 
   /**
    * Intake coral into the coralEffector by running the motor until the coral is safely in the mechanism.
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorIntake(CoralEffector coralEffector, FileLog log) {
+  public CoralEffectorIntake(CoralEffector coralEffector, DataLogUtil log) {
     this.coralEffector = coralEffector;
     this.log = log;
     addRequirements(coralEffector);

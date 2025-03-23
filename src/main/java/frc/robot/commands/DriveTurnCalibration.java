@@ -8,12 +8,12 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class DriveTurnCalibration extends Command {
 
   private DriveTrain driveTrain;
-  private FileLog log;
+  private DataLogUtil log;
   private double percentOutput, maxPercentOutput, rampTime, rampRate;
   private final Timer timer = new Timer();
 
@@ -25,7 +25,7 @@ public class DriveTurnCalibration extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveTurnCalibration(double maxPercentOutput, double rampTime, double rampRate, DriveTrain driveTrain, FileLog log) {
+  public DriveTurnCalibration(double maxPercentOutput, double rampTime, double rampRate, DriveTrain driveTrain, DataLogUtil log) {
     this.driveTrain = driveTrain;
     this.log = log;
     this.maxPercentOutput = maxPercentOutput;

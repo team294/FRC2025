@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.subsystems.Elevator;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorCalibration extends Command {
   private Elevator elevator;
-  private FileLog log;
+  private DataLogUtil log;
   private double percentOutput, rampRate;
   private final Timer timer = new Timer();
 
@@ -33,7 +33,7 @@ public class ElevatorCalibration extends Command {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorCalibration(double rampRate, Elevator elevator, FileLog log) {
+  public ElevatorCalibration(double rampRate, Elevator elevator, DataLogUtil log) {
     this.elevator = elevator;
     this.log = log;
     this.rampRate = rampRate;

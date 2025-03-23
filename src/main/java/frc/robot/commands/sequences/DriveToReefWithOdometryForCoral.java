@@ -18,7 +18,7 @@ import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FileLogWrite;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.Field;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
   /** <p>Drives to the closest reef scoring position against the reef</p>
@@ -39,7 +39,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
    * @param rightJoystick
    * @param log FileLog utility
    */
-  public DriveToReefWithOdometryForCoral(DriveTrain driveTrain, Field field, Joystick rightJoystick, FileLog log) {
+  public DriveToReefWithOdometryForCoral(DriveTrain driveTrain, Field field, Joystick rightJoystick, DataLogUtil log) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(

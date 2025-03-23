@@ -20,7 +20,7 @@ public class DriveToReefWithOdometryForAlgae extends SequentialCommandGroup {
    * @param field Field utility
    * @param log FileLog utility
    */
-  public DriveToReefWithOdometryForAlgae(DriveTrain driveTrain, Field field, FileLog log) {
+  public DriveToReefWithOdometryForAlgae(DriveTrain driveTrain, Field field, DataLogUtil log) {
     addCommands(
       new FileLogWrite(false, false, "DriveToReefWithOdometryForAlgae", "Start", log),
 

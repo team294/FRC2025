@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.Wait;
@@ -25,7 +25,7 @@ import frc.robot.Constants.*;
 import frc.robot.Constants.WristConstants.WristAngle;
 
 public class Wrist extends SubsystemBase implements Loggable {
-  private final FileLog log;
+  private final DataLogUtil log;
   private final int logRotationKey;
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;         // Subsystem name for use in file logging and dashboard
@@ -71,7 +71,7 @@ public class Wrist extends SubsystemBase implements Loggable {
 
   private double safeAngle; // Current wrist target on position control on the motor (if in position mode)
 
-  public Wrist(String subsystemName, FileLog log) {
+  public Wrist(String subsystemName, DataLogUtil log) {
     this.log = log;
     logRotationKey = log.allocateLogRotation();
     this.subsystemName = subsystemName;

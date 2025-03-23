@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ClimberSetPercentOutput extends Command {
   private final Climber climber;
-  private final FileLog log;
+  private final DataLogUtil log;
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
@@ -21,7 +21,7 @@ public class ClimberSetPercentOutput extends Command {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberSetPercentOutput(Climber climber, FileLog log) {
+  public ClimberSetPercentOutput(Climber climber, DataLogUtil log) {
     this.climber = climber;
     this.log = log;
     this.fromShuffleboard = true;
@@ -39,7 +39,7 @@ public class ClimberSetPercentOutput extends Command {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberSetPercentOutput(double percent, Climber climber, FileLog log) {
+  public ClimberSetPercentOutput(double percent, Climber climber, DataLogUtil log) {
     this.log = log;
     this.climber = climber;
     this.percent = percent;
