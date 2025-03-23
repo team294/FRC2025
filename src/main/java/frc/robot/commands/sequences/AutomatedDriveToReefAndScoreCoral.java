@@ -47,7 +47,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
-      AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field, boolean inAuto, FileLog log) {
+      AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field, FileLog log) {
     addCommands(
       // Drive to nearest reef position
       new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log),
