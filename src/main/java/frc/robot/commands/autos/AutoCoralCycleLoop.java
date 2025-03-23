@@ -53,7 +53,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
       // Score the pre-loaded coral with the first reef location
       if (reefLocations.size() >= 1 && reefLevels.size() >= 1) {
         addCommands(
-          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController, rightJoystick, alliance, field, log)
+          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field, log)
         );
       }
 
@@ -68,7 +68,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
           ReefLocation end = reefLocations.get(i + 1);
 
           addCommands(
-            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController, rightJoystick, alliance, field, log)
+            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field, log)
           );
         }
       }

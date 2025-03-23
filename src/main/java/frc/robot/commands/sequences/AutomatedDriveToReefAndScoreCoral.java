@@ -47,51 +47,31 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
-      AlgaeGrabber algaeGrabber, CommandXboxController xboxController, Joystick rightJoystick, Field field, boolean inAuto, FileLog log) {
+      AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field, boolean inAuto, FileLog log) {
     addCommands(
-      // Wait for both buttons to be held if not in auto
-      new ConditionalCommand(
-        none(), 
-        new TriggerAutomatedDriveToReefAndScoreCoral(xboxController, rightJoystick, level), 
-        () -> inAuto
-      ),
-  
-      sequence(
-        // Drive to nearest reef position
-        new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log),
-  
-        // Move elevator/wrist to correct position based on given level
-        new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, log),
-  
-        // Drive forward to get to the reef (offset copied from DriveToReefWithOdometryForCoral and made positive)
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)),
-          0.5, 1.0, 
-          TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          true, true, driveTrain, log),
-  
-        // Score piece
-        new CoralEffectorOuttake(coralEffector, log),
-  
-        // Back up 
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
-          0.5, 1.0, 
-          TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          true, true, driveTrain, log),
-  
-        // Move elevator/wrist to HP position
-        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
-      ).handleInterrupt(() -> {
-        sequence(
-          // Back up 
-          new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
-          0.5, 1.0, 
-          TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          true, true, driveTrain, log),
-  
-          // Move elevator/wrist to HP position
-          new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
-        );
-      })
+      // Drive to nearest reef position
+      new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log),
+
+      // Move elevator/wrist to correct position based on given level
+      new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, log),
+
+      // Drive forward to get to the reef (offset copied from DriveToReefWithOdometryForCoral and made positive)
+      new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)),
+        0.5, 1.0, 
+        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+        true, true, driveTrain, log),
+
+      // Score piece
+      new CoralEffectorOuttake(coralEffector, log),
+
+      // Back up 
+      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
+        0.5, 1.0, 
+        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+        true, true, driveTrain, log)
+
+      // Move elevator/wrist to HP position
+      // new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
     );
   }
 }

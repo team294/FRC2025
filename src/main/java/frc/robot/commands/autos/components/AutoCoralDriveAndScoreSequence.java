@@ -38,12 +38,12 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoCoralDriveAndScoreSequence(boolean fromHP, ReefLocation end, ReefLevel level, DriveTrain driveTrain,
-      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, CommandXboxController xboxController, Joystick rightJoystick, AllianceSelection alliance,
+      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
       Field field, FileLog log) {
     addCommands(
       
       new AutoDriveToReef(fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, alliance, log),
-      new AutomatedDriveToReefAndScoreCoral(level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, xboxController, rightJoystick, field, true, log)
+      new AutomatedDriveToReefAndScoreCoral(level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field, true, log)
 
       
       // // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log),

@@ -164,9 +164,9 @@ public class RobotContainer {
     
     // Autos
     SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand(xboxController, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper));
-    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController, rightJoystick, allianceSelection, field, log));
+    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log));
     SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, allianceSelection, log));
-    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController, rightJoystick, allianceSelection, field, log));
+    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log));
 
     // Copanel buttons
 
@@ -226,19 +226,7 @@ public class RobotContainer {
     // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
     xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log));
 
-    // Prep to score coral on L1 with X, L2 with A, L3 with B, and L4 with Y
-    //TODO CHANGE TO TRIGGERAUTOMATEDDRIVETOREEFANDSCORECORAL !!
-    // xbX.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, log));
-    // xbA.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber, log));
-    // xbB.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, log));
-    // xbY.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, log));
-    // ------------------------------------------------------------------------
-
-    // TODO holding these down do not allow other movements (motion continues, uncontrolled)
-    xbX.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, xboxController, rightJoystick, field, false, log));
-    xbA.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, algaeGrabber, xboxController, rightJoystick, field, false, log));
-    xbB.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, algaeGrabber, xboxController, rightJoystick, field, false, log));
-    xbY.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, algaeGrabber, xboxController, rightJoystick, field, false, log));
+    // xbX, A, B, and Y will automatically drive to the reef and score coral, see right[1] in configureJoystickButtons()
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
     xbLT.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber, log));
@@ -305,9 +293,10 @@ public class RobotContainer {
     //       true, true, driveTrain, log).asProxy()
     // ));
 
-    // right[1], when held down in combination with xbox (x, a, b, y) will automatically drive
-    // to the nearest scoring position and score coral based on which xbox button is held,
-    // see TriggerAutomatedDriveToReefAndScoreCoral
+    right[1].and(xboxController.x()).onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field, false, log));
+    right[1].and(xboxController.a()).onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field, false, log));
+    right[1].and(xboxController.b()).onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field, false, log));
+    right[1].and(xboxController.y()).onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field, false, log));
 
     // right[2] will enable fine control while held, see DriveWithJoysticksAdvanced
   }
