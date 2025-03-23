@@ -7,9 +7,12 @@ package frc.robot.utilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.print.event.PrintServiceAttributeEvent;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -334,5 +337,12 @@ public class Field {
         //     "Nearest Rotation", nearestAprilTagLoadingStation.getRotation().getDegrees()
         // );
         return nearestAprilTagLoadingStation;
+    }
+
+    public Pose2d getNearestBargeScoringPosition(Pose2d currPos){
+        Pose2d bargeScoringPos = (allianceSelection.getAlliance() == Alliance.Blue) ? aprilTagFieldLayout.getTagPose(14).get().toPose2d().transformBy(new Transform2d((-FieldConstants.bargeScoringOffset), 0, new Rotation2d(0))) : aprilTagFieldLayout.getTagPose(5).get().toPose2d().transformBy(new Transform2d((-FieldConstants.bargeScoringOffset), 0, new Rotation2d(0)));
+        bargeScoringPos = bargeScoringPos.rotateAround(bargeScoringPos.getTranslation(), new Rotation2d(Math.PI));
+
+        return new Pose2d(bargeScoringPos.getX(), MathUtil.clamp(currPos.getY(), bargeScoringPos.getY() - (FieldConstants.bargeScorableWidth / 2.0), bargeScoringPos.getY() + (FieldConstants.bargeScorableWidth / 2.0)), bargeScoringPos.getRotation());
     }
 }

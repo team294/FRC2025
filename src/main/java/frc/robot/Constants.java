@@ -254,6 +254,9 @@ public final class Constants {
 
     // Calculated by measuring y distance between center of reef wall and reef pole (6.469731 in), converted to meters
     public static final double ReefScoringPositionAprilTagOffset = 0.164331496063;
+
+    public static final double bargeScorableWidth = 2.0; //TODO Calibrate
+    public static final double bargeScoringOffset = 1.0; //TODO Calibrate
   }
 
   public static class VisionConstants {
