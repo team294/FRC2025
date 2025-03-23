@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.CoordType;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.*;
@@ -175,7 +174,7 @@ public class AutoSelection {
 	 * @param coralEffector CoralEffector subsystem
 	 * @return the command to run
 	 */
-	public Command getAutoCommand(CommandXboxController xboxController, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper) {
+	public Command getAutoCommand(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper) {
 		Command autonomousCommandMain = null;
 
 		// Get parameters from Shuffleboard
@@ -202,42 +201,42 @@ public class AutoSelection {
 			log.writeLogEcho(true, "AutoSelect", "run BargeRight_EDC");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController, rightJoystick, allianceSelection, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeLeft_JKL.value) {
 			log.writeLogEcho(true, "AutoSelect", "run BargeLeft_JKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K, ReefLocation.L));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController,  rightJoystick, allianceSelection, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper,  rightJoystick, allianceSelection, field, log);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeRight_ED_AlgaeCD.value) {
 			log.writeLogEcho(true, "AutoSelect", "run BargeRight_ED_AlgaeCD");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController,  rightJoystick, allianceSelection, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper,  rightJoystick, allianceSelection, field, log);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeLeft_JK_AlgaeKL.value) {
 			log.writeLogEcho(true, "AutoSelect", "run BargeLeft_JK_AlgaeKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController,  rightJoystick, allianceSelection, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper,  rightJoystick, allianceSelection, field, log);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.PushFriend_JK.value) {
 			log.writeLogEcho(true, "AutoSelect", "run PushFriend_J");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController,  rightJoystick, allianceSelection, trajectoryCache, field, log);
+			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper,  rightJoystick, allianceSelection, trajectoryCache, field, log);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.PushFriend_JK_AlgaeKL.value) {
 			log.writeLogEcho(true, "AutoSelect", "run PushFriend_JK_AlgaeKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController,  rightJoystick, allianceSelection, trajectoryCache, field, log);
+			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper,  rightJoystick, allianceSelection, trajectoryCache, field, log);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
@@ -273,10 +272,10 @@ public class AutoSelection {
 	 * @param coralEffector CoralEffector subsystem
 	 * @return the command to run
 	 */
-	public Command scheduleAutoCommand(CommandXboxController xboxController, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper) {
+	public Command scheduleAutoCommand(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper) {
 		return new InstantCommand(
 		  () -> {
-				Command autonomousCommand = getAutoCommand(xboxController, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
+				Command autonomousCommand = getAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
 				if (autonomousCommand != null) {
 					autonomousCommand.schedule();
 				}

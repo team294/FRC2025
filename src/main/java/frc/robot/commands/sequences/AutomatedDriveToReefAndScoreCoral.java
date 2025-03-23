@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLevel;
 import frc.robot.Constants.*;
@@ -40,10 +39,8 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
-   * @param alliance AllianceSelection alliance
-   * @param cache TrajectoryCache cache
+   * @param rightJoysitck Right joystick
    * @param field Field field
-   * @param inAuto true = in autonomous
    * @param log FileLog log
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 

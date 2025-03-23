@@ -11,7 +11,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
 import frc.robot.commands.autos.components.*;
@@ -38,7 +37,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * @param log FileLog utility
    */
   public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, CommandXboxController xboxController, Joystick rightJoystick, AllianceSelection alliance, Field field, FileLog log) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field, FileLog log) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {

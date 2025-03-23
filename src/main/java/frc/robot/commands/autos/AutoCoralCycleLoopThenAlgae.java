@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.*;
@@ -34,7 +33,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, CommandXboxController xboxController, Joystick rightJoystick, AllianceSelection alliance, Field field, FileLog log) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field, FileLog log) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
@@ -51,7 +50,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
         new FileLogWrite(false, false, "AutoCoralCycleLoopThenAlgae", "Start", log, lastCoralLocation, lastCoralLocation.toString(), "onRightSide", lastCoralLocation.onRightSide, "yRelativeOffset", yRelativeOffset),
 
         // First, do the loop for the coral cycles (ends at reef)
-        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController, rightJoystick, alliance, field, log),
+        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field, log),
         
         // Grab algae from current position (back up, prep wrist and elevator, and then go forward and intake) and back up
 
