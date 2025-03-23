@@ -548,9 +548,9 @@ public class Wrist extends SubsystemBase implements Loggable {
       SmartDashboard.putNumber("Wrist temp", wristTemp.refresh().getValueAsDouble());
     }
 
-    // if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-    //   updateWristLog(false);
-    // }
+    if (fastLogging || log.isMyLogRotation(logRotationKey)) {
+      updateWristLog(false);
+    }
 
     // If the CANcoder stops reading, apply RotorEncoder configuration and stop using the CANcoder
     // This condition should only occur one time (if at all)

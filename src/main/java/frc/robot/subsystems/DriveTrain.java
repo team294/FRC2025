@@ -569,7 +569,7 @@ public class DriveTrain extends SubsystemBase implements Loggable {
     updateOdometry();
     
     if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-      // updateDriveLog(false);
+      updateDriveLog(false);
 
       if(!isGyroReading()) RobotPreferences.recordStickyFaults("Gyro", log);
 

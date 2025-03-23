@@ -78,7 +78,7 @@ public class PhotonCameraWrapper extends SubsystemBase {
 
   public void periodic() {
     if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-      // log.writeLog(false, "PhotonCameraWrapper", "Periodic", "");
+      log.writeLog(false, "PhotonCameraWrapper", "Periodic", "");
     }
   }
 

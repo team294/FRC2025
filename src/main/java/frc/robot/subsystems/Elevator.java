@@ -573,9 +573,9 @@ public class Elevator extends SubsystemBase implements Loggable {
       SmartDashboard.putNumber("Elev Rotations 2", getElevatorEncoderRotations(2));
     }
 
-    // if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-    //   updateLog(false);
-    // }
+    if (fastLogging || log.isMyLogRotation(logRotationKey)) {
+      updateLog(false);
+    }
 
     // Sets elevator motors to percent output required as determined by motion profile.
     // Only set percent output if the motion profile is enabled.

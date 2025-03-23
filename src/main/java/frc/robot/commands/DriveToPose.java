@@ -411,26 +411,26 @@ public class DriveToPose extends Command {
     driveTrain.drive(targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond,
         targetChassisSpeeds.omegaRadiansPerSecond, true, openLoopSwerve);
 
-    // ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
-    // log.writeLog(false, "DriveToPose", "Execute", 
-    //     "Time", timer.get(), 
-    //     "Trap X", desiredPose.getTranslation().getX(),
-    //     "Trap Y", desiredPose.getTranslation().getY(),
-    //     "Trap Accel", desiredState.acceleration,
-    //     "Trap Vel", desiredState.velocity,
-    //     "Trap Vel w/kA", desiredVelocityMetersPerSecond,
-    //     "Robot XVel", robotSpeeds.vxMetersPerSecond,
-    //     "Robot Pos Err", driveTrain.getPose().getTranslation().minus(goalPose.getTranslation()).getNorm(),
-    //     "Robot Th Err", MathBCR.angleMinus(driveTrain.getPoseAngle(), goalPose.getRotation().getDegrees()),
-    //     "Trap VelAng", desiredPose.getRotation().getDegrees(),
-    //     "Target rot", desiredRotation.getDegrees(), 
-    //     "Robot X", curRobotTranslation.getX(),
-    //     "Robot Y", curRobotTranslation.getY(),
-    //     "Robot Vel", Math.hypot(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond),
-    //     "Robot VelAng", Math.toDegrees(Math.atan2(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond)),
-    //     "Robot rot", robotPose.getRotation().getDegrees(),
-    //     "Pitch", driveTrain.getGyroPitch()
-    // );
+    ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
+    log.writeLog(false, "DriveToPose", "Execute", 
+        "Time", timer.get(), 
+        "Trap X", desiredPose.getTranslation().getX(),
+        "Trap Y", desiredPose.getTranslation().getY(),
+        "Trap Accel", desiredState.acceleration,
+        "Trap Vel", desiredState.velocity,
+        "Trap Vel w/kA", desiredVelocityMetersPerSecond,
+        "Robot XVel", robotSpeeds.vxMetersPerSecond,
+        "Robot Pos Err", driveTrain.getPose().getTranslation().minus(goalPose.getTranslation()).getNorm(),
+        "Robot Th Err", MathBCR.angleMinus(driveTrain.getPoseAngle(), goalPose.getRotation().getDegrees()),
+        "Trap VelAng", desiredPose.getRotation().getDegrees(),
+        "Target rot", desiredRotation.getDegrees(), 
+        "Robot X", curRobotTranslation.getX(),
+        "Robot Y", curRobotTranslation.getY(),
+        "Robot Vel", Math.hypot(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond),
+        "Robot VelAng", Math.toDegrees(Math.atan2(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond)),
+        "Robot rot", robotPose.getRotation().getDegrees(),
+        "Pitch", driveTrain.getGyroPitch()
+    );
   }
 
   // Called once the command ends or is interrupted.
