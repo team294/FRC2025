@@ -38,8 +38,9 @@ public class DriveWithJoysticksAdvanced extends Command {
   private double startTime;
   // private boolean loadingStationLock;         // Whether we are locking our angle to the closest loading station
   // private boolean previousLoadingStationLock; // Whether we were locking our angle to a loading station in the previous loop
-  private boolean reefBasedControl;                   // Fine control, robot-oriented control (not field-relative), and turn off theta joystick
+  private boolean reefBasedControl;              // Fine control, robot-oriented control (not field-relative), and turn off theta joystick
   // private boolean previousReefLock;           // Whether we were locking our angle to a reef in the previous loop
+  private boolean bargeBasedControl;             // Fine control, turn off forward-back driving, and turn off theta joystick
   private boolean fineControl;
 
   /**
@@ -81,6 +82,8 @@ public class DriveWithJoysticksAdvanced extends Command {
     reefBasedControl = false;
     // previousReefLock = false;
 
+    bargeBasedControl = false;
+
     fineControl = false;
 
     if (Math.abs(driveTrain.getAngularVelocity()) < 0.5) {
@@ -100,14 +103,15 @@ public class DriveWithJoysticksAdvanced extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    reefBasedControl = rightJoystick.getRawButton(1);        // Turn on fine control, robot-oriented control (not field-relative), and turn off theta joystick
+    reefBasedControl = rightJoystick.getRawButton(1);     // Turn on fine control, robot-oriented control (not field-relative), and turn off theta joystick
     // loadingStationLock = rightJoystick.getRawButton(2);
-    fineControl = rightJoystick.getRawButton(2) || reefBasedControl;
+    bargeBasedControl = rightJoystick.getRawButton(2);    // Turn on fine control, forward-back driving, and theta joystick
+    fineControl = reefBasedControl || bargeBasedControl;
 
 
-    fwdVelocity = (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getY() : leftJoystick.getY();
+    fwdVelocity = (bargeBasedControl) ? 0 :(allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getY() : leftJoystick.getY();
     leftVelocity = (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getX() : leftJoystick.getX();
-    turnRate = (reefBasedControl) ? 0 : -rightJoystick.getX();
+    turnRate = (reefBasedControl || bargeBasedControl) ? 0 : -rightJoystick.getX();
 
     if (log.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putNumber("Joystick Left-Y", fwdVelocity);

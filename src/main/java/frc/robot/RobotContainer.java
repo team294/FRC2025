@@ -301,7 +301,7 @@ public class RobotContainer {
     // and theta locked (right joystick inactive).
     // Normal behavior resmes when button is released.
 
-    // right[2] will enable fine control while held, see DriveWithJoysticksAdvanced
+    right[2].whileTrue(new DriveToBargeWithOdometry(driveTrain, field, log));
   }
 
   /**
