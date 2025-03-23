@@ -13,7 +13,7 @@ import frc.robot.utilities.RobotPreferences;
 
 public class StickyFaultsClear extends Command {
 
-  private DataLogUtil log;
+  
 
   /**
    * Clears the sticky faults in RobotPreferences.

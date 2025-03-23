@@ -23,7 +23,7 @@ public class PhotonCameraWrapper extends SubsystemBase {
   public PhotonCamera photonCamera;
   public PhotonPoseEstimator photonPoseEstimatorCamera;
   private AprilTagFieldLayout aprilTagFieldLayout;
-  private DataLogUtil log;
+  
   private boolean hasInit = false;
   private int logRotationKey;
   private boolean fastLogging = false;

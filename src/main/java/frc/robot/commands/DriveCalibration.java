@@ -14,7 +14,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class DriveCalibration extends Command {
   private DriveTrain driveTrain;
-  private DataLogUtil log;
+  
   private final double alignTime = 1.0; // Align wheels for 1.0 second before starting ramp
   private double angleFacing, percentOutput, maxPercentOutput, endTime, rampRate;
   private final Timer timer = new Timer();

@@ -15,7 +15,6 @@ public class FileLogWrite extends Command {
   boolean logWhenDisabled;
   String subsystemOrCommand;
   String event;
-  DataLogUtil log;
   Object[] paramArray;
 
   /**

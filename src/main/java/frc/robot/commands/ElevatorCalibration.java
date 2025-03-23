@@ -14,7 +14,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorCalibration extends Command {
   private Elevator elevator;
-  private DataLogUtil log;
+  
   private double percentOutput, rampRate;
   private final Timer timer = new Timer();
 

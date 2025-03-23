@@ -11,7 +11,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ClimberCalibrateManual extends InstantCommand {
   private final Climber climber;
-  private DataLogUtil log;
+  
   private double angle;
   private boolean fromShuffleboard;
 

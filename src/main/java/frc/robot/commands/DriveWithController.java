@@ -17,7 +17,7 @@ public class DriveWithController extends Command {
   private DriveTrain driveTrain;
   private CommandXboxController xboxController;
   private final AllianceSelection allianceSelection;
-  private DataLogUtil log;
+  
   private double fwdVelocity, leftVelocity, turnRate;
 
   /**

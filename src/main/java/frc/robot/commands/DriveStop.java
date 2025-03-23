@@ -10,7 +10,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class DriveStop extends Command {
   private DriveTrain drivetrain;
-  private DataLogUtil log;
+  
 
   /**
    * Stops all of the driveTrain motors.

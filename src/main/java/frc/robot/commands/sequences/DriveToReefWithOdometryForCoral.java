@@ -18,7 +18,6 @@ import frc.robot.commands.DriveToPose;
 import frc.robot.commands.FileLogWrite;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.Field;
-import frc.robot.utilities.DataLogUtil;
 
 public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
   /** <p>Drives to the closest reef scoring position against the reef</p>

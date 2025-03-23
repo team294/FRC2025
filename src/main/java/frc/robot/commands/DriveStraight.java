@@ -30,7 +30,7 @@ public class DriveStraight extends Command {
   private double angleInput, angleTarget; // angleTarget is relative to the starting robot facing
   private Translation2d startLocation;
   private SwerveModuleState[] desiredStates;
-  private DataLogUtil log;
+  
   private boolean isOpenLoop;
 
   private int accuracyCounter = 0;

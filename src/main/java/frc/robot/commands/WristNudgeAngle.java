@@ -11,7 +11,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class WristNudgeAngle extends InstantCommand {
   private Wrist wrist;
-  private DataLogUtil log;
+  
   private double deltaDegrees;
   private boolean fromShuffleboard;
 

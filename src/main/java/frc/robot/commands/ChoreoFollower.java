@@ -37,7 +37,7 @@ public class ChoreoFollower extends Command {
   private BooleanSupplier mirrorTrajectory;
   private boolean mirrorTrajectoryThisInit;
   private DriveTrain driveTrain;
-  private DataLogUtil log;
+  
   private StructLogEntry<Pose2d> pose2DEntry;
   private DoubleLogEntry trajXEntry, trajYEntry;
 

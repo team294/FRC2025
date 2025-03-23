@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 

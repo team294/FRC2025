@@ -15,7 +15,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class DrivePercentSpeed extends Command {
   private DriveTrain driveTrain;
-  private DataLogUtil log;
+  
   private double angleFacing, percentSpeed, maxDistance;
   private boolean fromShuffleboard;
   private final Timer timer = new Timer();

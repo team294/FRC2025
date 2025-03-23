@@ -5,7 +5,6 @@ import frc.robot.Constants.CoordType;
 import frc.robot.Constants.StopType;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.AllianceSelection;
-import frc.robot.utilities.DataLogUtil;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.controller.PIDController;

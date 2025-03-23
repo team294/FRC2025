@@ -12,7 +12,6 @@ import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
-import frc.robot.utilities.DataLogUtil;
 
 
 /**

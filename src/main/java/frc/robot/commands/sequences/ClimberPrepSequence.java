@@ -10,7 +10,6 @@ import frc.robot.Constants.ClimberConstants.ClimberAngle;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 

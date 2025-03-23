@@ -58,7 +58,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class DriveTrain extends SubsystemBase implements Loggable {
-  private DataLogUtil log;
+  
   private int logRotationKey;
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
   private final AllianceSelection allianceSelection;

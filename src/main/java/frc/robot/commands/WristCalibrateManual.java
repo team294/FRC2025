@@ -11,7 +11,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class WristCalibrateManual extends InstantCommand {
   private final Wrist wrist;
-  private DataLogUtil log;
+  
   private double angle;
   private boolean fromShuffleboard;
 

@@ -13,7 +13,7 @@ import frc.robot.utilities.DataLogUtil;
 public class DriveTurnCalibration extends Command {
 
   private DriveTrain driveTrain;
-  private DataLogUtil log;
+  
   private double percentOutput, maxPercentOutput, rampTime, rampRate;
   private final Timer timer = new Timer();
 
