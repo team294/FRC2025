@@ -339,6 +339,11 @@ public class Field {
         return nearestAprilTagLoadingStation;
     }
 
+    /**
+     * Finds and returns the nearest point on the line which denotes positions we can score in the barge
+     * @param currPos the robot's current position
+     * @return Pose2d of the nearest point we can score on the barge
+     */
     public Pose2d getNearestBargeScoringPosition(Pose2d currPos){
         Pose2d bargeScoringPos = (allianceSelection.getAlliance() == Alliance.Blue) ? aprilTagFieldLayout.getTagPose(14).get().toPose2d().transformBy(new Transform2d((-FieldConstants.bargeScoringOffset), 0, new Rotation2d(0))) : aprilTagFieldLayout.getTagPose(5).get().toPose2d().transformBy(new Transform2d((-FieldConstants.bargeScoringOffset), 0, new Rotation2d(0)));
         bargeScoringPos = bargeScoringPos.rotateAround(bargeScoringPos.getTranslation(), new Rotation2d(Math.PI));
