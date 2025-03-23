@@ -164,9 +164,9 @@ public class RobotContainer {
     
     // Autos
     SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand(xboxController, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper));
-    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, hopper, xboxController, rightJoystick, allianceSelection, field, log));
+    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController, rightJoystick, allianceSelection, field, log));
     SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, allianceSelection, log));
-    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, hopper, xboxController, rightJoystick, allianceSelection, field, log));
+    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, xboxController, rightJoystick, allianceSelection, field, log));
 
     // Copanel buttons
 
@@ -234,63 +234,11 @@ public class RobotContainer {
     // xbY.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, log));
     // ------------------------------------------------------------------------
 
-    xbX.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, xboxController, rightJoystick, field, false, log));
-    xbA.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, xboxController, rightJoystick, field, false, log));
-    xbB.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, xboxController, rightJoystick, field, false, log));
-    xbY.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, xboxController, rightJoystick, field, false, log));
-
-    // xbX.onFalse(new WristElevatorSafeMove(elevator.getElevatorPosition(), wrist.getWristAngle(), RegionType.CORAL_ONLY, elevator, wrist, log));
-    xbX.onFalse(
-      sequence(
-        // Back up 
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
-        0.5, 1.0, 
-        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain, log),
-
-        // Move elevator/wrist to HP position
-        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
-      )
-    );
-
-    xbA.onFalse(
-      sequence(
-        // Back up 
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
-        0.5, 1.0, 
-        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain, log),
-
-        // Move elevator/wrist to HP position
-        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
-      )
-    );
-
-    xbB.onFalse(
-      sequence(
-        // Back up 
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
-        0.5, 1.0, 
-        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain, log),
-
-        // Move elevator/wrist to HP position
-        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
-      )
-    );
-
-    xbY.onFalse(
-      sequence(
-        // Back up 
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
-        0.5, 1.0, 
-        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain, log),
-
-        // Move elevator/wrist to HP position
-        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
-      )
-    );
+    // TODO holding these down do not allow other movements (motion continues, uncontrolled)
+    xbX.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, xboxController, rightJoystick, field, false, log));
+    xbA.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, algaeGrabber, xboxController, rightJoystick, field, false, log));
+    xbB.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, algaeGrabber, xboxController, rightJoystick, field, false, log));
+    xbY.onTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, algaeGrabber, xboxController, rightJoystick, field, false, log));
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
     xbLT.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber, log));
@@ -360,18 +308,6 @@ public class RobotContainer {
     // right[1], when held down in combination with xbox (x, a, b, y) will automatically drive
     // to the nearest scoring position and score coral based on which xbox button is held,
     // see TriggerAutomatedDriveToReefAndScoreCoral
-    right[1].onFalse(
-      sequence(
-        // Back up 
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
-        0.5, 1.0, 
-        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain, log),
-
-        // Move elevator/wrist to HP position
-        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
-      )
-    );
 
     // right[2] will enable fine control while held, see DriveWithJoysticksAdvanced
   }

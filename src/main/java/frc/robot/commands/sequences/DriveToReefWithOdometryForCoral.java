@@ -55,7 +55,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
 
             //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus a constant
             new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
-                     new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)))), 
+                     new Transform2d((-RobotDimensions.robotLength / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)))), 
                      0.02, 1, driveTrain, log)
           )
       ),
