@@ -52,8 +52,8 @@ import frc.robot.Constants.FieldConstants;
      * Load all trajectories when the robot starts up into a cache for trajectory-following commands.
      * @param log
      */
-    public TrajectoryCache(DataLogUtil log) {
-        this.log = log;
+    public TrajectoryCache() {
+        
         for (TrajectoryName tt : TrajectoryName.values() ) {
             cacheTrajectory(tt);
         }
@@ -73,7 +73,7 @@ import frc.robot.Constants.FieldConstants;
             cache.put(trajectoryLoad, traj.get());
         }
         else{
-            RobotPreferences.recordStickyFaults("Trajectory-CacheTrajectory-" + trajectoryLoad.trajFileName +"-not-loaded", log);
+            RobotPreferences.recordStickyFaults("Trajectory-CacheTrajectory-" + trajectoryLoad.trajFileName +"-not-loaded");
         }
     }
 

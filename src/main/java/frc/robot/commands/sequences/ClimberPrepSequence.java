@@ -23,10 +23,10 @@ public class ClimberPrepSequence extends SequentialCommandGroup {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberPrepSequence(Elevator elevator, Wrist wrist, Climber climber, DataLogUtil log) {
+  public ClimberPrepSequence(Elevator elevator, Wrist wrist, Climber climber) {
     addCommands(
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log),
-      new ClimberSetAngle(ClimberAngle.CLIMB_START, climber, log)
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
+      new ClimberSetAngle(ClimberAngle.CLIMB_START, climber)
     );
   }
 }

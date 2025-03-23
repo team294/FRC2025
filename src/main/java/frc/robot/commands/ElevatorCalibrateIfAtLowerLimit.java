@@ -10,7 +10,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorCalibrateIfAtLowerLimit extends Command {
   private final Elevator elevator;
-  private final DataLogUtil log;
+  
 
   /**
    * If the elevator is at the lower limit, calibrate the encoders.
@@ -18,9 +18,9 @@ public class ElevatorCalibrateIfAtLowerLimit extends Command {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorCalibrateIfAtLowerLimit(Elevator elevator, DataLogUtil log) {
+  public ElevatorCalibrateIfAtLowerLimit(Elevator elevator) {
     this.elevator = elevator;
-    this.log = log;
+    
     addRequirements(elevator);
   }
 
@@ -28,7 +28,7 @@ public class ElevatorCalibrateIfAtLowerLimit extends Command {
   @Override
   public void initialize() {
     elevator.checkAndZeroElevatorEncoders();
-    log.writeLog(false, "ElevatorCalibrateIfAtLowerLimit", "Initialize");
+    DataLogUtil.writeLog(false, "ElevatorCalibrateIfAtLowerLimit", "Initialize");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

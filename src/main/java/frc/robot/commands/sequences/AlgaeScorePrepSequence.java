@@ -24,9 +24,9 @@ import frc.robot.utilities.DataLogUtil;
  * @param log FileLog utility
  */
 public class AlgaeScorePrepSequence extends SequentialCommandGroup {
-  public AlgaeScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, DataLogUtil log) {
+  public AlgaeScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
-      new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist, log)
+      new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist)
     );
   }
 }

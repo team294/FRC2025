@@ -28,18 +28,18 @@ public class DriveWithController extends Command {
    * @param allianceSelection AllianceSelection utility
    * @param log FileLog utility
    */
-  public DriveWithController(DriveTrain driveTrain, CommandXboxController xboxController, AllianceSelection allianceSelection, DataLogUtil log) {
+  public DriveWithController(DriveTrain driveTrain, CommandXboxController xboxController, AllianceSelection allianceSelection) {
     this.driveTrain = driveTrain;
     this.xboxController = xboxController;
     this.allianceSelection = allianceSelection;
-    this.log = log;
+    
     addRequirements(driveTrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    log.writeLog(false, "DriveWithController", "Init");
+    DataLogUtil.writeLog(false, "DriveWithController", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

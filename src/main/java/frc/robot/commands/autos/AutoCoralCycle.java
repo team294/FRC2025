@@ -29,12 +29,12 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoCoralCycle(ReefLocation start, ReefLocation end, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
-          CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, DataLogUtil log) {
+          CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache) {
     addCommands(
       // Drives from start reef location to HP and intakes coral  
-      new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, alliance, cache, log),
+      new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, alliance, cache),
       // Drives from HP to end reef location and scores coral
-      new AutoCoralDriveAndScoreSequence(true, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache, log)
+      new AutoCoralDriveAndScoreSequence(true, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache)
     );
   }
 }

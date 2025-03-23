@@ -31,7 +31,7 @@ import static frc.robot.utilities.StringUtil.*;
 
 public class SwerveModule {
   private final String swName;  // Name for this swerve module
-  private final DataLogUtil log;
+  
   private final double turningOffsetDegrees;
 
   // Drive motor objects
@@ -100,9 +100,9 @@ public class SwerveModule {
    */
   public SwerveModule(String swName, int driveMotorAddress, int turningMotorAddress, int cancoderAddress,
       boolean driveMotorInverted, boolean turningMotorInverted, boolean cancoderReversed, double turningOffsetDegrees,
-      double kVm, DataLogUtil log) {
+      double kVm) {
     this.swName = swName;
-    this.log = log;
+    
     this.turningOffsetDegrees = turningOffsetDegrees;
 
     // Create feed forward model for drive motor
@@ -243,11 +243,11 @@ public class SwerveModule {
 
     // System.out.println(swName + " CanCoder " + getCanCoderDegrees() + " FX " + getTurningEncoderDegrees() + " pre-CAN");
     zeroDriveEncoder();
-    // log.writeLogEcho(true, "SwerveModule", swName+" pre-CAN", "Cancoder", getCanCoderDegrees(), "FX", getTurningEncoderDegrees());
+    // DataLogUtil.writeLogEcho(true, "SwerveModule", swName+" pre-CAN", "Cancoder", getCanCoderDegrees(), "FX", getTurningEncoderDegrees());
     calibrateCanCoderDegrees(turningOffsetDegrees);
-    // log.writeLogEcho(true, "SwerveModule", swName+" post-CAN", "Cancoder", getCanCoderDegrees(), "FX", getTurningEncoderDegrees());
+    // DataLogUtil.writeLogEcho(true, "SwerveModule", swName+" post-CAN", "Cancoder", getCanCoderDegrees(), "FX", getTurningEncoderDegrees());
     calibrateTurningEncoderDegrees(getCanCoderDegrees());
-    // log.writeLogEcho(true, "SwerveModule", swName+" post-FX", "Cancoder", getCanCoderDegrees(), "FX", getTurningEncoderDegrees());
+    // DataLogUtil.writeLogEcho(true, "SwerveModule", swName+" post-FX", "Cancoder", getCanCoderDegrees(), "FX", getTurningEncoderDegrees());
   }
 
   /**
@@ -418,7 +418,7 @@ public class SwerveModule {
 	 */
   public void zeroDriveEncoder() {
     driveEncoderZero = getDriveEncoderRotations();
-    log.writeLogEcho(true, buildString("SwerveModule ", swName), "ZeroDriveEncoder", 
+    DataLogUtil.writeLogEcho(true, buildString("SwerveModule ", swName), "ZeroDriveEncoder", 
       "driveEncoderZero", driveEncoderZero, "raw encoder", getDriveEncoderRotations(), "encoder meters", getDriveEncoderMeters());
   }
 
@@ -465,7 +465,7 @@ public class SwerveModule {
    */
   public void calibrateTurningEncoderDegrees(double currentAngleDegrees) {
     turningEncoderZero = getTurningEncoderRaw() - (currentAngleDegrees / SwerveConstants.kTurningEncoderDegreesPerTick);
-    log.writeLogEcho(true, buildString("SwerveModule ", swName), "calibrateTurningEncoder", 
+    DataLogUtil.writeLogEcho(true, buildString("SwerveModule ", swName), "calibrateTurningEncoder", 
       "turningEncoderZero", turningEncoderZero, "raw encoder", getTurningEncoderRaw(), "set degrees", currentAngleDegrees, "encoder degrees", getTurningEncoderDegrees());
   }
 
@@ -506,7 +506,7 @@ public class SwerveModule {
     // System.out.println(swName + " " + turningOffsetDegrees);
     // turningCanCoder.configMagnetOffset(offsetDegrees, 100);
     cancoderZero = -offsetDegrees;
-    log.writeLogEcho(true, buildString("SwerveModule ", swName), "calibrateCanCoder", 
+    DataLogUtil.writeLogEcho(true, buildString("SwerveModule ", swName), "calibrateCanCoder", 
       "cancoderZero", cancoderZero, "raw encoder", turningCanCoderPosition.refresh().getValueAsDouble() * 360.0, "encoder degrees", getCanCoderDegrees());
   }
 

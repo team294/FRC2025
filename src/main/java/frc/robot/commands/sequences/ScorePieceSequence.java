@@ -24,16 +24,16 @@ public class ScorePieceSequence extends SequentialCommandGroup {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public ScorePieceSequence(CoralEffector coralEffector, AlgaeGrabber algaeGrabber, DriveTrain driveTrain, DataLogUtil log) {
+  public ScorePieceSequence(CoralEffector coralEffector, AlgaeGrabber algaeGrabber, DriveTrain driveTrain) {
     addCommands(
       either(
-        new AlgaeGrabberOuttake(algaeGrabber, log),
+        new AlgaeGrabberOuttake(algaeGrabber),
         sequence( 
-          new CoralEffectorOuttake(coralEffector, log)
+          new CoralEffectorOuttake(coralEffector)
           // new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
           //     0.5, 1.0, 
           //     TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          //     true, true, driveTrain, log).asProxy()
+          //     true, true, driveTrain).asProxy()
         ), 
         () -> algaeGrabber.isAlgaePresent() || !coralEffector.isCoralPresent()
       )

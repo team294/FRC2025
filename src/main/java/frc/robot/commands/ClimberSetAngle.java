@@ -13,7 +13,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ClimberSetAngle extends Command {
   private final Climber climber;
-  private final DataLogUtil log;
+  
   private double angle;
   private final double tolerance = 3.0; // tolerance of 3 degrees
   private boolean fromShuffleboard;
@@ -25,9 +25,9 @@ public class ClimberSetAngle extends Command {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberSetAngle(double angle, Climber climber, DataLogUtil log) {
+  public ClimberSetAngle(double angle, Climber climber) {
     this.climber = climber;
-    this.log = log;
+    
     this.angle = angle;
     fromShuffleboard = false;
     addRequirements(climber);
@@ -40,9 +40,9 @@ public class ClimberSetAngle extends Command {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberSetAngle(ClimberAngle pos, Climber climber, DataLogUtil log) {
+  public ClimberSetAngle(ClimberAngle pos, Climber climber) {
     this.climber = climber;
-    this.log = log;
+    
     this.angle = pos.value;
     fromShuffleboard = false;
     addRequirements(climber);
@@ -54,9 +54,9 @@ public class ClimberSetAngle extends Command {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberSetAngle(Climber climber, DataLogUtil log) {
+  public ClimberSetAngle(Climber climber) {
     this.climber = climber;
-    this.log = log;
+    
     fromShuffleboard = true;
 
     if (SmartDashboard.getNumber("Climber Goal Angle", -9999) == -9999) {
@@ -71,7 +71,7 @@ public class ClimberSetAngle extends Command {
   public void initialize() {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Goal Angle", ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
     climber.setClimberAngle(angle);
-    log.writeLog(false, "ClimberSetAngle", "Init", "Target", angle);
+    DataLogUtil.writeLog(false, "ClimberSetAngle", "Init", "Target", angle);
 
   }
 
@@ -83,8 +83,8 @@ public class ClimberSetAngle extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (interrupted) log.writeLog(false, "ClimberSetAngle", "Interrupted", "Target", angle, "Current Angle", climber.getClimberAngle());
-    else log.writeLog(false, "ClimberSetAngle", "End", "Target", angle, "Current Angle", climber.getClimberAngle());
+    if (interrupted) DataLogUtil.writeLog(false, "ClimberSetAngle", "Interrupted", "Target", angle, "Current Angle", climber.getClimberAngle());
+    else DataLogUtil.writeLog(false, "ClimberSetAngle", "End", "Target", angle, "Current Angle", climber.getClimberAngle());
   }
 
   // Returns true when the command should end.

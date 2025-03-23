@@ -21,7 +21,7 @@ public class DriveWithJoysticks extends Command {
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
   private final AllianceSelection allianceSelection;
-  private final DataLogUtil log;
+  
   private int logRotationKey;
   
   private double fwdVelocity, leftVelocity, turnRate;
@@ -38,13 +38,13 @@ public class DriveWithJoysticks extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveWithJoysticks(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain, DataLogUtil log) {
+  public DriveWithJoysticks(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     this.allianceSelection = allianceSelection;
     this.leftJoystick = leftJoystick;
     this.rightJoystick = rightJoystick;
-    logRotationKey = log.allocateLogRotation();
+    logRotationKey = DataLogUtil.allocateLogRotation();
 
     addRequirements(driveTrain);
   }
@@ -75,8 +75,8 @@ public class DriveWithJoysticks extends Command {
     leftVelocity = (Math.abs(leftVelocity) < OIConstants.joystickDeadband) ? 0 : scaleJoystick(leftVelocity) * SwerveConstants.kMaxSpeedMetersPerSecond;
     turnRate = (Math.abs(turnRate) < OIConstants.joystickDeadband) ? 0 : scaleTurn(turnRate) * SwerveConstants.kMaxTurningRadiansPerSecond;
 
-    if(log.isMyLogRotation(logRotationKey)) {
-      log.writeLog(false, "DriveWithJoysticksArcade", "Joystick", "Fwd", fwdVelocity, "Left", leftVelocity, "Turn", turnRate);
+    if(DataLogUtil.isMyLogRotation(logRotationKey)) {
+      DataLogUtil.writeLog(false, "DriveWithJoysticksArcade", "Joystick", "Fwd", fwdVelocity, "Left", leftVelocity, "Turn", turnRate);
     }
 
     // double fwdRateChange = (fwdPercent - lastFwdPercent) / (curTime - lastTime);

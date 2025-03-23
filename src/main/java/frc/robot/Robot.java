@@ -4,10 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.RobotPreferences;
 
 /**
@@ -52,7 +53,7 @@ public class Robot extends TimedRobot {
     */
 
     // Start Datalogger first!
-    DataLogManager.start();
+    DataLogUtil.start();
 
     // Read robot Preferences from the RoboRIO to the Constants class.  Be sure to do this
     // before creating the robotContainer, so that all of the subsystems see the values

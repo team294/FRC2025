@@ -12,7 +12,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class WristSetAngle extends Command {
   private final Wrist wrist;
-  private final DataLogUtil log;
+  
   private double angle;
   private final double tolerance = 3.0; // tolerance of 5 degrees
   private boolean fromShuffleboard;
@@ -24,9 +24,9 @@ public class WristSetAngle extends Command {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristSetAngle(double angle, Wrist wrist, DataLogUtil log) {
+  public WristSetAngle(double angle, Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     this.angle = angle;
     fromShuffleboard = false;
     addRequirements(wrist);
@@ -39,9 +39,9 @@ public class WristSetAngle extends Command {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristSetAngle(ElevatorWristPosition angle, Wrist wrist, DataLogUtil log) {
+  public WristSetAngle(ElevatorWristPosition angle, Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     this.angle = angle.wristAngle;
     fromShuffleboard = false;
     addRequirements(wrist);
@@ -53,9 +53,9 @@ public class WristSetAngle extends Command {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristSetAngle(Wrist wrist, DataLogUtil log) {
+  public WristSetAngle(Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     fromShuffleboard = true;
 
     if (SmartDashboard.getNumber("Wrist Goal Angle", -9999) == -9999) {
@@ -70,7 +70,7 @@ public class WristSetAngle extends Command {
   public void initialize() {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Goal Angle", ElevatorWristPosition.START_CONFIG.wristAngle);
     wrist.setWristAngle(angle);
-    log.writeLog(false, "WristSetAngle", "Init", "Target", angle);
+    DataLogUtil.writeLog(false, "WristSetAngle", "Init", "Target", angle);
 
   }
 
@@ -82,8 +82,8 @@ public class WristSetAngle extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (interrupted) log.writeLog(false, "WristSetAngle", "Interrupted", "Target", angle, "Current Angle", wrist.getWristAngle());
-    else log.writeLog(false, "WristSetAngle", "End", "Target", angle, "Current Angle", wrist.getWristAngle());
+    if (interrupted) DataLogUtil.writeLog(false, "WristSetAngle", "Interrupted", "Target", angle, "Current Angle", wrist.getWristAngle());
+    else DataLogUtil.writeLog(false, "WristSetAngle", "End", "Target", angle, "Current Angle", wrist.getWristAngle());
   }
 
   // Returns true when the command should end.

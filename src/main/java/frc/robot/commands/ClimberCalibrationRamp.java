@@ -10,7 +10,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ClimberCalibrationRamp extends Command {
   private final Climber climber;
-  private final DataLogUtil log;
+  
 
   private double rate;        // Ramp rate per execute() cycle = every 20ms
   private double maxPercent;
@@ -24,9 +24,9 @@ public class ClimberCalibrationRamp extends Command {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberCalibrationRamp(double rate, double maxPercent, Climber climber, DataLogUtil log) {
+  public ClimberCalibrationRamp(double rate, double maxPercent, Climber climber) {
     this.climber = climber;
-    this.log = log;
+    
     this.rate = rate * 0.020; // convert to execute() cycles = every 20ms
     this.maxPercent = maxPercent;
 
@@ -38,7 +38,7 @@ public class ClimberCalibrationRamp extends Command {
   public void initialize() {
     percent = 0.0;
     climber.enableFastLogging(true);
-    log.writeLog(false, "ClimberCalibrationRamp", "Init",
+    DataLogUtil.writeLog(false, "ClimberCalibrationRamp", "Init",
       "rate", rate, "maxPercent", maxPercent);
   }
 
@@ -55,7 +55,7 @@ public class ClimberCalibrationRamp extends Command {
   public void end(boolean interrupted) {
     climber.stopClimber();
     climber.enableFastLogging(false);
-    log.writeLog(false, "ClimberCalibrationRamp", "End");
+    DataLogUtil.writeLog(false, "ClimberCalibrationRamp", "End");
   }
 
   // Returns true when the command should end.

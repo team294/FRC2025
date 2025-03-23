@@ -11,7 +11,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class WristCalibrationRamp extends Command {
   private final Wrist wrist;
-  private final DataLogUtil log;
+  
 
   private double rate;        // Ramp rate per execute() cycle = every 20ms
   private double maxPercent;
@@ -25,9 +25,9 @@ public class WristCalibrationRamp extends Command {
    * @param wrist Wrist subsytsem
    * @param log FileLog utility
    */
-  public WristCalibrationRamp(double rate, double maxPercent, Wrist wrist, DataLogUtil log) {
+  public WristCalibrationRamp(double rate, double maxPercent, Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     this.rate = rate * 0.020; // convert to execute() cycles = every 20ms
     this.maxPercent = maxPercent;
 
@@ -39,7 +39,7 @@ public class WristCalibrationRamp extends Command {
   public void initialize() {
     percent = 0.0;
     wrist.enableFastLogging(true);
-    log.writeLog(false, "WristCalibrationRamp", "Init",
+    DataLogUtil.writeLog(false, "WristCalibrationRamp", "Init",
       "rate", rate, "maxPercent", maxPercent);
   }
 
@@ -56,7 +56,7 @@ public class WristCalibrationRamp extends Command {
   public void end(boolean interrupted) {
     wrist.stopWrist();
     wrist.enableFastLogging(false);
-    log.writeLog(false, "WristCalibrationRamp", "End");
+    DataLogUtil.writeLog(false, "WristCalibrationRamp", "End");
   }
 
   // Returns true when the command should end.

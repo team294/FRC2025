@@ -31,9 +31,9 @@ public class DrivePercentSpeed extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-   public DrivePercentSpeed(double angleFacing, double percentSpeed, double maxDistance, DriveTrain driveTrain, DataLogUtil log) {
+   public DrivePercentSpeed(double angleFacing, double percentSpeed, double maxDistance, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     this.angleFacing = angleFacing;
     this.percentSpeed= percentSpeed;
     this.maxDistance = maxDistance;
@@ -49,9 +49,9 @@ public class DrivePercentSpeed extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DrivePercentSpeed(DriveTrain driveTrain, DataLogUtil log){
+  public DrivePercentSpeed(DriveTrain driveTrain){
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     fromShuffleboard = true;
 
     addRequirements(driveTrain);
@@ -88,14 +88,14 @@ public class DrivePercentSpeed extends Command {
       percentSpeed = SmartDashboard.getNumber("DrivePercentSpeed percent", 0);
     }
 
-    log.writeLog(false, "DrivePercentSpeed", "Initialize", 
+    DataLogUtil.writeLog(false, "DrivePercentSpeed", "Initialize", 
       "Angle Facing Desired", angleFacing, "Percent Speed Deisred", percentSpeed, "Max Distance", maxDistance);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // log.writeLog(false, "DrivePercentSpeed", "execute");
+    // DataLogUtil.writeLog(false, "DrivePercentSpeed", "execute");
     curDistance = driveTrain.getPose().relativeTo(poseStart).getTranslation().getNorm();
     SmartDashboard.putNumber("DrivePercentSpeed curDistance", curDistance);
     
@@ -116,7 +116,7 @@ public class DrivePercentSpeed extends Command {
     timer.stop();
     SignalLogger.stop();
 
-    log.writeLog(false, "DrivePercentSpeed", "End", "curDistance", curDistance);
+    DataLogUtil.writeLog(false, "DrivePercentSpeed", "End", "curDistance", curDistance);
   }
 
   // Returns true when the command should end.

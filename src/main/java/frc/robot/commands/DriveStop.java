@@ -17,16 +17,16 @@ public class DriveStop extends Command {
    * @param drivetrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveStop(DriveTrain drivetrain, DataLogUtil log) {
+  public DriveStop(DriveTrain drivetrain) {
     this.drivetrain = drivetrain;
-    this.log = log;
+    
     addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    log.writeLog(false, "DriveStop", "Stopping Motors");
+    DataLogUtil.writeLog(false, "DriveStop", "Stopping Motors");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

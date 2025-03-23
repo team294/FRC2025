@@ -12,7 +12,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorOuttake extends Command {
   private final CoralEffector coralEffector;
-  private final DataLogUtil log;
+  
   private final Timer timer;
   private final double seconds;
 
@@ -21,9 +21,9 @@ public class CoralEffectorOuttake extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorOuttake(CoralEffector coralEffector, DataLogUtil log) {
+  public CoralEffectorOuttake(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    this.log = log;
+    
     this.timer = new Timer();
     this.seconds = 0.1;
     addRequirements(coralEffector);
@@ -34,7 +34,7 @@ public class CoralEffectorOuttake extends Command {
   public void initialize() {
     coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.outtakePercent);
 
-    log.writeLog(false, "CoralEffectorOuttake", "Init", 
+    DataLogUtil.writeLog(false, "CoralEffectorOuttake", "Init", 
       "Coral in Entry", (coralEffector.isCoralPresentInEntry() ? "TRUE" : "FALSE"),
       "Coral in Exit", (coralEffector.isCoralPresentInExit() ? "TRUE" : "FALSE"));
   }

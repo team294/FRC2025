@@ -31,7 +31,7 @@ import frc.robot.utilities.TrapezoidProfileBCR;
 
 public class DriveToPose extends Command {
   private final DriveTrain driveTrain;
-  private final DataLogUtil log;
+  
   
   private final Timer timer = new Timer();
   private HolonomicDriveControllerBCR controller;
@@ -83,9 +83,9 @@ public class DriveToPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log file for logging
    */
-   public DriveToPose(CoordType poseType, Pose2d goalPose, DriveTrain driveTrain, DataLogUtil log) {
+   public DriveToPose(CoordType poseType, Pose2d goalPose, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     this.poseType = poseType;
     inputPose = goalPose;
     goalMode = GoalMode.pose;
@@ -122,9 +122,9 @@ public class DriveToPose extends Command {
   public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, double maxVelMetersPerSecond, double maxAccelMetersPerSecondSquare, 
       double maxPositionErrorMeters, double maxThetaErrorDegrees, 
       boolean closedLoopSwerve, boolean usePositionFeedback,
-      DriveTrain driveTrain, DataLogUtil log) {
+      DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     this.maxPositionErrorMeters = maxPositionErrorMeters;
     this.maxThetaErrorDegrees = maxThetaErrorDegrees;
     this.poseType = poseType;
@@ -162,9 +162,9 @@ public class DriveToPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, DriveTrain driveTrain, DataLogUtil log) {
+  public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     this.poseType = poseType;
     goalSupplier = goalPoseSupplier;
     goalMode = GoalMode.poseSupplier;
@@ -195,9 +195,9 @@ public class DriveToPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, double maxPositionErrorMeters, double maxThetaErrorDegrees, DriveTrain driveTrain, DataLogUtil log) {
+  public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, double maxPositionErrorMeters, double maxThetaErrorDegrees, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     this.poseType = poseType;
     this.maxPositionErrorMeters = maxPositionErrorMeters;
     this.maxThetaErrorDegrees = maxThetaErrorDegrees;
@@ -220,7 +220,7 @@ public class DriveToPose extends Command {
    */
   public DriveToPose(CoordType type, double rotation, DriveTrain driveTrain, DataLogUtil log ){
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     this.rotation = Rotation2d.fromDegrees(rotation);
     this.poseType = type;
 
@@ -245,9 +245,9 @@ public class DriveToPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveToPose(CoordType poseType, DriveTrain driveTrain, DataLogUtil log) {
+  public DriveToPose(CoordType poseType, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     this.poseType = poseType;
     goalMode = GoalMode.shuffleboard;
     trapProfileConstraints = TrajectoryConstants.kDriveProfileConstraints;
@@ -375,7 +375,7 @@ public class DriveToPose extends Command {
     TrapezoidProfileBCR.State goalState = new TrapezoidProfileBCR.State(goalDistance, 0);
     profile = new TrapezoidProfileBCR(trapProfileConstraints, goalState, initialState);
 
-    log.writeLog(false, "DriveToPose", "Initialize", 
+    DataLogUtil.writeLog(false, "DriveToPose", "Initialize", 
       "Time", timer.get(), 
       "Goal X", goalPose.getTranslation().getX(),
       "Goal Y", goalPose.getTranslation().getY(),
@@ -412,7 +412,7 @@ public class DriveToPose extends Command {
         targetChassisSpeeds.omegaRadiansPerSecond, true, openLoopSwerve);
 
     ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
-    log.writeLog(false, "DriveToPose", "Execute", 
+    DataLogUtil.writeLog(false, "DriveToPose", "Execute", 
         "Time", timer.get(), 
         "Trap X", desiredPose.getTranslation().getX(),
         "Trap Y", desiredPose.getTranslation().getY(),
@@ -438,14 +438,14 @@ public class DriveToPose extends Command {
   public void end(boolean interrupted) {
     timer.stop();
     if (!interrupted) driveTrain.stopMotors();
-    log.writeLog(false, "DriveToPose", "End", "Interrupted", interrupted); 
+    DataLogUtil.writeLog(false, "DriveToPose", "End", "Interrupted", interrupted); 
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     var timeout = timer.hasElapsed(profile.totalTime() + 3.0);
-    if (timeout) log.writeLog(false, "DriveToPose", "timeout"); 
+    if (timeout) DataLogUtil.writeLog(false, "DriveToPose", "timeout"); 
 
     var angleError = MathBCR.angleMinus(driveTrain.getPoseAngle(), goalPose.getRotation().getDegrees());
     var posError = driveTrain.getPose().getTranslation().minus(goalPose.getTranslation()).getNorm();
@@ -457,7 +457,7 @@ public class DriveToPose extends Command {
             (posError <= maxPositionErrorMeters));
 
     if (finished) {
-      log.writeLog(false, "DriveToPose", "finished", "angleError", angleError, "posError", posError, "maxTheta",
+      DataLogUtil.writeLog(false, "DriveToPose", "finished", "angleError", angleError, "posError", posError, "maxTheta",
           maxThetaErrorDegrees, "maxMeters", maxPositionErrorMeters, "timer", timer.get());
     }
 

@@ -20,15 +20,15 @@ public class StickyFaultsClear extends Command {
    * NOTE: This command can run while the robot is disabled.
    * @param log
    */
-  public StickyFaultsClear(DataLogUtil log) {
-    this.log = log;
+  public StickyFaultsClear() {
+    
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotPreferences.clearStickyFaults(log);
-    log.writeLog(false, "StickyFaultsClear", "Init");
+    RobotPreferences.clearStickyFaults();
+    DataLogUtil.writeLog(false, "StickyFaultsClear", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

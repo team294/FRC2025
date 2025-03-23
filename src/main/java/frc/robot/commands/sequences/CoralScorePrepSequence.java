@@ -26,12 +26,12 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
  * @param log FileLog utility
  */
 public class CoralScorePrepSequence extends SequentialCommandGroup {
-  public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, DataLogUtil log) {
+  public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
       either(
         sequence(
-          new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist, log),
-          new WristSetAngle(position, wrist, log)
+          new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist),
+          new WristSetAngle(position, wrist)
         ),
         none(),
         () -> !algaeGrabber.isAlgaePresent()

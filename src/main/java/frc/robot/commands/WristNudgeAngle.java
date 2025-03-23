@@ -21,10 +21,10 @@ public class WristNudgeAngle extends InstantCommand {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristNudgeAngle(double deltaDegrees, Wrist wrist, DataLogUtil log) {
+  public WristNudgeAngle(double deltaDegrees, Wrist wrist) {
     this.deltaDegrees = deltaDegrees;
     this.wrist = wrist;
-    this.log = log;
+    
     fromShuffleboard = false;
     addRequirements(wrist);
   }
@@ -34,9 +34,9 @@ public class WristNudgeAngle extends InstantCommand {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristNudgeAngle(Wrist wrist, DataLogUtil log) {
+  public WristNudgeAngle(Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     fromShuffleboard = true;
     addRequirements(wrist);
 
@@ -50,6 +50,6 @@ public class WristNudgeAngle extends InstantCommand {
   public void initialize() {
     if (fromShuffleboard) deltaDegrees = SmartDashboard.getNumber("Wrist Nudge Delta Degrees", 0);
     wrist.nudgeWristAngle(deltaDegrees);
-    log.writeLog(false, "WristNudgeAngle", "Init", "Delta", deltaDegrees);
+    DataLogUtil.writeLog(false, "WristNudgeAngle", "Init", "Delta", deltaDegrees);
   }
 }

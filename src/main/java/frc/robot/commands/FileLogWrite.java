@@ -27,12 +27,12 @@ public class FileLogWrite extends Command {
    * @param log FileLog utility
    * @param paramArray List of descriptions and values (variable number of parameters)
    */
-  public FileLogWrite(boolean echo, boolean logWhenDisabled, String subsystemOrCommand, String event, DataLogUtil log, Object... paramArray) {
+  public FileLogWrite(boolean echo, boolean logWhenDisabled, String subsystemOrCommand, String event, Object... paramArray) {
     this.echo = echo;
     this.logWhenDisabled = logWhenDisabled;
     this.subsystemOrCommand = subsystemOrCommand;
     this.event = event;
-    this.log = log;
+    
     this.paramArray = paramArray;
   }
 
@@ -40,9 +40,9 @@ public class FileLogWrite extends Command {
   @Override
   public void initialize() {
     if (echo) {
-      log.writeLogEcho(logWhenDisabled, subsystemOrCommand, event, paramArray);
+      DataLogUtil.writeLogEcho(logWhenDisabled, subsystemOrCommand, event, paramArray);
     } else {
-      log.writeLog(logWhenDisabled, subsystemOrCommand, event, paramArray);
+      DataLogUtil.writeLog(logWhenDisabled, subsystemOrCommand, event, paramArray);
     }
   }
 

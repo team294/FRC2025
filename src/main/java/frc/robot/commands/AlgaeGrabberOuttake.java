@@ -12,7 +12,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class AlgaeGrabberOuttake extends Command {
   private final AlgaeGrabber algaeGrabber;
-  private final DataLogUtil log;
+  
   private final Timer timer;
   private final double seconds;
 
@@ -21,9 +21,9 @@ public class AlgaeGrabberOuttake extends Command {
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */
-  public AlgaeGrabberOuttake(AlgaeGrabber algaeGrabber, DataLogUtil log) {
+  public AlgaeGrabberOuttake(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
-    this.log = log;
+    
     this.timer = new Timer();
     this.seconds = 2.0;
     addRequirements(algaeGrabber);
@@ -36,7 +36,7 @@ public class AlgaeGrabberOuttake extends Command {
     timer.stop();
     timer.reset();
 
-    log.writeLog(false, "AlgaeGrabberOuttake", "Init",
+    DataLogUtil.writeLog(false, "AlgaeGrabberOuttake", "Init",
       "Algae Present", algaeGrabber.isAlgaePresent());
   }
 

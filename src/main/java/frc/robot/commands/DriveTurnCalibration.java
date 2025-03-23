@@ -25,9 +25,9 @@ public class DriveTurnCalibration extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveTurnCalibration(double maxPercentOutput, double rampTime, double rampRate, DriveTrain driveTrain, DataLogUtil log) {
+  public DriveTurnCalibration(double maxPercentOutput, double rampTime, double rampRate, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     this.maxPercentOutput = maxPercentOutput;
     this.rampTime = rampTime;
     this.rampRate = rampRate;
@@ -42,7 +42,7 @@ public class DriveTurnCalibration extends Command {
     timer.start();
     driveTrain.setDriveModeCoast(false);
     driveTrain.enableFastLogging(true);
-    log.writeLog(false, "DriveTurnCalibration", "Initialize", "maxPctOut", maxPercentOutput, "rampTime", rampTime, "rampRate", rampRate);
+    DataLogUtil.writeLog(false, "DriveTurnCalibration", "Initialize", "maxPctOut", maxPercentOutput, "rampTime", rampTime, "rampRate", rampRate);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,7 +58,7 @@ public class DriveTurnCalibration extends Command {
   public void end(boolean interrupted) {
     driveTrain.stopMotors();
     driveTrain.enableFastLogging(false);
-    log.writeLog(false, "DriveTurnCalibration", "End");
+    DataLogUtil.writeLog(false, "DriveTurnCalibration", "End");
   }
 
   // Returns true when the command should end.

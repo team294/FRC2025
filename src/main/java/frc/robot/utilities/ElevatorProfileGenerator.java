@@ -56,9 +56,9 @@ public class ElevatorProfileGenerator {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorProfileGenerator(Elevator elevator, DataLogUtil log) {
+  public ElevatorProfileGenerator(Elevator elevator) {
     disableProfileControl();
-    this.log = log;
+    
     this.elevator = elevator;
   }
 
@@ -96,7 +96,7 @@ public class ElevatorProfileGenerator {
     // Seed the profile with the current velocity, in case the elevator is already moving
     currentMPVelocity = elevator.getElevatorVelocity() * directionSign;
 
-    log.writeLog(false, "ElevatorProfile", "New Profile", "InitPos", initialPosition , "Target", finalPosition);
+    DataLogUtil.writeLog(false, "ElevatorProfile", "New Profile", "InitPos", initialPosition , "Target", finalPosition);
   }
 
   /**
@@ -195,7 +195,7 @@ public class ElevatorProfileGenerator {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
   */
   public void updateElevatorProfileLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, "ElevatorProfile", "Update Calculations",
+    DataLogUtil.writeLog(logWhenDisabled, "ElevatorProfile", "Update Calculations",
       "TargetPos", finalPosition,
       "TimeSinceStart", getTimeSinceProfileStart(), "dt", dt,
       "MPPos", getCurrentPosition(), "ActualPos", elevator.getElevatorPosition(),

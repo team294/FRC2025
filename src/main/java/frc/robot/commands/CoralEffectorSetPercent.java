@@ -11,7 +11,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorSetPercent extends Command {
   private final CoralEffector coralEffector;
-  private final DataLogUtil log;
+  
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
@@ -20,9 +20,9 @@ public class CoralEffectorSetPercent extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorSetPercent(CoralEffector coralEffector, DataLogUtil log) {
+  public CoralEffectorSetPercent(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    this.log = log;
+    
     this.fromShuffleboard = true;
     addRequirements(coralEffector);
 
@@ -37,9 +37,9 @@ public class CoralEffectorSetPercent extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorSetPercent(double percent, CoralEffector coralEffector, DataLogUtil log) {
+  public CoralEffectorSetPercent(double percent, CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    this.log = log;
+    
     this.percent = percent;
     this.fromShuffleboard = false;
     addRequirements(coralEffector);
@@ -52,7 +52,7 @@ public class CoralEffectorSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("CoralEffector Goal Percent", 0.0);
     coralEffector.setCoralEffectorPercentOutput(percent);
 
-    log.writeLog(false, "CoralEffectorSetPercent", "Init", "Percent", percent);
+    DataLogUtil.writeLog(false, "CoralEffectorSetPercent", "Init", "Percent", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

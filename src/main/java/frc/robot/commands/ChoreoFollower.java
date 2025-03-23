@@ -59,7 +59,7 @@ public class ChoreoFollower extends Command {
    */
   public ChoreoFollower(Trajectory<SwerveSample> trajectory, PIDController xController, PIDController yController,
       PIDController rotationController, Consumer<ChassisSpeeds> outputChassisSpeeds,
-      Supplier<Pose2d> poseSupplier, BooleanSupplier mirrorTrajectory, DriveTrain driveTrain, DataLogUtil log) {
+      Supplier<Pose2d> poseSupplier, BooleanSupplier mirrorTrajectory, DriveTrain driveTrain) {
     this.trajectory = trajectory;
     this.xController = xController;
     this.yController = yController;
@@ -68,7 +68,7 @@ public class ChoreoFollower extends Command {
     this.poseSupplier = poseSupplier;
     this.mirrorTrajectory = mirrorTrajectory;
     this.driveTrain = driveTrain;
-    this.log = log;
+    
 
     DataLog logD = DataLogManager.getLog();
     pose2DEntry = StructLogEntry.create(logD, "/ChoreoFollower/curPose2d", Pose2d.struct);
@@ -92,7 +92,7 @@ public class ChoreoFollower extends Command {
 
     mirrorTrajectoryThisInit = mirrorTrajectory.getAsBoolean();
 
-    log.writeLog(false, "ChoreoFollower", "Init", "Is Flipped", mirrorTrajectoryThisInit);
+    DataLogUtil.writeLog(false, "ChoreoFollower", "Init", "Is Flipped", mirrorTrajectoryThisInit);
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
@@ -130,7 +130,7 @@ public class ChoreoFollower extends Command {
       
 
       ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
-      log.writeLog(false, "ChoreoFollower", "Execute", 
+      DataLogUtil.writeLog(false, "ChoreoFollower", "Execute", 
         "Time", curTime,
         "Traj X", sampleCurr.x,
         "Traj Y", sampleCurr.y,
@@ -164,7 +164,7 @@ public class ChoreoFollower extends Command {
   public void end(boolean interrupted) {
     // driveTrain.enableFastLogging(false);
     timer.stop();
-    log.writeLog(false, "ChoreoFollower", "End");
+    DataLogUtil.writeLog(false, "ChoreoFollower", "End");
   }
 
   // Returns true when the command should end.
@@ -173,7 +173,7 @@ public class ChoreoFollower extends Command {
     Optional<Pose2d> finalPoseOpt = trajectory.getFinalPose(mirrorTrajectoryThisInit);
 
     if (finalPoseOpt.isEmpty()){
-      log.writeLog(false, "ChoreoFollower", "IsFinished", "No final Pose exists");
+      DataLogUtil.writeLog(false, "ChoreoFollower", "IsFinished", "No final Pose exists");
       return true;
     }
 

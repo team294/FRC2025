@@ -33,9 +33,9 @@ public class ElevatorCalibration extends Command {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorCalibration(double rampRate, Elevator elevator, DataLogUtil log) {
+  public ElevatorCalibration(double rampRate, Elevator elevator) {
     this.elevator = elevator;
-    this.log = log;
+    
     this.rampRate = rampRate;
     addRequirements(elevator);
   }
@@ -48,7 +48,7 @@ public class ElevatorCalibration extends Command {
     state = CalibrationRoutineState.RAMP_UP;
 
     elevator.enableFastLogging(true);
-    log.writeLog(false, "ElevatorCalibration", "Init", "rampRate", rampRate);
+    DataLogUtil.writeLog(false, "ElevatorCalibration", "Init", "rampRate", rampRate);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -113,7 +113,7 @@ public class ElevatorCalibration extends Command {
   public void end(boolean interrupted) {
     elevator.stopElevatorMotors();
     elevator.enableFastLogging(false);
-    log.writeLog(false, "ElevatorCalibration", "End");
+    DataLogUtil.writeLog(false, "ElevatorCalibration", "End");
   }
 
   // Returns true when the command should end.

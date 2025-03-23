@@ -12,7 +12,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorSetPosition extends Command {
   private final CoralEffector coralEffector;
-  private final DataLogUtil log;
+  
   private final boolean autoHold;
   private double position = 0.0;
   private boolean fromShuffleboard;
@@ -24,10 +24,10 @@ public class CoralEffectorSetPosition extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorSetPosition(boolean autoHold, CoralEffector coralEffector, DataLogUtil log) {
+  public CoralEffectorSetPosition(boolean autoHold, CoralEffector coralEffector) {
     this.autoHold = autoHold;
     this.coralEffector = coralEffector;
-    this.log = log;
+    
     this.fromShuffleboard = true;
     addRequirements(coralEffector);
 
@@ -44,9 +44,9 @@ public class CoralEffectorSetPosition extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorSetPosition(double position, boolean autoHold, CoralEffector coralEffector, DataLogUtil log) {
+  public CoralEffectorSetPosition(double position, boolean autoHold, CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    this.log = log;
+    
     this.position = position;
     this.autoHold = autoHold;
     this.fromShuffleboard = false;
@@ -63,7 +63,7 @@ public class CoralEffectorSetPosition extends Command {
     if (fromShuffleboard) position = SmartDashboard.getNumber("CoralEffector Goal Position", 0.0);
     coralEffector.setCoralEffectorPosition(position, autoHold);
 
-    log.writeLog(false, "CoralEffectorSetPosition", "Init", "Set Position", position);
+    DataLogUtil.writeLog(false, "CoralEffectorSetPosition", "Init", "Set Position", position);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -75,7 +75,7 @@ public class CoralEffectorSetPosition extends Command {
   @Override
   public void end(boolean interrupted) {
     coralEffector.enableFastLogging(false);
-    log.writeLog(false, "CoralEffectorSetPosition", "End", "Set Position", position, "Meas Position", coralEffector.getCoralEffectorPosition());
+    DataLogUtil.writeLog(false, "CoralEffectorSetPosition", "End", "Set Position", position, "Meas Position", coralEffector.getCoralEffectorPosition());
   }
 
   // Returns true when the command should end.

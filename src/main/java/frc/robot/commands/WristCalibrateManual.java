@@ -21,9 +21,9 @@ public class WristCalibrateManual extends InstantCommand {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristCalibrateManual(double angle, Wrist wrist, DataLogUtil log) {
+  public WristCalibrateManual(double angle, Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     this.angle = angle;
     fromShuffleboard = false;
     addRequirements(wrist);
@@ -34,9 +34,9 @@ public class WristCalibrateManual extends InstantCommand {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristCalibrateManual(Wrist wrist, DataLogUtil log) {
+  public WristCalibrateManual(Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     fromShuffleboard = true;
     addRequirements(wrist);
 
@@ -51,7 +51,7 @@ public class WristCalibrateManual extends InstantCommand {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Manual Calibration Value", 0);
     wrist.calibrateWristEncoder(angle);
 
-    log.writeLog(true, "WristCalibrateManual", "Init", "Angle", angle);
+    DataLogUtil.writeLog(true, "WristCalibrateManual", "Init", "Angle", angle);
   }
 
   @Override

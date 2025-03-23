@@ -40,8 +40,8 @@ public class DriveTrajectory extends SequentialCommandGroup {
    * @param alliance AllianceSelection utility
    * @param log FileLog utility
    */
-  public DriveTrajectory(CoordType trajectoryType, StopType stopAtEnd, Trajectory<SwerveSample> trajectory, DriveTrain driveTrain, AllianceSelection alliance, DataLogUtil log) { 
-    addCommands(new FileLogWrite(false, false, "DriveTrajectory", "Start", log));
+  public DriveTrajectory(CoordType trajectoryType, StopType stopAtEnd, Trajectory<SwerveSample> trajectory, DriveTrain driveTrain, AllianceSelection alliance) { 
+    addCommands(new FileLogWrite(false, false, "DriveTrajectory", "Start"));
 
     // Define the controller for robot rotation
     PIDController thetaController = new PIDController(Constants.TrajectoryConstants.kPThetaController, 0, 0);
@@ -66,16 +66,15 @@ public class DriveTrajectory extends SequentialCommandGroup {
         // For relative trajectories, get the current pose relative to the initial robot Pose
         () -> driveTrain.getPose().relativeTo(initialPose), 
         () -> false, 
-        driveTrain, 
-        log
+        driveTrain
       );
     } else {
       if (trajectoryType == CoordType.kAbsoluteResetPose) {
         // For AbsoluteResetPose trajectories, first command needs to be to reset the robot Pose
-        addCommands(new DriveResetPose(() -> (trajectory.getInitialPose(alliance.getAlliance() == Alliance.Red).get()), false, driveTrain, log));
+        addCommands(new DriveResetPose(() -> (trajectory.getInitialPose(alliance.getAlliance() == Alliance.Red).get()), false, driveTrain));
       } else if (trajectoryType == CoordType.kAbsoluteResetPoseTol) {
         // For AbsoluteResetPoseTol trajectories, first command needs to be to reset the robot Pose
-        addCommands(new DriveResetPose(() -> (trajectory.getInitialPose(alliance.getAlliance() == Alliance.Red).get()), true, driveTrain, log));
+        addCommands(new DriveResetPose(() -> (trajectory.getInitialPose(alliance.getAlliance() == Alliance.Red).get()), true, driveTrain));
       }
 
       ChoreoFollower = new ChoreoFollower(
@@ -86,8 +85,7 @@ public class DriveTrajectory extends SequentialCommandGroup {
         (speeds) -> driveTrain.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, true, false), 
         driveTrain::getPose,
         () -> alliance.getAlliance() == Alliance.Red, 
-        driveTrain, 
-        log
+        driveTrain
       );
     }
 
@@ -97,17 +95,17 @@ public class DriveTrajectory extends SequentialCommandGroup {
     // Add any final commands, per the stopAtEnd
     if (stopAtEnd == StopType.kBrake) {
       addCommands(
-        new DriveStop(driveTrain, log),
+        new DriveStop(driveTrain),
         new InstantCommand(() -> driveTrain.setDriveModeCoast(false))
       );
     } else if (stopAtEnd == StopType.kCoast) {
       addCommands(
-        new DriveStop(driveTrain, log),
+        new DriveStop(driveTrain),
         new InstantCommand(() -> driveTrain.setDriveModeCoast(true))
       );
     }
 
     // Log that the command completed
-    addCommands(new FileLogWrite(false, false, "DriveTrajectory", "Finish", log));
+    addCommands(new FileLogWrite(false, false, "DriveTrajectory", "Finish"));
   }
 }

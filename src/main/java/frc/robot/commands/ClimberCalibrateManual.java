@@ -21,9 +21,9 @@ public class ClimberCalibrateManual extends InstantCommand {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberCalibrateManual(double angle, Climber climber, DataLogUtil log) {
+  public ClimberCalibrateManual(double angle, Climber climber) {
     this.climber = climber;
-    this.log = log;
+    
     this.angle = angle;
     fromShuffleboard = false;
     addRequirements(climber);
@@ -34,9 +34,9 @@ public class ClimberCalibrateManual extends InstantCommand {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberCalibrateManual(Climber climber, DataLogUtil log) {
+  public ClimberCalibrateManual(Climber climber) {
     this.climber = climber;
-    this.log = log;
+    
     fromShuffleboard = true;
     addRequirements(climber);
 
@@ -51,6 +51,6 @@ public class ClimberCalibrateManual extends InstantCommand {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Manual Calibration Value", 0);
     climber.calibrateClimberEncoder(angle);
 
-    log.writeLog(true, "ClimberCalibrateManual", "Init", "Angle", angle);
+    DataLogUtil.writeLog(true, "ClimberCalibrateManual", "Init", "Angle", angle);
   }
 }

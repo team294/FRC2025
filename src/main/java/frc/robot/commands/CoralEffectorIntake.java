@@ -11,16 +11,16 @@ import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorIntake extends Command {
   private final CoralEffector coralEffector;
-  private final DataLogUtil log;
+  
 
   /**
    * Intake coral into the coralEffector by running the motor until the coral is safely in the mechanism.
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorIntake(CoralEffector coralEffector, DataLogUtil log) {
+  public CoralEffectorIntake(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    this.log = log;
+    
     addRequirements(coralEffector);
   }
 
@@ -32,7 +32,7 @@ public class CoralEffectorIntake extends Command {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.intakePercent); 
     }
 
-    log.writeLog(false, "CoralEffectorIntake", "Init", 
+    DataLogUtil.writeLog(false, "CoralEffectorIntake", "Init", 
       "Coral in Entry", (coralEffector.isCoralPresentInEntry() ? "TRUE" : "FALSE"),
       "Coral in Exit", (coralEffector.isCoralPresentInExit() ? "TRUE" : "FALSE"));
   }
