@@ -345,7 +345,7 @@ public class Field {
      * @return Pose2d of the nearest point we can score on the barge
      */
     public Pose2d getNearestBargeScoringPosition(Pose2d currPos){
-        Pose2d bargeScoringPos = (allianceSelection.getAlliance() == Alliance.Blue) ? aprilTagFieldLayout.getTagPose(14).get().toPose2d().transformBy(new Transform2d((-FieldConstants.bargeScoringOffset), 0, new Rotation2d(0))) : aprilTagFieldLayout.getTagPose(5).get().toPose2d().transformBy(new Transform2d((-FieldConstants.bargeScoringOffset), 0, new Rotation2d(0)));
+        Pose2d bargeScoringPos = (allianceSelection.getAlliance() == Alliance.Blue) ? aprilTagFieldLayout.getTagPose(14).get().toPose2d().transformBy(new Transform2d((FieldConstants.bargeScoringOffset), 0, new Rotation2d(0))) : aprilTagFieldLayout.getTagPose(5).get().toPose2d().transformBy(new Transform2d((FieldConstants.bargeScoringOffset), 0, new Rotation2d(0)));
         bargeScoringPos = bargeScoringPos.rotateAround(bargeScoringPos.getTranslation(), new Rotation2d(Math.PI));
 
         return new Pose2d(bargeScoringPos.getX(), MathUtil.clamp(currPos.getY(), bargeScoringPos.getY() - (FieldConstants.bargeScorableWidth / 2.0), bargeScoringPos.getY() + (FieldConstants.bargeScorableWidth / 2.0)), bargeScoringPos.getRotation());
