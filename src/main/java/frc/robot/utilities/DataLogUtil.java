@@ -7,6 +7,8 @@
 
 package frc.robot.utilities;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -17,7 +19,6 @@ import static frc.robot.utilities.StringUtil.*;
  * A utility to write information to a file for loggin.
  */
 public class DataLogUtil {
-
 	// Level of detail between 1-3, where 1 is the most detailed and 3 is the least detailed
 	private static int logLevel = 3;
     
@@ -25,7 +26,10 @@ public class DataLogUtil {
 	private static final int NUM_ROTATIONS = 10;
 	private static int rotationLastAllocated = NUM_ROTATIONS - 1;
 	private static int rotationCurrent = 0;	// Values = 0 ... NUM_ROTATIONS - 1
-    
+
+	// DataLog entry to use for logging messages and events
+    private static final StringLogEntry messageEntry = new StringLogEntry(DataLogManager.getLog(), "/DataLog/message");
+	
 
 	/** Start data log manager with default directory location. */
 	public static void start() {
@@ -40,13 +44,10 @@ public class DataLogUtil {
 	 * @param paramArray... List of descriptions and values (variable number of parameters)
 	 */
 	public static void writeLog(boolean logWhenDisabled, String subsystemOrCommand, String event, Object... paramArray) {
-	// 	// Write the message to the file
-	// 	if (logWhenDisabled || DriverStation.isEnabled()) {
-    //   try {
-	// 			fileWriter.write(buildStringWithCommas((dateFormat.format(System.currentTimeMillis())), subsystemOrCommand, event, buildStringWithCommas((Object [])paramArray).concat("\n")));
-    //     fileWriter.flush();
-	// 	  } catch (IOException exception) {}
-	// 	}
+		// Write the message to the file
+		if (logWhenDisabled || DriverStation.isEnabled()) {
+			messageEntry.append(buildStringWithCommas(subsystemOrCommand, event, buildStringWithCommas((Object [])paramArray)));
+		}
 	}
 	
   	/**

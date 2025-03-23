@@ -70,10 +70,10 @@ public class ChoreoFollower extends Command {
     this.driveTrain = driveTrain;
     
 
-    DataLog logD = DataLogManager.getLog();
-    pose2DEntry = StructLogEntry.create(logD, "/ChoreoFollower/curPose2d", Pose2d.struct);
-    trajXEntry = new DoubleLogEntry(logD, "/ChoreoFollower/trajX");
-    trajYEntry = new DoubleLogEntry(logD, "/ChoreoFollower/trajY");
+    DataLog log = DataLogManager.getLog();
+    pose2DEntry = StructLogEntry.create(log, "/ChoreoFollower/curPose2d", Pose2d.struct);
+    trajXEntry = new DoubleLogEntry(log, "/ChoreoFollower/trajX");
+    trajYEntry = new DoubleLogEntry(log, "/ChoreoFollower/trajY");
 
     addRequirements(driveTrain);
   }
