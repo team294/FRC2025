@@ -40,7 +40,7 @@ public class DriveTrajectory extends SequentialCommandGroup {
    * @param log FileLog utility
    */
   public DriveTrajectory(CoordType trajectoryType, StopType stopAtEnd, Trajectory<SwerveSample> trajectory, DriveTrain driveTrain, AllianceSelection alliance) { 
-    addCommands(new FileLogWrite(false, false, "DriveTrajectory", "Start"));
+    addCommands(new DataLogMessage(false, "DriveTrajectory", "Start"));
 
     // Define the controller for robot rotation
     PIDController thetaController = new PIDController(Constants.TrajectoryConstants.kPThetaController, 0, 0);
@@ -105,6 +105,6 @@ public class DriveTrajectory extends SequentialCommandGroup {
     }
 
     // Log that the command completed
-    addCommands(new FileLogWrite(false, false, "DriveTrajectory", "Finish"));
+    addCommands(new DataLogMessage(false, "DriveTrajectory", "Finish"));
   }
 }

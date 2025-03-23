@@ -38,6 +38,27 @@ public class DataLogUtil {
 
 	/**
 	 * Writes a message to the log file. The message will be timestamped. Does not echo the message to the screen.
+	 * If more than one string or object is provided, then places one space between each item.
+	 * @param paramArray... List of descriptions and values (variable number of parameters)
+	 */
+	public static void writeMessage(Object... paramArray) {
+		// Write the message to the file
+		messageEntry.append(buildStringWithDelimiter(" ", buildString((Object [])paramArray)));
+	}
+
+	/**
+	 * Writes a message to the log file. The message will be timestamped. The message will be echoed to the screen.
+	 * If more than one string or object is provided, then places one space between each item.
+	 * @param paramArray... List of descriptions and values (variable number of parameters)
+	 */
+	public static void writeMessageEcho(Object... paramArray) {
+		String s = buildStringWithDelimiter(" ", (Object [])paramArray);
+		writeMessage(s);
+		System.out.println(buildString("Log:  ", s));
+	}
+
+	/**
+	 * Writes a message to the log file. The message will be timestamped. Does not echo the message to the screen.
 	 * @param logWhenDisabled true = log when disabled, false = discard the message
 	 * @param subsystemOrCommand The name of the subsystem or command generating the message
 	 * @param event A description of the event (ex. start, data, event)

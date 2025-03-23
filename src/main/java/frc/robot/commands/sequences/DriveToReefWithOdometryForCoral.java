@@ -15,7 +15,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RobotDimensions;
 import frc.robot.commands.DriveToPose;
-import frc.robot.commands.FileLogWrite;
+import frc.robot.commands.DataLogMessage;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.Field;
 
@@ -42,7 +42,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new FileLogWrite(false, false, "DriveToReefWithOdometryForCoral", "Start"),
+      new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
       
       sequence(
           race(
@@ -87,7 +87,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
                   new Transform2d(field.getNearestAprilTagReef(driveTrain.getPose()), driveTrain.getPose()).getY() > 0)
       ),
 
-      new FileLogWrite(false, false, "DriveToReefWithOdometryForCoral", "End")
+      new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "End")
     );
   }
 }

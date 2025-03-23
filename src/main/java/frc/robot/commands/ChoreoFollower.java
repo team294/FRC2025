@@ -38,8 +38,10 @@ public class ChoreoFollower extends Command {
   private boolean mirrorTrajectoryThisInit;
   private DriveTrain driveTrain;
   
-  private StructLogEntry<Pose2d> pose2DEntry;
-  private DoubleLogEntry trajXEntry, trajYEntry;
+  private final DataLog log = DataLogManager.getLog();
+  private final StructLogEntry<Pose2d> pose2DEntry = StructLogEntry.create(log, "/ChoreoFollower/curPose2d", Pose2d.struct);
+  private final DoubleLogEntry trajXEntry = new DoubleLogEntry(log, "/ChoreoFollower/trajX");
+  private final DoubleLogEntry trajYEntry = new DoubleLogEntry(log, "/ChoreoFollower/trajY");
 
   /**
    * Choreo follower used to follow Choreo trajectories. 
@@ -68,12 +70,6 @@ public class ChoreoFollower extends Command {
     this.poseSupplier = poseSupplier;
     this.mirrorTrajectory = mirrorTrajectory;
     this.driveTrain = driveTrain;
-    
-
-    DataLog log = DataLogManager.getLog();
-    pose2DEntry = StructLogEntry.create(log, "/ChoreoFollower/curPose2d", Pose2d.struct);
-    trajXEntry = new DoubleLogEntry(log, "/ChoreoFollower/trajX");
-    trajYEntry = new DoubleLogEntry(log, "/ChoreoFollower/trajY");
 
     addRequirements(driveTrain);
   }

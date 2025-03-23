@@ -46,7 +46,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
       double yRelativeOffset = lastCoralLocation.onRightSide ? 0.2 : -0.2; 
 
       addCommands(
-        new FileLogWrite(false, false, "AutoCoralCycleLoopThenAlgae", "Start", lastCoralLocation, lastCoralLocation.toString(), "onRightSide", lastCoralLocation.onRightSide, "yRelativeOffset", yRelativeOffset),
+        new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae", "Start", lastCoralLocation, lastCoralLocation.toString(), "onRightSide", lastCoralLocation.onRightSide, "yRelativeOffset", yRelativeOffset),
 
         // First, do the loop for the coral cycles (ends at reef)
         new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache),
@@ -73,7 +73,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
         // After intaking the algae, back up TODO calibrate distance
         new DriveToPose(CoordType.kRelative, new Pose2d(-0.5, 0, new Rotation2d(0)), driveTrain),
 
-        new FileLogWrite(false, false, "AutoCoralCycleLoopThenAlgae", "End")
+        new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae", "End")
       );
     }
   }

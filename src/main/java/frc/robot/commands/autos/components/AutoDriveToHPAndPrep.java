@@ -30,7 +30,7 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
   public AutoDriveToHPAndPrep(TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
           AllianceSelection alliance, TrajectoryCache cache) {    
     addCommands(
-      new FileLogWrite(false, false, "AutoDriveToHPAndPrep", "Init", "trajectoryName", trajectoryName.toString()),
+      new DataLogMessage(false, "AutoDriveToHPAndPrep", "Init", "trajectoryName", trajectoryName.toString()),
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
       new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(trajectoryName), driveTrain, alliance),
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
@@ -52,7 +52,7 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
   public AutoDriveToHPAndPrep(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
           AllianceSelection alliance, TrajectoryCache cache) {
     addCommands(
-      new FileLogWrite(false, false, "AutoDriveToHPAndPrep", "Init", "startingReefLocation", start.toString()),
+      new DataLogMessage(false, "AutoDriveToHPAndPrep", "Init", "startingReefLocation", start.toString()),
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
       new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance),
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)

@@ -49,7 +49,7 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
   public AutoDriveToReefAndPrep(ReefLevel level, TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
         CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache) {
     addCommands(
-      new FileLogWrite(false, false, "AutoDriveToReefAndPrep", "Init", "trajectoryName", trajectoryName.toString()),
+      new DataLogMessage(false, "AutoDriveToReefAndPrep", "Init", "trajectoryName", trajectoryName.toString()),
       parallel(
         new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(trajectoryName), driveTrain, alliance)
@@ -80,7 +80,7 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
     // Start from either HP or barge
     Trajectory<SwerveSample> trajectory = fromHP ? AutoSelection.getHPToReef(end) : AutoSelection.getBargeToReef(end);
     addCommands(
-      new FileLogWrite(false, false, "AutoDriveToReefAndPrep", "Init", "trajectory", trajectory.name()),
+      new DataLogMessage(false, "AutoDriveToReefAndPrep", "Init", "trajectory", trajectory.name()),
       parallel(
         new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance)
