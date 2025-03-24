@@ -295,13 +295,15 @@ public class RobotContainer {
     //       true, true, driveTrain, log).asProxy()
     // ));
 
-    right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
+    right[1].whileTrue(new DriveToBargeWithOdometry(driveTrain, field, log));
+    //right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log)); Replaced with driveToBarge for this branch due to joystick button issues
     // right[1] after DriveToReefWithOdometryForCoral ends, if right[1] is still being held,
     // then DriveWithJoystickAdvanced will stay in fine control mode, robot-relative control (not field relative),
     // and theta locked (right joystick inactive).
     // Normal behavior resmes when button is released.
 
-    right[2].whileTrue(new DriveToBargeWithOdometry(driveTrain, field, log));
+    //right[2].whileTrue(new DriveToBargeWithOdometry(driveTrain, field, log));
+    // Right joystick right button has an issue where it sometimes does not register being pressed
   }
 
   /**

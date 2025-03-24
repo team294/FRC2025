@@ -103,9 +103,10 @@ public class DriveWithJoysticksAdvanced extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    reefBasedControl = rightJoystick.getRawButton(1);     // Turn on fine control, robot-oriented control (not field-relative), and turn off theta joystick
+    //reefBasedControl = rightJoystick.getRawButton(1);     // Turn on fine control, robot-oriented control (not field-relative), and turn off theta joystick
+    //Commented out reefBasedControl as it is being replaced by bargeBasedControl due to problems with not detecting when button 2 is pressed
     // loadingStationLock = rightJoystick.getRawButton(2);
-    bargeBasedControl = rightJoystick.getRawButton(2);    // Turn on fine control, forward-back driving, and theta joystick
+    bargeBasedControl = rightJoystick.getRawButton(1);    // Turn on fine control, forward-back driving, and theta joystick (was button 2, switched to 1)
     fineControl = reefBasedControl || bargeBasedControl;
 
 
