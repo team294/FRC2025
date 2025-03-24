@@ -7,11 +7,9 @@
 
 package frc.robot.utilities;
 
-import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 
 import static frc.robot.utilities.StringUtil.*;
 
@@ -28,8 +26,11 @@ public class DataLogUtil {
 	private static int rotationCurrent = 0;	// Values = 0 ... NUM_ROTATIONS - 1
 
 	// DataLog entry to use for logging messages and events
-    private static final StringLogEntry messageEntry = new StringLogEntry(DataLogManager.getLog(), "/DataLog/message");
-	
+    private static final StringLogEntry dLogMessage = new StringLogEntry(DataLogManager.getLog(), "/DataLog/message");
+
+	// DataLog entry to use for heritage logging calls
+	private static final StringLogEntry dLogOldEntry = new StringLogEntry(DataLogManager.getLog(), "/DataLog/oldlog");
+
 
 	/** Start data log manager with default directory location. */
 	public static void start() {
@@ -43,7 +44,7 @@ public class DataLogUtil {
 	 */
 	public static void writeMessage(Object... paramArray) {
 		// Write the message to the file
-		messageEntry.append(buildStringWithDelimiter(" ", buildString((Object [])paramArray)));
+		dLogMessage.append(buildStringWithDelimiter(" ", buildString((Object [])paramArray)));
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class DataLogUtil {
 	public static void writeLog(boolean logWhenDisabled, String subsystemOrCommand, String event, Object... paramArray) {
 		// Write the message to the file
 		if (logWhenDisabled || DriverStation.isEnabled()) {
-			messageEntry.append(buildStringWithCommas(subsystemOrCommand, event, buildStringWithCommas((Object [])paramArray)));
+			dLogOldEntry.append(buildStringWithCommas(subsystemOrCommand, event, buildStringWithCommas((Object [])paramArray)));
 		}
 	}
 	

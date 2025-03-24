@@ -39,9 +39,21 @@ public class ChoreoFollower extends Command {
   private DriveTrain driveTrain;
   
   private final DataLog log = DataLogManager.getLog();
-  private final StructLogEntry<Pose2d> pose2DEntry = StructLogEntry.create(log, "/ChoreoFollower/curPose2d", Pose2d.struct);
-  private final DoubleLogEntry trajXEntry = new DoubleLogEntry(log, "/ChoreoFollower/trajX");
-  private final DoubleLogEntry trajYEntry = new DoubleLogEntry(log, "/ChoreoFollower/trajY");
+  private final StructLogEntry<Pose2d> dLogCurPose2D = StructLogEntry.create(log, "/ChoreoFollower/curPose2d", Pose2d.struct);
+  private final StructLogEntry<Pose2d> dLogTrajPose2D = StructLogEntry.create(log, "/ChoreoFollower/trajPose2d", Pose2d.struct);
+  private final DoubleLogEntry dLogTime = new DoubleLogEntry(log, "/ChoreoFollower/time");
+  private final DoubleLogEntry dLogTrajX = new DoubleLogEntry(log, "/ChoreoFollower/trajX");
+  private final DoubleLogEntry dLogTrajY = new DoubleLogEntry(log, "/ChoreoFollower/trajY");
+  private final DoubleLogEntry dLogTrajVel = new DoubleLogEntry(log, "/ChoreoFollower/trajVel");
+  private final DoubleLogEntry dLogTrajVelAng = new DoubleLogEntry(log, "/ChoreoFollower/trajVelAng");
+  private final DoubleLogEntry dLogTrajRot = new DoubleLogEntry(log, "/ChoreoFollower/trajRot");
+  private final DoubleLogEntry dLogTrajRotVel = new DoubleLogEntry(log, "/ChoreoFollower/trajRotVel");
+  private final DoubleLogEntry dLogRobotX = new DoubleLogEntry(log, "/ChoreoFollower/robotX");
+  private final DoubleLogEntry dLogRobotY = new DoubleLogEntry(log, "/ChoreoFollower/robotY");
+  private final DoubleLogEntry dLogRobotVel = new DoubleLogEntry(log, "/ChoreoFollower/robotVel");
+  private final DoubleLogEntry dLogRobotVelAng = new DoubleLogEntry(log, "/ChoreoFollower/robotVelAng");
+  private final DoubleLogEntry dLogRobotRot = new DoubleLogEntry(log, "/ChoreoFollower/robotRot");
+  private final DoubleLogEntry dLogRobotRotVel = new DoubleLogEntry(log, "/ChoreoFollower/robotRotVel");
 
   /**
    * Choreo follower used to follow Choreo trajectories. 
@@ -88,7 +100,7 @@ public class ChoreoFollower extends Command {
 
     mirrorTrajectoryThisInit = mirrorTrajectory.getAsBoolean();
 
-    DataLogUtil.writeLog(false, "ChoreoFollower", "Init", "Is Flipped", mirrorTrajectoryThisInit);
+    DataLogUtil.writeMessage("ChoreoFollower:  Init, Is Flipped =", mirrorTrajectoryThisInit);
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
@@ -119,29 +131,28 @@ public class ChoreoFollower extends Command {
       yFeedback = yController.calculate(poseCurr.getY(), sampleCurr.y);
       rotationFeedback = rotationController.calculate(poseCurr.getRotation().getRadians(), sampleCurr.heading);
 
+      // Log data for trajectory following
       long timeNow = RobotController.getFPGATime();
-      pose2DEntry.append(poseCurr, timeNow);
-      trajXEntry.append(sampleCurr.x, timeNow);
-      trajYEntry.append(sampleCurr.y, timeNow);
-      
-
       ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
-      DataLogUtil.writeLog(false, "ChoreoFollower", "Execute", 
-        "Time", curTime,
-        "Traj X", sampleCurr.x,
-        "Traj Y", sampleCurr.y,
-        "Traj Vel", Math.hypot(sampleCurr.vx, sampleCurr.vy),
-        "Traj VelAng", Math.toDegrees(Math.atan2(sampleCurr.vy, sampleCurr.vx)),
-        "Traj rot", Math.toDegrees(sampleCurr.heading),
-        "Traj rotVel", Math.toDegrees(sampleCurr.omega),
-        "Robot X", poseCurr.getX(),
-        "Robot Y", poseCurr.getY(),
-        "Robot Vel", Math.hypot(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond),
-        "Robot VelAng", Math.toDegrees(Math.atan2(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond)),
-        "Robot rot", poseCurr.getRotation().getDegrees(),
-        "Robot rotVel", driveTrain.getAngularVelocity(),
-        driveTrain.getDriveModuleOutputs()
-      );
+      dLogCurPose2D.append(poseCurr, timeNow);
+      dLogTrajPose2D.append(sampleCurr.getPose(), timeNow);
+
+      dLogTime.append(curTime, timeNow);
+      dLogTrajX.append(sampleCurr.x, timeNow);
+      dLogTrajY.append(sampleCurr.y, timeNow);
+      dLogTrajVel.append(Math.hypot(sampleCurr.vx, sampleCurr.vy), timeNow);
+      dLogTrajVelAng.append(Math.toDegrees(Math.atan2(sampleCurr.vy, sampleCurr.vx)), timeNow);
+      dLogTrajRot.append(Math.toDegrees(sampleCurr.heading), timeNow);
+      dLogTrajRotVel.append(Math.toDegrees(sampleCurr.omega), timeNow);
+      dLogRobotX.append(poseCurr.getX(), timeNow);
+      dLogRobotY.append(poseCurr.getY(), timeNow);
+      dLogRobotVel.append(Math.hypot(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond), timeNow);
+      dLogRobotVelAng.append(Math.toDegrees(Math.atan2(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond)), timeNow);
+      dLogRobotRot.append(poseCurr.getRotation().getDegrees(), timeNow);
+      dLogRobotRotVel.append(driveTrain.getAngularVelocity(), timeNow);
+
+      // TODO Add logging for DriveModuleOutputs?
+        // driveTrain.getDriveModuleOutputs()
         
     } else {
       xFF = 0;
@@ -160,7 +171,7 @@ public class ChoreoFollower extends Command {
   public void end(boolean interrupted) {
     // driveTrain.enableFastLogging(false);
     timer.stop();
-    DataLogUtil.writeLog(false, "ChoreoFollower", "End");
+    DataLogUtil.writeMessage("ChoreoFollower:  End");
   }
 
   // Returns true when the command should end.
@@ -169,7 +180,7 @@ public class ChoreoFollower extends Command {
     Optional<Pose2d> finalPoseOpt = trajectory.getFinalPose(mirrorTrajectoryThisInit);
 
     if (finalPoseOpt.isEmpty()){
-      DataLogUtil.writeLog(false, "ChoreoFollower", "IsFinished", "No final Pose exists");
+      DataLogUtil.writeMessage("ChoreoFollower:  IsFinished.  No final Pose exists");
       return true;
     }
 
