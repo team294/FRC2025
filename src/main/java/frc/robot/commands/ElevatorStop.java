@@ -6,15 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorStop extends Command {
   private final Elevator elevator;
-  private final FileLog log;
+  
 
-  public ElevatorStop(Elevator elevator, FileLog log) {
+  public ElevatorStop(Elevator elevator) {
     this.elevator = elevator;
-    this.log = log;
+    
     addRequirements(elevator);
   }
 
@@ -22,7 +22,7 @@ public class ElevatorStop extends Command {
   @Override
   public void initialize() {
     elevator.stopElevatorMotors();
-    log.writeLog(false, "ElevatorStop", "Init");
+    DataLogUtil.writeLog(false, "ElevatorStop", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

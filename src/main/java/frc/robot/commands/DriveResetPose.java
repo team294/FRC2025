@@ -14,12 +14,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.MathBCR;
 
 public class DriveResetPose extends Command {
   private final DriveTrain driveTrain;
-  private final FileLog log;
+  
   private final boolean fromShuffleboard;
   private final boolean onlyAngle;      // true = resent angle but not X-Y position
   private final boolean usingLambda;
@@ -37,9 +37,9 @@ public class DriveResetPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
 	 */
-  public DriveResetPose(double curXinMeters, double curYinMeters, double curAngleinDegrees, boolean tolerance, DriveTrain driveTrain, FileLog log) {
+  public DriveResetPose(double curXinMeters, double curYinMeters, double curAngleinDegrees, boolean tolerance, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     curX = curXinMeters;
     curY = curYinMeters;
     curAngle = curAngleinDegrees;
@@ -62,9 +62,9 @@ public class DriveResetPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
 	 */
-  public DriveResetPose(Pose2d curPose, boolean tolerance, DriveTrain driveTrain, FileLog log) {
+  public DriveResetPose(Pose2d curPose, boolean tolerance, DriveTrain driveTrain) {
     this(curPose.getX(), curPose.getY(), curPose.getRotation().getDegrees(), tolerance,
-        driveTrain, log);
+        driveTrain);
   }
 
   /**
@@ -76,9 +76,9 @@ public class DriveResetPose extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
 	 */
-  public DriveResetPose(double curAngleinDegrees, boolean tolerance, DriveTrain driveTrain, FileLog log) {
+  public DriveResetPose(double curAngleinDegrees, boolean tolerance, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     curAngle = curAngleinDegrees;
     fromShuffleboard = false;
     onlyAngle = true;
@@ -99,9 +99,9 @@ public class DriveResetPose extends Command {
    * @param driveTrain DriveTrain subsytem
    * @param log FileLog utility
 	 */
-  public DriveResetPose(Supplier<Pose2d> curPose, boolean tolerance, DriveTrain driveTrain, FileLog log) {
+  public DriveResetPose(Supplier<Pose2d> curPose, boolean tolerance, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     poseSupplier = curPose;
     fromShuffleboard = false;
     onlyAngle = false;
@@ -117,9 +117,9 @@ public class DriveResetPose extends Command {
    * @param driveTrain DriveTrain subystem
    * @param log FileLog utility
    */
-  public DriveResetPose(DriveTrain driveTrain, FileLog log){
+  public DriveResetPose(DriveTrain driveTrain){
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     fromShuffleboard = true;
     onlyAngle = false;
     usingLambda = false;
@@ -159,7 +159,7 @@ public class DriveResetPose extends Command {
       curY = driveTrain.getPose().getY();
     }
     
-    log.writeLog(true, "DriveResetPose", "Init", "X", curX, "Y", curY, "Angle", curAngle);
+    DataLogUtil.writeLog(true, "DriveResetPose", "Init", "X", curX, "Y", curY, "Angle", curAngle);
 
     if (!tolerance || Math.abs(curX - driveTrain.getPose().getX()) > 0.5
         || Math.abs(curY - driveTrain.getPose().getY()) > 0.5

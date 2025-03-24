@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristManualControl extends Command {
   private final Wrist wrist;
   private final CommandXboxController xboxController;
-  private final FileLog log;
+  
   private boolean rightJoystick;
 
   /**
@@ -24,10 +24,10 @@ public class WristManualControl extends Command {
    * @param log FileLog utility
    * @param rightJoystick true = use right joystick, false = use left joystick
    */
-  public WristManualControl(CommandXboxController xboxController, Wrist wrist, FileLog log, boolean rightJoystick) {
+  public WristManualControl(CommandXboxController xboxController, Wrist wrist, boolean rightJoystick) {
     this.wrist = wrist;
     this.xboxController = xboxController;
-    this.log = log;
+    
     this.rightJoystick = rightJoystick;
     addRequirements(wrist);
   }
@@ -35,7 +35,7 @@ public class WristManualControl extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    log.writeLog(false, "WristManualControl", "Init");
+    DataLogUtil.writeLog(false, "WristManualControl", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,7 +48,7 @@ public class WristManualControl extends Command {
     wristPercent *= WristConstants.maxManualPercentOutput;
     wrist.setWristPercentOutput(wristPercent);
 
-    log.writeLog(false, "WristManualControl", "Execute", "Xbox Joystick", wristPercent);
+    DataLogUtil.writeLog(false, "WristManualControl", "Execute", "Xbox Joystick", wristPercent);
   }
 
   // Called once the command ends or is interrupted.
@@ -56,7 +56,7 @@ public class WristManualControl extends Command {
   public void end(boolean interrupted) {
     wrist.stopWrist();
 
-    log.writeLog(false, "WristManualControl", "End");
+    DataLogUtil.writeLog(false, "WristManualControl", "End");
   }
 
   // Returns true when the command should end.

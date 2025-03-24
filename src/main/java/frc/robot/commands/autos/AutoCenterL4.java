@@ -31,40 +31,40 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.utilities.AllianceSelection;
 import frc.robot.utilities.Field;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 
 public class AutoCenterL4 extends SequentialCommandGroup {
-  public AutoCenterL4(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Field field, Joystick rightJoystick, AllianceSelection allianceSelection, FileLog log) {
+  public AutoCenterL4(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Field field, Joystick rightJoystick, AllianceSelection allianceSelection) {
     addCommands(
 
       // Turn on vision odometry
-      new VisionOdometryStateSet(true, driveTrain, log),
+      new VisionOdometryStateSet(true, driveTrain),
 
       // Reset pose so robot is facing the correct direction
-      new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log),
+      new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain),
 
       // Drive forward to get in april tag range
-      new DriveToPose(CoordType.kRelative, new Pose2d(Units.inchesToMeters(20), 0, Rotation2d.kZero), driveTrain, log),
+      new DriveToPose(CoordType.kRelative, new Pose2d(Units.inchesToMeters(20), 0, Rotation2d.kZero), driveTrain),
 
       // Drive to reef
-      new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log),
-      // new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log),
+      new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+      // new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
 
       // Move elevator to L4
-      new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, log),
+      new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber),
 
       // Drive forward to get to the reef (offset copied from DriveToReefWithOdometryForCoral, plus 4 inches)
       new DriveToPose(CoordType.kRelative, () -> new Pose2d((RobotDimensions.robotWidth / 2.0) + DriveConstants.driveBackFromReefDistance + Units.inchesToMeters(4), 0, new Rotation2d(0)), 
           0.5, 1.0, 
           TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          true, true, driveTrain, log),
+          true, true, driveTrain),
 
       // Wait for elevator to stabilize
       new WaitCommand(0.75),
 
       // Score coral on L4
-      new CoralEffectorOuttake(coralEffector, log),
+      new CoralEffectorOuttake(coralEffector),
 
       // Wait after scoring
       new WaitCommand(1.0),
@@ -73,10 +73,10 @@ public class AutoCenterL4 extends SequentialCommandGroup {
       new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance - 0.6, 0, new Rotation2d(0)), 
           0.5, 1.0, 
           TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          true, true, driveTrain, log),
+          true, true, driveTrain),
 
       // Move elevator back down
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist, log)
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
     );
   }
 }

@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristSetPercent extends Command {
   private final Wrist wrist;
-  private final FileLog log;
+  
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
@@ -21,9 +21,9 @@ public class WristSetPercent extends Command {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristSetPercent(Wrist wrist, FileLog log) {
+  public WristSetPercent(Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     this.fromShuffleboard = true;
     addRequirements(wrist);
 
@@ -39,8 +39,8 @@ public class WristSetPercent extends Command {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristSetPercent(double percent, Wrist wrist, FileLog log) {
-    this.log = log;
+  public WristSetPercent(double percent, Wrist wrist) {
+    
     this.wrist = wrist;
     this.percent = percent;
     this.fromShuffleboard = false;
@@ -52,7 +52,7 @@ public class WristSetPercent extends Command {
   public void initialize() {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Wrist Goal Percent", 0);
     wrist.setWristPercentOutput(percent);
-    log.writeLog(false, "WristSetPercent", "Init", "Percent", percent);
+    DataLogUtil.writeLog(false, "WristSetPercent", "Init", "Percent", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

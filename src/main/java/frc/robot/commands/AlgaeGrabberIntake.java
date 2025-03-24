@@ -7,20 +7,20 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AlgaeGrabberConstants;
 import frc.robot.subsystems.AlgaeGrabber;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class AlgaeGrabberIntake extends Command {
   private final AlgaeGrabber algaeGrabber;
-  private final FileLog log;
+  
 
   /**
    * Intake algae into the AlgaeGrabber by running the motor until an algae is detected.
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */
-  public AlgaeGrabberIntake(AlgaeGrabber algaeGrabber, FileLog log) {
+  public AlgaeGrabberIntake(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
-    this.log = log;
+    
     addRequirements(algaeGrabber);
   }
 
@@ -30,7 +30,7 @@ public class AlgaeGrabberIntake extends Command {
     // If there is no algae present, run the motor
     if (!algaeGrabber.isAlgaePresent()) algaeGrabber.setAlgaeGrabberPercentOutput(AlgaeGrabberConstants.intakePercent);
 
-    log.writeLog(false, "AlgaeGrabberIntake", "Init",
+    DataLogUtil.writeLog(false, "AlgaeGrabberIntake", "Init",
       "Algae Present", algaeGrabber.isAlgaePresent());
   }
 

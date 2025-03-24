@@ -15,10 +15,9 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.RobotDimensions;
 import frc.robot.commands.DriveToPose;
-import frc.robot.commands.FileLogWrite;
+import frc.robot.commands.DataLogMessage;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.Field;
-import frc.robot.utilities.FileLog;
 
 public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
   /** <p>Drives to the closest reef scoring position against the reef</p>
@@ -39,11 +38,11 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
    * @param rightJoystick
    * @param log FileLog utility
    */
-  public DriveToReefWithOdometryForCoral(DriveTrain driveTrain, Field field, Joystick rightJoystick, FileLog log) {
+  public DriveToReefWithOdometryForCoral(DriveTrain driveTrain, Field field, Joystick rightJoystick) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new FileLogWrite(false, false, "DriveToReefWithOdometryForCoral", "Start", log),
+      new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
       
       sequence(
           race(
@@ -56,7 +55,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
             //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus a constant
             new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
                      new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)))), 
-                     0.02, 1, driveTrain, log)
+                     0.02, 1, driveTrain)
           )
       ),
 
@@ -66,14 +65,14 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
           //Drives to nearest left scoring position (offset off the wall half the robot's width plus a constant)
           new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
                         new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)), true)), 
-                        0.02, 1, driveTrain, log)
+                        0.02, 1, driveTrain)
         ),
         either(
           sequence(
             //Drives to nearest right scoring position (offset off the wall half the robot's width a constant)
             new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
                         new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)), false)), 
-                        0.02, 1, driveTrain, log) 
+                        0.02, 1, driveTrain) 
           ),
           sequence(
             // If you are at the same position the joystick is at, or the joystick is in the deadband (Which shouldn't occur, as these have to be false for this section to run), do nothing
@@ -88,7 +87,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
                   new Transform2d(field.getNearestAprilTagReef(driveTrain.getPose()), driveTrain.getPose()).getY() > 0)
       ),
 
-      new FileLogWrite(false, false, "DriveToReefWithOdometryForCoral", "End", log)
+      new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "End")
     );
   }
 }

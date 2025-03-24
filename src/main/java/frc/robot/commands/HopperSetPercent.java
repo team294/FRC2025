@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hopper;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class HopperSetPercent extends Command {
   private final Hopper hopper;
-  private final FileLog log;
+  
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
@@ -20,9 +20,9 @@ public class HopperSetPercent extends Command {
    * @param hopper Hopper subsystem
    * @param log FileLog utility
    */
-  public HopperSetPercent(Hopper hopper, FileLog log) {
+  public HopperSetPercent(Hopper hopper) {
     this.hopper = hopper;
-    this.log = log;
+    
     this.fromShuffleboard = true;
     addRequirements(hopper);
 
@@ -37,9 +37,9 @@ public class HopperSetPercent extends Command {
    * @param hopper Hopper subsystem
    * @param log FileLog utility
    */  
-  public HopperSetPercent(double percent, Hopper hopper, FileLog log) {
+  public HopperSetPercent(double percent, Hopper hopper) {
     this.hopper = hopper;
-    this.log = log;
+    
     this.percent = percent;
     this.fromShuffleboard = false;
     addRequirements(hopper);
@@ -51,7 +51,7 @@ public class HopperSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Hopper Percent", 0.0);
     hopper.setHopperPercentOutput(percent);
 
-    log.writeLog(false, "HopperSetPercent", "Init", "Percent", percent);
+    DataLogUtil.writeLog(false, "HopperSetPercent", "Init", "Percent", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

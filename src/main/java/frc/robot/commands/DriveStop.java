@@ -6,27 +6,27 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class DriveStop extends Command {
   private DriveTrain drivetrain;
-  private FileLog log;
+  
 
   /**
    * Stops all of the driveTrain motors.
    * @param drivetrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveStop(DriveTrain drivetrain, FileLog log) {
+  public DriveStop(DriveTrain drivetrain) {
     this.drivetrain = drivetrain;
-    this.log = log;
+    
     addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    log.writeLog(false, "DriveStop", "Stopping Motors");
+    DataLogUtil.writeLog(false, "DriveStop", "Stopping Motors");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

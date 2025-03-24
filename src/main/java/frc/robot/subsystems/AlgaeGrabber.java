@@ -21,13 +21,13 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 import frc.robot.Constants.AlgaeGrabberConstants;
 import frc.robot.Constants.Ports;
 
 public class AlgaeGrabber extends SubsystemBase implements Loggable {
-  private final FileLog log;
+  
   private final int logRotationKey;
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;         // Subsystem name for use in file logging and dashboard
@@ -46,9 +46,9 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   // Create bump switches
   private final DigitalInput bumpSwitch = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch);
 
-  public AlgaeGrabber(String subsystemName, FileLog log) {
-    this.log = log;
-    logRotationKey = log.allocateLogRotation();
+  public AlgaeGrabber(String subsystemName) {
+    
+    logRotationKey = DataLogUtil.allocateLogRotation();
     this.subsystemName = subsystemName;
 
     // Get signal and sensor objects
@@ -144,7 +144,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, subsystemName, "Update variables",
+    DataLogUtil.writeLog(logWhenDisabled, subsystemName, "Update variables",
       "AlgaeGrabber Temp (C)", algaeGrabberTemp.refresh().getValueAsDouble(),
       "AlgaeGrabber Voltage (V)", algaeGrabberVoltage.refresh().getValueAsDouble(),
       "AlgaeGrabber Current (Amps)", getAlgaeGrabberAmps(),
@@ -153,8 +153,8 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-      // updateLog(false);
+    if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+      updateLog(false);
       SmartDashboard.putBoolean("Algae Present", isAlgaePresent());
       SmartDashboard.putNumber("AlgaeGrabber Velocity", getAlgaeGrabberVelocity());
     }
