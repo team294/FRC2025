@@ -8,6 +8,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.FieldConstants.ReefLocation;
+import frc.robot.commands.DataLogMessage;
 import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
@@ -27,8 +28,10 @@ public class AutoCoralDriveAndIntakeSequence extends SequentialCommandGroup {
   public AutoCoralDriveAndIntakeSequence(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
       CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance) {
     addCommands(
+      new DataLogMessage(false, "AutoCoralDriveAndIntakeSequence: Start, starting reef location =", start.toString()),
       new AutoDriveToHPAndPrep(start, driveTrain, elevator, wrist, coralEffector, alliance),
-      new CoralIntakeSequence(elevator, wrist, hopper, coralEffector) //.withTimeout(2.5)
+      new CoralIntakeSequence(elevator, wrist, hopper, coralEffector), //.withTimeout(2.5)
+      new DataLogMessage(false, "AutoCoralDriveAndIntakeSequence: End")
     );
   }
 }

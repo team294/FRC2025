@@ -67,13 +67,15 @@ public class AutoDriveToReef extends SequentialCommandGroup {
     // Choose trajectory to drive (Start from either HP or barge)
     Trajectory<SwerveSample> trajectory = fromHP ? AutoSelection.getHPToReef(end) : AutoSelection.getBargeToReef(end);
     addCommands(
-      new DataLogMessage(false, "AutoDriveToReefAndPrep", "Init", "trajectory", trajectory.name()),
+      new DataLogMessage(false, "AutoDriveToReef: Start, trajectory =", trajectory.name()),
+
       parallel(
         new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
         // Drives the trajectory, cutting it off 0.3 seconds before it ends
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance).withTimeout(trajectory.getTotalTime() - 0.3)
-      ) 
+      ),
 
+      new DataLogMessage(false, "AutoDriveToReef: Start, trajectory =", trajectory.name())
 
 
 

@@ -44,6 +44,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
       AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field) {
     addCommands(
+      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: Start"),
       // Drive to nearest reef position
       new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
 
@@ -63,10 +64,12 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
         0.5, 1.0, 
         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain)
+        true, true, driveTrain),
 
       // Move elevator/wrist to HP position
       // new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log)
+
+      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
     );
   }
 }

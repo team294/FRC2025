@@ -44,6 +44,8 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
     Pose2d startingPose = AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get();
     
     addCommands(
+      new DataLogMessage(false, "AutoPushFriendThenCoralCycle: Start"),
+
       new DriveResetPose(startingPose, true, driveTrain),
             
       // Push friend! :D
@@ -57,7 +59,10 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
         new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
         new AutoCoralCycleLoop(reefLocations, reefLevels, endAtHP, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
         () -> grabAlgae
-      )
+      ),
+
+      new DataLogMessage(false, "AutoPushFriendThenCoralCycle: End")
+
     );
   }
 }

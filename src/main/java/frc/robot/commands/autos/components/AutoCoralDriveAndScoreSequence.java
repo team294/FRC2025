@@ -9,6 +9,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.FieldConstants.*;
+import frc.robot.commands.DataLogMessage;
 import frc.robot.commands.sequences.AutomatedDriveToReefAndScoreCoral;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
@@ -33,10 +34,10 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
       Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
       Field field) {
     addCommands(
-      
+      new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: Start, goal reef location =", end.toString()),
       new AutoDriveToReef(fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
-      new AutomatedDriveToReefAndScoreCoral(level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field)
-
+      new AutomatedDriveToReefAndScoreCoral(level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field),
+      new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: End")
       
       // // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log),
       // new CoralEffectorOuttake(coralEffector, log),

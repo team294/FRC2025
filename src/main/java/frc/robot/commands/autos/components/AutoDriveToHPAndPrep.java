@@ -51,10 +51,11 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
   public AutoDriveToHPAndPrep(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
           AllianceSelection alliance) {
     addCommands(
-      new DataLogMessage(false, "AutoDriveToHPAndPrep", "Init", "startingReefLocation", start.toString()),
+      new DataLogMessage(false, "AutoDriveToHPAndPrep: Start, start position =", start.toString()),
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
       new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance),
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
+      new DataLogMessage(false, "AutoDriveToHPAndPrep: Start")
     );
   }
 }

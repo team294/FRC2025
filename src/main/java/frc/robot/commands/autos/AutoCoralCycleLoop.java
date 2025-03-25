@@ -39,7 +39,8 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
   public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
       Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
 
-    
+    addCommands(new DataLogMessage(false, "AutoCoralCycleLoop: Start"));
+
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
       addCommands(none());
@@ -79,6 +80,8 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
           new AutoCoralDriveAndIntakeSequence(reefLocations.get(reefLocations.size() - 1), driveTrain, elevator, wrist, coralEffector, hopper, alliance)
         );
       }
+
+      addCommands(new DataLogMessage(false, "AutoCoralCycleLoop: End"));
     }
   }
 }
