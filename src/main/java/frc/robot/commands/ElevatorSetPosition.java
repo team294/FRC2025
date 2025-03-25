@@ -46,9 +46,8 @@ public class ElevatorSetPosition extends Command {
     addRequirements(elevator);
   }
 
-  public ElevatorSetPosition(Elevator elevator, FileLog log) {
+  public ElevatorSetPosition(Elevator elevator) {
     this.elevator = elevator;
-    this.log = log;
     fromShuffleboard = true;
     addRequirements(elevator);
 
