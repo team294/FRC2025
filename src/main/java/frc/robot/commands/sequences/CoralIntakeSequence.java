@@ -12,7 +12,6 @@ import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.utilities.FileLog;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
@@ -27,14 +26,14 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, FileLog log) {
+  public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector) {
     addCommands(
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log),
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
       parallel(
-        new HopperSetPercent(HopperConstants.intakePercent, hopper, log),
-        new CoralEffectorIntakeEnhanced(coralEffector, log)
+        new HopperSetPercent(HopperConstants.intakePercent, hopper),
+        new CoralEffectorIntakeEnhanced(coralEffector)
       ).handleInterrupt(hopper::stopHopperMotor),
-      new HopperStop(hopper, log)
+      new HopperStop(hopper)
     );
   }
 }

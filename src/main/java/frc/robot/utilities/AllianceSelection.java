@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AllianceSelection {
-  private final FileLog log;
+  
   private int logRotationKey;
   private Alliance alliance;  // Red or Blue
   private List<Consumer<Alliance>> newAllianceCalls;
@@ -28,10 +28,10 @@ public class AllianceSelection {
 
   private SendableChooser<AllianceChoice> allianceChooser = new SendableChooser<>();
 
-  public AllianceSelection(FileLog log) {
-    this.log = log;
+  public AllianceSelection() {
+    
     newAllianceCalls = new ArrayList<Consumer<Alliance>>();
-    logRotationKey = log.allocateLogRotation();
+    logRotationKey = DataLogUtil.allocateLogRotation();
 
 		allianceChooser.setDefaultOption("Automatic", AllianceChoice.Auto);
 		allianceChooser.addOption("Red", AllianceChoice.Red);
@@ -44,10 +44,10 @@ public class AllianceSelection {
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
       setAlliance(ally.get());
-      log.writeLogEcho(true, "Alliance Selection", "Initialize", "Alliance from DriverStation", alliance.name());
+      DataLogUtil.writeLogEcho(true, "Alliance Selection", "Initialize", "Alliance from DriverStation", alliance.name());
     } else {
       setAlliance(Alliance.Blue);
-      log.writeLogEcho(true, "Alliance Selection", "Initialize", "DriverStation not present - default to Blue", alliance.name());
+      DataLogUtil.writeLogEcho(true, "Alliance Selection", "Initialize", "DriverStation not present - default to Blue", alliance.name());
     }
   }
 
@@ -57,7 +57,7 @@ public class AllianceSelection {
    */
   public void setAlliance(Alliance alliance) {
     this.alliance = alliance;
-    log.writeLogEcho(true, "Alliance Selection", "SetAlliance", 
+    DataLogUtil.writeLogEcho(true, "Alliance Selection", "SetAlliance", 
         "Alliance Chooser", allianceChooser.getSelected().name(), "Alliance", alliance.name());
 
     SmartDashboard.putBoolean("Alliance Blue", alliance != Alliance.Red);
@@ -85,7 +85,7 @@ public class AllianceSelection {
    * Runs once per scheduler cycle.
    */
   public void periodic() {
-    if (log.isMyLogRotation(logRotationKey)) {
+    if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       Alliance newAlliance = alliance;
 
       switch (allianceChooser.getSelected()) {

@@ -34,15 +34,15 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    */
   public AutoCoralDriveAndScoreSequence(boolean fromHP, ReefLocation end, ReefLevel level, DriveTrain driveTrain,
       Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance,
-      TrajectoryCache cache, FileLog log) {
+      TrajectoryCache cache) {
     addCommands(
-      new AutoDriveToReefAndPrep(level, fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, alliance, cache, log),
-      // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log),
-      new CoralEffectorOuttake(coralEffector, log),
+      new AutoDriveToReefAndPrep(level, fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, alliance, cache),
+      // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain),
+      new CoralEffectorOuttake(coralEffector),
       new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
           0.5, 1.0, 
           TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          true, true, driveTrain, log)
+          true, true, driveTrain)
     );
   }
 }

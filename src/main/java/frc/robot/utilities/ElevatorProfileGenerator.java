@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorProfileGenerator {
   Elevator elevator;
-  FileLog log;
 
   private boolean profileEnabled = false;
 
@@ -56,9 +55,9 @@ public class ElevatorProfileGenerator {
    * @param elevator Elevator subsystem
    * @param log FileLog utility
    */
-  public ElevatorProfileGenerator(Elevator elevator, FileLog log) {
+  public ElevatorProfileGenerator(Elevator elevator) {
     disableProfileControl();
-    this.log = log;
+    
     this.elevator = elevator;
   }
 
@@ -96,7 +95,7 @@ public class ElevatorProfileGenerator {
     // Seed the profile with the current velocity, in case the elevator is already moving
     currentMPVelocity = elevator.getElevatorVelocity() * directionSign;
 
-    log.writeLog(false, "ElevatorProfile", "New Profile", "InitPos", initialPosition , "Target", finalPosition);
+    DataLogUtil.writeLog(false, "ElevatorProfile", "New Profile", "InitPos", initialPosition , "Target", finalPosition);
   }
 
   /**
@@ -163,9 +162,9 @@ public class ElevatorProfileGenerator {
   public double trackProfilePeriodic() {
     if (!profileEnabled) return 0.0;
 
-    // if (currentMPVelocity > 0 || Math.abs(percentPowerFB) > 0.08) {
-    //   updateElevatorProfileLog(false);
-    // }
+    if (currentMPVelocity > 0 || Math.abs(percentPowerFB) > 0.08) {
+      updateElevatorProfileLog(false);
+    }
 
     updateProfileCalcs();
     error = getCurrentPosition() - elevator.getElevatorPosition();
@@ -195,7 +194,7 @@ public class ElevatorProfileGenerator {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
   */
   public void updateElevatorProfileLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, "ElevatorProfile", "Update Calculations",
+    DataLogUtil.writeLog(logWhenDisabled, "ElevatorProfile", "Update Calculations",
       "TargetPos", finalPosition,
       "TimeSinceStart", getTimeSinceProfileStart(), "dt", dt,
       "MPPos", getCurrentPosition(), "ActualPos", elevator.getElevatorPosition(),
