@@ -51,8 +51,8 @@ public class ElevatorSetPosition extends Command {
     fromShuffleboard = true;
     addRequirements(elevator);
 
-    if (SmartDashboard.getNumber("Elevator Position", -9999.9) == -9999.9) {
-      SmartDashboard.putNumber("Elevator Position", 0);
+    if (SmartDashboard.getNumber("Elevator Goal Position", -9999.9) == -9999.9) {
+      SmartDashboard.putNumber("Elevator Goal Position", 0);
     }
   }
 
@@ -60,7 +60,7 @@ public class ElevatorSetPosition extends Command {
   @Override
   public void initialize() {
     // TODO add interlocks with wrist, algaeGrabber, and coralEffector
-    if (fromShuffleboard) target = SmartDashboard.getNumber("Elevator Position", 0.0);
+    if (fromShuffleboard) target = SmartDashboard.getNumber("Elevator Goal Position", 0.0);
 
     elevator.setElevatorProfileTarget(target);
     toleranceCount = 0;
