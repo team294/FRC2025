@@ -58,7 +58,7 @@ public class HopperSetPercent extends Command {
     hopper.setHopperPercentOutput(percent);
 
     dLogPercent.append(percent);
-    DataLogUtil.writeMessage("Hopper Set Percent: Init.");
+    DataLogUtil.writeMessage("Hopper Set Percent: Init, Percent = ", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralEffector;
@@ -14,6 +17,9 @@ public class CoralEffectorSetPercent extends Command {
   
   private double percent = 0.0;
   private boolean fromShuffleboard;
+
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogPercent = new DoubleLogEntry(log, "/CoralEffectorSetPercent/Percent");
 
   /**
    * Sets the percent output of the coralEffector from Shuffleboard and ends immediately.
@@ -52,7 +58,8 @@ public class CoralEffectorSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("CoralEffector Goal Percent", 0.0);
     coralEffector.setCoralEffectorPercentOutput(percent);
 
-    DataLogUtil.writeLog(false, "CoralEffectorSetPercent", "Init", "Percent", percent);
+    dLogPercent.append(percent);
+    DataLogUtil.writeMessage("CoralEffectorSetPercent: Init, Percent = ", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -63,6 +70,7 @@ public class CoralEffectorSetPercent extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    DataLogUtil.writeMessage("CoralEffectorSetPercent: End.");
   }
 
   // Returns true when the command should end.
