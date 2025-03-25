@@ -23,29 +23,32 @@ public class ElevatorSetPosition extends Command {
    * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
    * @param target target position, in inches (0 = lower limit, positive = up)
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
   public ElevatorSetPosition(double target, Elevator elevator) {
     this.elevator = elevator;
-    
     this.target = target;
+    fromShuffleboard = false;
     addRequirements(elevator);
   }
 
   /**
    * Sets the target position of the elevator to run a generated profile.
    * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
-   * @param target target ElevatorWristPosition, in inches (see ElevatorWristConstants.ElevatorWristPosition)
+   * @param target target from ElevatorWristPosition enum, in inches (see ElevatorWristConstants.ElevatorWristPosition)
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
   public ElevatorSetPosition(ElevatorWristPosition target, Elevator elevator) {
     this.elevator = elevator;
-    
     this.target = target.elevatorPosition;
+    fromShuffleboard = false;
     addRequirements(elevator);
   }
 
+  /**
+   * Sets the target position of the elevator to run a generated profile.  Gets the target position from Suffleboard.
+   * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
+   * @param elevator Elevator subsystem
+   */
   public ElevatorSetPosition(Elevator elevator) {
     this.elevator = elevator;
     fromShuffleboard = true;
