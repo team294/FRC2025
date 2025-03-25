@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Elevator;
@@ -15,39 +16,55 @@ public class ElevatorSetPosition extends Command {
   private double target;
   private double tolerance = 0.5;
   private int toleranceCount = 0;
+  private boolean fromShuffleboard;
 
   /**
    * Sets the target position of the elevator to run a generated profile.
    * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
    * @param target target position, in inches (0 = lower limit, positive = up)
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
   public ElevatorSetPosition(double target, Elevator elevator) {
     this.elevator = elevator;
-    
     this.target = target;
+    fromShuffleboard = false;
     addRequirements(elevator);
   }
 
   /**
    * Sets the target position of the elevator to run a generated profile.
    * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
-   * @param target target ElevatorWristPosition, in inches (see ElevatorWristConstants.ElevatorWristPosition)
+   * @param target target from ElevatorWristPosition enum, in inches (see ElevatorWristConstants.ElevatorWristPosition)
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
   public ElevatorSetPosition(ElevatorWristPosition target, Elevator elevator) {
     this.elevator = elevator;
-    
     this.target = target.elevatorPosition;
+    fromShuffleboard = false;
     addRequirements(elevator);
+  }
+
+  /**
+   * Sets the target position of the elevator to run a generated profile.  Gets the target position from Suffleboard.
+   * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
+   * @param elevator Elevator subsystem
+   */
+  public ElevatorSetPosition(Elevator elevator) {
+    this.elevator = elevator;
+    fromShuffleboard = true;
+    addRequirements(elevator);
+
+    if (SmartDashboard.getNumber("Elevator Goal Position", -9999.9) == -9999.9) {
+      SmartDashboard.putNumber("Elevator Goal Position", 0);
+    }
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     // TODO add interlocks with wrist, algaeGrabber, and coralEffector
+    if (fromShuffleboard) target = SmartDashboard.getNumber("Elevator Goal Position", 0.0);
+
     elevator.setElevatorProfileTarget(target);
     toleranceCount = 0;
 
