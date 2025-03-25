@@ -34,7 +34,7 @@ public class AutoCoralCycle extends SequentialCommandGroup {
           CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
     addCommands(
       // Drives from start reef location to HP and intakes coral  
-      new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, alliance, log),
+      new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
       // Drives from HP to end reef location and scores coral
       new AutoCoralDriveAndScoreSequence(true, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
     );
