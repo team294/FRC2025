@@ -24,6 +24,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -253,16 +254,18 @@ public class CoralEffector extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    long timeNow = RobotController.getFPGATime();
+    if (logWhenDisabled || !DriverStation.isDisabled()) {
+      long timeNow = RobotController.getFPGATime();
 
-    dLogTemp.append(coralEffectorTemp.refresh().getValueAsDouble(), timeNow);
-    dLogVoltage.append(coralEffectorVoltage.refresh().getValueAsDouble(), timeNow);
-    dLogCurrent.append(getCoralEffectorAmps(), timeNow);
-    dLogVelocity.append(getCoralEffectorVelocity(), timeNow);
-    dLogPosition.append(getCoralEffectorPosition(), timeNow);
-    dLogTargetPos.append(targetPosition, timeNow);
-    bLogPositionControl.append(isMotorPositionControl(), timeNow);
-    bLogAutoHold.append(autoHoldMode, timeNow);
+      dLogTemp.append(coralEffectorTemp.refresh().getValueAsDouble(), timeNow);
+      dLogVoltage.append(coralEffectorVoltage.refresh().getValueAsDouble(), timeNow);
+      dLogCurrent.append(getCoralEffectorAmps(), timeNow);
+      dLogVelocity.append(getCoralEffectorVelocity(), timeNow);
+      dLogPosition.append(getCoralEffectorPosition(), timeNow);
+      dLogTargetPos.append(targetPosition, timeNow);
+      bLogPositionControl.append(isMotorPositionControl(), timeNow);
+      bLogAutoHold.append(autoHoldMode, timeNow);
+    }
   }
 
   @Override

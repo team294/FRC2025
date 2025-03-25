@@ -4,9 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hopper;
@@ -17,9 +14,6 @@ public class HopperSetPercent extends Command {
   
   private double percent = 0.0;
   private boolean fromShuffleboard;
-
-  private final DataLog log = DataLogManager.getLog();
-  private final DoubleLogEntry dLogPercent = new DoubleLogEntry(log, "/HopperSetPercent/Percent");
 
   /**
    * Sets the percent output of the hopper from Shuffleboard and ends immediately.
@@ -57,7 +51,6 @@ public class HopperSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Hopper Percent", 0.0);
     hopper.setHopperPercentOutput(percent);
 
-    dLogPercent.append(percent);
     DataLogUtil.writeMessage("Hopper Set Percent: Init, Percent = ", percent);
   }
 

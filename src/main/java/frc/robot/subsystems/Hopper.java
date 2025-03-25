@@ -11,6 +11,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -139,12 +140,14 @@ public class Hopper extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    long timeNow = RobotController.getFPGATime();
+    if (logWhenDisabled || !DriverStation.isDisabled()) {
+      long timeNow = RobotController.getFPGATime();
 
-    dLogTemp.append(hopperTemp.refresh().getValueAsDouble(), timeNow);
-    dLogVoltage.append(hopperVoltage.refresh().getValueAsDouble(), timeNow);
-    dLogCurrent.append(getHopperAmps(), timeNow);
-    dLogVelocity.append(getHopperVelocity(), timeNow);
+      dLogTemp.append(hopperTemp.refresh().getValueAsDouble(), timeNow);
+      dLogVoltage.append(hopperVoltage.refresh().getValueAsDouble(), timeNow);
+      dLogCurrent.append(getHopperAmps(), timeNow);
+      dLogVelocity.append(getHopperVelocity(), timeNow);
+    }
   }
 
   @Override
