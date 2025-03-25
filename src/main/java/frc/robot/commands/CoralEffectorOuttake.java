@@ -34,9 +34,8 @@ public class CoralEffectorOuttake extends Command {
   public void initialize() {
     coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.outtakePercent);
 
-    DataLogUtil.writeLog(false, "CoralEffectorOuttake", "Init", 
-      "Coral in Entry", (coralEffector.isCoralPresentInEntry() ? "TRUE" : "FALSE"),
-      "Coral in Exit", (coralEffector.isCoralPresentInExit() ? "TRUE" : "FALSE"));
+    DataLogUtil.writeLog(false, "CoralEffectorOuttake", "Init",
+      "Coral in", (coralEffector.isCoralPresent() ? "TRUE" : "FALSE"));
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -49,7 +49,6 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private PositionVoltage coralEffectorPositionControl = new PositionVoltage(0.0);
 
   // Create entry and exit banner sensors
-  private final DigitalInput entrySensor = new DigitalInput(Ports.DIOCoralEffectorEntrySensor);
   private final DigitalInput exitSensor = new DigitalInput(Ports.DIOCoralEffectorExitSensor);
 
   private final Wrist wrist;
@@ -190,36 +189,11 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   // ********** Coral sensor methods
 
   /**
-   * Gets whether a coral is in the exit of the coralEffector.
-   * @return true = coral is in exit, false = coral is not in exit
-   */
-  public boolean isCoralPresentInExit() {
-    return !exitSensor.get();
-  }
-
-  /**
-   * Gets whether a coral is in the entry of the coralEffector.
-   * @return true = coral is in entry, false = coral is not in entry
-   */
-  public boolean isCoralPresentInEntry() {
-    return !entrySensor.get();
-  }
-
-  /**
-   * Gets whether a coral is present and is safely in the coralEffector.
-   * This occurs when the coral is positioned such that it is in the exit but not in the entry.
-   * @return true = coral is safe, false = coral is not safe
-   */
-  public boolean isCoralSafelyIn() {
-    return !isCoralPresentInEntry() && isCoralPresentInExit();
-  }
-
-  /**
    * Gets whether a coral is in the coralEffector.
    * @return true = coral is present, false = coral is not present
    */
   public boolean isCoralPresent() {
-    return isCoralPresentInEntry() || isCoralPresentInExit();
+    return !exitSensor.get();
   }
 
   // ********** Loggin and periodic methods
@@ -257,9 +231,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     }
 
     if (DataLogUtil.isMyLogRotation(logRotationKey)) {
-      SmartDashboard.putBoolean("Coral in Entry", isCoralPresentInEntry());
-      SmartDashboard.putBoolean("Coral in Exit", isCoralPresentInExit());
-      SmartDashboard.putBoolean("Coral Safely In", isCoralSafelyIn());
+      SmartDashboard.putBoolean("Coral in", isCoralPresent());
       SmartDashboard.putNumber("Coral Position", getCoralEffectorPosition());
       SmartDashboard.putNumber("Coral Velocity", getCoralEffectorVelocity());
       SmartDashboard.putBoolean("Coral Auto Hold", autoHoldMode);
@@ -268,12 +240,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     // If in coral auto hold mode and is at its target position, 
     // then adjust position target (if needed) to make sure it is held in a safe position
     if (autoHoldMode && Math.abs(targetPosition - getCoralEffectorPosition()) < CoralEffectorConstants.centeringTolerance) {
-      // Coral is too far forward, so move it back until it is in a safe position
-      if (isCoralPresentInExit() && !isCoralPresentInEntry()) {
-        setCoralEffectorPosition(targetPosition - CoralEffectorConstants.centeringStepSize, autoHoldMode);
-      }
       // Coral is too far back, so move it forward until it is in a safe position
-      if (!isCoralPresentInExit() && isCoralPresentInEntry()) {
+      if (!isCoralPresent()) {
         setCoralEffectorPosition(targetPosition + CoralEffectorConstants.centeringStepSize, autoHoldMode);
       }
       // Note: if this is too slow, then set % power slow (0.025%) to center the coral, then set the position

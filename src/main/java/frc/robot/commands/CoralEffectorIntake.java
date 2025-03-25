@@ -28,13 +28,12 @@ public class CoralEffectorIntake extends Command {
   @Override
   public void initialize() {
     // If there is no coral present or the coral is not safely in the mechanism, run the motor
-    if (!coralEffector.isCoralPresent() || !coralEffector.isCoralSafelyIn()) {
+    if (!coralEffector.isCoralPresent()) {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.intakePercent); 
     }
 
-    DataLogUtil.writeLog(false, "CoralEffectorIntake", "Init", 
-      "Coral in Entry", (coralEffector.isCoralPresentInEntry() ? "TRUE" : "FALSE"),
-      "Coral in Exit", (coralEffector.isCoralPresentInExit() ? "TRUE" : "FALSE"));
+    DataLogUtil.writeLog(false, "CoralEffectorIntake", "Init",
+      "Coral in", (coralEffector.isCoralPresent() ? "TRUE" : "FALSE"));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,6 +54,6 @@ public class CoralEffectorIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return coralEffector.isCoralSafelyIn();
+    return coralEffector.isCoralPresent();
   }
 }

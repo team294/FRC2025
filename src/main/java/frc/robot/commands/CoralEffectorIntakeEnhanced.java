@@ -16,7 +16,6 @@ public class CoralEffectorIntakeEnhanced extends Command {
   /**
    * Intakes coral quickly, then ends and auto-holds after the tip of the coral reaches the exit.
    * @param coralEffector CoralEffector subsystem
-   * @param log FileLog utility
    */
   public CoralEffectorIntakeEnhanced(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
@@ -28,13 +27,12 @@ public class CoralEffectorIntakeEnhanced extends Command {
   @Override
   public void initialize() {
     // If there is no coral present or the coral is not safely in the mechanism, run the motor
-    if (!coralEffector.isCoralPresentInExit()) {
+    if (!coralEffector.isCoralPresent()) {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.fastIntakePercent); 
     }
 
-    DataLogUtil.writeLog(false, "CoralEffectorIntakeEnhanced", "Init", 
-      "Coral in Entry", (coralEffector.isCoralPresentInEntry() ? "TRUE" : "FALSE"),
-      "Coral in Exit", (coralEffector.isCoralPresentInExit() ? "TRUE" : "FALSE"));
+    DataLogUtil.writeLog(false, "CoralEffectorIntakeEnhanced", "Init",
+      "Coral in", (coralEffector.isCoralPresent() ? "TRUE" : "FALSE"));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -45,18 +43,12 @@ public class CoralEffectorIntakeEnhanced extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // TODO A different option would be to back off the final position by the (coral velocity)*(time delay @ 20ms)
-    if (coralEffector.isCoralPresentInEntry()) {
-      coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition(), true);
-    } else {
-      // Back off the position, since due to coral velocity it likely overshot the balanced position between the sensors.
-      coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition() + CoralEffectorConstants.centerRotationsOvershoot, true);
-    }
+    coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition(), true);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return coralEffector.isCoralPresentInExit();
+    return coralEffector.isCoralPresent();
   }
 }
