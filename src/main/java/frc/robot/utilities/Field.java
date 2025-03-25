@@ -32,7 +32,7 @@ public class Field {
 
     private AllianceSelection allianceSelection;
     private AprilTagFieldLayout aprilTagFieldLayout;
-    private final FileLog log;
+    
 
     /**
      * Creates a field object that can provide various field locations.
@@ -44,16 +44,16 @@ public class Field {
    * @param allianceSelection AllianceSelection utility
    * @param log FileLog utility
      */
-    public Field(AllianceSelection allianceSelection, FileLog log){
+    public Field(AllianceSelection allianceSelection){
         this.allianceSelection = allianceSelection;
-        this.log = log;
+        
 
         try {
             aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
             aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-            log.writeLog(true, "Field", "Constructor", "Loaded AprilTags from file");
+            DataLogUtil.writeLog(true, "Field", "Constructor", "Loaded AprilTags from file");
         } catch (Exception exception) {
-            log.writeLog(true, "Field", "Constructor", "Error loading AprilTags from file");
+            DataLogUtil.writeLog(true, "Field", "Constructor", "Error loading AprilTags from file");
             exception.printStackTrace();
         }
 
@@ -204,7 +204,7 @@ public class Field {
         Pose2d currPosBlue = (allianceSelection.getAlliance() == Alliance.Blue) ? currPos : flipPosition(currPos);
         Pose2d nearestBluePos = currPosBlue.nearest(reefScoringPositionListByAprilTag);
         Pose2d nearestBluePosWithOffset = nearestBluePos.transformBy(offset);
-        // log.writeLog(false, "Field", "getNearestReefScoringPositionWithOffset",
+        // DataLogUtil.writeLog(false, "Field", "getNearestReefScoringPositionWithOffset",
         //     "Current X", currPosBlue.getX(),
         //     "Current Y", currPosBlue.getY(),
         //     "Current Rotation", currPosBlue.getRotation().getDegrees(),
@@ -242,7 +242,7 @@ public class Field {
         Pose2d nearestReefAprilTag = getNearestAprilTagReef(currPos);
         Pose2d nearestReefScoringPosition = nearestReefAprilTag.rotateAround(nearestReefAprilTag.getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffset * (left ? 1.0 : -1.0),  new Rotation2d(0)));
         Pose2d nearestReefScoringPositionWithOffset = nearestReefScoringPosition.transformBy(offset);
-        // log.writeLog(false, "Field", "getNearestReefScoringPositionWithOffset", 
+        // DataLogUtil.writeLog(false, "Field", "getNearestReefScoringPositionWithOffset", 
         //     "Current X", currPos.getX(),
         //     "Current Y", currPos.getY(),
         //     "Current Rotation", currPos.getRotation().getDegrees(),
@@ -312,7 +312,7 @@ public class Field {
     public Pose2d getNearestAprilTagReefWithOffset(Pose2d currPos, Transform2d offset) {
         Pose2d nearestReefAprilTag = currPos.nearest(reefAprilTagPositionList);
         Pose2d nearestReefAprilTagWithOffset = nearestReefAprilTag.transformBy(offset);
-        // log.writeLog(false, "Field", "getNearestAprilTagWithOffset", 
+        // DataLogUtil.writeLog(false, "Field", "getNearestAprilTagWithOffset", 
         //     "Current X", currPos.getX(),
         //     "Current Y", currPos.getY(),
         //     "Current Rotation", currPos.getRotation().getDegrees(),
@@ -336,7 +336,7 @@ public class Field {
      */
     public Pose2d getNearestAprilTagLoadingStation(Pose2d currPos) {
         Pose2d nearestAprilTagLoadingStation = currPos.nearest(loadingStationAprilTagPositionList);
-        // log.writeLog(false, "Field", "getNearestAprilTagLoadingStation", 
+        // DataLogUtil.writeLog(false, "Field", "getNearestAprilTagLoadingStation", 
         //     "Current X", currPos.getX(),
         //     "Current Y", currPos.getY(),
         //     "Current Rotation", currPos.getRotation().getDegrees(),

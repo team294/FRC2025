@@ -3,11 +3,15 @@ package frc.robot.utilities;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorProfileGenerator {
   Elevator elevator;
-  FileLog log;
 
   private boolean profileEnabled = false;
 
@@ -17,7 +21,7 @@ public class ElevatorProfileGenerator {
   private double initialPosition;     // Initial position from the bottom of the elevator, in inches
   private double finalPosition;       // Final position from the bottom of the elevator, in inches
 
-  private double maxVelocity = 75.0;  // Max velocity, in inches/second CALIBRATED (75.0)  TODO set back to 75  (use 5 for safety)
+  private double maxVelocity = 75.0;  // Max velocity, in inches/second CALIBRATED (75.0)
   private double currentMPVelocity;   // Velocity that it should be at in the current motion profile
 
   private double maxAcceleration = 180.0;                       // Max acceleration, in inches/second^2 CALIBRATED (180.0)
@@ -51,14 +55,27 @@ public class ElevatorProfileGenerator {
   private double kId = 0;    
   private double kDd = 0.0;      // 2023 = 0.02
 
+  // Variables for DataLogging
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogTargetPos = new DoubleLogEntry(log, "/ElevatorProfile/TargetPos");
+  private final DoubleLogEntry dLogTime = new DoubleLogEntry(log, "/ElevatorProfile/Time");
+  private final DoubleLogEntry dLogDt = new DoubleLogEntry(log, "/ElevatorProfile/dt");
+  private final DoubleLogEntry dLogMPPos = new DoubleLogEntry(log, "/ElevatorProfile/MPPos");
+  private final DoubleLogEntry dLogActualPos = new DoubleLogEntry(log, "/ElevatorProfile/ActualPos");
+  private final DoubleLogEntry dLogMPVel = new DoubleLogEntry(log, "/ElevatorProfile/MPVel");
+  private final DoubleLogEntry dLogActualVel = new DoubleLogEntry(log, "/ElevatorProfile/ActualVel");
+  private final DoubleLogEntry dLogMPAccel = new DoubleLogEntry(log, "/ElevatorProfile/MPAccel");
+  private final DoubleLogEntry dLogPctFF = new DoubleLogEntry(log, "/ElevatorProfile/PctFF");
+  private final DoubleLogEntry dLogPctFB = new DoubleLogEntry(log, "/ElevatorProfile/PctFB");
+
+
   /**
    * Creates a new profile generator in disabled mode.
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
-  public ElevatorProfileGenerator(Elevator elevator, FileLog log) {
+  public ElevatorProfileGenerator(Elevator elevator) {
     disableProfileControl();
-    this.log = log;
+    
     this.elevator = elevator;
   }
 
@@ -86,6 +103,13 @@ public class ElevatorProfileGenerator {
     startTime = System.currentTimeMillis();
     lastTime = startTime;
 
+    // If target position = initial position, then set the target to 
+    // the min distance needed to stop the current elevator motion.
+    if (finalPosition == initialPosition) {
+      double curVel = elevator.getElevatorVelocity();
+      finalPosition += Math.signum(curVel) * 0.5 * curVel * curVel / maxAcceleration;
+    }
+
     SmartDashboard.putNumber("ElevatorInitPos", initialPosition);
     SmartDashboard.putNumber("ElevatorTarget", finalPosition);
 
@@ -96,7 +120,7 @@ public class ElevatorProfileGenerator {
     // Seed the profile with the current velocity, in case the elevator is already moving
     currentMPVelocity = elevator.getElevatorVelocity() * directionSign;
 
-    log.writeLog(false, "ElevatorProfile", "New Profile", "InitPos", initialPosition , "Target", finalPosition);
+    DataLogUtil.writeMessage("ElevatorProfile:  New Profile, InitPos =", initialPosition , ", Target =", finalPosition);
   }
 
   /**
@@ -163,9 +187,9 @@ public class ElevatorProfileGenerator {
   public double trackProfilePeriodic() {
     if (!profileEnabled) return 0.0;
 
-    // if (currentMPVelocity > 0 || Math.abs(percentPowerFB) > 0.08) {
-    //   updateElevatorProfileLog(false);
-    // }
+    if (currentMPVelocity > 0 || Math.abs(percentPowerFB) > 0.08) {
+      updateElevatorProfileLog(false);
+    }
 
     updateProfileCalcs();
     error = getCurrentPosition() - elevator.getElevatorPosition();
@@ -180,6 +204,11 @@ public class ElevatorProfileGenerator {
     } else if (directionSign == -1) {
       percentPowerFF = kFF + kSd * Math.signum(currentMPVelocity * directionSign) + kVd * currentMPVelocity * directionSign + kAd * currentMPAcceleration * directionSign;
       percentPowerFB = kPd * error + ((error - prevError) * kDd) + (kId * intError);
+
+    // If the elevator target = the initial position (i.e. directionSign = 0), then just use feedback
+    } else {
+      percentPowerFB = kPu * error + ((error - prevError) * kDu) + (kIu * intError);
+      percentPowerFF = kFF + kSu * Math.signum(percentPowerFB);
     }
 
     prevError = error;
@@ -192,16 +221,22 @@ public class ElevatorProfileGenerator {
 
   /**
    * Writes information about the ElevatorProfileGenerator to the file log.
-   * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
+   * @param logWhenDisabled true = write when robot is enabled or disabled, false = only write when robot is enabled
   */
   public void updateElevatorProfileLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, "ElevatorProfile", "Update Calculations",
-      "TargetPos", finalPosition,
-      "TimeSinceStart", getTimeSinceProfileStart(), "dt", dt,
-      "MPPos", getCurrentPosition(), "ActualPos", elevator.getElevatorPosition(),
-      "MPVel", (currentMPVelocity * directionSign), "ActualVel", elevator.getElevatorVelocity(),
-      "MPAccel", (currentMPAcceleration * directionSign),
-      "PowerFF", percentPowerFF, "PowerFB", percentPowerFB);
+    if (logWhenDisabled || !DriverStation.isDisabled()) {
+      long timeNow = RobotController.getFPGATime();
+      dLogTargetPos.append(finalPosition, timeNow);
+      dLogTime.append(getTimeSinceProfileStart(), timeNow);
+      dLogDt.append(dt, timeNow);
+      dLogMPPos.append(getCurrentPosition(), timeNow);
+      dLogActualPos.append(elevator.getElevatorPosition(), timeNow);
+      dLogMPVel.append(currentMPVelocity * directionSign, timeNow);
+      dLogActualVel.append(elevator.getElevatorVelocity(), timeNow);
+      dLogMPAccel.append(currentMPAcceleration * directionSign, timeNow);
+      dLogPctFF.append(percentPowerFF, timeNow);
+      dLogPctFB.append(percentPowerFB, timeNow);
+    }
   }
 
   /**

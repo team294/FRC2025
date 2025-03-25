@@ -4,54 +4,71 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Elevator;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorSetPosition extends Command {
   private final Elevator elevator;
-  private final FileLog log;
+  
   private double target;
   private double tolerance = 0.5;
   private int toleranceCount = 0;
+  private boolean fromShuffleboard;
 
   /**
    * Sets the target position of the elevator to run a generated profile.
    * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
    * @param target target position, in inches (0 = lower limit, positive = up)
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
-  public ElevatorSetPosition(double target, Elevator elevator, FileLog log) {
+  public ElevatorSetPosition(double target, Elevator elevator) {
     this.elevator = elevator;
-    this.log = log;
     this.target = target;
+    fromShuffleboard = false;
     addRequirements(elevator);
   }
 
   /**
    * Sets the target position of the elevator to run a generated profile.
    * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
-   * @param target target ElevatorWristPosition, in inches (see ElevatorWristConstants.ElevatorWristPosition)
+   * @param target target from ElevatorWristPosition enum, in inches (see ElevatorWristConstants.ElevatorWristPosition)
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
-  public ElevatorSetPosition(ElevatorWristPosition target, Elevator elevator, FileLog log) {
+  public ElevatorSetPosition(ElevatorWristPosition target, Elevator elevator) {
     this.elevator = elevator;
-    this.log = log;
     this.target = target.elevatorPosition;
+    fromShuffleboard = false;
     addRequirements(elevator);
+  }
+
+  /**
+   * Sets the target position of the elevator to run a generated profile.  Gets the target position from Suffleboard.
+   * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
+   * @param elevator Elevator subsystem
+   */
+  public ElevatorSetPosition(Elevator elevator) {
+    this.elevator = elevator;
+    fromShuffleboard = true;
+    addRequirements(elevator);
+
+    if (SmartDashboard.getNumber("Elevator Goal Position", -9999.9) == -9999.9) {
+      SmartDashboard.putNumber("Elevator Goal Position", 0);
+    }
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     // TODO add interlocks with wrist, algaeGrabber, and coralEffector
+    if (fromShuffleboard) target = SmartDashboard.getNumber("Elevator Goal Position", 0.0);
+
     elevator.setElevatorProfileTarget(target);
     toleranceCount = 0;
 
-    log.writeLog(false, "ElevatorSetPosition", "Init", "Target", target, "Position", elevator.getElevatorPosition());
+    DataLogUtil.writeLog(false, "ElevatorSetPosition", "Init", "Target", target, "Position", elevator.getElevatorPosition());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -62,7 +79,7 @@ public class ElevatorSetPosition extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    log.writeLog(false, "ElevatorSetPosition", "End", "Target", target, "Position", elevator.getElevatorPosition());
+    DataLogUtil.writeLog(false, "ElevatorSetPosition", "End", "Target", target, "Position", elevator.getElevatorPosition());
   }
 
   // Returns true when the command should end.
@@ -71,7 +88,7 @@ public class ElevatorSetPosition extends Command {
     // TODO add interlocks with wrist, algaeGrabber, and coralEffector
     if (!elevator.isElevatorCalibrated() || Math.abs(elevator.getElevatorPosition() - target) <= tolerance) {
       toleranceCount++;
-      log.writeLog(false, "ElevatorSetPosition", "Within Tolerance", "Target", target, "Position", elevator.getElevatorPosition(), "Tolerance Count", toleranceCount);
+      DataLogUtil.writeLog(false, "ElevatorSetPosition", "Within Tolerance", "Target", target, "Position", elevator.getElevatorPosition(), "Tolerance Count", toleranceCount);
     }
     return (toleranceCount > 5);
   }

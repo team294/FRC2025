@@ -39,23 +39,23 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
    * @param log FileLog utility
    */
   public AutoPushFriendThenCoralCycle(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, boolean grabAlgae, DriveTrain driveTrain, 
-      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, TrajectoryCache cache, Field field, FileLog log) {    
+      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache) {    
     // Different starting pose based on if we are blue or red alliance
     Pose2d startingPose = AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get();
     
     addCommands(
-      new DriveResetPose(startingPose, true, driveTrain, log),
+      new DriveResetPose(startingPose, true, driveTrain),
             
       // Push friend! :D
-      new DriveToPose(CoordType.kRelative, new Pose2d(-1.5, 0, new Rotation2d(0)), driveTrain, log).withTimeout(3),
+      new DriveToPose(CoordType.kRelative, new Pose2d(-1.5, 0, new Rotation2d(0)), driveTrain).withTimeout(3),
 
       // Drive back to starting position
-      new DriveToPose(CoordType.kAbsolute, startingPose, driveTrain, log),
+      new DriveToPose(CoordType.kAbsolute, startingPose, driveTrain),
 
       // Based on whether grabAlgae is true or not, do coral cycle loop with or without ending by grabbing coral
       either(
-        new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field, log),
-        new AutoCoralCycleLoop(reefLocations, reefLevels, endAtHP, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field, log),
+        new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache),
+        new AutoCoralCycleLoop(reefLocations, reefLevels, endAtHP, driveTrain, elevator, wrist,coralEffector, algaeGrabber, hopper, alliance, cache),
         () -> grabAlgae
       )
     );

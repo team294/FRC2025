@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.Wait;
@@ -25,7 +25,7 @@ import frc.robot.Constants.*;
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
 
 public class Climber extends SubsystemBase implements Loggable {
-  private final FileLog log;
+  
   private final int logRotationKey;
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;         // Subsystem name for use in file logging and dashboard
@@ -71,9 +71,9 @@ public class Climber extends SubsystemBase implements Loggable {
 
   private double safeAngle; // Current climber target on position control on the motor (if in position mode)
 
-  public Climber(String subsystemName, FileLog log) {
-    this.log = log;
-    logRotationKey = log.allocateLogRotation();
+  public Climber(String subsystemName) {
+    
+    logRotationKey = DataLogUtil.allocateLogRotation();
     this.subsystemName = subsystemName;
 
     // Get signal and sensor objects for motor
@@ -204,7 +204,7 @@ public class Climber extends SubsystemBase implements Loggable {
     if (usingCANcoder) {
       encoderZero = ClimberConstants.offsetAngleCANcoder;
       climberCalibrated = true;
-      log.writeLogEcho(true, "Climber", "CANcoder calibrated", "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), 
+      DataLogUtil.writeLogEcho(true, "Climber", "CANcoder calibrated", "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), 
           "Enc Raw", getClimberEncoderRotationsRaw(), "Angle", getClimberAngle(), "Target", getCurrentClimberTarget());
 
       // Set software limits after setting encoderZero
@@ -228,8 +228,8 @@ public class Climber extends SubsystemBase implements Loggable {
     } else {
       climberCalibrated = false;
       // Record the missing CanCoder as a sticky fault
-      RobotPreferences.recordStickyFaults("Climber-CANcoder", log);
-      log.writeLogEcho(true, "Climber", "CANcoder not calibrated");
+      RobotPreferences.recordStickyFaults("Climber-CANcoder");
+      DataLogUtil.writeLogEcho(true, "Climber", "CANcoder not calibrated");
       
       // Apply the configurations to the motor.
       // Use the built-in encoder, since the CanCoder isn't reading properly.
@@ -320,7 +320,7 @@ public class Climber extends SubsystemBase implements Loggable {
       climberMotor.setControl(climberMMVoltageControl.withPosition(climberDegreesToEncoderRotations(safeAngle))
                             .withFeedForward(ClimberConstants.kG * Math.cos(safeAngle * Math.PI / 180.0)) );
 
-      log.writeLog(false, subsystemName, "setClimberAngle", "Desired Angle", angle, "Set Angle", safeAngle);
+      DataLogUtil.writeLog(false, subsystemName, "setClimberAngle", "Desired Angle", angle, "Set Angle", safeAngle);
       SmartDashboard.putNumber("Climber set raw rot", climberDegreesToEncoderRotations(safeAngle));
     }  
   }
@@ -431,7 +431,7 @@ public class Climber extends SubsystemBase implements Loggable {
     stopClimber();
     climberCalibrated = false;
 
-    log.writeLogEcho(true, "Climber", "Uncalibrate", 
+    DataLogUtil.writeLogEcho(true, "Climber", "Uncalibrate", 
       "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getClimberEncoderRotationsRaw(), "Angle", getClimberAngle(), "Target", getCurrentClimberTarget());
   }
 
@@ -444,7 +444,7 @@ public class Climber extends SubsystemBase implements Loggable {
     encoderZero = getClimberEncoderRotationsRaw() * ClimberConstants.kClimberDegreesPerRotation - angle;
     climberCalibrated = true;
 
-    log.writeLogEcho(true, "Climber", "Calibrate", "Using CANcoder", usingCANcoder,
+    DataLogUtil.writeLogEcho(true, "Climber", "Calibrate", "Using CANcoder", usingCANcoder,
       "Enc Zero", encoderZero, "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getClimberEncoderRotationsRaw(), "Angle", getClimberAngle(), "Target", getCurrentClimberTarget());
 
     if (usingCANcoder) {
@@ -486,7 +486,7 @@ public class Climber extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateClimberLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
+    DataLogUtil.writeLog(logWhenDisabled, subsystemName, "Update Variables",
       "Climber Temp", climberTemp.refresh().getValueAsDouble(),
       "Climber PctOut", getClimberMotorPercentOutput(),
       "Climber Current (Amps)", climberStatorCurrent.refresh().getValueAsDouble(),
@@ -506,7 +506,7 @@ public class Climber extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    if (log.isMyLogRotation(logRotationKey)) {
+    if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Climber CANcoder connected", isCANcoderConnected());
       SmartDashboard.putBoolean("Climber calibrated", climberCalibrated);
       SmartDashboard.putBoolean("Climber Using CANcoder", usingCANcoder);
@@ -518,9 +518,9 @@ public class Climber extends SubsystemBase implements Loggable {
       SmartDashboard.putNumber("Climber temp", climberTemp.refresh().getValueAsDouble());
     }
 
-    // if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-    //   updateClimberLog(false);
-    // }
+    if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+      updateClimberLog(false);
+    }
 
     // If the CANcoder stops reading, apply RotorEncoder configuration and stop using the CANcoder
     // This condition should only occur one time (if at all)
@@ -532,9 +532,9 @@ public class Climber extends SubsystemBase implements Loggable {
       // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
       climberMotorConfigurator.apply(climberMotor_RotorEncoderConfig);
 
-      RobotPreferences.recordStickyFaults("Climber-CANcoder", log);
+      RobotPreferences.recordStickyFaults("Climber-CANcoder");
 
-      log.writeLogEcho(false, "Climber", "CANcoder Disconnection",
+      DataLogUtil.writeLogEcho(false, "Climber", "CANcoder Disconnection",
         "Enc Zero", encoderZero, 
         "CANcoder Angle", getCANcoderRotationsRaw(), 
         "Enc Raw", getClimberEncoderRotationsRaw(), 

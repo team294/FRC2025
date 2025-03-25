@@ -18,7 +18,13 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -26,12 +32,12 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.Ports;
 import frc.robot.utilities.ElevatorProfileGenerator;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 import frc.robot.utilities.Wait;
 
 public class Elevator extends SubsystemBase implements Loggable {
-  private final FileLog log;
+  
   private final int logRotationKey;
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
   private final String subsystemName;   // Subsystem name for use in file logging and dashboarrd
@@ -73,15 +79,33 @@ public class Elevator extends SubsystemBase implements Loggable {
   private boolean elevatorCalibrated = false;       // true = encoder is working and calibrated, false = not calibrated
   private boolean elevatorPositionControl = false;  // true = position control mode (motion profile), false = manual control mode (percent output)
 
+  // Variables for DataLogging
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogTemp1 = new DoubleLogEntry(log, "/Elevator/Temp1");
+  private final DoubleLogEntry dLogPctOut1 = new DoubleLogEntry(log, "/Elevator/PctOut1");
+  private final DoubleLogEntry dLogCurrent1 = new DoubleLogEntry(log, "/Elevator/Current1");
+  private final DoubleLogEntry dLogBusVolt1 = new DoubleLogEntry(log, "/Elevator/BusVolt1");
+  private final DoubleLogEntry dLogEncInch1 = new DoubleLogEntry(log, "/Elevator/EncInch1");
+  private final DoubleLogEntry dLogVel1 = new DoubleLogEntry(log, "/Elevator/Velocity1");
+  private final DoubleLogEntry dLogTemp2 = new DoubleLogEntry(log, "/Elevator/Temp2");
+  private final DoubleLogEntry dLogPctOut2 = new DoubleLogEntry(log, "/Elevator/PctOut2");
+  private final DoubleLogEntry dLogCurrent2 = new DoubleLogEntry(log, "/Elevator/Current2");
+  private final DoubleLogEntry dLogBusVolt2 = new DoubleLogEntry(log, "/Elevator/BusVolt2");
+  private final DoubleLogEntry dLogEncInch2 = new DoubleLogEntry(log, "/Elevator/EncInch2");
+  private final DoubleLogEntry dLogVel2 = new DoubleLogEntry(log, "/Elevator/Velocity2");
+  private final DoubleLogEntry dLogTargetPos = new DoubleLogEntry(log, "/Elevator/TargetPos");
+  private final BooleanLogEntry dLogCalibrated = new BooleanLogEntry(log, "/Elevator/Calibrated");
+  private final BooleanLogEntry dLogPosControl = new BooleanLogEntry(log, "/Elevator/PositionControl");
+  private final BooleanLogEntry dLogLowerLimit = new BooleanLogEntry(log, "/Elevator/AtLowerLimit");
+
+
   /**
    * Creates the elevator subsystem.
-   * @param endEffector reference to end effector to support interlock code
    * @param subsystemName name of the subsystem for file logging
-   * @param log FileLog utility
    */
-  public Elevator(String subsystemName, FileLog log) {
-    this.log = log;
-    logRotationKey = log.allocateLogRotation();
+  public Elevator(String subsystemName) {
+    
+    logRotationKey = DataLogUtil.allocateLogRotation();
     this.subsystemName = subsystemName;
 
     // Get signal and sensor objects for motor 1
@@ -103,7 +127,7 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorMotor2Voltage = elevatorMotor2.getMotorVoltage();
 
     // Instantiate the motion profile generator
-    elevatorProfile = new ElevatorProfileGenerator(this, log);
+    elevatorProfile = new ElevatorProfileGenerator(this);
 
     // Configure the elevator motor 1
     elevatorMotor1Config = new TalonFXConfiguration();
@@ -259,9 +283,9 @@ public class Elevator extends SubsystemBase implements Loggable {
       elevatorPositionControl = true;
       position = MathUtil.clamp(position, ElevatorPosition.LOWER_LIMIT.value, ElevatorPosition.UPPER_LIMIT.value);
       elevatorProfile.setProfileTarget(position);
-      log.writeLog(true, subsystemName, "setProfileTarget", "Target", position, "Allowed", "TRUE");
+      DataLogUtil.writeMessage(subsystemName, ": setProfileTarget Allowed, Target =", position);
     } else {
-      log.writeLog(true, subsystemName, "setProfileTarget", "Target", position, "Allowed", "FALSE");
+      DataLogUtil.writeMessage(subsystemName, ": setProfileTarget Not-Allowed, Target =", position);
     }
   }
 
@@ -313,7 +337,7 @@ public class Elevator extends SubsystemBase implements Loggable {
       // This is a blocking call and will wait up to 50ms-70ms for the config to apply
       elevatorMotor2Configurator.apply(elevatorMotor2Config);
 
-      log.writeLog(true, subsystemName, "checkAndZeroElevatorEncoders", "Calibrated");
+      DataLogUtil.writeMessageEcho(subsystemName, ":  checkAndZeroElevatorEncoders... Calibrated!");
     }
   }
 
@@ -517,33 +541,28 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Write information about the subsystem to the FileLog
-   * @param logWhenDisabled true = log when disabled, false = discard the string
+   * @param logWhenDisabled true = log when enabled or disabled, false = only log when enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
-      "Temp 1", getMotorTemp(1),
-      "PctOut 1", getElevatorPercentOutput(1),
-      "Voltage 1", getElevatorVoltage(1),
-      "Amps 1", getStatorCurrent(1),
-      "BusVolt 1", getBusVoltage(1),
-      "EncRots 1", getElevatorEncoderRotations(1),
-      "EncInches 1", getElevatorPosition(1),
-      "Vel 1", getElevatorVelocity(1),
-
-      "Temp 2", getMotorTemp(2),
-      "PctOut 2", getElevatorPercentOutput(2),
-      "Voltage 2", getElevatorVoltage(2),
-      "Amps 2", getStatorCurrent(2),
-      "BusVolt 2", getBusVoltage(2),
-      "EncRots 2", getElevatorEncoderRotations(2),
-      "EncInches 2", getElevatorPosition(2),
-      "Vel 2", getElevatorVelocity(2),
-
-      "Calibrated", elevatorCalibrated ? "TRUE" : "FALSE",
-      "Pos Control", elevatorPositionControl ? "TRUE" : "FALSE",
-      "Target Pos", getCurrentElevatorTarget(),
-      "At Lower Limit", isElevatorAtLowerLimit()
-    );
+    if (logWhenDisabled || !DriverStation.isDisabled()) {
+      long timeNow = RobotController.getFPGATime();
+      dLogTemp1.append(getMotorTemp(1), timeNow);
+      dLogPctOut1.append(getElevatorPercentOutput(1), timeNow);
+      dLogCurrent1.append(getStatorCurrent(1), timeNow);
+      dLogBusVolt1.append(getBusVoltage(1), timeNow);
+      dLogEncInch1.append(getElevatorPosition(1), timeNow);
+      dLogVel1.append(getElevatorVelocity(1), timeNow);
+      dLogTemp2.append(getMotorTemp(2), timeNow);
+      dLogPctOut2.append(getElevatorPercentOutput(2), timeNow);
+      dLogCurrent2.append(getStatorCurrent(2), timeNow);
+      dLogBusVolt2.append(getBusVoltage(2), timeNow);
+      dLogEncInch2.append(getElevatorPosition(2), timeNow);
+      dLogVel2.append(getElevatorVelocity(2), timeNow);
+      dLogTargetPos.append(getCurrentElevatorTarget(), timeNow);
+      dLogCalibrated.append(elevatorCalibrated, timeNow);
+      dLogPosControl.append(elevatorPositionControl, timeNow);
+      dLogLowerLimit.append(isElevatorAtLowerLimit(), timeNow);
+    }
   }
 
   /**
@@ -557,7 +576,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    if (log.isMyLogRotation(logRotationKey)) {
+    if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Elev Calibrated", isElevatorCalibrated());
       SmartDashboard.putBoolean("Elev Pos Control", isElevatorInPositionControl());
 
@@ -573,9 +592,9 @@ public class Elevator extends SubsystemBase implements Loggable {
       SmartDashboard.putNumber("Elev Rotations 2", getElevatorEncoderRotations(2));
     }
 
-    // if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-    //   updateLog(false);
-    // }
+    if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+      updateLog(false);
+    }
 
     // Sets elevator motors to percent output required as determined by motion profile.
     // Only set percent output if the motion profile is enabled.
@@ -589,7 +608,7 @@ public class Elevator extends SubsystemBase implements Loggable {
     if (!isElevatorCalibrated() && isElevatorAtLowerLimit()) {
       // This is a blocking call and will wait up to 200ms for the zero to apply.
       checkAndZeroElevatorEncoders();
-      log.writeLogEcho(true, subsystemName, "Calibrate Encoders", "Post Elevator Pos", getElevatorPosition());
+      DataLogUtil.writeMessageEcho(subsystemName, ": Calibrate Encoders in periodic(), Elevator Pos after cal =", getElevatorPosition());
     }
 
     // If the elevator is at or below the lower limit, prevent it from going down any further.
