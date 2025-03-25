@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.HopperConstants;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 
 import com.ctre.phoenix6.StatusSignal;
@@ -24,7 +24,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class Hopper extends SubsystemBase implements Loggable {
-  private final FileLog log;
+  
   private final int logRotationKey;
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;           // Subsystem name for use in file logging and dashboard
@@ -41,10 +41,10 @@ public class Hopper extends SubsystemBase implements Loggable {
   private TalonFXConfiguration hopperConfig;
   private VoltageOut hopperVoltageControl = new VoltageOut(0.0);
 
-  public Hopper(String subsystemName, FileLog log) {
+  public Hopper(String subsystemName) {
     this.subsystemName = subsystemName;
-    this.log = log;
-    logRotationKey = log.allocateLogRotation();
+    
+    logRotationKey = DataLogUtil.allocateLogRotation();
 
     // Get signal and sensor objects
     hopperTemp = hopperMotor.getDeviceTemp();
@@ -129,7 +129,7 @@ public class Hopper extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
+    DataLogUtil.writeLog(logWhenDisabled, subsystemName, "Update Variables",
       "Hopper Temp (C)", hopperTemp.refresh().getValueAsDouble(),
       "Hopper Voltage (V)", hopperVoltage.refresh().getValueAsDouble(),
       "Hopper Current (Amps)", getHopperAmps(),
@@ -139,8 +139,8 @@ public class Hopper extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-      // updateLog(false);
+    if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+      updateLog(false);
       SmartDashboard.putNumber("Hopper Velocity", getHopperVelocity());
     }
   }

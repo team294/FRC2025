@@ -34,17 +34,17 @@ public class AutoDriveToReef extends SequentialCommandGroup {
   public AutoDriveToReef(ReefLevel level, TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
         CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
     addCommands(
-      new FileLogWrite(false, false, "AutoDriveToReefAndPrep", "Init", log, "trajectoryName", trajectoryName.toString()),
+      new DataLogMessage(false, "AutoDriveToReefAndPrep", "Init", "trajectoryName", trajectoryName.toString()),
       parallel(
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log),
-        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(trajectoryName), driveTrain, alliance, log)
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
+        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(trajectoryName), driveTrain, alliance)
       ),
-      new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist, log)
+      new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist)
       // TODO add DriveToPose here, check these parameters
       // new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
       //         0.5, 1.0, 
       //         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-      //         true, true, driveTrain, log)
+      //         true, true, driveTrain)
     );
   } */
 
@@ -62,16 +62,16 @@ public class AutoDriveToReef extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoDriveToReef(boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
-      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, FileLog log) {
+      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance) {
 
     // Choose trajectory to drive (Start from either HP or barge)
     Trajectory<SwerveSample> trajectory = fromHP ? AutoSelection.getHPToReef(end) : AutoSelection.getBargeToReef(end);
     addCommands(
-      new FileLogWrite(false, false, "AutoDriveToReefAndPrep", "Init", log, "trajectory", trajectory.name()),
+      new DataLogMessage(false, "AutoDriveToReefAndPrep", "Init", "trajectory", trajectory.name()),
       parallel(
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log),
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
         // Drives the trajectory, cutting it off 0.3 seconds before it ends
-        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance, log).withTimeout(trajectory.getTotalTime() - 0.3)
+        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance).withTimeout(trajectory.getTotalTime() - 0.3)
       ) 
 
 

@@ -35,6 +35,14 @@ public class AutoSelection {
 
 		DriveForwardOneMeter("DriveForwardTwoMeters", 1),
 		BargeToE("BargeToE", 10), // TODO remove test auto
+		Rel4mRotate180("Relative4m-180", 101),
+		RelArcLeft("RelativeArcLeft", 102),
+		RelStraight4m("RelativeStraight4m", 103),
+		RelCirclePath("RelativeCirclePath", 104),
+		RelRotate180("RelativeRotate180", 105),
+		AbsDiagonalTest("AbsoluteDiagonalTest", 106),
+
+		DriveForwardTwoMeters("DriveForwardTwoMeters", 1),
 
 		BargeRight_EDC("BargeRight_EDC", 2),
 		BargeLeft_JKL("BargeLeft_JKL", 3),
@@ -77,7 +85,7 @@ public class AutoSelection {
 	private final TrajectoryCache trajectoryCache;
 	private final Field field;
 	private final Joystick rightJoystick;
-	private final FileLog log;
+	
 
 	private SendableChooser<Integer> autoRoutineChooser = new SendableChooser<>();
 	// private SendableChooser<Integer> startPositionChooser = new SendableChooser<>();
@@ -92,12 +100,12 @@ public class AutoSelection {
 	 * @param allianceSelection AllianceSelection alliance
 	 * @param log FileLog log
 	 */
-	public AutoSelection(Joystick rightJoystick, TrajectoryCache trajectoryCache, AllianceSelection allianceSelection, Field field, FileLog log) {
+	public AutoSelection(Joystick rightJoystick, TrajectoryCache trajectoryCache, AllianceSelection allianceSelection, Field field) {
 		this.rightJoystick = rightJoystick;
 		this.trajectoryCache = trajectoryCache;
 		this.allianceSelection = allianceSelection;
 		this.field = field;
-		this.log = log;
+		
 
 		// initializer to populate the trajectory maps TODO create more trajectories
 		// left-side trajectories are the right-side trajectories mirrored over the line going through the middle of the reef 
@@ -180,85 +188,122 @@ public class AutoSelection {
 
 		// Get parameters from Shuffleboard
 		int autoPlan = autoRoutineChooser.getSelected();
-		log.writeLogEcho(true, "AutoSelect", "autoPlan", autoPlan);
+		DataLogUtil.writeLogEcho(true, "AutoSelect", "autoPlan", autoPlan);
 
 		double waitTime = SmartDashboard.getNumber("Autonomous delay", 0);
 		waitTime = MathUtil.clamp(waitTime, 0, 15); // make sure autoDelay isn't negative and is only active during auto
 
 		if (autoPlan == RoutineSelectionOption.NONE.value) {
 			// Starting position = facing drivers
-			log.writeLogEcho(true, "AutoSelect", "run None");
-			autonomousCommandMain = new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log);
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run None");
+			autonomousCommandMain = new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.DriveForwardOneMeter.value) {
-			log.writeLogEcho(true, "AutoSelect", "run DriveForwardTwoMeters");
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run DriveForwardTwoMeters");
 			autonomousCommandMain = new SequentialCommandGroup(
-										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain, log),
-										new DriveToPose(CoordType.kRelative, new Pose2d(1, 0, new Rotation2d(0)), driveTrain, log));
+										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain),
+										new DriveToPose(CoordType.kRelative, new Pose2d(1, 0, new Rotation2d(0)), driveTrain));
+		}
+
+		else if (autoPlan == RoutineSelectionOption.DriveForwardTwoMeters.value) {
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run DriveForwardTwoMeters");
+			autonomousCommandMain = new SequentialCommandGroup(
+										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain),
+										new DriveToPose(CoordType.kRelative, new Pose2d(2, 0, new Rotation2d(0)), driveTrain));
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeRight_EDC.value) {
-			log.writeLogEcho(true, "AutoSelect", "run BargeRight_EDC");
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run BargeRight_EDC");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeLeft_JKL.value) {
-			log.writeLogEcho(true, "AutoSelect", "run BargeLeft_JKL");
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run BargeLeft_JKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K, ReefLocation.L));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeRight_ED_AlgaeCD.value) {
-			log.writeLogEcho(true, "AutoSelect", "run BargeRight_ED_AlgaeCD");
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run BargeRight_ED_AlgaeCD");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeLeft_JK_AlgaeKL.value) {
-			log.writeLogEcho(true, "AutoSelect", "run BargeLeft_JK_AlgaeKL");
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run BargeLeft_JK_AlgaeKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.PushFriend_JK.value) {
-			log.writeLogEcho(true, "AutoSelect", "run PushFriend_J");
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run PushFriend_J");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log);
+			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.PushFriend_JK_AlgaeKL.value) {
-			log.writeLogEcho(true, "AutoSelect", "run PushFriend_JK_AlgaeKL");
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run PushFriend_JK_AlgaeKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, log);
+			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
-			log.writeLogEcho(true, "AutoSelect", "run AutoCenterL1");
-			autonomousCommandMain = new AutoCenterL1(driveTrain, elevator, wrist, coralEffector, algaeGrabber, allianceSelection, log);
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run AutoCenterL1");
+			autonomousCommandMain = new AutoCenterL1(driveTrain, elevator, wrist, coralEffector, algaeGrabber, allianceSelection);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL4.value) {
-			log.writeLogEcho(true, "AutoSelect", "run AutoCenterL4");
-			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, field, rightJoystick, allianceSelection, log);
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run AutoCenterL4");
+			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, field, rightJoystick, allianceSelection);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.Rel4mRotate180.value) {
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run Choreo Test straight rotating path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.Relative4mRotate180), driveTrain, allianceSelection);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.RelArcLeft.value) {
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run Choreo Test curve path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeArcLeft), driveTrain, allianceSelection);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.RelStraight4m.value) {
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run Choreo Test Straight path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeStraight4m), driveTrain, allianceSelection);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.RelCirclePath.value) {
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run Choreo Test Circle path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeCirclePath), driveTrain, allianceSelection);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.RelRotate180.value) {
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run Choreo Test Rotate180 path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeRotate180), driveTrain, allianceSelection);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.AbsDiagonalTest.value) {
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run Choreo Absolute Diagonal path");
+			autonomousCommandMain = new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.AbsoluteDiagonalTest), driveTrain, allianceSelection);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeToE.value) { // test trajectory
 			autonomousCommandMain = new SequentialCommandGroup(
-										new DriveResetPose(trajectoryCache.getTrajectory(TrajectoryName.BargeRightToE).getInitialPose(allianceSelection.getAlliance() == Alliance.Red).get(), true, driveTrain, log),
-										new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.BargeRightToE), driveTrain, allianceSelection, log)
+										new DriveResetPose(trajectoryCache.getTrajectory(TrajectoryName.BargeRightToE).getInitialPose(allianceSelection.getAlliance() == Alliance.Red).get(), true, driveTrain),
+										new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.BargeRightToE), driveTrain, allianceSelection)
 									);
 		}
 
 		else {
-			log.writeLogEcho(true, "AutoSelect", "No autocommand found");
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "No autocommand found");
 			autonomousCommandMain = new WaitCommand(1);
 		}
 

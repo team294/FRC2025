@@ -24,11 +24,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.Constants.Ports;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 
 public class CoralEffector extends SubsystemBase implements Loggable {
-  private final FileLog log;
+  
   private final int logRotationKey;
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;           // Subsystem name for use in file logging and dashboard
@@ -56,10 +56,10 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private boolean autoHoldMode = false;
   private double targetPosition = 0;
 
-  public CoralEffector(String subsystemName, Wrist wrist, FileLog log) {
+  public CoralEffector(String subsystemName, Wrist wrist) {
     this.subsystemName = subsystemName;
-    this.log = log;
-    logRotationKey = log.allocateLogRotation();
+    
+    logRotationKey = DataLogUtil.allocateLogRotation();
     this.wrist = wrist;
 
     // Get signal and sensor objects
@@ -238,7 +238,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
+    DataLogUtil.writeLog(logWhenDisabled, subsystemName, "Update Variables",
       "Temp (C)", coralEffectorTemp.refresh().getValueAsDouble(),
       "Voltage (V)", coralEffectorVoltage.refresh().getValueAsDouble(),
       "Current (Amps)", getCoralEffectorAmps(),
@@ -252,11 +252,11 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    // if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-    //   updateLog(false);
-    // }
+    if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+      updateLog(false);
+    }
 
-    if (log.isMyLogRotation(logRotationKey)) {
+    if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Coral in Entry", isCoralPresentInEntry());
       SmartDashboard.putBoolean("Coral in Exit", isCoralPresentInExit());
       SmartDashboard.putBoolean("Coral Safely In", isCoralSafelyIn());

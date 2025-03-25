@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AlgaeGrabberConstants;
 import frc.robot.subsystems.AlgaeGrabber;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class AlgaeGrabberOuttake extends Command {
   private final AlgaeGrabber algaeGrabber;
-  private final FileLog log;
+  
   private final Timer timer;
   private final double seconds;
 
@@ -21,9 +21,9 @@ public class AlgaeGrabberOuttake extends Command {
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */
-  public AlgaeGrabberOuttake(AlgaeGrabber algaeGrabber, FileLog log) {
+  public AlgaeGrabberOuttake(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
-    this.log = log;
+    
     this.timer = new Timer();
     this.seconds = 2.0;
     addRequirements(algaeGrabber);
@@ -36,7 +36,7 @@ public class AlgaeGrabberOuttake extends Command {
     timer.stop();
     timer.reset();
 
-    log.writeLog(false, "AlgaeGrabberOuttake", "Init",
+    DataLogUtil.writeLog(false, "AlgaeGrabberOuttake", "Init",
       "Algae Present", algaeGrabber.isAlgaePresent());
   }
 

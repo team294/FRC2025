@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristNudgeAngle extends InstantCommand {
   private Wrist wrist;
-  private FileLog log;
+  
   private double deltaDegrees;
   private boolean fromShuffleboard;
 
@@ -21,10 +21,10 @@ public class WristNudgeAngle extends InstantCommand {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristNudgeAngle(double deltaDegrees, Wrist wrist, FileLog log) {
+  public WristNudgeAngle(double deltaDegrees, Wrist wrist) {
     this.deltaDegrees = deltaDegrees;
     this.wrist = wrist;
-    this.log = log;
+    
     fromShuffleboard = false;
     addRequirements(wrist);
   }
@@ -34,9 +34,9 @@ public class WristNudgeAngle extends InstantCommand {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristNudgeAngle(Wrist wrist, FileLog log) {
+  public WristNudgeAngle(Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     fromShuffleboard = true;
     addRequirements(wrist);
 
@@ -50,6 +50,6 @@ public class WristNudgeAngle extends InstantCommand {
   public void initialize() {
     if (fromShuffleboard) deltaDegrees = SmartDashboard.getNumber("Wrist Nudge Delta Degrees", 0);
     wrist.nudgeWristAngle(deltaDegrees);
-    log.writeLog(false, "WristNudgeAngle", "Init", "Delta", deltaDegrees);
+    DataLogUtil.writeLog(false, "WristNudgeAngle", "Init", "Delta", deltaDegrees);
   }
 }
