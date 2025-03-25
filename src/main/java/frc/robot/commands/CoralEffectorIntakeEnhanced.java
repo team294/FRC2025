@@ -32,9 +32,8 @@ public class CoralEffectorIntakeEnhanced extends Command {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.fastIntakePercent); 
     }
 
-    DataLogUtil.writeLog(false, "CoralEffectorIntakeEnhanced", "Init", 
-      "Coral in Entry", (coralEffector.isCoralPresentInEntry() ? "TRUE" : "FALSE"),
-      "Coral in Exit", (coralEffector.isCoralPresentInExit() ? "TRUE" : "FALSE"));
+    DataLogUtil.writeMessage("CoralEffectorIntakeEnhanced: Init, Coral in Entry = ", coralEffector.isCoralPresentInEntry(),
+      ", Coral in Exit = ", coralEffector.isCoralPresentInExit());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,6 +51,8 @@ public class CoralEffectorIntakeEnhanced extends Command {
       // Back off the position, since due to coral velocity it likely overshot the balanced position between the sensors.
       coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition() + CoralEffectorConstants.centerRotationsOvershoot, true);
     }
+
+    DataLogUtil.writeMessage("CoralEffectorIntakeEnhanced: End.");
   }
 
   // Returns true when the command should end.
