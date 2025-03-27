@@ -19,7 +19,13 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralEffectorConstants;
@@ -55,6 +61,16 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private final Wrist wrist;
   private boolean autoHoldMode = false;
   private double targetPosition = 0;
+
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogTemp = new DoubleLogEntry(log, "/CoralEffector/Temperature");
+  private final DoubleLogEntry dLogVoltage = new DoubleLogEntry(log, "/CoralEffector/Voltage");
+  private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/CoralEffector/Current");
+  private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/CoralEffector/Velocity");
+  private final DoubleLogEntry dLogPosition = new DoubleLogEntry(log, "/CoralEffector/Position");
+  private final DoubleLogEntry dLogTargetPos = new DoubleLogEntry(log, "/CoralEffector/TargetPosition");
+  private final BooleanLogEntry bLogPositionControl = new BooleanLogEntry(log, "/CoralEffector/PositionControl");
+  private final BooleanLogEntry bLogAutoHold = new BooleanLogEntry(log, "/CoralEffector/AutoHold");
 
   public CoralEffector(String subsystemName, Wrist wrist) {
     this.subsystemName = subsystemName;
@@ -238,16 +254,18 @@ public class CoralEffector extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    DataLogUtil.writeLog(logWhenDisabled, subsystemName, "Update Variables",
-      "Temp (C)", coralEffectorTemp.refresh().getValueAsDouble(),
-      "Voltage (V)", coralEffectorVoltage.refresh().getValueAsDouble(),
-      "Current (Amps)", getCoralEffectorAmps(),
-      "Position (rot)", getCoralEffectorPosition(),
-      "Velocity (RPM)", getCoralEffectorVelocity(),
-      "Position control", isMotorPositionControl(),
-      "Target position (rot)", targetPosition,
-      "Auto Hold", autoHoldMode
-    );
+    if (logWhenDisabled || !DriverStation.isDisabled()) {
+      long timeNow = RobotController.getFPGATime();
+
+      dLogTemp.append(coralEffectorTemp.refresh().getValueAsDouble(), timeNow);
+      dLogVoltage.append(coralEffectorVoltage.refresh().getValueAsDouble(), timeNow);
+      dLogCurrent.append(getCoralEffectorAmps(), timeNow);
+      dLogVelocity.append(getCoralEffectorVelocity(), timeNow);
+      dLogPosition.append(getCoralEffectorPosition(), timeNow);
+      dLogTargetPos.append(targetPosition, timeNow);
+      bLogPositionControl.append(isMotorPositionControl(), timeNow);
+      bLogAutoHold.append(autoHoldMode, timeNow);
+    }
   }
 
   @Override

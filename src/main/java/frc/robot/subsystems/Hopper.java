@@ -8,6 +8,11 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -40,6 +45,12 @@ public class Hopper extends SubsystemBase implements Loggable {
   private final TalonFXConfigurator hopperConfigurator = hopperMotor.getConfigurator();
   private TalonFXConfiguration hopperConfig;
   private VoltageOut hopperVoltageControl = new VoltageOut(0.0);
+
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogTemp = new DoubleLogEntry(log, "/Hopper/Temperature");
+  private final DoubleLogEntry dLogVoltage = new DoubleLogEntry(log, "/Hopper/Voltage");
+  private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/Hopper/Current");
+  private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/Hopper/Velocity");
 
   public Hopper(String subsystemName) {
     this.subsystemName = subsystemName;
@@ -129,12 +140,14 @@ public class Hopper extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    DataLogUtil.writeLog(logWhenDisabled, subsystemName, "Update Variables",
-      "Hopper Temp (C)", hopperTemp.refresh().getValueAsDouble(),
-      "Hopper Voltage (V)", hopperVoltage.refresh().getValueAsDouble(),
-      "Hopper Current (Amps)", getHopperAmps(),
-      "Hopper Velocity (RPM)", getHopperVelocity()
-    );
+    if (logWhenDisabled || !DriverStation.isDisabled()) {
+      long timeNow = RobotController.getFPGATime();
+
+      dLogTemp.append(hopperTemp.refresh().getValueAsDouble(), timeNow);
+      dLogVoltage.append(hopperVoltage.refresh().getValueAsDouble(), timeNow);
+      dLogCurrent.append(getHopperAmps(), timeNow);
+      dLogVelocity.append(getHopperVelocity(), timeNow);
+    }
   }
 
   @Override
