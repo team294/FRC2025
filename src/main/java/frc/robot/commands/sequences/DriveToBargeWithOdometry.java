@@ -20,13 +20,11 @@ public class DriveToBargeWithOdometry extends SequentialCommandGroup {
    * @param field Field utility
    * @param log FileLog utility
    */
-  public DriveToBargeWithOdometry(DriveTrain driveTrain, Field field, FileLog log) {
+  public DriveToBargeWithOdometry(DriveTrain driveTrain, Field field) {
     addCommands(
-      new FileLogWrite(false, false, "DriveToBargeWithOdometry", "Start", log),
 
-      new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestBargeScoringPosition(driveTrain.getPose())), 0.02, 1, driveTrain, log),
+      new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestBargeScoringPosition(driveTrain.getPose())), 0.02, 1, driveTrain)
 
-      new FileLogWrite(false, false, "DriveToBargeWithOdometry", "End", log)
     );
   }
 }
