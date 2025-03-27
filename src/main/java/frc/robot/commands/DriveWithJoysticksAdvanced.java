@@ -17,7 +17,7 @@ import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.AllianceSelection;
 import frc.robot.utilities.Field;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 import java.lang.Math;
 
@@ -26,7 +26,7 @@ public class DriveWithJoysticksAdvanced extends Command {
   private final Joystick rightJoystick;
   private final AllianceSelection allianceSelection;
   private final DriveTrain driveTrain;
-  private final FileLog log;
+  
   private final Field field;
 
   private ProfiledPIDController turnRateController;
@@ -52,18 +52,18 @@ public class DriveWithJoysticksAdvanced extends Command {
    * @param field Field utility
    * @param log FileLog utility
    */
-  public DriveWithJoysticksAdvanced(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain, Field field, FileLog log) {
+  public DriveWithJoysticksAdvanced(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain, Field field) {
     this.leftJoystick = leftJoystick;
     this.rightJoystick = rightJoystick;
     this.allianceSelection = allianceSelection;
     this.driveTrain = driveTrain;
     this.field = field;
-    this.log = log;
+    
 
     turnRateController = new ProfiledPIDController(DriveConstants.kPJoystickThetaController, 0, 0, TrajectoryConstants.kThetaControllerConstraints);
     turnRateController.enableContinuousInput(-Math.PI, Math.PI);
 
-    logRotationKey = log.allocateLogRotation();
+    logRotationKey = DataLogUtil.allocateLogRotation();
 
     addRequirements(driveTrain);
   }
@@ -114,7 +114,7 @@ public class DriveWithJoysticksAdvanced extends Command {
     leftVelocity = (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getX() : leftJoystick.getX();
     turnRate = (reefBasedControl || bargeBasedControl) ? 0 : -rightJoystick.getX();
 
-    if (log.isMyLogRotation(logRotationKey)) {
+    if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putNumber("Joystick Left-Y", fwdVelocity);
       SmartDashboard.putNumber("Joystick Left-X", leftVelocity);
       SmartDashboard.putNumber("Joystick Right-X", turnRate);
@@ -144,7 +144,7 @@ public class DriveWithJoysticksAdvanced extends Command {
       // if (loadingStationLock) {
       //   // If we are locking to the loading station, update the setpoint for the goal angle to the rotation of the 
       //   // nearest loading station, with the ramp facing towards the station
-      //   if (log.isMyLogRotation(logRotationKey)) {
+      //   if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       //     goalAngle = MathUtil.angleModulus(field.getNearestAprilTagLoadingStation(driveTrain.getPose()).getRotation().getRadians());
       //     turnRateController.reset(goalAngle);
       //   }
@@ -153,7 +153,7 @@ public class DriveWithJoysticksAdvanced extends Command {
       // } else if (reefLock) {
       //   // If we are locking to a reef position, update the setpoint for the goal angle to the rotation of the
       //   // nearest reef position, with the elevator facing the reef
-      //   if (log.isMyLogRotation(logRotationKey)) {
+      //   if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       //     goalAngle = MathUtil.angleModulus(field.getNearestAprilTagReef(driveTrain.getPose()).getRotation().getRadians()-Math.PI);
       //     turnRateController.reset(goalAngle);
       //   }
@@ -208,8 +208,8 @@ public class DriveWithJoysticksAdvanced extends Command {
           }
         }
 
-        if (log.isMyLogRotation(logRotationKey)) {
-          log.writeLog(false, "DriveWithJoystickAdvance", "Joystick", "Fwd", fwdVelocity, "Left", leftVelocity, "Turn", nextTurnRate, 
+        if (DataLogUtil.isMyLogRotation(logRotationKey)) {
+          DataLogUtil.writeLog(false, "DriveWithJoystickAdvance", "Joystick", "Fwd", fwdVelocity, "Left", leftVelocity, "Turn", nextTurnRate, 
               "Robot angle", Math.toDegrees(curRobotAngle), "Goal Angle", Math.toDegrees(goalAngle), "Stopped", stopped);
 
           SmartDashboard.putNumber("DriveWJAdv Goal Angle", Math.toDegrees(goalAngle));
@@ -222,15 +222,15 @@ public class DriveWithJoysticksAdvanced extends Command {
       } else {
         // Uses the regular turnRate if the theta joystick is in the deadband less than 100ms
 
-        log.writeLog(false, "DriveWithJoystickAdvance", "Joystick", "Fwd", fwdVelocity, "Left", leftVelocity, "Turn", turnRate, 
+        DataLogUtil.writeLog(false, "DriveWithJoystickAdvance", "Joystick", "Fwd", fwdVelocity, "Left", leftVelocity, "Turn", turnRate, 
             "Robot angle", Math.toDegrees(driveTrain.getPose().getRotation().getRadians()), "Goal Angle", "N/A", "Stopped", stopped);
         driveTrain.drive(fwdVelocity, leftVelocity, turnRate, !reefBasedControl, false);
       }
 
     } else {
       // Uses the regular turnRate if the theta joystick is not in the deadband
-      if(log.isMyLogRotation(logRotationKey)) {
-        log.writeLog(false, "DriveWithJoystickAdvance", "Joystick", "Fwd", fwdVelocity, "Left", leftVelocity, "Turn", turnRate, 
+      if(DataLogUtil.isMyLogRotation(logRotationKey)) {
+        DataLogUtil.writeLog(false, "DriveWithJoystickAdvance", "Joystick", "Fwd", fwdVelocity, "Left", leftVelocity, "Turn", turnRate, 
             "Robot angle", Math.toDegrees(driveTrain.getPose().getRotation().getRadians()) );
       }
       

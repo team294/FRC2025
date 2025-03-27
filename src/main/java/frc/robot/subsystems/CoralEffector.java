@@ -19,16 +19,22 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.Constants.Ports;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 
 public class CoralEffector extends SubsystemBase implements Loggable {
-  private final FileLog log;
+  
   private final int logRotationKey;
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;           // Subsystem name for use in file logging and dashboard
@@ -56,10 +62,20 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private boolean autoHoldMode = false;
   private double targetPosition = 0;
 
-  public CoralEffector(String subsystemName, Wrist wrist, FileLog log) {
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogTemp = new DoubleLogEntry(log, "/CoralEffector/Temperature");
+  private final DoubleLogEntry dLogVoltage = new DoubleLogEntry(log, "/CoralEffector/Voltage");
+  private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/CoralEffector/Current");
+  private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/CoralEffector/Velocity");
+  private final DoubleLogEntry dLogPosition = new DoubleLogEntry(log, "/CoralEffector/Position");
+  private final DoubleLogEntry dLogTargetPos = new DoubleLogEntry(log, "/CoralEffector/TargetPosition");
+  private final BooleanLogEntry bLogPositionControl = new BooleanLogEntry(log, "/CoralEffector/PositionControl");
+  private final BooleanLogEntry bLogAutoHold = new BooleanLogEntry(log, "/CoralEffector/AutoHold");
+
+  public CoralEffector(String subsystemName, Wrist wrist) {
     this.subsystemName = subsystemName;
-    this.log = log;
-    logRotationKey = log.allocateLogRotation();
+    
+    logRotationKey = DataLogUtil.allocateLogRotation();
     this.wrist = wrist;
 
     // Get signal and sensor objects
@@ -238,25 +254,27 @@ public class CoralEffector extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
-      "Temp (C)", coralEffectorTemp.refresh().getValueAsDouble(),
-      "Voltage (V)", coralEffectorVoltage.refresh().getValueAsDouble(),
-      "Current (Amps)", getCoralEffectorAmps(),
-      "Position (rot)", getCoralEffectorPosition(),
-      "Velocity (RPM)", getCoralEffectorVelocity(),
-      "Position control", isMotorPositionControl(),
-      "Target position (rot)", targetPosition,
-      "Auto Hold", autoHoldMode
-    );
+    if (logWhenDisabled || !DriverStation.isDisabled()) {
+      long timeNow = RobotController.getFPGATime();
+
+      dLogTemp.append(coralEffectorTemp.refresh().getValueAsDouble(), timeNow);
+      dLogVoltage.append(coralEffectorVoltage.refresh().getValueAsDouble(), timeNow);
+      dLogCurrent.append(getCoralEffectorAmps(), timeNow);
+      dLogVelocity.append(getCoralEffectorVelocity(), timeNow);
+      dLogPosition.append(getCoralEffectorPosition(), timeNow);
+      dLogTargetPos.append(targetPosition, timeNow);
+      bLogPositionControl.append(isMotorPositionControl(), timeNow);
+      bLogAutoHold.append(autoHoldMode, timeNow);
+    }
   }
 
   @Override
   public void periodic() {
-    // if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-    //   updateLog(false);
-    // }
+    if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+      updateLog(false);
+    }
 
-    if (log.isMyLogRotation(logRotationKey)) {
+    if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Coral in Entry", isCoralPresentInEntry());
       SmartDashboard.putBoolean("Coral in Exit", isCoralPresentInExit());
       SmartDashboard.putBoolean("Coral Safely In", isCoralSafelyIn());

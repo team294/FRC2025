@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.utilities.FileLog;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
@@ -26,12 +25,12 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
  * @param log FileLog utility
  */
 public class CoralScorePrepSequence extends SequentialCommandGroup {
-  public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
+  public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
       either(
         sequence(
-          new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist, log),
-          new WristSetAngle(position, wrist, log)
+          new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist),
+          new WristSetAngle(position, wrist)
         ),
         none(),
         () -> !algaeGrabber.isAlgaePresent()

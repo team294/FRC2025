@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,15 +23,15 @@ public class PhotonCameraWrapper extends SubsystemBase {
   public PhotonCamera photonCamera;
   public PhotonPoseEstimator photonPoseEstimatorCamera;
   private AprilTagFieldLayout aprilTagFieldLayout;
-  private FileLog log;
+  
   private boolean hasInit = false;
   private int logRotationKey;
   private boolean fastLogging = false;
   private Transform3d robotToCam;
   private String cameraName;
 
-  public PhotonCameraWrapper(Transform3d robotToCam, String cameraName, FileLog log, int logRotationKey) {
-    this.log = log;
+  public PhotonCameraWrapper(Transform3d robotToCam, String cameraName, int logRotationKey) {
+    
     this.logRotationKey = logRotationKey;
     this.robotToCam = robotToCam;
     this.cameraName = cameraName;
@@ -46,14 +46,14 @@ public class PhotonCameraWrapper extends SubsystemBase {
   }
 
   public void init() {
-    log.writeLog(true, "PhotonCameraWrapper", "Init", "Starting");
+    DataLogUtil.writeLog(true, "PhotonCameraWrapper", "Init", "Starting");
 
     try {
       aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
       aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide); 
-      log.writeLog(true, "PhotonCameraWrapper", "Init", "Loaded april tags from file");
+      DataLogUtil.writeLog(true, "PhotonCameraWrapper", "Init", "Loaded april tags from file");
     } catch (IOException e) {
-      log.writeLog(true, "PhotonCameraWrapper", "Init", "Error loading april tags from file");
+      DataLogUtil.writeLog(true, "PhotonCameraWrapper", "Init", "Error loading april tags from file");
       e.printStackTrace();
     }
 
@@ -69,7 +69,7 @@ public class PhotonCameraWrapper extends SubsystemBase {
 
     hasInit = true;
 
-    log.writeLog(true, "PhotonCameraWrapper", "Init", "Done");
+    DataLogUtil.writeLog(true, "PhotonCameraWrapper", "Init", "Done");
   }
 
   public boolean hasInit() {
@@ -77,8 +77,8 @@ public class PhotonCameraWrapper extends SubsystemBase {
   }
 
   public void periodic() {
-    if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-      // log.writeLog(false, "PhotonCameraWrapper", "Periodic", "");
+    if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+      DataLogUtil.writeLog(false, "PhotonCameraWrapper", "Periodic", "");
     }
   }
 
@@ -109,13 +109,13 @@ public class PhotonCameraWrapper extends SubsystemBase {
       Optional<EstimatedRobotPose> newPoseOptional = photonPoseEstimatorCamera.update(latestResult);
       if (newPoseOptional.isPresent()) {
         EstimatedRobotPose newPose = newPoseOptional.get();
-        if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-          log.writeLog(false, "PhotonCameraWrapper", "getEstimatedGlobalPose", "IsConnected", photonCamera.isConnected(), "TagPresent", true, "X",newPose.estimatedPose.getX(),"Y",newPose.estimatedPose.getY());
+        if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+          DataLogUtil.writeLog(false, "PhotonCameraWrapper", "getEstimatedGlobalPose", "IsConnected", photonCamera.isConnected(), "TagPresent", true, "X",newPose.estimatedPose.getX(),"Y",newPose.estimatedPose.getY());
           SmartDashboard.putBoolean("PhotonVision Connected", photonCamera.isConnected());
         }
       } else {
-        if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-          log.writeLog(false, "PhotonCameraWrapper", "getEstimatedGlobalPose", "IsConnected", photonCamera.isConnected(), "TagPresent", false, "X", 0, "Y", 0);
+        if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+          DataLogUtil.writeLog(false, "PhotonCameraWrapper", "getEstimatedGlobalPose", "IsConnected", photonCamera.isConnected(), "TagPresent", false, "X", 0, "Y", 0);
           SmartDashboard.putBoolean("PhotonVision Connected", photonCamera.isConnected());
         }
       }

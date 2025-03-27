@@ -1580,7 +1580,7 @@
             "x": 768.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 768.0,
+            "height": 896.0,
             "type": "List Layout",
             "properties": {
               "label_position": "HIDDEN"
@@ -1626,7 +1626,7 @@
                 }
               },
               {
-                "title": "Elevator Move To 20 In",
+                "title": "Move to 20 inches",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1639,7 +1639,7 @@
                 }
               },
               {
-                "title": "Elevator Move to HP",
+                "title": "Move to HP",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1652,7 +1652,7 @@
                 }
               },
               {
-                "title": "Elevator Move to L1",
+                "title": "Move to L1",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1665,7 +1665,7 @@
                 }
               },
               {
-                "title": "Elevator Move To L2",
+                "title": "Move to L2",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1678,7 +1678,7 @@
                 }
               },
               {
-                "title": "Elevator Move To L3",
+                "title": "Move to L3",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -1691,7 +1691,7 @@
                 }
               },
               {
-                "title": "Elevator Move To L4",
+                "title": "Move to L4",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -2151,14 +2151,41 @@
                 }
               },
               {
-                "title": "Wrist Goal Percent",
-                "x": 640.0,
+                "title": "Wrist Set Angle",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist target angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Wrist Set Angle to Target",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Set Angle",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Wrist Set Percent",
+                "x": 512.0,
                 "y": 384.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Wrist Goal Percent",
+                  "topic": "/SmartDashboard/Wrist Set Percent",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
@@ -2176,32 +2203,45 @@
                   "period": 0.06,
                   "show_type": false
                 }
-              },
+              }
+            ]
+          },
+          {
+            "title": "Elev Set Position",
+            "x": 1024.0,
+            "y": 640.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "LEFT"
+            },
+            "children": [
               {
-                "title": "Wrist Goal Angle",
-                "x": 640.0,
-                "y": 256.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Wrist Goal Angle",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Wrist Set Angle to Target",
+                "title": " ",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Wrist Set Angle",
+                  "topic": "/SmartDashboard/Elevator Set Position",
                   "period": 0.06,
                   "show_type": false
+                }
+              },
+              {
+                "title": "Goal Pos",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator Goal Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
                 }
               }
             ]

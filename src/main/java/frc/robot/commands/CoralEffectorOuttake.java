@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorOuttake extends Command {
   private final CoralEffector coralEffector;
-  private final FileLog log;
+  
   private final Timer timer;
   private final double seconds;
 
@@ -21,9 +21,9 @@ public class CoralEffectorOuttake extends Command {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralEffectorOuttake(CoralEffector coralEffector, FileLog log) {
+  public CoralEffectorOuttake(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    this.log = log;
+    
     this.timer = new Timer();
     this.seconds = 0.1;
     addRequirements(coralEffector);
@@ -34,9 +34,8 @@ public class CoralEffectorOuttake extends Command {
   public void initialize() {
     coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.outtakePercent);
 
-    log.writeLog(false, "CoralEffectorOuttake", "Init", 
-      "Coral in Entry", (coralEffector.isCoralPresentInEntry() ? "TRUE" : "FALSE"),
-      "Coral in Exit", (coralEffector.isCoralPresentInExit() ? "TRUE" : "FALSE"));
+    DataLogUtil.writeMessage("CoralEffectorOuttake: Init, Coral in Entry = ", coralEffector.isCoralPresentInEntry(),
+      ", Coral in Exit = ", coralEffector.isCoralPresentInExit());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,6 +49,8 @@ public class CoralEffectorOuttake extends Command {
     coralEffector.stopCoralEffectorMotor();
     timer.stop();
     timer.reset();
+
+    DataLogUtil.writeMessage("CoralEffectorOuttake: End.");
   }
 
   // Returns true when the command should end.
@@ -59,7 +60,10 @@ public class CoralEffectorOuttake extends Command {
       // If the timer has not been started, start it
       if (!timer.isRunning()) timer.start();
       // Run the motor for slightly longer as a safety measure
-      else if (timer.get() >= seconds) return true;
+      else if (timer.get() >= seconds) {
+        DataLogUtil.writeMessage("CoralEffectorOuttake: IsFinished = true - coral is not present and timer has elapsed for long enough.");
+        return true;
+      }
     }
     return false;
   }

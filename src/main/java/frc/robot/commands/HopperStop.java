@@ -6,20 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hopper;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class HopperStop extends Command {
   private final Hopper hopper;
-  private final FileLog log;
+  
  
   /**
    * Sets the percent output of the hopper to 0 and ends immediately.
    * @param hopper Hopper subsystem
    * @param log FileLog utility
    */
-  public HopperStop(Hopper hopper, FileLog log) {
+  public HopperStop(Hopper hopper) {
     this.hopper = hopper;
-    this.log = log;
+    
     addRequirements(hopper);
   }
 
@@ -27,7 +27,8 @@ public class HopperStop extends Command {
   @Override
   public void initialize() {
     hopper.setHopperPercentOutput(0);
-    log.writeLog(false, "HopperStop", "Init");
+    DataLogUtil.writeLog(false, "HopperStop", "Init");
+    DataLogUtil.writeMessage("Hopper Stop: Init.");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,6 +39,7 @@ public class HopperStop extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    DataLogUtil.writeMessage("Hopper Stop: End");
   }
 
   // Returns true when the command should end.

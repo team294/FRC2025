@@ -32,7 +32,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
@@ -46,34 +46,34 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
       double yRelativeOffset = lastCoralLocation.onRightSide ? 0.2 : -0.2; 
 
       addCommands(
-        new FileLogWrite(false, false, "AutoCoralCycleLoopThenAlgae", "Start", log, lastCoralLocation, lastCoralLocation.toString(), "onRightSide", lastCoralLocation.onRightSide, "yRelativeOffset", yRelativeOffset),
+        new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae", "Start", lastCoralLocation, lastCoralLocation.toString(), "onRightSide", lastCoralLocation.onRightSide, "yRelativeOffset", yRelativeOffset),
 
         // First, do the loop for the coral cycles (ends at reef)
-        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache, log),
+        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, alliance, cache),
         
         // Grab algae from current position (back up, prep wrist and elevator, and then go forward and intake) and back up
 
         // Back up based on an offset (if it is the right or left branch) TODO calibrate distance
-        new DriveToPose(CoordType.kRelative, new Pose2d(-0.65, yRelativeOffset, new Rotation2d(0)), driveTrain, log),
+        new DriveToPose(CoordType.kRelative, new Pose2d(-0.65, yRelativeOffset, new Rotation2d(0)), driveTrain),
         
         // Prep the wrist and elevator for intaking from the reef
-        new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist, log),
+        new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
 
         // Start running the algaeGrabber and drive into the reef TODO calibrate distance
         parallel(
           // Cannot use AlgaeIntakeSequence due to the commands in parallel both requiring the driveTrain
-          // new AlgaeIntakeSequence(position, driveTrain, elevator, wrist, algaeGrabber, log),
+          // new AlgaeIntakeSequence(position, driveTrain, elevator, wrist, algaeGrabber),
           sequence(
-            new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist, log),
-            new AlgaeGrabberIntake(algaeGrabber, log)
+            new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
+            new AlgaeGrabberIntake(algaeGrabber)
           ),
-          new DriveToPose(CoordType.kRelative, new Pose2d(0.6, 0, new Rotation2d(0)), driveTrain, log)
+          new DriveToPose(CoordType.kRelative, new Pose2d(0.6, 0, new Rotation2d(0)), driveTrain)
         ),
 
         // After intaking the algae, back up TODO calibrate distance
-        new DriveToPose(CoordType.kRelative, new Pose2d(-0.5, 0, new Rotation2d(0)), driveTrain, log),
+        new DriveToPose(CoordType.kRelative, new Pose2d(-0.5, 0, new Rotation2d(0)), driveTrain),
 
-        new FileLogWrite(false, false, "AutoCoralCycleLoopThenAlgae", "End", log)
+        new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae", "End")
       );
     }
   }
