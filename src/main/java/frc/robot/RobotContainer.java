@@ -327,38 +327,47 @@ public class RobotContainer {
 
     // ex: coP[1].onTrue(new command);
     
-    coP[1].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
-    coP[2].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
+    // Elevator and Wrist Commands
+    coP[1].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber));
+    coP[2].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber));
+    coP[9].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber));
+    coP[10].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber));
 
-    coP[20].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator));
+    // Elevator Commands
+    coP[3].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
+    coP[4].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
 
-    coP[3].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
-    coP[4].whileTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
+    // Wrist Commands
+    coP[11].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
+    coP[12].whileTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
 
-    coP[16].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
+    // Hopper Commands
+    coP[5].onTrue(new HopperSetPercent(-HopperConstants.reverseIntakePercent, hopper));
+    coP[5].onFalse(new HopperStop(hopper));
 
-    // coP[5].whileTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber));
-    // coP[6].whileTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber));
+    // Coral Commands
+    coP[13].onTrue(new CoralEffectorSetPercent(CoralEffectorConstants.intakePercent, coralEffector));
+    coP[13].onFalse(new CoralEffectorStop(coralEffector));
+    coP[14].onTrue(new CoralEffectorSetPercent(-CoralEffectorConstants.intakePercent, coralEffector));
+    coP[14].onFalse(new CoralEffectorStop(coralEffector));
 
-    // coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber));
-    // coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
-
-    // coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber));
-
-    coP[9].onTrue(new CoralEffectorOuttake(coralEffector));
-    coP[10].onTrue(new CoralEffectorIntakeEnhanced(coralEffector));
-
-    coP[11].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
-    coP[12].onTrue(new AlgaeGrabberIntake(algaeGrabber));
-
-    coP[15].onTrue(new HopperSetPercent(HopperConstants.reverseIntakePercent, hopper));
-    coP[15].onFalse(new HopperStop(hopper));
-
-    // 180 if we are red, 0 if we are blue
+    // Reset Pose
     coP[7].onTrue(either(
-        new DriveResetPose(180, false, driveTrain), 
-        new DriveResetPose(0, false, driveTrain), 
-        () -> allianceSelection.getAlliance() == Alliance.Red));
+      new DriveResetPose(180, false, driveTrain), 
+      new DriveResetPose(0, false, driveTrain), 
+      () -> allianceSelection.getAlliance() == Alliance.Red));
+
+    // Release Game Piece Commands
+    coP[15].onTrue(new CoralEffectorOuttake(coralEffector));
+    coP[16].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
+
+    // Manual Calibration Commands
+    coP[17].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator));
+    coP[18].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
+
+    // Algae Grabber Commands
+    coP[19].onTrue(new AlgaeGrabberIntake(algaeGrabber));
+    coP[20].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
   }
 
   private void configureTriggers() {
