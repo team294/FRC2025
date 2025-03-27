@@ -33,8 +33,8 @@ public class AutoSelection {
 	public enum RoutineSelectionOption {
 		NONE("None", -1),
 
-		DriveForwardOneMeter("DriveForwardTwoMeters", 1),
-		BargeToE("BargeToE", 10), // TODO remove test auto
+		DriveForwardOneMeter("DriveForwardOneMeter", 10),
+		BargeToE("BargeToE", 10), // TODO remove test autos
 		Rel4mRotate180("Relative4m-180", 101),
 		RelArcLeft("RelativeArcLeft", 102),
 		RelStraight4m("RelativeStraight4m", 103),
@@ -200,7 +200,7 @@ public class AutoSelection {
 		}
 
 		else if (autoPlan == RoutineSelectionOption.DriveForwardOneMeter.value) {
-			DataLogUtil.writeLogEcho(true, "AutoSelect", "run DriveForwardTwoMeters");
+			DataLogUtil.writeLogEcho(true, "AutoSelect", "run DriveForwardOneMeter");
 			autonomousCommandMain = new SequentialCommandGroup(
 										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain),
 										new DriveToPose(CoordType.kRelative, new Pose2d(1, 0, new Rotation2d(0)), driveTrain));
