@@ -256,7 +256,7 @@ public final class Constants {
     public static final double ReefScoringPositionAprilTagOffset = 0.164331496063;
 
     public static final double bargeScorableWidth = 3.5; //Width of allianced-specific barge structure (not net) is 3.72 meters, reduced for consistency
-    public static final double bargeScoringOffset = 0.62; //Calibrated 3/29/2025
+    public static final double bargeScoringOffset = 1.067; //Calibrated 3/29/2025
   }
 
   public static class VisionConstants {
