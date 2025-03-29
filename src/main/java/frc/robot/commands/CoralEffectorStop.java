@@ -15,7 +15,6 @@ public class CoralEffectorStop extends Command {
   /**
    * Sets the percent output of the coralEffector to 0 and ends immediately.
    * @param coralEffector CoralEffector subsystem
-   * @param log FileLog utility
    */
   public CoralEffectorStop(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
