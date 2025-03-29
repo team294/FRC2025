@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
@@ -11,7 +13,6 @@ import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorIntake extends Command {
   private final CoralEffector coralEffector;
-  
 
   /**
    * Intake coral into the coralEffector by running the motor until the coral is safely in the mechanism.
@@ -49,6 +50,7 @@ public class CoralEffectorIntake extends Command {
     // if (coralEffector.isCoralPresent()) {
     //   coralEffector.setCoralHoldMode(true);
     // }
+    DataLogUtil.writeMessage("CoralEffectorIntake: End.");
   }
 
   // Returns true when the command should end.

@@ -49,6 +49,8 @@ public class CoralEffectorOuttake extends Command {
     coralEffector.stopCoralEffectorMotor();
     timer.stop();
     timer.reset();
+
+    DataLogUtil.writeMessage("CoralEffectorOuttake: End.");
   }
 
   // Returns true when the command should end.
@@ -58,7 +60,10 @@ public class CoralEffectorOuttake extends Command {
       // If the timer has not been started, start it
       if (!timer.isRunning()) timer.start();
       // Run the motor for slightly longer as a safety measure
-      else if (timer.get() >= seconds) return true;
+      else if (timer.get() >= seconds) {
+        DataLogUtil.writeMessage("CoralEffectorOuttake: IsFinished = true - coral is not present and timer has elapsed for long enough.");
+        return true;
+      }
     }
     return false;
   }

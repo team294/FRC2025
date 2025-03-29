@@ -4,6 +4,11 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
@@ -16,6 +21,10 @@ public class CoralEffectorSetPosition extends Command {
   private final boolean autoHold;
   private double position = 0.0;
   private boolean fromShuffleboard;
+
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogPosition = new DoubleLogEntry(log, "/CoralEffectorSetPosition/Position");
+  private final BooleanLogEntry bLogAutoHold = new BooleanLogEntry(log, "/CoralEffectorSetPosition/AutoHold");
 
   /**
    * Sets the position of the coralEffector from Shuffleboard and ends when it is within tolerance.
@@ -63,7 +72,11 @@ public class CoralEffectorSetPosition extends Command {
     if (fromShuffleboard) position = SmartDashboard.getNumber("CoralEffector Goal Position", 0.0);
     coralEffector.setCoralEffectorPosition(position, autoHold);
 
-    DataLogUtil.writeLog(false, "CoralEffectorSetPosition", "Init", "Set Position", position);
+    long timeNow = RobotController.getFPGATime();
+
+    dLogPosition.append(position, timeNow);
+    bLogAutoHold.append(autoHold, timeNow);
+    DataLogUtil.writeMessage("CoralEffectorSetPosition: Init, Position = ", position, ", Auto Hold = ", autoHold);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -75,7 +88,8 @@ public class CoralEffectorSetPosition extends Command {
   @Override
   public void end(boolean interrupted) {
     coralEffector.enableFastLogging(false);
-    DataLogUtil.writeLog(false, "CoralEffectorSetPosition", "End", "Set Position", position, "Meas Position", coralEffector.getCoralEffectorPosition());
+
+    DataLogUtil.writeMessage("CoralEffectorSetPosition: End, Position = ", position, ", Measured Position = ", coralEffector.getCoralEffectorPosition());
   }
 
   // Returns true when the command should end.
