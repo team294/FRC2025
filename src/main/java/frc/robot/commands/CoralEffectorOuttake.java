@@ -19,7 +19,6 @@ public class CoralEffectorOuttake extends Command {
   /**
    * Outtake coral from the coralEffector by running the motor until the coral is out of the mechanism.
    * @param coralEffector CoralEffector subsystem
-   * @param log FileLog utility
    */
   public CoralEffectorOuttake(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
@@ -34,8 +33,7 @@ public class CoralEffectorOuttake extends Command {
   public void initialize() {
     coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.outtakePercent);
 
-    DataLogUtil.writeLog(false, "CoralEffectorOuttake", "Init",
-      "Coral in", (coralEffector.isCoralPresent() ? "TRUE" : "FALSE"));
+    DataLogUtil.writeMessage("CoralEffectorOuttake: Init, Coral in = ", coralEffector.isCoralPresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,7 +48,7 @@ public class CoralEffectorOuttake extends Command {
     timer.stop();
     timer.reset();
 
-    DataLogUtil.writeMessage("CoralEffectorOuttake: End.");
+    DataLogUtil.writeMessage("CoralEffectorOuttake: End");
   }
 
   // Returns true when the command should end.

@@ -155,8 +155,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Sets the coralEffector motor to hold a specific position.
-   * @param position position to hold, in motor rotations
-   * @param autoHold true = automatically adjust position so that both coral sensors detect the coral.  
+   * @param position position to hold, in motor rotations (+ more towards front of robot, - = more towards hopper)
+   * @param autoHold true = automatically adjust position so that exit coral sensor detects the coral.  
    *   false = hold exact position specified in first parameter.
    */
   public void setCoralEffectorPosition(double position, boolean autoHold) {
