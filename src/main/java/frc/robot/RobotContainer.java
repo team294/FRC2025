@@ -340,8 +340,10 @@ public class RobotContainer {
     coP[10].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber));
 
     // Elevator Commands
-    coP[3].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
+    coP[3].whileTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
+    coP[3].onFalse(new ElevatorStop(elevator));
     coP[4].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
+    coP[4].onFalse(new ElevatorStop(elevator));
 
     // Wrist Commands
     coP[11].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
@@ -350,6 +352,8 @@ public class RobotContainer {
     // Hopper Commands
     coP[5].onTrue(new HopperSetPercent(-HopperConstants.reverseIntakePercent, hopper));
     coP[5].onFalse(new HopperStop(hopper));
+    coP[6].onTrue(new HopperSetPercent(HopperConstants.reverseIntakePercent, hopper));
+    coP[6].onFalse(new HopperStop(hopper));
 
     // Coral Commands
     coP[13].onTrue(new CoralEffectorSetPercent(CoralEffectorConstants.intakePercent, coralEffector));
@@ -372,8 +376,10 @@ public class RobotContainer {
     coP[18].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
 
     // Algae Grabber Commands
-    coP[19].onTrue(new AlgaeGrabberIntake(algaeGrabber));
-    coP[20].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
+    coP[19].onTrue(new AlgaeGrabberSetPercent(AlgaeGrabberConstants.intakePercent, algaeGrabber));
+    coP[19].onFalse(new AlgaeGrabberStop(algaeGrabber));
+    coP[20].onTrue(new AlgaeGrabberSetPercent(AlgaeGrabberConstants.outtakePercent, algaeGrabber));
+    coP[20].onFalse(new AlgaeGrabberStop(algaeGrabber));
   }
 
   private void configureTriggers() {
