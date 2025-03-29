@@ -12,16 +12,16 @@ import frc.robot.subsystems.LED;
 import frc.robot.subsystems.LED.StripEvents;
 
 
-public class CANdleRainbowAnimation extends Command {
+public class LEDRainbowAnimation extends Command {
   private LED led;
   private LEDSegmentRange segment;
 
   /**
    * Creates a new CANdle rainbow animation that runs until it is interrupted.
-   * @param led LEDd subsystem
+   * @param led LED subsystem
    * @param segment segment to show animation
    */
-  public CANdleRainbowAnimation(LED led, LEDSegmentRange segment) {
+  public LEDRainbowAnimation(LED led, LEDSegmentRange segment) {
     this.led = led;
     this.segment = segment;
     addRequirements(led);

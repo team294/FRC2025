@@ -17,8 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BCRColor;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
-import frc.robot.commands.CANdleBCRAnimation;
-import frc.robot.commands.CANdleRainbowAnimation;
+import frc.robot.commands.LEDRainbowAnimation;
 import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.LEDSegment;
 import frc.robot.utilities.RobotPreferences;
@@ -169,14 +168,24 @@ public class LED extends SubsystemBase {
         updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
         break;
       case AUTO_DRIVE_IN_PROGRESS:
-        RainbowAnimation anim = new RainbowAnimation(); //todo numbers
+        RainbowAnimation anim = new RainbowAnimation(0.5, 0.7, LEDSegmentRange.StripAll.count, false, LEDSegmentRange.StripAll.index); //todo numbers
+        animate(anim);
+        break;
       case ALGAE_MODE:
-        // solid teal when holding, flashing when intaking
+        // solid teal when holding algae
+        break;
+      case ALGAE_INTAKING:
+        // flashing teal
+        break;
       case CORAL_MODE:
-        // solid purple when holding only coral, flashing when intaking
+        // solid purple when holding ONLY coral
+        break;
+      case CORAL_INTAKING:
+        // flashing purple
+        break;
       case ROBOT_DISABLED:
-        // TODO test CANdleBCRAnimation and figure out how to use it here
-        // new CANdleBCRAnimation(this, log);
+        //TODO make groups of 2 leds orange/blue and move 1 at a time (makes more sense in my head - cameron)
+        break;
       default:
         clearAnimation();
         updateLEDs(BCRColor.NEUTRAL, true);
@@ -211,64 +220,6 @@ public class LED extends SubsystemBase {
    */
   public void animate(Animation anim) {
     candle.animate(anim);
-  }
-
-  /**
-   * Create a pattern based on the segment, leds per gap, and current game object mode
-   * @param pattern 1D array of Color objects - each index represents the color of 1 individual LED
-   * @param segment LEDSegmentRange constant segment to create pattern for
-   * @param ledPerGap # of LEDs 
-   * @param algaeMode true = algae mode, false = coral mode
-   * @return 1D array of Color objects corresponding to the event
-   */
-  public Color[] setLEDsScoringPattern(Color[] pattern, LEDSegmentRange segment, int ledPerGap, boolean algaeMode) {
-    int count = 0;            // # of LEDs
-    int firstGap = -9999;     // LED # for 1st gap
-    int secondGap = -9999;    // LED # for 2nd gap
-    int thirdGap = -9999;     // LED # for 3rd gap
-
-    switch (segment) {
-      case StripLeftSection1:
-        count = LEDSegmentRange.StripLeftSection1.count;
-        break;
-      case StripLeftSection2:
-        count = LEDSegmentRange.StripLeftSection2.count;
-        // two chunks of LEDs, one gap - 1/2
-        firstGap = count / 2;
-        break;
-      case StripLeftSection3:
-        count = LEDSegmentRange.StripLeftSection3.count;
-        // three chunks of LEDs, two gaps - 1/3 and 2/3
-        firstGap = count / 3;
-        secondGap = count * 2 / 3;
-        break;
-      case StripLeftSection4:
-        count = LEDSegmentRange.StripLeftSection4.count;
-        // four chunks of LEDs, three gaps - 1/4, 2/4, and 3/4
-        firstGap = count / 4;
-        secondGap = count / 2;
-        thirdGap = count * 3 / 4;
-        break;
-      default:
-        break;
-    }
-
-    // set each index of the pattern to the correct color
-    for (int i = 0; i < count; i++) {
-      // set the first index of the gap to black, as well as additional indices as specified by ledPerGap
-      if (i == firstGap || i == secondGap || i == thirdGap) {
-        for (int j = 0; j < ledPerGap; j++) {
-          pattern[i + j] = new Color(0, 0, 0);
-        }
-        i += ledPerGap; // increment i by ledPerGap to avoid overriding the gap with a color other than black
-      } else {
-        // if in algae mode, set to algae color. if in coral mode, set to coral color.
-        if (algaeMode) pattern[i] = new Color(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b);
-        else pattern[i] = new Color(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b);
-      }
-    }
-
-    return pattern;
   }
 
   /**
