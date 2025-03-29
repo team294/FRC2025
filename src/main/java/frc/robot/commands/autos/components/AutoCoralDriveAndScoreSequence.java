@@ -27,7 +27,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
-   * @param Hopper Hopper subsystem
+   * @param algaeGrabber AlgaeGrabber subsystem
    * @param alliance AllianceSelection alliance
    * @param cache TrajectoryCache cache
    * @param log FileLog log

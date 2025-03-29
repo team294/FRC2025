@@ -46,6 +46,7 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
    * @param alliance AllianceSelection alliance 
+   * @param cache TrajectoryCache cache
    * @param log FileLog log
    */
   public AutoDriveToHPAndPrep(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
