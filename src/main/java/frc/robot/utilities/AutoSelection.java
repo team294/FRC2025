@@ -34,7 +34,7 @@ public class AutoSelection {
 		NONE("None", -1),
 
 		DriveForwardOneMeter("DriveForwardOneMeter", 10),
-		BargeToE("BargeToE", 10), // TODO remove test autos
+		BargeToE("BargeToE", 107), // TODO remove test autos
 		Rel4mRotate180("Relative4m-180", 101),
 		RelArcLeft("RelativeArcLeft", 102),
 		RelStraight4m("RelativeStraight4m", 103),

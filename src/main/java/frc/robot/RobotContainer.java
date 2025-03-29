@@ -437,7 +437,7 @@ public class RobotContainer {
     DataLogUtil.writeLogEcho(true, "Auto", "Mode Init");
 
     driveTrain.setDriveModeCoast(false);
-    driveTrain.setVisionForOdometryState(true);
+    driveTrain.setVisionForOdometryState(false);
 
     // NOTE: Do not reset the gyro or encoder here!
     // The first command in auto mode initializes before this code is run, and

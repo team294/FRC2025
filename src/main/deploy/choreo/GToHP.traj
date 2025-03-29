@@ -14,7 +14,7 @@
  },
  "params":{
   "waypoints":[
-    {"x":{"exp":"r_G.x", "val":6.078982}, "y":{"exp":"r_G.y", "val":3.89361680029007}, "heading":{"exp":"r_G.heading", "val":3.141592654}, "intervals":33, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"r_G.x", "val":0.0}, "y":{"exp":"r_G.y", "val":0.0}, "heading":{"exp":"r_G.heading", "val":0.0}, "intervals":33, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":{"exp":"7.104680061340332 m", "val":7.104680061340332}, "y":{"exp":"2.8512933254241943 m", "val":2.8512933254241943}, "heading":{"exp":"0 deg", "val":0.0}, "intervals":49, "split":false, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false},
     {"x":{"exp":"HP.x", "val":1.35479998588562}, "y":{"exp":"HP.y", "val":0.8316221833229065}, "heading":{"exp":"HP.heading", "val":0.96}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
   "constraints":[

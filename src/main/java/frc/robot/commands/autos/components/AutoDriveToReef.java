@@ -72,7 +72,7 @@ public class AutoDriveToReef extends SequentialCommandGroup {
       parallel(
         new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
         // Drives the trajectory, cutting it off 0.3 seconds before it ends
-        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance).withTimeout(trajectory.getTotalTime() - 0.3)
+        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance)//.withTimeout(trajectory.getTotalTime() - 0.3)
       ),
 
       new DataLogMessage(false, "AutoDriveToReef: Start, trajectory =", trajectory.name())
