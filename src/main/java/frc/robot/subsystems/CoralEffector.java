@@ -111,7 +111,6 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     coralEffectorConfig.Slot0.kD = 0.0;       // kD = (desired-output-volts) / [(error-in-encoder-rotations) / (seconds)]
 
     // Configure encoder to user for feedback
-    // coralEffectorConfig.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.Commutation;
     coralEffectorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     coralEffectorConfig.Feedback.RotorToSensorRatio = 1.0;
     coralEffectorConfig.Feedback.SensorToMechanismRatio = 1.0;
