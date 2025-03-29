@@ -136,22 +136,17 @@ public class RobotContainer {
 
     // Wrist
     SmartDashboard.putData("Wrist STOP", new WristStop(wrist));
+    SmartDashboard.putData("Wrist Up", new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
+    SmartDashboard.putData("Wrist Down", new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
     SmartDashboard.putData("Wrist Set Percent", new WristSetPercent(wrist));
     SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist));
     SmartDashboard.putData("Wrist Cal. to START CONFIG", new WristCalibrateManual(ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
     SmartDashboard.putData("Wrist Calibrate Ramp", new WristCalibrationRamp(0.01, 0.2, wrist));
 
     // Elevator
+    SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator));
     SmartDashboard.putData("Elevator Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
     SmartDashboard.putData("Elevator Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
-    SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator));
-    SmartDashboard.putData("Elevator Move To 20 In", new ElevatorSetPosition(20.0, elevator));
-    SmartDashboard.putData("Elevator Move To 65 In", new ElevatorSetPosition(65.0, elevator));
-    SmartDashboard.putData("Elevator Move to HP", new ElevatorSetPosition(ElevatorWristPosition.CORAL_HP, elevator));
-    SmartDashboard.putData("Elevator Move to L1", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L1, elevator));
-    SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L2, elevator));
-    SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L3, elevator));
-    SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L4, elevator));
     SmartDashboard.putData("Elevator Calibration Routine", new ElevatorCalibration(0.1, elevator));
     SmartDashboard.putData("Elevator Set Position", new ElevatorSetPosition(elevator));
 
@@ -187,8 +182,19 @@ public class RobotContainer {
     SmartDashboard.putData("Coral Score Prep Sequence L3", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber));
     SmartDashboard.putData("Coral Score Prep Sequence L4", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber));
 
+    SmartDashboard.putData("Stow Elevator and Wrist", new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist));
+
     // SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
     // SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
+
+    // Stop All Motors
+    SmartDashboard.putData("Stop All Motors", parallel(
+      new HopperStop(hopper),
+      new AlgaeGrabberStop(algaeGrabber),
+      new CoralEffectorStop(coralEffector),
+      new WristStop(wrist),
+      new ElevatorStop(elevator)
+    ));
   }
  
    private void configureButtonBindings() {
@@ -327,38 +333,53 @@ public class RobotContainer {
 
     // ex: coP[1].onTrue(new command);
     
-    coP[1].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
-    coP[2].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
+    // Elevator and Wrist Commands
+    coP[1].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber));
+    coP[2].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber));
+    coP[9].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber));
+    coP[10].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber));
 
-    coP[20].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator));
+    // Elevator Commands
+    coP[3].whileTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
+    coP[3].onFalse(new ElevatorStop(elevator));
+    coP[4].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
+    coP[4].onFalse(new ElevatorStop(elevator));
 
-    coP[3].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
-    coP[4].whileTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
+    // Wrist Commands
+    coP[11].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
+    coP[12].whileTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
 
-    coP[16].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
+    // Hopper Commands
+    coP[5].onTrue(new HopperSetPercent(-HopperConstants.reverseIntakePercent, hopper));
+    coP[5].onFalse(new HopperStop(hopper));
+    coP[6].onTrue(new HopperSetPercent(HopperConstants.reverseIntakePercent, hopper));
+    coP[6].onFalse(new HopperStop(hopper));
 
-    // coP[5].whileTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber));
-    // coP[6].whileTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber));
+    // Coral Commands
+    coP[13].onTrue(new CoralEffectorSetPercent(CoralEffectorConstants.intakePercent, coralEffector));
+    coP[13].onFalse(new CoralEffectorStop(coralEffector));
+    coP[14].onTrue(new CoralEffectorSetPercent(-CoralEffectorConstants.intakePercent, coralEffector));
+    coP[14].onFalse(new CoralEffectorStop(coralEffector));
 
-    // coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber));
-    // coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
-
-    // coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber));
-
-    coP[9].onTrue(new CoralEffectorOuttake(coralEffector));
-    coP[10].onTrue(new CoralEffectorIntakeEnhanced(coralEffector));
-
-    coP[11].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
-    coP[12].onTrue(new AlgaeGrabberIntake(algaeGrabber));
-
-    coP[15].onTrue(new HopperSetPercent(HopperConstants.reverseIntakePercent, hopper));
-    coP[15].onFalse(new HopperStop(hopper));
-
-    // 180 if we are red, 0 if we are blue
+    // Reset Pose
     coP[7].onTrue(either(
-        new DriveResetPose(180, false, driveTrain), 
-        new DriveResetPose(0, false, driveTrain), 
-        () -> allianceSelection.getAlliance() == Alliance.Red));
+      new DriveResetPose(180, false, driveTrain), 
+      new DriveResetPose(0, false, driveTrain), 
+      () -> allianceSelection.getAlliance() == Alliance.Red));
+
+    // Release Game Piece Commands
+    coP[15].onTrue(new CoralEffectorOuttake(coralEffector));
+    coP[16].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
+
+    // Manual Calibration Commands
+    coP[17].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator));
+    coP[18].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
+
+    // Algae Grabber Commands
+    coP[19].onTrue(new AlgaeGrabberSetPercent(AlgaeGrabberConstants.intakePercent, algaeGrabber));
+    coP[19].onFalse(new AlgaeGrabberStop(algaeGrabber));
+    coP[20].onTrue(new AlgaeGrabberSetPercent(AlgaeGrabberConstants.outtakePercent, algaeGrabber));
+    coP[20].onFalse(new AlgaeGrabberStop(algaeGrabber));
   }
 
   private void configureTriggers() {
