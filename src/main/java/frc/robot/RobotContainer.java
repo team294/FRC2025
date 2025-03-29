@@ -136,22 +136,17 @@ public class RobotContainer {
 
     // Wrist
     SmartDashboard.putData("Wrist STOP", new WristStop(wrist));
+    SmartDashboard.putData("Wrist Up", new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
+    SmartDashboard.putData("Wrist Down", new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
     SmartDashboard.putData("Wrist Set Percent", new WristSetPercent(wrist));
     SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist));
     SmartDashboard.putData("Wrist Cal. to START CONFIG", new WristCalibrateManual(ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
     SmartDashboard.putData("Wrist Calibrate Ramp", new WristCalibrationRamp(0.01, 0.2, wrist));
 
     // Elevator
+    SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator));
     SmartDashboard.putData("Elevator Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
     SmartDashboard.putData("Elevator Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
-    SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator));
-    SmartDashboard.putData("Elevator Move To 20 In", new ElevatorSetPosition(20.0, elevator));
-    SmartDashboard.putData("Elevator Move To 65 In", new ElevatorSetPosition(65.0, elevator));
-    SmartDashboard.putData("Elevator Move to HP", new ElevatorSetPosition(ElevatorWristPosition.CORAL_HP, elevator));
-    SmartDashboard.putData("Elevator Move to L1", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L1, elevator));
-    SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L2, elevator));
-    SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L3, elevator));
-    SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L4, elevator));
     SmartDashboard.putData("Elevator Calibration Routine", new ElevatorCalibration(0.1, elevator));
     SmartDashboard.putData("Elevator Set Position", new ElevatorSetPosition(elevator));
 

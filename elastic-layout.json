@@ -48,9 +48,9 @@
           },
           {
             "title": "Alliance",
-            "x": 384.0,
-            "y": 0.0,
-            "width": 256.0,
+            "x": 0.0,
+            "y": 256.0,
+            "width": 384.0,
             "height": 256.0,
             "type": "List Layout",
             "properties": {
@@ -105,8 +105,8 @@
           },
           {
             "title": "Wrist Calibration",
-            "x": 0.0,
-            "y": 256.0,
+            "x": 1280.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 384.0,
             "type": "List Layout",
@@ -165,10 +165,10 @@
           },
           {
             "title": "Game Pieces",
-            "x": 640.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
+            "x": 1280.0,
+            "y": 384.0,
+            "width": 512.0,
+            "height": 256.0,
             "type": "List Layout",
             "properties": {
               "label_position": "HIDDEN"
@@ -211,9 +211,9 @@
             ]
           },
           {
-            "title": "Climber Calibration",
-            "x": 256.0,
-            "y": 256.0,
+            "title": "Elevator Calibration",
+            "x": 1536.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 384.0,
             "type": "List Layout",
@@ -222,14 +222,14 @@
             },
             "children": [
               {
-                "title": "Climber Calibrated",
+                "title": "Elev Calibrated",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Boolean Box",
                 "properties": {
-                  "topic": "/SmartDashboard/Climber calibrated",
+                  "topic": "/SmartDashboard/Elev Calibrated",
                   "period": 0.06,
                   "data_type": "boolean",
                   "true_color": 4283215696,
@@ -239,14 +239,14 @@
                 }
               },
               {
-                "title": "Climber Using CANcoder",
+                "title": "Elev Lower Limit",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Boolean Box",
                 "properties": {
-                  "topic": "/SmartDashboard/Climber Using CANcoder",
+                  "topic": "/SmartDashboard/Elev Lower Limit",
                   "period": 0.06,
                   "data_type": "boolean",
                   "true_color": 4283215696,
@@ -256,14 +256,14 @@
                 }
               },
               {
-                "title": "Climber Cal. to START CONFIG",
+                "title": "Elev. Cal. to BOTTOM",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Climber Cal. to START CONFIG",
+                  "topic": "/SmartDashboard/Elevator Calibration Routine",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -274,8 +274,8 @@
         "containers": [
           {
             "title": "No Problems Exists",
-            "x": 1024.0,
-            "y": 128.0,
+            "x": 384.0,
+            "y": 512.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -290,26 +290,56 @@
             }
           },
           {
-            "title": "Prefs Init",
-            "x": 1280.0,
-            "y": 0.0,
-            "width": 128.0,
+            "title": "Clear Sticky Faults",
+            "x": 1024.0,
+            "y": 512.0,
+            "width": 256.0,
             "height": 128.0,
-            "type": "Boolean Box",
+            "type": "Command",
             "properties": {
-              "topic": "/SmartDashboard/RobotPrefs Initialized",
+              "topic": "/SmartDashboard/Clear Sticky Faults",
               "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294901760,
-              "true_icon": "None",
-              "false_icon": "None"
+              "show_type": false
+            }
+          },
+          {
+            "title": "Problem Subsystem(s)",
+            "x": 640.0,
+            "y": 512.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/problemSubsystem",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Field",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 896.0,
+            "height": 512.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/Field",
+              "period": 0.06,
+              "field_game": "Reefscape",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295
             }
           },
           {
             "title": "Gyro Reading",
-            "x": 1280.0,
-            "y": 128.0,
+            "x": 128.0,
+            "y": 512.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -324,61 +354,31 @@
             }
           },
           {
-            "title": "Clear Sticky Faults",
-            "x": 640.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/Clear Sticky Faults",
-              "period": 0.06,
-              "show_type": false
-            }
-          },
-          {
-            "title": "Problem Subsystem(s)",
-            "x": 896.0,
-            "y": 0.0,
-            "width": 384.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/problemSubsystem",
-              "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Field",
-            "x": 512.0,
-            "y": 256.0,
-            "width": 896.0,
-            "height": 384.0,
-            "type": "Field",
-            "properties": {
-              "topic": "/SmartDashboard/Field",
-              "period": 0.06,
-              "field_game": "Crescendo",
-              "robot_width": 0.85,
-              "robot_length": 0.85,
-              "show_other_objects": true,
-              "show_trajectories": true,
-              "field_rotation": 0.0,
-              "robot_color": 4294198070,
-              "trajectory_color": 4294967295
-            }
-          },
-          {
             "title": "Camera OK",
-            "x": 896.0,
-            "y": 128.0,
+            "x": 256.0,
+            "y": 512.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/SmartDashboard/PhotonVision Connected",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294901760,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Prefs Init",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/RobotPrefs Initialized",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -396,7 +396,7 @@
         "layouts": [
           {
             "title": "Back Swerve Modules",
-            "x": 0.0,
+            "x": 256.0,
             "y": 0.0,
             "width": 256.0,
             "height": 512.0,
@@ -1174,7 +1174,7 @@
           },
           {
             "title": "Front Swerve Modules",
-            "x": 256.0,
+            "x": 0.0,
             "y": 0.0,
             "width": 256.0,
             "height": 512.0,
@@ -1376,8 +1376,8 @@
           },
           {
             "title": "Coral Effector",
-            "x": 256.0,
-            "y": 0.0,
+            "x": 0.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 384.0,
             "type": "List Layout",
@@ -1445,13 +1445,13 @@
           },
           {
             "title": "Hopper",
-            "x": 1280.0,
-            "y": 512.0,
+            "x": 256.0,
+            "y": 0.0,
             "width": 256.0,
-            "height": 256.0,
+            "height": 384.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "HIDDEN"
+              "label_position": "TOP"
             },
             "children": [
               {
@@ -1496,8 +1496,8 @@
             ]
           },
           {
-            "title": "Climber",
-            "x": 1280.0,
+            "title": "Elevator",
+            "x": 512.0,
             "y": 0.0,
             "width": 256.0,
             "height": 512.0,
@@ -1507,85 +1507,18 @@
             },
             "children": [
               {
-                "title": "Climber STOP",
+                "title": "Elevator STOP",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Climber STOP",
+                  "topic": "/SmartDashboard/Elevator STOP",
                   "period": 0.06,
                   "show_type": false
                 }
               },
-              {
-                "title": "Climber Set Angle",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber target angle",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Climber Set Angle to Target",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Set Angle",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Climber Set Percent",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Set Percent",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Climber Set Percent to Target",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Set Percent",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "Elevator",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 896.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "HIDDEN"
-            },
-            "children": [
               {
                 "title": "Elevator Up",
                 "x": 896.0,
@@ -1613,92 +1546,28 @@
                 }
               },
               {
-                "title": "Elevator STOP",
+                "title": "Goal Pos",
                 "x": 0.0,
                 "y": 0.0,
-                "width": 256.0,
+                "width": 128.0,
                 "height": 128.0,
-                "type": "Command",
+                "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Elevator STOP",
+                  "topic": "/SmartDashboard/Elevator Goal Position",
                   "period": 0.06,
-                  "show_type": false
+                  "data_type": "double",
+                  "show_submit_button": true
                 }
               },
               {
-                "title": "Move to 20 inches",
+                "title": " Elevator Set Position to Goal",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
                 "height": 128.0,
                 "type": "Command",
                 "properties": {
-                  "topic": "/SmartDashboard/Elevator Move To 20 In",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Move to HP",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator Move to HP",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Move to L1",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator Move to L1",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Move to L2",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator Move To L2",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Move to L3",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator Move To L3",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Move to L4",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator Move To L4",
+                  "topic": "/SmartDashboard/Elevator Set Position",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -1841,8 +1710,8 @@
           },
           {
             "title": "Wrist Readings",
-            "x": 0.0,
-            "y": 384.0,
+            "x": 1280.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 512.0,
             "type": "List Layout",
@@ -1960,178 +1829,11 @@
             ]
           },
           {
-            "title": "Climber Readings",
-            "x": 256.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 512.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "LEFT"
-            },
-            "children": [
-              {
-                "title": "Climber Enc Raw",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber encoder raw",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Climber CC Raw",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber CANcoder raw",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Climber Target",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber target angle",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Climber Angle",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber angle",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "Climber Cal",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber calibrated",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "Climber Using CC",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Using CANcoder",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "Climber CC Conn",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber CANcoder connected",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              }
-            ]
-          },
-          {
-            "title": "Coral Effector Sensors",
-            "x": 512.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "LEFT"
-            },
-            "children": [
-              {
-                "title": "In Entry",
-                "x": 640.0,
-                "y": 640.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Coral in Entry",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              },
-              {
-                "title": "In Exit",
-                "x": 896.0,
-                "y": 768.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Boolean Box",
-                "properties": {
-                  "topic": "/SmartDashboard/Coral in Exit",
-                  "period": 0.06,
-                  "data_type": "boolean",
-                  "true_color": 4283215696,
-                  "false_color": 4294198070,
-                  "true_icon": "None",
-                  "false_icon": "None"
-                }
-              }
-            ]
-          },
-          {
             "title": "Wrist",
-            "x": 512.0,
+            "x": 768.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 512.0,
+            "height": 768.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -2151,7 +1853,33 @@
                 }
               },
               {
-                "title": "Wrist Set Angle",
+                "title": "Wrist Up",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Up",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Wrist Down",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Wrist Down",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Wrist Goal Angle",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
@@ -2165,7 +1893,7 @@
                 }
               },
               {
-                "title": "Wrist Set Angle to Target",
+                "title": "Wrist Set Angle to Goal",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -2178,7 +1906,7 @@
                 }
               },
               {
-                "title": "Wrist Set Percent",
+                "title": "Wrist Goal Percent",
                 "x": 512.0,
                 "y": 384.0,
                 "width": 128.0,
@@ -2192,7 +1920,7 @@
                 }
               },
               {
-                "title": "Wrist Set Percent to Target",
+                "title": "Wrist Set Percent to Goal",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 256.0,
@@ -2202,46 +1930,6 @@
                   "topic": "/SmartDashboard/Wrist Set Percent",
                   "period": 0.06,
                   "show_type": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "Elev Set Position",
-            "x": 1024.0,
-            "y": 640.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "LEFT"
-            },
-            "children": [
-              {
-                "title": " ",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator Set Position",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Goal Pos",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Elevator Goal Position",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
                 }
               }
             ]
@@ -2404,45 +2092,6 @@
                 "type": "Command",
                 "properties": {
                   "topic": "/SmartDashboard/Coral Score Prep Sequence L4",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "Climber Sequences (Moves Multiple Subsystems)",
-            "x": 768.0,
-            "y": 256.0,
-            "width": 384.0,
-            "height": 256.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "HIDDEN"
-            },
-            "children": [
-              {
-                "title": "Climber Prep Sequence",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Prep Sequence",
-                  "period": 0.06,
-                  "show_type": false
-                }
-              },
-              {
-                "title": "Climber Set Angle to Lift",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 256.0,
-                "height": 128.0,
-                "type": "Command",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber Set Angle to Lift",
                   "period": 0.06,
                   "show_type": false
                 }
