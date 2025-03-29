@@ -124,7 +124,7 @@ public final class Constants {
     public static final double kEncoderCPR = 1.0;                                              // CALIBRATED Encoder counts per revolution of motor pinion gear
     public static final double kDriveGearRatio = (5.90 / 1.0);                                 // CALIBRATED Mk4n = 5.90:1 (L2+)
     public static final double kTurningGearRatio = (18.75 / 1.0);                              // CALIBRATED Mk4n = 18.75:1
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9683;        // CALIBRATED Wheels are nominal 4"
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9554;        // CALIBRATED Wheels are nominal 4".  LAR was 0.9683, AVR is 0.9554
     public static final double kDriveEncoderMetersPerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR / kDriveGearRatio;
     public static final double kTurningEncoderDegreesPerTick = 360.0 / kEncoderCPR / kTurningGearRatio;
   
