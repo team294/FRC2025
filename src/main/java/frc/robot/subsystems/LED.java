@@ -57,12 +57,14 @@ public class LED extends SubsystemBase {
   private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
   static {
     prioritiesStripEvents.put(StripEvents.CORAL_MODE, 0);
+    prioritiesStripEvents.put(StripEvents.CORAL_INTAKING, 0);
     prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 1);
+    prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 1);
     prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 2);
-    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 3);
-    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 4);
-    prioritiesStripEvents.put(StripEvents.SUBSYSTEM_UNCALIBRATED, 5);
-    prioritiesStripEvents.put(StripEvents.NEUTRAL, 6);
+    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 2);
+    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 3);
+    prioritiesStripEvents.put(StripEvents.SUBSYSTEM_UNCALIBRATED, 4);
+    prioritiesStripEvents.put(StripEvents.NEUTRAL, 5);
   }
 
   /**
