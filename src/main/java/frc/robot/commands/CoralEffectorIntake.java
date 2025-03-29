@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
@@ -17,7 +15,6 @@ public class CoralEffectorIntake extends Command {
   /**
    * Intake coral into the coralEffector by running the motor until the coral is safely in the mechanism.
    * @param coralEffector CoralEffector subsystem
-   * @param log FileLog utility
    */
   public CoralEffectorIntake(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
@@ -29,12 +26,11 @@ public class CoralEffectorIntake extends Command {
   @Override
   public void initialize() {
     // If there is no coral present or the coral is not safely in the mechanism, run the motor
-    if (!coralEffector.isCoralPresent() || !coralEffector.isCoralSafelyIn()) {
+    if (!coralEffector.isCoralPresent()) {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.intakePercent); 
     }
 
-    DataLogUtil.writeMessage("CoralEffectorIntake: Init, Coral in Entry = ", coralEffector.isCoralPresentInEntry(),
-      ", Coral in Exit = ", coralEffector.isCoralPresentInExit());
+    DataLogUtil.writeMessage("CoralEffectorIntake: Init, Coral in = ", coralEffector.isCoralPresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,12 +46,12 @@ public class CoralEffectorIntake extends Command {
     // if (coralEffector.isCoralPresent()) {
     //   coralEffector.setCoralHoldMode(true);
     // }
-    DataLogUtil.writeMessage("CoralEffectorIntake: End.");
+    DataLogUtil.writeMessage("CoralEffectorIntake: End");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return coralEffector.isCoralSafelyIn();
+    return coralEffector.isCoralPresent();
   }
 }

@@ -82,7 +82,6 @@ public final class Constants {
     public static final int DIOElevatorLowerLimitSensor2 = 0; // Left
     public static final int DIOAlgaeGrabberBumpSwitch = 2;
     public static final int DIOCoralEffectorExitSensor = 3;
-    public static final int DIOCoralEffectorEntrySensor = 4;
   }
 
   public static final class OIConstants {
@@ -124,7 +123,7 @@ public final class Constants {
     public static final double kEncoderCPR = 1.0;                                              // CALIBRATED Encoder counts per revolution of motor pinion gear
     public static final double kDriveGearRatio = (5.90 / 1.0);                                 // CALIBRATED Mk4n = 5.90:1 (L2+)
     public static final double kTurningGearRatio = (18.75 / 1.0);                              // CALIBRATED Mk4n = 18.75:1
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9683;        // CALIBRATED Wheels are nominal 4"
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9554;        // CALIBRATED Wheels are nominal 4".  LAR was 0.9683, AVR is 0.9554
     public static final double kDriveEncoderMetersPerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR / kDriveGearRatio;
     public static final double kTurningEncoderDegreesPerTick = 360.0 / kEncoderCPR / kTurningGearRatio;
   
@@ -152,7 +151,7 @@ public final class Constants {
     public static final double kNominalAngularAccelerationRadiansPerSecondSquared = Math.PI;
 
     // CALIBRATED
-    public static final double kVDriveAvg = 2.251;  // In voltage per meters/second
+    public static final double kVDriveAvg = 2.392;  // In voltage per meters/second    LAR was 2.251 (FOC off), AVR is 2.392 (FOC on)
     private static final double kVmFLrel = 1.0;     // kV modifier for FL drive motor
     private static final double kVmFRrel = 1.0;     // kV modifier for FR drive motor
     private static final double kVmBLrel = 1.0;     // kV modifier for BL drive motor
@@ -166,9 +165,9 @@ public final class Constants {
     public static final double kVmBR = kVmBRrel / kVmAvg;
 
     public static final double dt = 0.02;             // CALIBRATED Timestep for discretizing robot motion, in seconds (scheduler time period = 20ms)
-    public static final double kADrive = 0.2692;      // CALIBRATED In voltage per meters per second^2
+    public static final double kADrive = 0.2383;      // CALIBRATED In voltage per meters per second^2   LAR was 0.2692 (FOC off), AVR is 0.2383 (FOC on)
     public static final double kADriveToPose = 0.050; // CALIBRATED on ETU in 3/2/2025 In seconds (On the ETU, DriveToPose behaves better with a small value for kADriveToPose)
-    public static final double kSDrive = 0.030;       // CALIBRATED In voltage
+    public static final double kSDrive = 0.141;       // CALIBRATED In voltage      LAR was 0.030 (FOC off), AVR is 0.141 (FOC on)
 
     // Minimum abs delta (in m/sec) between actual wheel velocity and desired wheel velocity for kADrive to be applied.
     // If the delta is less than this, then don't use kADrive. This prevents the drive motors from jittering.
@@ -326,7 +325,7 @@ public final class Constants {
     public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
     public static final double outtakePercent = 0.4;      // CALIBRATED
 
-    public static final double centerRotationsOvershoot = 0.0;  // CALIBRATED #3  Measure the typical overshoot with kP.
+    public static final double centerRotationsUndershoot = 1.0;  // CALIBRATED #3  Measure the typical undershoot with kP.  This value (in motor rotataions) will be added to the encoder reading when the coral sensor is triggered.
     public static final double centeringTolerance = 0.07;  // CALIBRATED #1  Position tolerance (in rotations) for holding coral [smaller than 1/2 of the position window where both sensors see the coral]
     public static final double centeringStepSize = centeringTolerance * 0.5; // #4 If the autoHold oscillates (not setPosition oscillating), then reduce this step size.
 
@@ -339,8 +338,9 @@ public final class Constants {
 
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.4;   // CALIBRATED
-    public static final double outtakePercent = -1.0; // CALIBRATED
+    public static final double intakePercent = 0.4;             // CALIBRATED 3/29
+    public static final double netOuttakePercent = -0.50;       // CALIBRATED 3/29
+    public static final double processorOuttakePercent = -0.15; // CALIBRATED 3/29
   }
 
   public static final class ElevatorConstants {
@@ -380,10 +380,10 @@ public final class Constants {
     // Should be updated in RobotPreferences, so it cannot be final
     // When wrist CG (with coral) is vertical, wrist angle should read 90.0 degrees.
     // When wrist coral top metal plate is horizontal (bubble level), wrist angle should read 100.6 degrees
-    public static double offsetAngleCANcoder = 27.0;                 // CALIBRATED.   CANCoder raw angle (in degrees) when arm is at 0 degrees.
+    public static double offsetAngleCANcoder = -31.5;                 // CALIBRATED.   CANCoder raw angle (in degrees) when arm is at 0 degrees.
 
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
-    public static double cancoderDiscontinuityPoint = 0.68;          // CALIBRATED - should be the center of the region of unallowed motion
+    public static double cancoderDiscontinuityPoint = 0.50;          // CALIBRATED - should be the center of the region of unallowed motion
 
     public static final double kP = 40.0;    // CALIBRATED    kP = (desired-output-volts) / (error-in-wrist-rotations)
     public static final double kI = 0.0;    // CALIBRATED
@@ -416,15 +416,15 @@ public final class Constants {
       CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
       CORAL_L3(40.28, 65.0),
-      CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30
+      CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
-      ALGAE_GROUND(5.8, -8.5),
+      ALGAE_GROUND(5.8, -6.5),
       ALGAE_LOWER(34.0, -5.0),
       ALGAE_UPPER(49.7, -5.0),
       ALGAE_LOLIPOP(10.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
-      ALGAE_NET(63.0, 80.0);
+      ALGAE_NET(63.0, 70.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double elevatorPosition;
