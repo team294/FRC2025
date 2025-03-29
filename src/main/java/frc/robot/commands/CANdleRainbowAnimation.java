@@ -32,7 +32,7 @@ public class CANdleRainbowAnimation extends Command {
   public void initialize() {
     RainbowAnimation anim = new RainbowAnimation(1, .7, segment.count, false, segment.index);
     led.animate(anim);
-    led.sendEvent(StripEvents.CLIMB);
+    led.sendEvent(StripEvents.AUTO_DRIVE_IN_PROGRESS);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

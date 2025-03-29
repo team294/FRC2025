@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.RainbowAnimation;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
@@ -18,14 +17,12 @@ import frc.robot.Constants.BCRColor;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.commands.CANdleBCRAnimation;
-// import frc.robot.utilities.BCRRobotState;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.LEDSegment;
 import frc.robot.utilities.RobotPreferences;
 
 
 public class LED extends SubsystemBase {
-  private final FileLog log;
   private final int logRotationKey;
   private String subsystemName;
 
@@ -48,39 +45,23 @@ public class LED extends SubsystemBase {
   );
   
   public enum StripEvents {
+    CORAL_MODE,
+    ALGAE_MODE,
+    AUTO_DRIVE_IN_PROGRESS,
+    AUTO_DRIVE_COMPLETE,
     ROBOT_DISABLED,
-    INTAKE_RUNNING,
-    ALGAE_MODE_IDLE,
-    ALGAE_MODE_PROCESSOR,
-    ALGAE_MODE_LOWER_REEF,
-    ALGAE_MODE_UPPER_REEF,
-    ALGAE_MODE_NET,
-    CORAL_MODE_IDLE,
-    CORAL_MODE_L1,
-    CORAL_MODE_L2,
-    CORAL_MODE_L3,
-    CORAL_MODE_L4,
-    MATCH_COUNTDOWN,
-    CLIMB,
+    SUBSYSTEM_UNCALIBRATED,
     NEUTRAL
   }
 
   private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
   static {
-    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 0);
-    prioritiesStripEvents.put(StripEvents.INTAKE_RUNNING, 1);
-    prioritiesStripEvents.put(StripEvents.ALGAE_MODE_IDLE, 2);
-    prioritiesStripEvents.put(StripEvents.ALGAE_MODE_PROCESSOR, 3);
-    prioritiesStripEvents.put(StripEvents.ALGAE_MODE_LOWER_REEF, 3);
-    prioritiesStripEvents.put(StripEvents.ALGAE_MODE_UPPER_REEF, 3);
-    prioritiesStripEvents.put(StripEvents.ALGAE_MODE_NET, 3);
-    prioritiesStripEvents.put(StripEvents.CORAL_MODE_IDLE, 2);
-    prioritiesStripEvents.put(StripEvents.CORAL_MODE_L1, 3);
-    prioritiesStripEvents.put(StripEvents.CORAL_MODE_L2, 3);
-    prioritiesStripEvents.put(StripEvents.CORAL_MODE_L3, 3);
-    prioritiesStripEvents.put(StripEvents.CORAL_MODE_L4, 3);
-    prioritiesStripEvents.put(StripEvents.MATCH_COUNTDOWN, 4);
-    prioritiesStripEvents.put(StripEvents.CLIMB, 5);
+    prioritiesStripEvents.put(StripEvents.CORAL_MODE, 0);
+    prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 1);
+    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 2);
+    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 3);
+    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 4);
+    prioritiesStripEvents.put(StripEvents.SUBSYSTEM_UNCALIBRATED, 5);
     prioritiesStripEvents.put(StripEvents.NEUTRAL, 6);
   }
 
@@ -89,12 +70,10 @@ public class LED extends SubsystemBase {
    * @param CANPort the CAN port that the CANdle is on
    * @param subsystemName the name of the subsystem
    * @param matchTimer a timer that tracks the time elapsed in the match
-   * @param log FileLog utility
    */
-  public LED(int CANPort, String subsystemName, Timer matchTimer, FileLog log/*, BCRRobotState robotState*/) {
-    this.log = log;
-    logRotationKey = log.allocateLogRotation();
+  public LED(int CANPort, String subsystemName, Timer matchTimer) {
     this.subsystemName = subsystemName;
+    this.logRotationKey = DataLogUtil.allocateLogRotation();
 
     this.candle = new CANdle(CANPort, "");
     this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
@@ -112,17 +91,17 @@ public class LED extends SubsystemBase {
    * Updates the LED strips for a countdown animation.
    * @param percent 0-1 progress through the countdown
    */
-  private void updateLEDsCountdown(double percent) {
-    double leftCount = LEDSegmentRange.StripLeft.count * percent;
-    int ledCountLeft = (int) leftCount;
+  // private void updateLEDsCountdown(double percent) {
+  //   double leftCount = LEDSegmentRange.StripLeft.count * percent;
+  //   int ledCountLeft = (int) leftCount;
 
-    double rightCount = LEDSegmentRange.StripRight.count * percent;
-    int ledCountRight = (int) rightCount;
+  //   double rightCount = LEDSegmentRange.StripRight.count * percent;
+  //   int ledCountRight = (int) rightCount;
     
-    //TODO change depending on how strips are wired
-    setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft); 
-    setLEDs(Color.kRed, LEDSegmentRange.StripRight.index, ledCountRight);
-  }
+  //   //TODO change depending on how strips are wired
+  //   setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft); 
+  //   setLEDs(Color.kRed, LEDSegmentRange.StripRight.index, ledCountRight);
+  // }
 
   /**
    * Changes the color of the LEDs on either the strips or the CANdle.
@@ -137,16 +116,6 @@ public class LED extends SubsystemBase {
     } else {
       setLEDs(color, LEDSegmentRange.CANdle);
     }
-  }
-
-  /**
-   * Changes the color of the LEDs on the strips for events related to coral and algae
-   * @param segment LEDSegmentRange constant - segment of LEDs to use
-   * @param ledPerGap # of individual LEDs for each gap between chunks of LEDs (for every coral/algae event except coral idle, algae idle, coral L1, and algae processor)
-   * @param event StripEvents event happening
-   */
-  private void updateLEDs(LEDSegmentRange segment, int ledPerGap, StripEvents event) {
-    setAnimation(makeScoringPattern(segment.count, ledPerGap, event), segment, false);
   }
 
   /**
@@ -179,57 +148,26 @@ public class LED extends SubsystemBase {
     // Always update state if previous event was idle.
     // Do not update if last event was not idle and the new event priority is less than the previous.
 
-    if ((previousEventStrip != StripEvents.NEUTRAL && event != StripEvents.ROBOT_DISABLED) && getPriority(event) < getPriority(previousEventStrip) && 
-      !(event == StripEvents.ALGAE_MODE_IDLE || event == StripEvents.CORAL_MODE_IDLE) && getPriority(previousEventStrip) == 3) return;
+    if ((previousEventStrip != StripEvents.NEUTRAL && event != StripEvents.ROBOT_DISABLED) && getPriority(event) < getPriority(previousEventStrip)) return;
 
     switch (event) {
-      case MATCH_COUNTDOWN:
-        // Percent of the way through the last 10 seconds of the match (125 seconds in)
-        double percent = Math.max(matchTimer.get() - 125, 0) / 10.0;
-        updateLEDsCountdown(percent);
+      // case MATCH_COUNTDOWN:
+      //   // Percent of the way through the last 10 seconds of the match (125 seconds in)
+      //   double percent = Math.max(matchTimer.get() - 125, 0) / 10.0;
+      //   updateLEDsCountdown(percent);
+      //   break;
+      case SUBSYSTEM_UNCALIBRATED:
+        // flash red
         break;
-      case CLIMB:
-        RainbowAnimation rainbowAnim = new RainbowAnimation(1, .7, LEDSegmentRange.StripHorizontal.count, false, LEDSegmentRange.StripHorizontal.index);
-        candle.animate(rainbowAnim);
+      case AUTO_DRIVE_COMPLETE:
+        updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
         break;
-      case CORAL_MODE_IDLE:
-        updateLEDs(BCRColor.CORAL_MODE, true);
-        break;
-      case CORAL_MODE_L1:
-        updateLEDs(LEDSegmentRange.StripLeftSection1, LEDConstants.ledPerGap, StripEvents.CORAL_MODE_L1);
-        updateLEDs(LEDSegmentRange.StripRightSection1, LEDConstants.ledPerGap, StripEvents.CORAL_MODE_L1);
-        break;
-      case CORAL_MODE_L2:
-        updateLEDs(LEDSegmentRange.StripLeftSection2, LEDConstants.ledPerGap, StripEvents.CORAL_MODE_L2);
-        updateLEDs(LEDSegmentRange.StripRightSection2, LEDConstants.ledPerGap, StripEvents.CORAL_MODE_L2);
-        break;
-      case CORAL_MODE_L3:
-        updateLEDs(LEDSegmentRange.StripLeftSection3, LEDConstants.ledPerGap, StripEvents.CORAL_MODE_L3);
-        updateLEDs(LEDSegmentRange.StripRightSection3, LEDConstants.ledPerGap, StripEvents.CORAL_MODE_L3);
-        break;
-      case CORAL_MODE_L4:
-        updateLEDs(LEDSegmentRange.StripLeftSection4, LEDConstants.ledPerGap, StripEvents.CORAL_MODE_L4);
-        updateLEDs(LEDSegmentRange.StripRightSection4, LEDConstants.ledPerGap, StripEvents.CORAL_MODE_L4);
-        break;
-      case ALGAE_MODE_IDLE:
-        updateLEDs(BCRColor.ALGAE_MODE, true);
-        break;
-      case ALGAE_MODE_PROCESSOR:
-        updateLEDs(LEDSegmentRange.StripLeftSection1, LEDConstants.ledPerGap, StripEvents.ALGAE_MODE_PROCESSOR);
-        updateLEDs(LEDSegmentRange.StripRightSection1, LEDConstants.ledPerGap, StripEvents.ALGAE_MODE_PROCESSOR);
-        break;
-      case ALGAE_MODE_LOWER_REEF:
-        updateLEDs(LEDSegmentRange.StripLeftSection2, LEDConstants.ledPerGap, StripEvents.ALGAE_MODE_LOWER_REEF);
-        updateLEDs(LEDSegmentRange.StripRightSection2, LEDConstants.ledPerGap, StripEvents.ALGAE_MODE_LOWER_REEF);
-        break;
-      case ALGAE_MODE_UPPER_REEF:
-        updateLEDs(LEDSegmentRange.StripLeftSection3, LEDConstants.ledPerGap, StripEvents.ALGAE_MODE_UPPER_REEF);
-        updateLEDs(LEDSegmentRange.StripRightSection3, LEDConstants.ledPerGap, StripEvents.ALGAE_MODE_UPPER_REEF);
-        break;
-      case ALGAE_MODE_NET:
-        updateLEDs(LEDSegmentRange.StripLeftSection4, LEDConstants.ledPerGap, StripEvents.ALGAE_MODE_NET);
-        updateLEDs(LEDSegmentRange.StripRightSection4, LEDConstants.ledPerGap, StripEvents.ALGAE_MODE_NET);
-        break;
+      case AUTO_DRIVE_IN_PROGRESS:
+        // rainbow
+      case ALGAE_MODE:
+        // solid teal when holding, flashing when intaking
+      case CORAL_MODE:
+        // solid purple when holding only coral, flashing when intaking
       case ROBOT_DISABLED:
         // TODO test CANdleBCRAnimation and figure out how to use it here
         // new CANdleBCRAnimation(this, log);
@@ -328,48 +266,6 @@ public class LED extends SubsystemBase {
   }
 
   /**
-   * Creates a pattern in the vertical LED strips of four sections, each separated by a gap.
-   * @param numLEDs the number of LEDs used in the pattern
-   * @param ledPerGap number of LEDs used to represent the gap between sections
-   * @param event the event that is represented by this pattern
-   * @return the resulting pattern
-   */
-  private Color[] makeScoringPattern(int numLEDs, int ledPerGap, StripEvents event) {
-    Color[] pattern = new Color[numLEDs];
-
-    switch (event) {
-      case ALGAE_MODE_PROCESSOR:
-        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection1, ledPerGap, true);
-        break;
-      case ALGAE_MODE_LOWER_REEF:
-        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection2, ledPerGap, true);
-        break;
-      case ALGAE_MODE_UPPER_REEF:
-        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection3, ledPerGap, true);
-        break;
-      case ALGAE_MODE_NET:
-        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection4, ledPerGap, true);
-        break;
-      case CORAL_MODE_L1:
-        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection1, ledPerGap, false);
-        break;
-      case CORAL_MODE_L2:
-        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection2, ledPerGap, false);
-        break;
-      case CORAL_MODE_L3:
-        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection3, ledPerGap, false);
-        break;
-      case CORAL_MODE_L4:
-        pattern = setLEDsScoringPattern(pattern, LEDSegmentRange.StripLeftSection4, ledPerGap, false);
-        break;
-      default:
-        break;
-    }
-
-    return pattern;
-  }
-
-  /**
    * Sets the pattern and resizes it to fit the LED strip.
    * @param pattern the pattern to use
    * @param segment the segment to use
@@ -461,7 +357,7 @@ public class LED extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(log.isMyLogRotation(logRotationKey)) { 
+    if(DataLogUtil.isMyLogRotation(logRotationKey)) {
       // If there is a sticky fault, send sticky fault present event
       if (RobotPreferences.isStickyFaultActive()) {
         sendEvent(CANdleEvents.STICKY_FAULT_PRESENT);
@@ -475,9 +371,9 @@ public class LED extends SubsystemBase {
       }
 
       // If in last 10 seconds of match, send match countdown event
-      if (matchTimer.get() > 125 && matchTimer.get() <= 135) {
-        sendEvent(StripEvents.MATCH_COUNTDOWN);
-      }
+      // if (matchTimer.get() > 125 && matchTimer.get() <= 135) {
+      //   sendEvent(StripEvents.MATCH_COUNTDOWN);
+      // }
     }
   }
 }

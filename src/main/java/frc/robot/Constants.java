@@ -481,11 +481,13 @@ public final class Constants {
 
   // Colors for the LEDs based on different robot states (see BCRRobotState)
   public enum BCRColor {
-    CANDLE_IDLE(0, 0, 0),           // CANdle Black
-    CANDLE_STICKY_FAULT(255, 0, 0), // CANdle Red
-    NEUTRAL(0, 0, 0),               // Black
-    ALGAE_MODE(0, 200, 255),        // Turquoise
-    CORAL_MODE(255, 0, 255);        // Purple
+    CANDLE_IDLE(0, 0, 0),              // CANdle Black (off)
+    CANDLE_STICKY_FAULT(255, 0, 0),    // CANdle Red
+    NEUTRAL(0, 0, 0),                  // Black (off)
+    ALGAE_MODE(0, 200, 255),           // Turquoise
+    CORAL_MODE(255, 0, 255),           // Purple
+    AUTO_DRIVE_COMPLETE(0, 255, 0),    // Green
+    SUBSYSTEM_UNCALIBRATED(255, 0, 0); // Red
 
     public final int r, g, b;
     BCRColor(int r, int g, int b) {

@@ -9,11 +9,9 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.LED;
-import frc.robot.utilities.FileLog;
 
 public class CANdleBCRAnimation extends Command {
   private final LED led;
-  private final FileLog log;
   private int total;
   private float offset = 0;
   private boolean fromShuffleboard;
@@ -26,9 +24,8 @@ public class CANdleBCRAnimation extends Command {
    * @param led LED subsystem
    * @param log FileLog utility
    */
-  public CANdleBCRAnimation(LED led, FileLog log) {
+  public CANdleBCRAnimation(LED led) {
     this.led = led;
-    this.log = log;
     fromShuffleboard = true;
     SmartDashboard.putNumber("NumberLEDs", 67);
     addRequirements(led);
