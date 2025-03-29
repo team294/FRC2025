@@ -46,7 +46,9 @@ public class LED extends SubsystemBase {
   
   public enum StripEvents {
     CORAL_MODE,
+    CORAL_INTAKING,
     ALGAE_MODE,
+    ALGAE_INTAKING,
     AUTO_DRIVE_IN_PROGRESS,
     AUTO_DRIVE_COMPLETE,
     ROBOT_DISABLED,
