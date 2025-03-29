@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.Wait;
@@ -25,7 +25,7 @@ import frc.robot.Constants.*;
 import frc.robot.Constants.WristConstants.WristAngle;
 
 public class Wrist extends SubsystemBase implements Loggable {
-  private final FileLog log;
+  
   private final int logRotationKey;
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;         // Subsystem name for use in file logging and dashboard
@@ -71,9 +71,9 @@ public class Wrist extends SubsystemBase implements Loggable {
 
   private double safeAngle; // Current wrist target on position control on the motor (if in position mode)
 
-  public Wrist(String subsystemName, FileLog log) {
-    this.log = log;
-    logRotationKey = log.allocateLogRotation();
+  public Wrist(String subsystemName) {
+    
+    logRotationKey = DataLogUtil.allocateLogRotation();
     this.subsystemName = subsystemName;
 
     // Get signal and sensor objects for motor
@@ -197,7 +197,7 @@ public class Wrist extends SubsystemBase implements Loggable {
     if (usingCANcoder) {
       encoderZero = WristConstants.offsetAngleCANcoder;
       wristCalibrated = true;
-      log.writeLogEcho(true, "Wrist", "CANcoder calibrated", "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), 
+      DataLogUtil.writeLogEcho(true, "Wrist", "CANcoder calibrated", "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), 
           "Enc Raw", getWristEncoderRotationsRaw(), "Angle", getWristAngle(), "Target", getCurrentWristTarget());
 
       // Set software limits after setting encoderZero
@@ -221,8 +221,8 @@ public class Wrist extends SubsystemBase implements Loggable {
     } else {
       wristCalibrated = false;
       // Record the missing CanCoder as a sticky fault
-      RobotPreferences.recordStickyFaults("Wrist-CANcoder", log);
-      log.writeLogEcho(true, "Wrist", "CANcoder not calibrated");
+      RobotPreferences.recordStickyFaults("Wrist-CANcoder");
+      DataLogUtil.writeLogEcho(true, "Wrist", "CANcoder not calibrated");
       
       // Apply the configurations to the motor.
       // Use the built-in encoder, since the CanCoder isn't reading properly.
@@ -319,7 +319,7 @@ public class Wrist extends SubsystemBase implements Loggable {
       wristMotor.setControl(wristMMVoltageControl.withPosition(wristDegreesToEncoderRotations(safeAngle))
                             .withFeedForward(WristConstants.kG * Math.cos(safeAngle * Math.PI / 180.0)) );
 
-      log.writeLog(false, subsystemName, "setWristAngle", "Desired Angle", angle, "Set Angle", safeAngle);
+      DataLogUtil.writeLog(false, subsystemName, "setWristAngle", "Desired Angle", angle, "Set Angle", safeAngle);
       SmartDashboard.putNumber("Wrist set raw rot", wristDegreesToEncoderRotations(safeAngle));
     }  
   }
@@ -430,7 +430,7 @@ public class Wrist extends SubsystemBase implements Loggable {
     stopWrist();
     wristCalibrated = false;
 
-    log.writeLogEcho(true, "Wrist", "Uncalibrate", 
+    DataLogUtil.writeLogEcho(true, "Wrist", "Uncalibrate", 
       "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getWristEncoderRotationsRaw(), "Angle", getWristAngle(), "Target", getCurrentWristTarget());
   }
 
@@ -443,7 +443,7 @@ public class Wrist extends SubsystemBase implements Loggable {
     encoderZero = getWristEncoderRotationsRaw() * WristConstants.kWristDegreesPerRotation - angle;
     wristCalibrated = true;
 
-    log.writeLogEcho(true, "Wrist", "Calibrate", "Using CANcoder", usingCANcoder,
+    DataLogUtil.writeLogEcho(true, "Wrist", "Calibrate", "Using CANcoder", usingCANcoder,
       "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getWristEncoderRotationsRaw(), "Angle", getWristAngle(), "Target", getCurrentWristTarget());
 
     if (usingCANcoder) {
@@ -493,7 +493,7 @@ public class Wrist extends SubsystemBase implements Loggable {
       setWristAngle(safeAngle);
     }
     
-    log.writeLogEcho(true, "Wrist", "NudgeWristAngle", 
+    DataLogUtil.writeLogEcho(true, "Wrist", "NudgeWristAngle", 
       "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getWristEncoderRotationsRaw(), "Angle", getWristAngle(), "Target", getCurrentWristTarget());
 
     */
@@ -515,7 +515,7 @@ public class Wrist extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateWristLog(boolean logWhenDisabled) {
-    log.writeLog(logWhenDisabled, subsystemName, "Update Variables",
+    DataLogUtil.writeLog(logWhenDisabled, subsystemName, "Update Variables",
       "Wrist Temp", wristTemp.refresh().getValueAsDouble(),
       "Wrist PctOut", getWristMotorPercentOutput(),
       "Wrist Current (Amps)", wristStatorCurrent.refresh().getValueAsDouble(),
@@ -536,7 +536,7 @@ public class Wrist extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    if (log.isMyLogRotation(logRotationKey)) {
+    if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Wrist CANcoder connected", isCANcoderConnected());
       SmartDashboard.putBoolean("Wrist calibrated", wristCalibrated);
       SmartDashboard.putBoolean("Wrist Using CANcoder", usingCANcoder);
@@ -548,9 +548,9 @@ public class Wrist extends SubsystemBase implements Loggable {
       SmartDashboard.putNumber("Wrist temp", wristTemp.refresh().getValueAsDouble());
     }
 
-    // if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-    //   updateWristLog(false);
-    // }
+    if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+      updateWristLog(false);
+    }
 
     // If the CANcoder stops reading, apply RotorEncoder configuration and stop using the CANcoder
     // This condition should only occur one time (if at all)
@@ -562,9 +562,9 @@ public class Wrist extends SubsystemBase implements Loggable {
       // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
       wristMotorConfigurator.apply(wristMotor_RotorEncoderConfig);
 
-      RobotPreferences.recordStickyFaults("Wrist-CANcoder", log);
+      RobotPreferences.recordStickyFaults("Wrist-CANcoder");
 
-      log.writeLogEcho(false, "Wrist", "CANcoder Disconnection",
+      DataLogUtil.writeLogEcho(false, "Wrist", "CANcoder Disconnection",
         "Enc Zero", encoderZero, 
         "CANcoder Angle", getCANcoderRotationsRaw(), 
         "Enc Raw", getWristEncoderRotationsRaw(), 

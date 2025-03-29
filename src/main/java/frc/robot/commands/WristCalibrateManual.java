@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristCalibrateManual extends InstantCommand {
   private final Wrist wrist;
-  private FileLog log;
+  
   private double angle;
   private boolean fromShuffleboard;
 
@@ -21,9 +21,9 @@ public class WristCalibrateManual extends InstantCommand {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristCalibrateManual(double angle, Wrist wrist, FileLog log) {
+  public WristCalibrateManual(double angle, Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     this.angle = angle;
     fromShuffleboard = false;
     addRequirements(wrist);
@@ -34,9 +34,9 @@ public class WristCalibrateManual extends InstantCommand {
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristCalibrateManual(Wrist wrist, FileLog log) {
+  public WristCalibrateManual(Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     fromShuffleboard = true;
     addRequirements(wrist);
 
@@ -51,7 +51,7 @@ public class WristCalibrateManual extends InstantCommand {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Manual Calibration Value", 0);
     wrist.calibrateWristEncoder(angle);
 
-    log.writeLog(true, "WristCalibrateManual", "Init", "Angle", angle);
+    DataLogUtil.writeLog(true, "WristCalibrateManual", "Init", "Angle", angle);
   }
 
   @Override

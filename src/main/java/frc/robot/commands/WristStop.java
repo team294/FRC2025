@@ -6,20 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristStop extends Command {
   private final Wrist wrist;
-  private final FileLog log;
+  
  
   /**
    * Sets the percent output of the wrist to 0 and ends immediately.
    * @param wrist Wrist subsystem
    * @param log FileLog utility
    */
-  public WristStop(Wrist wrist, FileLog log) {
+  public WristStop(Wrist wrist) {
     this.wrist = wrist;
-    this.log = log;
+    
     addRequirements(wrist);
   }
 
@@ -27,7 +27,7 @@ public class WristStop extends Command {
   @Override
   public void initialize() {
     wrist.stopWrist();
-    log.writeLog(false, "WristStop", "Init");
+    DataLogUtil.writeLog(false, "WristStop", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

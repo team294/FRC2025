@@ -12,7 +12,6 @@ import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
-import frc.robot.utilities.FileLog;
 
 
 /**
@@ -24,9 +23,9 @@ import frc.robot.utilities.FileLog;
  * @param log FileLog utility
  */
 public class AlgaeScorePrepSequence extends SequentialCommandGroup {
-  public AlgaeScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, FileLog log) {
+  public AlgaeScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
-      new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist, log)
+      new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist)
     );
   }
 }

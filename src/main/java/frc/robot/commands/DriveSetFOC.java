@@ -5,11 +5,11 @@
 package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class DriveSetFOC extends Command {
   private final DriveTrain driveTrain;
-  private final FileLog log;
+  
   private final boolean setFOC;
 
   /**
@@ -19,9 +19,9 @@ public class DriveSetFOC extends Command {
    * @param driveTrain DriveTrain subsystem
    * @param log FileLog utility
    */
-  public DriveSetFOC(boolean setFOC, DriveTrain driveTrain, FileLog log) {
+  public DriveSetFOC(boolean setFOC, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    this.log = log;
+    
     this.setFOC = setFOC;
 
     addRequirements(driveTrain);
@@ -31,7 +31,7 @@ public class DriveSetFOC extends Command {
   @Override
   public void initialize() {
     driveTrain.setDriveMotorsFOC(setFOC);
-    log.writeLog(true, "DriveSetFOC", "Initialize", "FOC Mode", setFOC);
+    DataLogUtil.writeLog(true, "DriveSetFOC", "Initialize", "FOC Mode", setFOC);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

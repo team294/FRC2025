@@ -23,8 +23,14 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -58,7 +64,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class DriveTrain extends SubsystemBase implements Loggable {
-  private FileLog log;
+  
   private int logRotationKey;
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
   private final AllianceSelection allianceSelection;
@@ -82,6 +88,20 @@ public class DriveTrain extends SubsystemBase implements Loggable {
   private final Matrix<N3, N1> closeMatrix = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {1,1, Math.PI});
   private final Matrix<N3, N1> farMatrix = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {2,2,2*Math.PI});
 
+  private final DataLog log = DataLogManager.getLog();
+  private final StructLogEntry<Pose2d> dLogOdometryPose2D = StructLogEntry.create(log, "/DriveTrain/OdometryPose2d", Pose2d.struct);
+  private final DoubleLogEntry dLogGyroAngle = new DoubleLogEntry(log, "/DriveTrain/GyroAngle");
+  private final DoubleLogEntry dLogGyroRaw = new DoubleLogEntry(log, "/DriveTrain/GyroRaw");
+  private final DoubleLogEntry dLogGyroVelocity = new DoubleLogEntry(log, "/DriveTrain/GyroVelocity");
+  private final DoubleLogEntry dLogGyroPitch = new DoubleLogEntry(log, "/DriveTrain/GyroPitch");
+  private final DoubleLogEntry dLogOdometryX = new DoubleLogEntry(log, "/DriveTrain/OdometryX");
+  private final DoubleLogEntry dLogOdometryY = new DoubleLogEntry(log, "/DriveTrain/OdometryY");
+  private final DoubleLogEntry dLogOdometryTheta = new DoubleLogEntry(log, "/DriveTrain/OdometryTheta");
+  private final DoubleLogEntry dLogDriveSpeed = new DoubleLogEntry(log, "/DriveTrain/DriveSpeed");
+  private final DoubleLogEntry dLogDriveXVelocity = new DoubleLogEntry(log, "/DriveTrain/DriveXVelocity");
+  private final DoubleLogEntry dLogDriveYVelocity = new DoubleLogEntry(log, "/DriveTrain/DriveYVelocity");
+  private final DoubleLogEntry dLogBusVoltage = new DoubleLogEntry(log, "/DriveTrain/BusVoltage");
+  
   // Variables to help calculate angular velocity for turnGyro
   // private double prevAng;                                            // Last recorded gyro angle
   // private double currAng;                                            // Current recorded gyro angle
@@ -107,16 +127,16 @@ public class DriveTrain extends SubsystemBase implements Loggable {
   // private boolean elevatorUpPriorIteration = false;  // Slew rate limiter, tracking for elevator position from prior iteration
 
   // Cache a copy of the DriveStop command for using to cancel the default command (typically DriveWithJoystickAdvanced)
-  Command driveStopCommand = new DriveStop(this, log);
+  Command driveStopCommand = new DriveStop(this);
 
-  public DriveTrain(AllianceSelection allianceSelection, FileLog log) {
+  public DriveTrain(AllianceSelection allianceSelection) {
     this.allianceSelection = allianceSelection;
-    this.log = log;
-    logRotationKey = log.allocateLogRotation();
+    
+    logRotationKey = DataLogUtil.allocateLogRotation();
 
     // Create and enable cameras
-    cameraLeft = new PhotonCameraWrapper(PhotonVisionConstants.robotToCamLeft, PhotonVisionConstants.leftAprilTagCameraName, log, logRotationKey);
-    cameraRight = new PhotonCameraWrapper(PhotonVisionConstants.robotToCamRight, PhotonVisionConstants.rightAprilTagCameraName, log, logRotationKey);
+    cameraLeft = new PhotonCameraWrapper(PhotonVisionConstants.robotToCamLeft, PhotonVisionConstants.leftAprilTagCameraName, logRotationKey);
+    cameraRight = new PhotonCameraWrapper(PhotonVisionConstants.robotToCamRight, PhotonVisionConstants.rightAprilTagCameraName, logRotationKey);
     cameras.add(cameraLeft);
     cameras.add(cameraRight);
     cameraLeft.init();
@@ -125,16 +145,16 @@ public class DriveTrain extends SubsystemBase implements Loggable {
     // Create swerve modules
     swerveFrontLeft = new SwerveModule("FL",
       CANDriveFrontLeftMotor, CANDriveTurnFrontLeftMotor, CANTurnEncoderFrontLeft, 
-      false, true, false, offsetAngleFrontLeftMotor, SwerveConstants.kVmFL, log);
+      false, true, false, offsetAngleFrontLeftMotor, SwerveConstants.kVmFL);
     swerveFrontRight = new SwerveModule("FR",
       CANDriveFrontRightMotor, CANDriveTurnFrontRightMotor, CANTurnEncoderFrontRight, 
-      false, true, false, offsetAngleFrontRightMotor, SwerveConstants.kVmFR, log);
+      false, true, false, offsetAngleFrontRightMotor, SwerveConstants.kVmFR);
     swerveBackLeft = new SwerveModule("BL",
       CANDriveBackLeftMotor, CANDriveTurnBackLeftMotor, CANTurnEncoderBackLeft, 
-      false, true, false, offsetAngleBackLeftMotor, SwerveConstants.kVmBL, log);
+      false, true, false, offsetAngleBackLeftMotor, SwerveConstants.kVmBL);
     swerveBackRight = new SwerveModule("BR",
       CANDriveBackRightMotor, CANDriveTurnBackRightMotor, CANTurnEncoderBackRight, 
-      false, true, false, offsetAngleBackRightMotor, SwerveConstants.kVmBR, log);
+      false, true, false, offsetAngleBackRightMotor, SwerveConstants.kVmBR);
 
     // Sets last coast reading to false (for LED purposes)
     lastCoastReading = false;
@@ -568,10 +588,10 @@ public class DriveTrain extends SubsystemBase implements Loggable {
 
     updateOdometry();
     
-    if (fastLogging || log.isMyLogRotation(logRotationKey)) {
-      // updateDriveLog(false);
+    if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
+      updateDriveLog(false);
 
-      if(!isGyroReading()) RobotPreferences.recordStickyFaults("Gyro", log);
+      if(!isGyroReading()) RobotPreferences.recordStickyFaults("Gyro");
 
       ChassisSpeeds robotSpeeds = getRobotSpeeds();
 
@@ -634,25 +654,35 @@ public class DriveTrain extends SubsystemBase implements Loggable {
 
   /**
    * Writes information about the driveTrain to the file log.
-   * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
+   * @param logWhenDisabled true = log when enabled or disabled, false = only log when enabled
    */
   public void updateDriveLog(boolean logWhenDisabled) {
-    Pose2d pose = poseEstimator.getEstimatedPosition();
+    Pose2d pose = getPose();
     ChassisSpeeds robotSpeeds = getRobotSpeeds();
-    log.writeLog(logWhenDisabled, "Drive", "Update Variables", 
-      "Gyro Angle", getGyroRotation(), "RawGyro", getGyroRaw(), 
-      "Gyro Velocity", getAngularVelocity(), "Pitch", getGyroPitch(), 
-      "Odometry X", pose.getTranslation().getX(), "Odometry Y", pose.getTranslation().getY(), 
-      "Odometry Theta", pose.getRotation().getDegrees(),
-      "Drive Speed", speedAvg,
-      "Drive X Velocity", robotSpeeds.vxMetersPerSecond, 
-      "Drive Y Velocity", robotSpeeds.vyMetersPerSecond,
-      "Bus voltage", swerveFrontLeft.getDriveBusVoltage(),
+    long timeNow = RobotController.getFPGATime();
+    
+    if (logWhenDisabled  || !DriverStation.isDisabled()) {
+      dLogOdometryPose2D.append(pose, timeNow);
+      dLogGyroAngle.append(getGyroRotation(), timeNow);
+      dLogGyroRaw.append(getGyroRaw(), timeNow);
+      dLogGyroVelocity.append(getAngularVelocity(), timeNow);
+      dLogGyroPitch.append(getGyroPitch(), timeNow);
+      dLogOdometryX.append(pose.getTranslation().getX(), timeNow);
+      dLogOdometryY.append(pose.getTranslation().getY(), timeNow);
+      dLogOdometryTheta.append(pose.getRotation().getDegrees(), timeNow);
+      dLogDriveSpeed.append(speedAvg, timeNow);
+      dLogDriveXVelocity.append(robotSpeeds.vxMetersPerSecond, timeNow);
+      dLogDriveYVelocity.append(robotSpeeds.vyMetersPerSecond, timeNow);
+      dLogBusVoltage.append(swerveFrontLeft.getDriveBusVoltage(), timeNow);
+    }
+
+    DataLogUtil.writeLog(logWhenDisabled, "Drive", "Update Swerve Module Variables",
       swerveFrontLeft.getLogString(),
       swerveFrontRight.getLogString(),
       swerveBackLeft.getLogString(),
       swerveBackRight.getLogString()
     );
+    
   }
 
   /**

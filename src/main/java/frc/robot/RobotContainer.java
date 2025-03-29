@@ -39,20 +39,19 @@ import frc.robot.Constants.FieldConstants.ReefLocation;
  */
 public class RobotContainer {
   // Define Key robot utilities (DO THIS FIRST)
-  private final FileLog log = new FileLog("A7");
-  private final AllianceSelection allianceSelection = new AllianceSelection(log);
-  private final Field field = new Field(allianceSelection, log);
+  private final AllianceSelection allianceSelection = new AllianceSelection();
+  private final Field field = new Field(allianceSelection);
   private final Timer matchTimer = new Timer();
 
   // Define robot subsystems
-  // private final LED led = new LED(Constants.Ports.CANdle, "LED", matchTimer, log);
-  private final DriveTrain driveTrain = new DriveTrain(allianceSelection, log);
-  private final Hopper hopper = new Hopper("Hopper", log);
-  private final Wrist wrist = new Wrist("Wrist", log);
-  private final CoralEffector coralEffector = new CoralEffector("CoralEffector", wrist, log);
-  private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber", log);
-  private final Elevator elevator = new Elevator("Elevator", log);
-  // private final Climber climber = new Climber("Climber", log);
+  // private final LED led = new LED(Constants.Ports.CANdle, "LED", matchTimer);
+  private final DriveTrain driveTrain = new DriveTrain(allianceSelection);
+  private final Hopper hopper = new Hopper("Hopper");
+  private final Wrist wrist = new Wrist("Wrist");
+  private final CoralEffector coralEffector = new CoralEffector("CoralEffector", wrist);
+  private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber");
+  private final Elevator elevator = new Elevator("Elevator");
+  // private final Climber climber = new Climber("Climber");
 
   // Define controllers
   private final Joystick leftJoystick = new Joystick(OIConstants.usbLeftJoystick);
@@ -61,16 +60,18 @@ public class RobotContainer {
   private final CommandXboxController xboxController = new CommandXboxController(OIConstants.usbXboxController);
 
   // Define other utilities
-  private final TrajectoryCache trajectoryCache = new TrajectoryCache(log);
-  private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field, log);
+  private final TrajectoryCache trajectoryCache = new TrajectoryCache();
+  private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    DataLogUtil.writeLogEcho(true, "RobotContainer", "Constructor", "Version", Constants.bcrRobotCodeVersion);
+
     SmartDashboard.putBoolean("RobotPrefs Initialized", RobotPreferences.prefsExist());
     if(!RobotPreferences.prefsExist()) {
-      RobotPreferences.recordStickyFaults("RobotPreferences", log);
+      RobotPreferences.recordStickyFaults("RobotPreferences");
     }
 
     // Set the Choreo trajectory flipper to the 2025 field orientation.
@@ -81,9 +82,9 @@ public class RobotContainer {
     configureButtonBindings();
     configureShuffleboard();
 
-    driveTrain.setDefaultCommand(new DriveWithJoysticksAdvanced(leftJoystick, rightJoystick, allianceSelection, driveTrain, field, log));
-    // driveTrain.setDefaultCommand(new DriveWithJoysticks(leftJoystick, rightJoystick, allianceSelection, driveTrain, log));
-    // driveTrain.setDefaultCommand(new DriveWithController(driveTrain, xboxController, allianceSelection, log));
+    driveTrain.setDefaultCommand(new DriveWithJoysticksAdvanced(leftJoystick, rightJoystick, allianceSelection, driveTrain, field));
+    // driveTrain.setDefaultCommand(new DriveWithJoysticks(leftJoystick, rightJoystick, allianceSelection, driveTrain));
+    // driveTrain.setDefaultCommand(new DriveWithController(driveTrain, xboxController, allianceSelection));
 
     // Set initial robot position on field. This takes place a while after the drivetrain is created, so after any CANbus delays.
     // Set initial location to (0,0) and facing away from driver (regardless of alliance color).
@@ -94,99 +95,100 @@ public class RobotContainer {
   private void configureShuffleboard() {
     // Sticky Faults
     RobotPreferences.showStickyFaultsOnShuffleboard();
-    SmartDashboard.putData("Clear Sticky Faults", new StickyFaultsClear(log));
+    SmartDashboard.putData("Clear Sticky Faults", new StickyFaultsClear());
 
     // DriveTrain
-    SmartDashboard.putData("Drive FOC On", new DriveSetFOC(true, driveTrain, log));
-    SmartDashboard.putData("Drive FOC Off", new DriveSetFOC(false, driveTrain, log));
-    SmartDashboard.putData("Drive Toggle Coast", new DriveToggleCoastMode(driveTrain, log));
-    SmartDashboard.putData("Drive Reset Pose", new DriveResetPose(driveTrain, log));
-    SmartDashboard.putData("Drive To Pose", new DriveToPose(CoordType.kAbsolute, driveTrain, log));
+    SmartDashboard.putData("Drive FOC On", new DriveSetFOC(true, driveTrain));
+    SmartDashboard.putData("Drive FOC Off", new DriveSetFOC(false, driveTrain));
+    SmartDashboard.putData("Drive Toggle Coast", new DriveToggleCoastMode(driveTrain));
+    SmartDashboard.putData("Drive Reset Pose", new DriveResetPose(driveTrain));
+    SmartDashboard.putData("Drive To Pose", new DriveToPose(CoordType.kAbsolute, driveTrain));
     SmartDashboard.putData("Drive 6m Fwd", new DriveToPose(CoordType.kRelative, () -> new Pose2d(6.0, 0.0, new Rotation2d(0.0)),
       SwerveConstants.kNominalSpeedMetersPerSecond, SwerveConstants.kNominalAccelerationMetersPerSecondSquare, 
       TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-      true, true, driveTrain, log));
-    SmartDashboard.putData("Drive Calibration", new DriveCalibration(0.0, 0.5, 5.0, 0.1, driveTrain, log));
-    SmartDashboard.putData("Drive Turn Calibration", new DriveTurnCalibration(0.2, 5.0, 0.2 / 5.0, driveTrain, log));
-    SmartDashboard.putData("Drive Percent Speed", new DrivePercentSpeed(driveTrain, log));
-    SmartDashboard.putData("Drive Straight", new DriveStraight(false, false, false, driveTrain, log));
+      true, true, driveTrain));
+    SmartDashboard.putData("Drive Calibration", new DriveCalibration(0.0, 0.5, 5.0, 0.1, driveTrain));
+    SmartDashboard.putData("Drive Turn Calibration", new DriveTurnCalibration(0.2, 5.0, 0.2 / 5.0, driveTrain));
+    SmartDashboard.putData("Drive Percent Speed", new DrivePercentSpeed(driveTrain));
+    SmartDashboard.putData("Drive Straight", new DriveStraight(false, false, false, driveTrain));
 
     // Hopper
-    SmartDashboard.putData("Hopper Forward", new HopperSetPercent(0.4, hopper, log));
-    SmartDashboard.putData("Hopper Reverse", new HopperSetPercent(-0.4, hopper, log));
-    SmartDashboard.putData("Hopper STOP", new HopperStop(hopper, log));
+    SmartDashboard.putData("Hopper Forward", new HopperSetPercent(0.4, hopper));
+    SmartDashboard.putData("Hopper Reverse", new HopperSetPercent(-0.4, hopper));
+    SmartDashboard.putData("Hopper STOP", new HopperStop(hopper));
 
     // CoralEffector
-    SmartDashboard.putData("CoralEffector Forward", new CoralEffectorSetPercent(0.05, coralEffector, log));
-    SmartDashboard.putData("CoralEffector Reverse", new CoralEffectorSetPercent(-0.05, coralEffector, log));
-    SmartDashboard.putData("CoralEffector STOP", new CoralEffectorStop(coralEffector, log));
-    SmartDashboard.putData("CoralEffector Intake", new CoralEffectorIntake(coralEffector, log));
-    SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector, log));
-    SmartDashboard.putData("CoralEffector Intake Enhanced", new CoralEffectorIntakeEnhanced(coralEffector, log));
-    SmartDashboard.putData("CoralEffector Set Percent", new CoralEffectorSetPercent(coralEffector, log));
-    SmartDashboard.putData("CoralEffector Set Position", new CoralEffectorSetPosition(false, coralEffector, log));
+    SmartDashboard.putData("CoralEffector Forward", new CoralEffectorSetPercent(0.05, coralEffector));
+    SmartDashboard.putData("CoralEffector Reverse", new CoralEffectorSetPercent(-0.05, coralEffector));
+    SmartDashboard.putData("CoralEffector STOP", new CoralEffectorStop(coralEffector));
+    SmartDashboard.putData("CoralEffector Intake", new CoralEffectorIntake(coralEffector));
+    SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector));
+    SmartDashboard.putData("CoralEffector Intake Enhanced", new CoralEffectorIntakeEnhanced(coralEffector));
+    SmartDashboard.putData("CoralEffector Set Percent", new CoralEffectorSetPercent(coralEffector));
+    SmartDashboard.putData("CoralEffector Set Position", new CoralEffectorSetPosition(false, coralEffector));
 
     // AlgaeGrabber
-    SmartDashboard.putData("AlgaeGrabber In", new AlgaeGrabberSetPercent(0.1, algaeGrabber, log));
-    SmartDashboard.putData("AlgaeGrabber Out", new AlgaeGrabberSetPercent(-0.1, algaeGrabber, log));
-    SmartDashboard.putData("AlgaeGrabber STOP", new AlgaeGrabberStop(algaeGrabber, log));
-    SmartDashboard.putData("AlgaeGrabber Intake", new AlgaeGrabberIntake(algaeGrabber, log));
-    SmartDashboard.putData("AlgaeGrabber Outtake", new AlgaeGrabberOuttake(algaeGrabber, log));
+    SmartDashboard.putData("AlgaeGrabber In", new AlgaeGrabberSetPercent(0.1, algaeGrabber));
+    SmartDashboard.putData("AlgaeGrabber Out", new AlgaeGrabberSetPercent(-0.1, algaeGrabber));
+    SmartDashboard.putData("AlgaeGrabber STOP", new AlgaeGrabberStop(algaeGrabber));
+    SmartDashboard.putData("AlgaeGrabber Intake", new AlgaeGrabberIntake(algaeGrabber));
+    SmartDashboard.putData("AlgaeGrabber Outtake", new AlgaeGrabberOuttake(algaeGrabber));
 
     // Wrist
-    SmartDashboard.putData("Wrist STOP", new WristStop(wrist, log));
-    SmartDashboard.putData("Wrist Set Percent", new WristSetPercent(wrist, log));
-    SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist, log));
-    SmartDashboard.putData("Wrist Cal. to START CONFIG", new WristCalibrateManual(ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
-    SmartDashboard.putData("Wrist Calibrate Ramp", new WristCalibrationRamp(0.01, 0.2, wrist, log));
+    SmartDashboard.putData("Wrist STOP", new WristStop(wrist));
+    SmartDashboard.putData("Wrist Set Percent", new WristSetPercent(wrist));
+    SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist));
+    SmartDashboard.putData("Wrist Cal. to START CONFIG", new WristCalibrateManual(ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
+    SmartDashboard.putData("Wrist Calibrate Ramp", new WristCalibrationRamp(0.01, 0.2, wrist));
 
     // Elevator
-    SmartDashboard.putData("Elevator Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator, log));
-    SmartDashboard.putData("Elevator Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator, log));
-    SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator, log));
-    SmartDashboard.putData("Elevator Move To 20 In", new ElevatorSetPosition(20.0, elevator, log));
-    SmartDashboard.putData("Elevator Move To 65 In", new ElevatorSetPosition(65.0, elevator, log));
-    SmartDashboard.putData("Elevator Move to HP", new ElevatorSetPosition(ElevatorWristPosition.CORAL_HP, elevator, log));
-    SmartDashboard.putData("Elevator Move to L1", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L1, elevator, log));
-    SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L2, elevator, log));
-    SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L3, elevator, log));
-    SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L4, elevator, log));
-    SmartDashboard.putData("Elevator Calibration Routine", new ElevatorCalibration(0.1, elevator, log));
+    SmartDashboard.putData("Elevator Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
+    SmartDashboard.putData("Elevator Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
+    SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator));
+    SmartDashboard.putData("Elevator Move To 20 In", new ElevatorSetPosition(20.0, elevator));
+    SmartDashboard.putData("Elevator Move To 65 In", new ElevatorSetPosition(65.0, elevator));
+    SmartDashboard.putData("Elevator Move to HP", new ElevatorSetPosition(ElevatorWristPosition.CORAL_HP, elevator));
+    SmartDashboard.putData("Elevator Move to L1", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L1, elevator));
+    SmartDashboard.putData("Elevator Move To L2", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L2, elevator));
+    SmartDashboard.putData("Elevator Move To L3", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L3, elevator));
+    SmartDashboard.putData("Elevator Move To L4", new ElevatorSetPosition(ElevatorWristPosition.CORAL_L4, elevator));
+    SmartDashboard.putData("Elevator Calibration Routine", new ElevatorCalibration(0.1, elevator));
+    SmartDashboard.putData("Elevator Set Position", new ElevatorSetPosition(elevator));
 
     // Climber
-    // SmartDashboard.putData("Climber STOP", new ClimberStop(climber, log));
-    // SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber, log));
-    // SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber, log));
-    // SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
-    // SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber, log));
+    // SmartDashboard.putData("Climber STOP", new ClimberStop(climber));
+    // SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber));
+    // SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber));
+    // SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber));
+    // SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber));
     
     // Autos
     SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper));
-    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache, log));
-    SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, allianceSelection, trajectoryCache, log));
-    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache, log));
+    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache));
+    SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, allianceSelection, trajectoryCache));
+    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache));
 
     // Copanel buttons
 
     // Vision
-    SmartDashboard.putData("Vision Enable Odometry Updates", new VisionOdometryStateSet(true, driveTrain, log));
-    SmartDashboard.putData("Vision Disable Odometry Updates", new VisionOdometryStateSet(false, driveTrain, log));
+    SmartDashboard.putData("Vision Enable Odometry Updates", new VisionOdometryStateSet(true, driveTrain));
+    SmartDashboard.putData("Vision Disable Odometry Updates", new VisionOdometryStateSet(false, driveTrain));
 
     // Sequences
-    SmartDashboard.putData("Algae Intake Sequence Ground", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber, log));
-    SmartDashboard.putData("Algae Intake Sequence Lower", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, log));
-    SmartDashboard.putData("Algae Intake Sequence Upper", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, log));
-    SmartDashboard.putData("Algae Score Prep Sequence Processor", new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber, log));
-    SmartDashboard.putData("Algae Score Prep Sequence Net", new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET, elevator, wrist, algaeGrabber, log));
+    SmartDashboard.putData("Algae Intake Sequence Ground", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData("Algae Intake Sequence Lower", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData("Algae Intake Sequence Upper", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData("Algae Score Prep Sequence Processor", new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData("Algae Score Prep Sequence Net", new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET, elevator, wrist, algaeGrabber));
 
-    SmartDashboard.putData("Coral Intake Sequence", new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log));
-    SmartDashboard.putData("Coral Score Prep Sequence L1", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, log));
-    SmartDashboard.putData("Coral Score Prep Sequence L2", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber, log));
-    SmartDashboard.putData("Coral Score Prep Sequence L3", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, log));
-    SmartDashboard.putData("Coral Score Prep Sequence L4", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, log));
+    SmartDashboard.putData("Coral Intake Sequence", new CoralIntakeSequence(elevator, wrist, hopper, coralEffector));
+    SmartDashboard.putData("Coral Score Prep Sequence L1", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData("Coral Score Prep Sequence L2", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData("Coral Score Prep Sequence L3", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData("Coral Score Prep Sequence L4", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber));
 
-    // SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber, log));
-    // SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
+    // SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
+    // SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
   }
  
    private void configureButtonBindings() {
@@ -222,43 +224,43 @@ public class RobotContainer {
     // ex: xbA.onTrue(new command(param1, param2));
 
     // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
-    xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, log));
+    xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector));
 
     // Prep to score coral on L1 with X, L2 with A, L3 with B, and L4 with Y
-    xbX.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, log));
-    xbA.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber, log));
-    xbB.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, log));
-    xbY.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, log));
+    xbX.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber));
+    xbA.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber));
+    xbB.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber));
+    xbY.onTrue(new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber));
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
-    xbLT.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber, log));
-    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, log));
-    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, log));
+    xbLT.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber));
+    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber));
+    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber));
 
     // Prep and intake algae from Lolipop with Back
-    xbBack.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOLIPOP, driveTrain, elevator, wrist, algaeGrabber, log));
+    xbBack.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOLIPOP, driveTrain, elevator, wrist, algaeGrabber));
 
     // Prep to score algae in Net with D-Pad Up and Processor with D-Pad Right
-    xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET,elevator, wrist, algaeGrabber, log));
-    xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber, log));
+    xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET,elevator, wrist, algaeGrabber));
+    xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber));
 
     // Manually control elevator with right joystick
-    xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, log, true));
+    xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, true));
 
     // Manually control wrist with the left joystick
-    xbLJoystickTrigger.whileTrue(new WristManualControl(xboxController, wrist, log, false));
+    xbLJoystickTrigger.whileTrue(new WristManualControl(xboxController, wrist, false));
 
     // Stop all motors with LB
     xbLB.onTrue(parallel(
-      new HopperStop(hopper, log),
-      new AlgaeGrabberStop(algaeGrabber, log),
-      new CoralEffectorStop(coralEffector, log),
-      new WristStop(wrist, log),
-      new ElevatorStop(elevator, log)
+      new HopperStop(hopper),
+      new AlgaeGrabberStop(algaeGrabber),
+      new CoralEffectorStop(coralEffector),
+      new WristStop(wrist),
+      new ElevatorStop(elevator)
     ));
 
     // Move wrist and elevator to home
-    xbRB.onTrue(new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist, log));
+    xbRB.onTrue(new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist));
   }
 
   /**
@@ -278,24 +280,24 @@ public class RobotContainer {
     // 180 if we are red, 0 if we are blue
     // left[1].onTrue(
     //   either(
-    //     new DriveResetPose(180, false, driveTrain, log), 
-    //     new DriveResetPose(0, false, driveTrain, log), 
+    //     new DriveResetPose(180, false, driveTrain), 
+    //     new DriveResetPose(0, false, driveTrain), 
     //     () -> allianceSelection.getAlliance() == Alliance.Red
     //   )
     // );
-    // left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log));
+    // left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain));
 
-    left[1].onTrue(new AlgaeGrabberOuttake(algaeGrabber, log));
-    left[2].onTrue(new CoralEffectorOuttake(coralEffector, log));
+    left[1].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
+    left[2].onTrue(new CoralEffectorOuttake(coralEffector));
     // left[2].onTrue(sequence( 
-    //   new CoralEffectorOuttake(coralEffector, log)
+    //   new CoralEffectorOuttake(coralEffector)
     //   new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
     //       0.5, 1.0, 
     //       TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-    //       true, true, driveTrain, log).asProxy()
+    //       true, true, driveTrain).asProxy()
     // ));
 
-    right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick, log));
+    right[1].whileTrue(new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick));
     // right[1] after DriveToReefWithOdometryForCoral ends, if right[1] is still being held,
     // then DriveWithJoystickAdvanced will stay in fine control mode, robot-relative control (not field relative),
     // and theta locked (right joystick inactive).
@@ -325,37 +327,37 @@ public class RobotContainer {
 
     // ex: coP[1].onTrue(new command);
     
-    coP[1].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator, log));
-    coP[2].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator, log));
+    coP[1].onTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
+    coP[2].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
 
-    coP[20].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator, log));
+    coP[20].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator));
 
-    coP[3].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist, log));
-    coP[4].whileTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist, log));
+    coP[3].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
+    coP[4].whileTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
 
-    coP[16].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist, log));
+    coP[16].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
 
-    // coP[5].whileTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber, log));
-    // coP[6].whileTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber, log));
+    // coP[5].whileTrue(new ClimberSetPercentOutput(ClimberConstants.maxManualPercentOutput, climber));
+    // coP[6].whileTrue(new ClimberSetPercentOutput(-ClimberConstants.maxManualPercentOutput, climber));
 
-    // coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber, log));
-    // coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber, log));
+    // coP[8].onTrue(new ClimberPrepSequence(elevator, wrist, climber));
+    // coP[13].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
 
-    // coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber, log));
+    // coP[18].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber));
 
-    coP[9].onTrue(new CoralEffectorOuttake(coralEffector, log));
-    coP[10].onTrue(new CoralEffectorIntakeEnhanced(coralEffector, log));
+    coP[9].onTrue(new CoralEffectorOuttake(coralEffector));
+    coP[10].onTrue(new CoralEffectorIntakeEnhanced(coralEffector));
 
-    coP[11].onTrue(new AlgaeGrabberOuttake(algaeGrabber, log));
-    coP[12].onTrue(new AlgaeGrabberIntake(algaeGrabber, log));
+    coP[11].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
+    coP[12].onTrue(new AlgaeGrabberIntake(algaeGrabber));
 
-    coP[15].onTrue(new HopperSetPercent(HopperConstants.reverseIntakePercent, hopper, log));
-    coP[15].onFalse(new HopperStop(hopper, log));
+    coP[15].onTrue(new HopperSetPercent(HopperConstants.reverseIntakePercent, hopper));
+    coP[15].onFalse(new HopperStop(hopper));
 
     // 180 if we are red, 0 if we are blue
     coP[7].onTrue(either(
-        new DriveResetPose(180, false, driveTrain, log), 
-        new DriveResetPose(0, false, driveTrain, log), 
+        new DriveResetPose(180, false, driveTrain), 
+        new DriveResetPose(0, false, driveTrain), 
         () -> allianceSelection.getAlliance() == Alliance.Red));
   }
 
@@ -374,7 +376,7 @@ public class RobotContainer {
    * Method called once every scheduler cycle (20 ms).
    */
   public void robotPeriodic(){
-    log.advanceLogRotation();
+    DataLogUtil.advanceLogRotation();
     allianceSelection.periodic();
   }
 
@@ -383,7 +385,7 @@ public class RobotContainer {
    */
   public void disabledInit() {
     // Do not log the word "Init" here, as it it affects the Excel macro
-    log.writeLogEcho(true, "Disabled", "Robot disabled");
+    DataLogUtil.writeLogEcho(true, "Disabled", "Robot disabled");
 
     driveTrain.stopMotors();             // SAFETY: Turn off any closed loop control that may be running, so the robot does not move when re-enabled
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
@@ -403,7 +405,7 @@ public class RobotContainer {
   public void disabledPeriodic() {
     // Check for CAN bus error (to prevent the issue that caused us to be eliminated in 2020!)
     if (driveTrain.canBusError()) {
-      RobotPreferences.recordStickyFaults("CAN Bus", log);
+      RobotPreferences.recordStickyFaults("CAN Bus");
     }
   }
   
@@ -411,7 +413,7 @@ public class RobotContainer {
    * Method called when auto mode is initialized/enabled.
    */
   public void autonomousInit() {
-    log.writeLogEcho(true, "Auto", "Mode Init");
+    DataLogUtil.writeLogEcho(true, "Auto", "Mode Init");
 
     driveTrain.setDriveModeCoast(false);
     driveTrain.setVisionForOdometryState(true);
@@ -444,7 +446,7 @@ public class RobotContainer {
    * Method called when teleop mode is initialized/enabled.
    */
   public void teleopInit() {
-    log.writeLogEcho(true, "Teleop", "Mode Init");
+    DataLogUtil.writeLogEcho(true, "Teleop", "Mode Init");
 
     driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode

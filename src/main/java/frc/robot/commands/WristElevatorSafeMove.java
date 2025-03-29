@@ -10,13 +10,13 @@ import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.ElevatorWristRegions;
-import frc.robot.utilities.FileLog;
+import frc.robot.utilities.DataLogUtil;
 
 public class WristElevatorSafeMove extends Command {
   // Subsystem and object references
   private final Elevator elevator;
   private final Wrist wrist;
-  private final FileLog log;
+  
   // Input parameters
   private final ElevatorWristPosition destPosition;
   private final ElevatorWristRegions.RegionType type;
@@ -50,12 +50,12 @@ public class WristElevatorSafeMove extends Command {
    * @param log FileLog utility
    */
   public WristElevatorSafeMove(ElevatorWristPosition position, ElevatorWristRegions.RegionType type,
-            Elevator elevator, Wrist wrist, FileLog log) {
+            Elevator elevator, Wrist wrist) {
     this.destPosition = position;
     this.type = type;
     this.elevator = elevator;
     this.wrist = wrist;
-    this.log = log;
+    
 
     addRequirements(elevator, wrist);
   }
@@ -65,7 +65,7 @@ public class WristElevatorSafeMove extends Command {
   public void initialize() {
     if (!elevator.isElevatorCalibrated() || !wrist.isWristCalibrated()) {
       curState = MoveState.DONE_ERROR;
-      log.writeLog(false, "WristElevatorSafeMove", "Init", "Elev Calibrated", elevator.isElevatorCalibrated(),
+      DataLogUtil.writeLog(false, "WristElevatorSafeMove", "Init", "Elev Calibrated", elevator.isElevatorCalibrated(),
           "Wrist calibrated", wrist.isWristCalibrated(), "Position", destPosition.toString(), "Type", type.toString());
       return;
     }
@@ -73,7 +73,7 @@ public class WristElevatorSafeMove extends Command {
     curRegion = ElevatorWristRegions.GetRegion(type, elevator.getElevatorPosition());
     destRegion = ElevatorWristRegions.GetRegion(type, destPosition.elevatorPosition);
 
-    log.writeLog(false, "WristElevatorSafeMove", "Init", "Calibrated", true, "Position", 
+    DataLogUtil.writeLog(false, "WristElevatorSafeMove", "Init", "Calibrated", true, "Position", 
       "Type", type, "Dest Position", destPosition, 
       "Dest Region", destRegion, "Cur Region", (curRegion != null ? curRegion.regionIndex : ""));
 
@@ -93,10 +93,10 @@ public class WristElevatorSafeMove extends Command {
     double curWristAngle = wrist.getWristAngle();
     double curElevPos = elevator.getElevatorPosition();
 
-    // log.writeLog(false, "WristElevatorSafeMove", "Execute", "CurState", curState, 
-    //   "Wrist Target", wrist.getCurrentWristTarget(), "Wrist Angle", curWristAngle, 
-    //   "Elev Target", elevator.getCurrentElevatorTarget(), "Cur Elev Pos", curElevPos,
-    //   "Cur Region", (curRegion != null ? curRegion.regionIndex : ""));
+    DataLogUtil.writeLog(false, "WristElevatorSafeMove", "Execute", "CurState", curState, 
+      "Wrist Target", wrist.getCurrentWristTarget(), "Wrist Angle", curWristAngle, 
+      "Elev Target", elevator.getCurrentElevatorTarget(), "Cur Elev Pos", curElevPos,
+      "Cur Region", (curRegion != null ? curRegion.regionIndex : ""));
 
     switch (curState) {
       case DONE:
@@ -139,7 +139,7 @@ public class WristElevatorSafeMove extends Command {
           // Get next region
           var optNextRegion = curRegion.getRegionBelow();
           if (optNextRegion.isEmpty()) {
-            log.writeLog(false, "WristElevatorSafeMove", "Execute MOVE_TO_NEXT_REGION_START", "Empty Region Below", curRegion.toString());
+            DataLogUtil.writeLog(false, "WristElevatorSafeMove", "Execute MOVE_TO_NEXT_REGION_START", "Empty Region Below", curRegion.toString());
             curState = MoveState.DONE_ERROR;
             return;
           }
@@ -153,7 +153,7 @@ public class WristElevatorSafeMove extends Command {
           // Get next region
           var optNextRegion = curRegion.getRegionAbove();
           if (optNextRegion.isEmpty()) {
-            log.writeLog(false, "WristElevatorSafeMove", "Execute MOVE_TO_NEXT_REGION_START", "Empty Region Above", curRegion.toString());
+            DataLogUtil.writeLog(false, "WristElevatorSafeMove", "Execute MOVE_TO_NEXT_REGION_START", "Empty Region Above", curRegion.toString());
             curState = MoveState.DONE_ERROR;
             return;
           }
@@ -262,7 +262,7 @@ public class WristElevatorSafeMove extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    log.writeLog(false, "WristElevatorSafeMove", "End", "Interrupted", interrupted, "CurState", curState);
+    DataLogUtil.writeLog(false, "WristElevatorSafeMove", "End", "Interrupted", interrupted, "CurState", curState);
 
     if (curState != MoveState.DONE) {
       // If there is an error (DONE_ERROR) of if this command is interrupted,

@@ -10,7 +10,6 @@ import frc.robot.Constants.ClimberConstants.ClimberAngle;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.utilities.FileLog;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
@@ -23,10 +22,10 @@ public class ClimberPrepSequence extends SequentialCommandGroup {
    * @param climber Climber subsystem
    * @param log FileLog utility
    */
-  public ClimberPrepSequence(Elevator elevator, Wrist wrist, Climber climber, FileLog log) {
+  public ClimberPrepSequence(Elevator elevator, Wrist wrist, Climber climber) {
     addCommands(
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist, log),
-      new ClimberSetAngle(ClimberAngle.CLIMB_START, climber, log)
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
+      new ClimberSetAngle(ClimberAngle.CLIMB_START, climber)
     );
   }
 }
