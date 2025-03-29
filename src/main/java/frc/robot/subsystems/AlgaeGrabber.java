@@ -5,20 +5,23 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.TalonFXSConfiguration;
-import com.ctre.phoenix6.configs.TalonFXSConfigurator;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.DataLogUtil;
@@ -38,13 +41,20 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 	private final StatusSignal<AngularVelocity> algaeGrabberEncoderVelocity;	
 	private final StatusSignal<Voltage> algaeGrabberVoltage;
 
-  private final TalonFXS algaeGrabberMotor = new TalonFXS(Ports.CANAlgaeGrabber);
-  private final TalonFXSConfigurator algaeGrabberConfigurator = algaeGrabberMotor.getConfigurator();
-  private TalonFXSConfiguration algaeGrabberConfig;
+  private final TalonFX algaeGrabberMotor = new TalonFX(Ports.CANAlgaeGrabber);
+  private final TalonFXConfigurator algaeGrabberConfigurator = algaeGrabberMotor.getConfigurator();
+  private TalonFXConfiguration algaeGrabberConfig;
   private VoltageOut algaeGrabberVoltageControl = new VoltageOut(0.0);
 
   // Create bump switches
   private final DigitalInput bumpSwitch = new DigitalInput(Ports.DIOAlgaeGrabberBumpSwitch);
+
+  // Create Data Log Entries
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogTemp = new DoubleLogEntry(log, "/AlgaeGrabber/Temprature");
+  private final DoubleLogEntry dLogVoltage = new DoubleLogEntry(log, "/AlgaeGrabber/Voltage");
+  private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/AlgaeGrabber/Current");
+  private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/AlgaeGrabber/Velocity");
 
   public AlgaeGrabber(String subsystemName) {
     
@@ -58,9 +68,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
     algaeGrabberVoltage = algaeGrabberMotor.getMotorVoltage();
 
     // Configure the motor
-    algaeGrabberConfig = new TalonFXSConfiguration();
-    algaeGrabberConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
-    algaeGrabberConfig.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Disabled;      // TODO  Should we enable this for the Minion?
+    algaeGrabberConfig = new TalonFXConfiguration();
     algaeGrabberConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     algaeGrabberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     algaeGrabberConfig.Voltage.PeakForwardVoltage = AlgaeGrabberConstants.compensationVoltage;
@@ -144,11 +152,14 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
    * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    DataLogUtil.writeLog(logWhenDisabled, subsystemName, "Update variables",
-      "AlgaeGrabber Temp (C)", algaeGrabberTemp.refresh().getValueAsDouble(),
-      "AlgaeGrabber Voltage (V)", algaeGrabberVoltage.refresh().getValueAsDouble(),
-      "AlgaeGrabber Current (Amps)", getAlgaeGrabberAmps(),
-      "AlgaeGrabber Velocity (RPM)", getAlgaeGrabberVelocity());
+    if(logWhenDisabled || !DriverStation.isDisabled()){
+      long timeNow = RobotController.getFPGATime();
+
+      dLogTemp.append(algaeGrabberTemp.refresh().getValueAsDouble(), timeNow);
+      dLogVoltage.append(algaeGrabberVoltage.refresh().getValueAsDouble(), timeNow);
+      dLogCurrent.append(getAlgaeGrabberAmps(), timeNow);
+      dLogVelocity.append(getAlgaeGrabberVelocity(), timeNow);
+    }
   }
 
   @Override
