@@ -376,10 +376,10 @@ public final class Constants {
     // Should be updated in RobotPreferences, so it cannot be final
     // When wrist CG (with coral) is vertical, wrist angle should read 90.0 degrees.
     // When wrist coral top metal plate is horizontal (bubble level), wrist angle should read 100.6 degrees
-    public static double offsetAngleCANcoder = 27.0;                 // CALIBRATED.   CANCoder raw angle (in degrees) when arm is at 0 degrees.
+    public static double offsetAngleCANcoder = -31.5;                 // CALIBRATED.   CANCoder raw angle (in degrees) when arm is at 0 degrees.
 
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
-    public static double cancoderDiscontinuityPoint = 0.68;          // CALIBRATED - should be the center of the region of unallowed motion
+    public static double cancoderDiscontinuityPoint = 0.50;          // CALIBRATED - should be the center of the region of unallowed motion
 
     public static final double kP = 40.0;    // CALIBRATED    kP = (desired-output-volts) / (error-in-wrist-rotations)
     public static final double kI = 0.0;    // CALIBRATED
