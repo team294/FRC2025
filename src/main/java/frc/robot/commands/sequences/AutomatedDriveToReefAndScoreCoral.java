@@ -4,22 +4,18 @@
 
 package frc.robot.commands.sequences;
 
-import static edu.wpi.first.wpilibj2.command.Commands.*;
-
 import java.util.EnumMap;
 import java.util.Map;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLevel;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.utilities.*;
 
 public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
@@ -41,7 +37,6 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param rightJoysitck Right joystick
    * @param field Field field
-   * @param log FileLog log
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
       AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field) {
