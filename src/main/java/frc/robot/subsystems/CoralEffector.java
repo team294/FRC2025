@@ -1,14 +1,18 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfigurator;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
 import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -39,7 +43,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;           // Subsystem name for use in file logging and dashboard
     
-  private final TalonFXS coralEffectorMotor = new TalonFXS(Ports.CANCoralEffector);
+  private final TalonFX coralEffectorMotor = new TalonFX(Ports.CANCoralEffector);
 
   // Create variables for the coralEffector Minion motor
   private final StatusSignal<Temperature> coralEffectorTemp;                  // Motor temperature, in degrees Celsius
@@ -49,12 +53,12 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private final StatusSignal<Voltage> coralEffectorVoltage;
   private final StatusSignal<ControlModeValue> coralEffectorControlMode;
 
-  private final TalonFXSConfigurator coralEffectorConfigurator = coralEffectorMotor.getConfigurator();
-  private TalonFXSConfiguration coralEffectorConfig;
+  private final TalonFXConfigurator coralEffectorConfigurator = coralEffectorMotor.getConfigurator();
+  private TalonFXConfiguration coralEffectorConfig;
   private VoltageOut coralEffectorVoltageControl = new VoltageOut(0.0);
   private PositionVoltage coralEffectorPositionControl = new PositionVoltage(0.0);
 
-  // Create entry and exit banner sensors
+  // Create exit banner sensor
   private final DigitalInput exitSensor = new DigitalInput(Ports.DIOCoralEffectorExitSensor);
 
   private final Wrist wrist;
@@ -86,9 +90,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     coralEffectorControlMode = coralEffectorMotor.getControlMode();
 
     // Configure the motor
-    coralEffectorConfig = new TalonFXSConfiguration();
-    coralEffectorConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
-    coralEffectorConfig.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Disabled;      // TODO  Enable this for the Minion after turning on PhoenixPro.  Improves velocity measurement.
+    coralEffectorConfig = new TalonFXConfiguration();
     coralEffectorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     coralEffectorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     coralEffectorConfig.Voltage.PeakForwardVoltage = 2.0;  // Voltage limit needed to cap feedback during PositionVoltage control to prevent oscillation
@@ -109,9 +111,10 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     coralEffectorConfig.Slot0.kD = 0.0;       // kD = (desired-output-volts) / [(error-in-encoder-rotations) / (seconds)]
 
     // Configure encoder to user for feedback
-    coralEffectorConfig.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.Commutation;
-    coralEffectorConfig.ExternalFeedback.RotorToSensorRatio = 1.0;
-    coralEffectorConfig.ExternalFeedback.SensorToMechanismRatio = 1.0;
+    // coralEffectorConfig.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.Commutation;
+    coralEffectorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    coralEffectorConfig.Feedback.RotorToSensorRatio = 1.0;
+    coralEffectorConfig.Feedback.SensorToMechanismRatio = 1.0;
     coralEffectorConfig.ClosedLoopGeneral.ContinuousWrap = false;
 
     // Set feedback behaviors for position control
