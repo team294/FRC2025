@@ -56,6 +56,8 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/AlgaeGrabber/Current");
   private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/AlgaeGrabber/Velocity");
 
+  private boolean netScoreMode = true;
+
   public AlgaeGrabber(String subsystemName) {
     
     logRotationKey = DataLogUtil.allocateLogRotation();
@@ -128,6 +130,22 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
    */
   public boolean isAlgaePresent() {
     return !bumpSwitch.get();
+  }
+
+  /**
+   * Sets whether we are scoring in the net or processor.
+   * @param net true = scoring in net, false = scoring in processor
+   */
+  public void setNetScoreMode(boolean net) {
+    netScoreMode = net;
+  }
+
+  /**
+   * Gets whether we are scoring in the net or processor.
+   * @return true = scoring in net, false = scoring in processor
+   */
+  public boolean getNetScoreMode() {
+    return netScoreMode;
   }
 
   /**

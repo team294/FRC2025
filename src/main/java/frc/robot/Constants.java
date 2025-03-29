@@ -335,8 +335,9 @@ public final class Constants {
 
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.4;   // CALIBRATED
-    public static final double outtakePercent = -1.0; // CALIBRATED
+    public static final double intakePercent = 0.4;             // CALIBRATED 3/29
+    public static final double netOuttakePercent = -0.50;       // CALIBRATED 3/29
+    public static final double processorOuttakePercent = -0.15; // CALIBRATED 3/29
   }
 
   public static final class ElevatorConstants {
@@ -414,13 +415,13 @@ public final class Constants {
       CORAL_L3(40.28, 65.0),
       CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
-      ALGAE_GROUND(5.8, -8.5),
+      ALGAE_GROUND(5.8, -6.5),
       ALGAE_LOWER(34.0, -5.0),
       ALGAE_UPPER(49.7, -5.0),
       ALGAE_LOLIPOP(10.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
-      ALGAE_NET(63.0, 80.0);
+      ALGAE_NET(63.0, 70.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double elevatorPosition;
