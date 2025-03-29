@@ -4,7 +4,6 @@
 
 package frc.robot.commands.autos;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.autos.components.*;

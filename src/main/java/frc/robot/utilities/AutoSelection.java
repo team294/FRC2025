@@ -16,13 +16,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+
 import frc.robot.Constants.CoordType;
-import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.Constants.StopType;
 import frc.robot.commands.*;
 import frc.robot.commands.autos.*;
-import frc.robot.commands.sequences.ScorePieceSequence;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 
