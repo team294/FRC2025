@@ -56,6 +56,8 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/AlgaeGrabber/Current");
   private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/AlgaeGrabber/Velocity");
 
+  private boolean isStandardAlgaeMode;
+
   public AlgaeGrabber(String subsystemName) {
     
     logRotationKey = DataLogUtil.allocateLogRotation();
@@ -128,6 +130,21 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
    */
   public boolean isAlgaePresent() {
     return !bumpSwitch.get();
+  }
+
+  /**
+   * Sets algae shot mode boolean
+   * @param isStandard true = standard outtake percent (inc. net), false = processor outtake percent
+   */
+  public void setAlgaeShotMode(boolean isStandard) {
+    isStandardAlgaeMode = isStandard;
+  }
+
+  /**
+   * @return true = algae shot mode is standard, false = shot mode is processor
+   */
+  public boolean getAlgaeShotMode() {
+    return isStandardAlgaeMode;
   }
 
   /**
