@@ -3,18 +3,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.configs.TalonFXSConfiguration;
-import com.ctre.phoenix6.configs.TalonFXSConfigurator;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
 import com.ctre.phoenix6.signals.ControlModeValue;
-import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
@@ -72,8 +66,9 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/CoralEffector/Velocity");
   private final DoubleLogEntry dLogPosition = new DoubleLogEntry(log, "/CoralEffector/Position");
   private final DoubleLogEntry dLogTargetPos = new DoubleLogEntry(log, "/CoralEffector/TargetPosition");
-  private final BooleanLogEntry bLogPositionControl = new BooleanLogEntry(log, "/CoralEffector/PositionControl");
-  private final BooleanLogEntry bLogAutoHold = new BooleanLogEntry(log, "/CoralEffector/AutoHold");
+  private final BooleanLogEntry dLogPositionControl = new BooleanLogEntry(log, "/CoralEffector/PositionControl");
+  private final BooleanLogEntry dLogAutoHold = new BooleanLogEntry(log, "/CoralEffector/AutoHold");
+  private final BooleanLogEntry dLogCoralIn = new BooleanLogEntry(log, "/CoralEffector/CoralIn");
 
   public CoralEffector(String subsystemName, Wrist wrist) {
     this.subsystemName = subsystemName;
@@ -239,8 +234,9 @@ public class CoralEffector extends SubsystemBase implements Loggable {
       dLogVelocity.append(getCoralEffectorVelocity(), timeNow);
       dLogPosition.append(getCoralEffectorPosition(), timeNow);
       dLogTargetPos.append(targetPosition, timeNow);
-      bLogPositionControl.append(isMotorPositionControl(), timeNow);
-      bLogAutoHold.append(autoHoldMode, timeNow);
+      dLogPositionControl.append(isMotorPositionControl(), timeNow);
+      dLogAutoHold.append(autoHoldMode, timeNow);
+      dLogCoralIn.append(isCoralPresent(), timeNow);
     }
   }
 
