@@ -1,16 +1,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.TalonFXSConfiguration;
-import com.ctre.phoenix6.configs.TalonFXSConfigurator;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.signals.AdvancedHallSupportValue;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
-import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
@@ -39,7 +37,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;           // Subsystem name for use in file logging and dashboard
     
-  private final TalonFXS coralEffectorMotor = new TalonFXS(Ports.CANCoralEffector);
+  private final TalonFX coralEffectorMotor = new TalonFX(Ports.CANCoralEffector);
 
   // Create variables for the coralEffector Minion motor
   private final StatusSignal<Temperature> coralEffectorTemp;                  // Motor temperature, in degrees Celsius
@@ -49,13 +47,12 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private final StatusSignal<Voltage> coralEffectorVoltage;
   private final StatusSignal<ControlModeValue> coralEffectorControlMode;
 
-  private final TalonFXSConfigurator coralEffectorConfigurator = coralEffectorMotor.getConfigurator();
-  private TalonFXSConfiguration coralEffectorConfig;
+  private final TalonFXConfigurator coralEffectorConfigurator = coralEffectorMotor.getConfigurator();
+  private TalonFXConfiguration coralEffectorConfig;
   private VoltageOut coralEffectorVoltageControl = new VoltageOut(0.0);
   private PositionVoltage coralEffectorPositionControl = new PositionVoltage(0.0);
 
-  // Create entry and exit banner sensors
-  private final DigitalInput entrySensor = new DigitalInput(Ports.DIOCoralEffectorEntrySensor);
+  // Create exit banner sensor
   private final DigitalInput exitSensor = new DigitalInput(Ports.DIOCoralEffectorExitSensor);
 
   private final Wrist wrist;
@@ -69,8 +66,9 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/CoralEffector/Velocity");
   private final DoubleLogEntry dLogPosition = new DoubleLogEntry(log, "/CoralEffector/Position");
   private final DoubleLogEntry dLogTargetPos = new DoubleLogEntry(log, "/CoralEffector/TargetPosition");
-  private final BooleanLogEntry bLogPositionControl = new BooleanLogEntry(log, "/CoralEffector/PositionControl");
-  private final BooleanLogEntry bLogAutoHold = new BooleanLogEntry(log, "/CoralEffector/AutoHold");
+  private final BooleanLogEntry dLogPositionControl = new BooleanLogEntry(log, "/CoralEffector/PositionControl");
+  private final BooleanLogEntry dLogAutoHold = new BooleanLogEntry(log, "/CoralEffector/AutoHold");
+  private final BooleanLogEntry dLogCoralIn = new BooleanLogEntry(log, "/CoralEffector/CoralIn");
 
   public CoralEffector(String subsystemName, Wrist wrist) {
     this.subsystemName = subsystemName;
@@ -87,9 +85,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     coralEffectorControlMode = coralEffectorMotor.getControlMode();
 
     // Configure the motor
-    coralEffectorConfig = new TalonFXSConfiguration();
-    coralEffectorConfig.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
-    coralEffectorConfig.Commutation.AdvancedHallSupport = AdvancedHallSupportValue.Disabled;      // TODO  Enable this for the Minion after turning on PhoenixPro.  Improves velocity measurement.
+    coralEffectorConfig = new TalonFXConfiguration();
     coralEffectorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     coralEffectorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     coralEffectorConfig.Voltage.PeakForwardVoltage = 2.0;  // Voltage limit needed to cap feedback during PositionVoltage control to prevent oscillation
@@ -110,9 +106,9 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     coralEffectorConfig.Slot0.kD = 0.0;       // kD = (desired-output-volts) / [(error-in-encoder-rotations) / (seconds)]
 
     // Configure encoder to user for feedback
-    coralEffectorConfig.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.Commutation;
-    coralEffectorConfig.ExternalFeedback.RotorToSensorRatio = 1.0;
-    coralEffectorConfig.ExternalFeedback.SensorToMechanismRatio = 1.0;
+    coralEffectorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    coralEffectorConfig.Feedback.RotorToSensorRatio = 1.0;
+    coralEffectorConfig.Feedback.SensorToMechanismRatio = 1.0;
     coralEffectorConfig.ClosedLoopGeneral.ContinuousWrap = false;
 
     // Set feedback behaviors for position control
@@ -154,8 +150,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Sets the coralEffector motor to hold a specific position.
-   * @param position position to hold, in motor rotations
-   * @param autoHold true = automatically adjust position so that both coral sensors detect the coral.  
+   * @param position position to hold, in motor rotations (+ more towards front of robot, - = more towards hopper)
+   * @param autoHold true = automatically adjust position so that exit coral sensor detects the coral.  
    *   false = hold exact position specified in first parameter.
    */
   public void setCoralEffectorPosition(double position, boolean autoHold) {
@@ -206,36 +202,11 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   // ********** Coral sensor methods
 
   /**
-   * Gets whether a coral is in the exit of the coralEffector.
-   * @return true = coral is in exit, false = coral is not in exit
-   */
-  public boolean isCoralPresentInExit() {
-    return !exitSensor.get();
-  }
-
-  /**
-   * Gets whether a coral is in the entry of the coralEffector.
-   * @return true = coral is in entry, false = coral is not in entry
-   */
-  public boolean isCoralPresentInEntry() {
-    return !entrySensor.get();
-  }
-
-  /**
-   * Gets whether a coral is present and is safely in the coralEffector.
-   * This occurs when the coral is positioned such that it is in the exit but not in the entry.
-   * @return true = coral is safe, false = coral is not safe
-   */
-  public boolean isCoralSafelyIn() {
-    return !isCoralPresentInEntry() && isCoralPresentInExit();
-  }
-
-  /**
    * Gets whether a coral is in the coralEffector.
    * @return true = coral is present, false = coral is not present
    */
   public boolean isCoralPresent() {
-    return isCoralPresentInEntry() || isCoralPresentInExit();
+    return !exitSensor.get();
   }
 
   // ********** Loggin and periodic methods
@@ -263,8 +234,9 @@ public class CoralEffector extends SubsystemBase implements Loggable {
       dLogVelocity.append(getCoralEffectorVelocity(), timeNow);
       dLogPosition.append(getCoralEffectorPosition(), timeNow);
       dLogTargetPos.append(targetPosition, timeNow);
-      bLogPositionControl.append(isMotorPositionControl(), timeNow);
-      bLogAutoHold.append(autoHoldMode, timeNow);
+      dLogPositionControl.append(isMotorPositionControl(), timeNow);
+      dLogAutoHold.append(autoHoldMode, timeNow);
+      dLogCoralIn.append(isCoralPresent(), timeNow);
     }
   }
 
@@ -275,9 +247,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     }
 
     if (DataLogUtil.isMyLogRotation(logRotationKey)) {
-      SmartDashboard.putBoolean("Coral in Entry", isCoralPresentInEntry());
-      SmartDashboard.putBoolean("Coral in Exit", isCoralPresentInExit());
-      SmartDashboard.putBoolean("Coral Safely In", isCoralSafelyIn());
+      SmartDashboard.putBoolean("Coral in", isCoralPresent());
       SmartDashboard.putNumber("Coral Position", getCoralEffectorPosition());
       SmartDashboard.putNumber("Coral Velocity", getCoralEffectorVelocity());
       SmartDashboard.putBoolean("Coral Auto Hold", autoHoldMode);
@@ -286,12 +256,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     // If in coral auto hold mode and is at its target position, 
     // then adjust position target (if needed) to make sure it is held in a safe position
     if (autoHoldMode && Math.abs(targetPosition - getCoralEffectorPosition()) < CoralEffectorConstants.centeringTolerance) {
-      // Coral is too far forward, so move it back until it is in a safe position
-      if (isCoralPresentInExit() && !isCoralPresentInEntry()) {
-        setCoralEffectorPosition(targetPosition - CoralEffectorConstants.centeringStepSize, autoHoldMode);
-      }
       // Coral is too far back, so move it forward until it is in a safe position
-      if (!isCoralPresentInExit() && isCoralPresentInEntry()) {
+      if (!isCoralPresent()) {
         setCoralEffectorPosition(targetPosition + CoralEffectorConstants.centeringStepSize, autoHoldMode);
       }
       // Note: if this is too slow, then set % power slow (0.025%) to center the coral, then set the position

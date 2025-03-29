@@ -31,7 +31,6 @@ public class CoralEffectorSetPosition extends Command {
    * @param autoHold true = automatically adjust position so that both coral sensors detect the coral.  
    *   false = hold exact position specified in first parameter.
    * @param coralEffector CoralEffector subsystem
-   * @param log FileLog utility
    */
   public CoralEffectorSetPosition(boolean autoHold, CoralEffector coralEffector) {
     this.autoHold = autoHold;
