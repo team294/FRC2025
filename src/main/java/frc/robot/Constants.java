@@ -123,7 +123,7 @@ public final class Constants {
     public static final double kEncoderCPR = 1.0;                                              // CALIBRATED Encoder counts per revolution of motor pinion gear
     public static final double kDriveGearRatio = (5.90 / 1.0);                                 // CALIBRATED Mk4n = 5.90:1 (L2+)
     public static final double kTurningGearRatio = (18.75 / 1.0);                              // CALIBRATED Mk4n = 18.75:1
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9683;        // CALIBRATED Wheels are nominal 4"
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4) * 0.9554;        // CALIBRATED Wheels are nominal 4".  LAR was 0.9683, AVR is 0.9554
     public static final double kDriveEncoderMetersPerTick = (kWheelDiameterMeters * Math.PI) / kEncoderCPR / kDriveGearRatio;
     public static final double kTurningEncoderDegreesPerTick = 360.0 / kEncoderCPR / kTurningGearRatio;
   
@@ -151,7 +151,7 @@ public final class Constants {
     public static final double kNominalAngularAccelerationRadiansPerSecondSquared = Math.PI;
 
     // CALIBRATED
-    public static final double kVDriveAvg = 2.251;  // In voltage per meters/second
+    public static final double kVDriveAvg = 2.392;  // In voltage per meters/second    LAR was 2.251 (FOC off), AVR is 2.392 (FOC on)
     private static final double kVmFLrel = 1.0;     // kV modifier for FL drive motor
     private static final double kVmFRrel = 1.0;     // kV modifier for FR drive motor
     private static final double kVmBLrel = 1.0;     // kV modifier for BL drive motor
@@ -165,9 +165,9 @@ public final class Constants {
     public static final double kVmBR = kVmBRrel / kVmAvg;
 
     public static final double dt = 0.02;             // CALIBRATED Timestep for discretizing robot motion, in seconds (scheduler time period = 20ms)
-    public static final double kADrive = 0.2692;      // CALIBRATED In voltage per meters per second^2
+    public static final double kADrive = 0.2383;      // CALIBRATED In voltage per meters per second^2   LAR was 0.2692 (FOC off), AVR is 0.2383 (FOC on)
     public static final double kADriveToPose = 0.050; // CALIBRATED on ETU in 3/2/2025 In seconds (On the ETU, DriveToPose behaves better with a small value for kADriveToPose)
-    public static final double kSDrive = 0.030;       // CALIBRATED In voltage
+    public static final double kSDrive = 0.141;       // CALIBRATED In voltage      LAR was 0.030 (FOC off), AVR is 0.141 (FOC on)
 
     // Minimum abs delta (in m/sec) between actual wheel velocity and desired wheel velocity for kADrive to be applied.
     // If the delta is less than this, then don't use kADrive. This prevents the drive motors from jittering.
