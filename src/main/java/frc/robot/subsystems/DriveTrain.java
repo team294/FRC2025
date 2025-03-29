@@ -29,6 +29,7 @@ import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -88,11 +89,11 @@ public class DriveTrain extends SubsystemBase implements Loggable {
   private final Matrix<N3, N1> farMatrix = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {2,2,2*Math.PI});
 
   private final DataLog log = DataLogManager.getLog();
-  private final StructLogEntry<Pose2d> dLogDrivePose2D = StructLogEntry.create(log, "/DriveTrain/drivePose2d", Pose2d.struct);
+  private final StructLogEntry<Pose2d> dLogOdometryPose2D = StructLogEntry.create(log, "/DriveTrain/OdometryPose2d", Pose2d.struct);
   private final DoubleLogEntry dLogGyroAngle = new DoubleLogEntry(log, "/DriveTrain/GyroAngle");
-  private final DoubleLogEntry dLogRawGyro = new DoubleLogEntry(log, "/DriveTrain/RawGyro");
+  private final DoubleLogEntry dLogGyroRaw = new DoubleLogEntry(log, "/DriveTrain/GyroRaw");
   private final DoubleLogEntry dLogGyroVelocity = new DoubleLogEntry(log, "/DriveTrain/GyroVelocity");
-  private final DoubleLogEntry dLogPitch = new DoubleLogEntry(log, "/DriveTrain/Pitch");
+  private final DoubleLogEntry dLogGyroPitch = new DoubleLogEntry(log, "/DriveTrain/GyroPitch");
   private final DoubleLogEntry dLogOdometryX = new DoubleLogEntry(log, "/DriveTrain/OdometryX");
   private final DoubleLogEntry dLogOdometryY = new DoubleLogEntry(log, "/DriveTrain/OdometryY");
   private final DoubleLogEntry dLogOdometryTheta = new DoubleLogEntry(log, "/DriveTrain/OdometryTheta");
@@ -653,22 +654,22 @@ public class DriveTrain extends SubsystemBase implements Loggable {
 
   /**
    * Writes information about the driveTrain to the file log.
-   * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
+   * @param logWhenDisabled true = log when enabled or disabled, false = only log when enabled
    */
   public void updateDriveLog(boolean logWhenDisabled) {
-    Pose2d pose = poseEstimator.getEstimatedPosition();
+    Pose2d pose = getPose();
     ChassisSpeeds robotSpeeds = getRobotSpeeds();
     long timeNow = RobotController.getFPGATime();
     
-    if(logWhenDisabled){
-      dLogDrivePose2D.append(pose, timeNow);
+    if (logWhenDisabled  || !DriverStation.isDisabled()) {
+      dLogOdometryPose2D.append(pose, timeNow);
       dLogGyroAngle.append(getGyroRotation(), timeNow);
-      dLogRawGyro.append(getGyroRaw(), timeNow);
+      dLogGyroRaw.append(getGyroRaw(), timeNow);
       dLogGyroVelocity.append(getAngularVelocity(), timeNow);
-      dLogPitch.append(getGyroPitch(), timeNow);
-      dLogOdometryX.append(getPose().getTranslation().getX(), timeNow);
-      dLogOdometryY.append(getPose().getTranslation().getY(), timeNow);
-      dLogOdometryTheta.append(getPose().getRotation().getDegrees(), timeNow);
+      dLogGyroPitch.append(getGyroPitch(), timeNow);
+      dLogOdometryX.append(pose.getTranslation().getX(), timeNow);
+      dLogOdometryY.append(pose.getTranslation().getY(), timeNow);
+      dLogOdometryTheta.append(pose.getRotation().getDegrees(), timeNow);
       dLogDriveSpeed.append(speedAvg, timeNow);
       dLogDriveXVelocity.append(robotSpeeds.vxMetersPerSecond, timeNow);
       dLogDriveYVelocity.append(robotSpeeds.vyMetersPerSecond, timeNow);
@@ -677,9 +678,9 @@ public class DriveTrain extends SubsystemBase implements Loggable {
 
     DataLogUtil.writeLog(logWhenDisabled, "Drive", "Update Swerve Module Variables",
       swerveFrontLeft.getLogString(),
-      swerveFrontLeft.getLogString(),
-      swerveFrontLeft.getLogString(),
-      swerveFrontLeft.getLogString()
+      swerveFrontRight.getLogString(),
+      swerveBackLeft.getLogString(),
+      swerveBackRight.getLogString()
     );
     
   }
