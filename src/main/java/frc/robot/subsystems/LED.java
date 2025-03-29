@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.RainbowAnimation;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
@@ -17,6 +18,7 @@ import frc.robot.Constants.BCRColor;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.commands.CANdleBCRAnimation;
+import frc.robot.commands.CANdleRainbowAnimation;
 import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.LEDSegment;
 import frc.robot.utilities.RobotPreferences;
@@ -167,7 +169,7 @@ public class LED extends SubsystemBase {
         updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
         break;
       case AUTO_DRIVE_IN_PROGRESS:
-        // rainbow
+        RainbowAnimation anim = new RainbowAnimation(); //todo numbers
       case ALGAE_MODE:
         // solid teal when holding, flashing when intaking
       case CORAL_MODE:
