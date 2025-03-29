@@ -32,9 +32,10 @@ public class AlgaeGrabberOuttake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // if in standard shot mode, set outtake percent to standard. else, set outtake percent to processor.
-    if (algaeGrabber.getAlgaeShotMode()) {algaeGrabber.setAlgaeGrabberPercentOutput(AlgaeGrabberConstants.standardOuttakePercent);}
-    else {algaeGrabber.setAlgaeGrabberPercentOutput(AlgaeGrabberConstants.processorOuttakePercent);}
+    // If in net score mode, set outtake percent for the net. Otherwise, set outtake percent for the processor.
+    algaeGrabber.setAlgaeGrabberPercentOutput(
+      algaeGrabber.getNetScoreMode() ? AlgaeGrabberConstants.netOuttakePercent : AlgaeGrabberConstants.processorOuttakePercent
+    );
     
     timer.stop();
     timer.reset();

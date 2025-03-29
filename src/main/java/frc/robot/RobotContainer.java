@@ -378,7 +378,7 @@ public class RobotContainer {
     // Algae Grabber Commands
     coP[19].onTrue(new AlgaeGrabberSetPercent(AlgaeGrabberConstants.intakePercent, algaeGrabber));
     coP[19].onFalse(new AlgaeGrabberStop(algaeGrabber));
-    coP[20].onTrue(new AlgaeGrabberSetPercent(AlgaeGrabberConstants.outtakePercent, algaeGrabber));
+    coP[20].onTrue(new AlgaeGrabberSetPercent(AlgaeGrabberConstants.netOuttakePercent, algaeGrabber));
     coP[20].onFalse(new AlgaeGrabberStop(algaeGrabber));
   }
 

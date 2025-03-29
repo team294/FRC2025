@@ -335,9 +335,9 @@ public final class Constants {
 
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.4;   // CALIBRATED
-    public static final double standardOuttakePercent = -0.50;  // CALIBRATED
-    public static final double processorOuttakePercent = -0.15; // CALIBRATED
+    public static final double intakePercent = 0.4;             // CALIBRATED 3/29
+    public static final double netOuttakePercent = -0.50;       // CALIBRATED 3/29
+    public static final double processorOuttakePercent = -0.15; // CALIBRATED 3/29
   }
 
   public static final class ElevatorConstants {

@@ -26,10 +26,7 @@ public class AlgaeScorePrepSequence extends SequentialCommandGroup {
   public AlgaeScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
       new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
-      either(
-        new AlgaeSetShotMode(algaeGrabber, false),
-        new AlgaeSetShotMode(algaeGrabber, true),
-        () -> position == ElevatorWristPosition.ALGAE_PROCESSOR)
+      runOnce(() -> algaeGrabber.setNetScoreMode(position != ElevatorWristPosition.ALGAE_PROCESSOR))
     );
   }
 }

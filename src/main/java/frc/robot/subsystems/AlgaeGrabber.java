@@ -56,7 +56,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/AlgaeGrabber/Current");
   private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/AlgaeGrabber/Velocity");
 
-  private boolean isStandardAlgaeMode;
+  private boolean netScoreMode = true;
 
   public AlgaeGrabber(String subsystemName) {
     
@@ -133,18 +133,19 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Sets algae shot mode boolean
-   * @param isStandard true = standard outtake percent (inc. net), false = processor outtake percent
+   * Sets whether we are scoring in the net or processor.
+   * @param net true = scoring in net, false = scoring in processor
    */
-  public void setAlgaeShotMode(boolean isStandard) {
-    isStandardAlgaeMode = isStandard;
+  public void setNetScoreMode(boolean net) {
+    netScoreMode = net;
   }
 
   /**
-   * @return true = algae shot mode is standard, false = shot mode is processor
+   * Gets whether we are scoring in the net or processor.
+   * @return true = scoring in net, false = scoring in processor
    */
-  public boolean getAlgaeShotMode() {
-    return isStandardAlgaeMode;
+  public boolean getNetScoreMode() {
+    return netScoreMode;
   }
 
   /**

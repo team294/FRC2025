@@ -29,7 +29,7 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
       new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
       new AlgaeGrabberIntake(algaeGrabber),
       either(
-        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
+        new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist),
         none(),
         () -> position == ElevatorWristPosition.ALGAE_GROUND)
     );
