@@ -182,8 +182,19 @@ public class RobotContainer {
     SmartDashboard.putData("Coral Score Prep Sequence L3", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber));
     SmartDashboard.putData("Coral Score Prep Sequence L4", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber));
 
+    SmartDashboard.putData("Stow Elevator and Wrist", new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist));
+
     // SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
     // SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
+
+    // Stop All Motors
+    SmartDashboard.putData("Stop All Motors", parallel(
+      new HopperStop(hopper),
+      new AlgaeGrabberStop(algaeGrabber),
+      new CoralEffectorStop(coralEffector),
+      new WristStop(wrist),
+      new ElevatorStop(elevator)
+    ));
   }
  
    private void configureButtonBindings() {

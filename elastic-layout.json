@@ -167,7 +167,7 @@
             "title": "Game Pieces",
             "x": 1280.0,
             "y": 384.0,
-            "width": 512.0,
+            "width": 256.0,
             "height": 256.0,
             "type": "List Layout",
             "properties": {
@@ -385,6 +385,19 @@
               "false_color": 4294901760,
               "true_icon": "None",
               "false_icon": "None"
+            }
+          },
+          {
+            "title": "Stop All Motors",
+            "x": 1536.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Stop All Motors",
+              "period": 0.06,
+              "show_type": false
             }
           }
         ]
@@ -1298,7 +1311,21 @@
             ]
           }
         ],
-        "containers": []
+        "containers": [
+          {
+            "title": "Stop All Motors",
+            "x": 128.0,
+            "y": 640.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Stop All Motors",
+              "period": 0.06,
+              "show_type": false
+            }
+          }
+        ]
       }
     },
     {
@@ -1546,7 +1573,7 @@
                 }
               },
               {
-                "title": "Goal Pos",
+                "title": "Elevator Goal Position",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
@@ -1935,7 +1962,21 @@
             ]
           }
         ],
-        "containers": []
+        "containers": [
+          {
+            "title": "Stop All Motors",
+            "x": 384.0,
+            "y": 640.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Stop All Motors",
+              "period": 0.06,
+              "show_type": false
+            }
+          }
+        ]
       }
     },
     {
@@ -2017,6 +2058,19 @@
                   "period": 0.06,
                   "show_type": false
                 }
+              },
+              {
+                "title": "Stow Elevator and Wrist",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Stow Elevator and Wrist",
+                  "period": 0.06,
+                  "show_type": false
+                }
               }
             ]
           },
@@ -2092,6 +2146,19 @@
                 "type": "Command",
                 "properties": {
                   "topic": "/SmartDashboard/Coral Score Prep Sequence L4",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Stow Elevator and Wrist",
+                "x": 512.0,
+                "y": 640.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Stow Elevator and Wrist",
                   "period": 0.06,
                   "show_type": false
                 }
@@ -2177,7 +2244,21 @@
             ]
           }
         ],
-        "containers": []
+        "containers": [
+          {
+            "title": "Stop All Motors",
+            "x": 896.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Stop All Motors",
+              "period": 0.06,
+              "show_type": false
+            }
+          }
+        ]
       }
     }
   ]
