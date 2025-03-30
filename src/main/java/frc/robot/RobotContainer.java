@@ -279,32 +279,15 @@ public class RobotContainer {
 
     // ex: left[1].onTrue(new command);
 
-    // 180 if we are red, 0 if we are blue
-    // left[1].onTrue(
-    //   either(
-    //     new DriveResetPose(180, false, driveTrain), 
-    //     new DriveResetPose(0, false, driveTrain), 
-    //     () -> allianceSelection.getAlliance() == Alliance.Red
-    //   )
-    // );
-    // left[2].onTrue(new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain));
-
     left[1].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
     left[2].onTrue(new CoralEffectorOuttake(coralEffector));
-    // left[2].onTrue(sequence( 
-    //   new CoralEffectorOuttake(coralEffector)
-    //   new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
-    //       0.5, 1.0, 
-    //       TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-    //       true, true, driveTrain).asProxy()
-    // ));
 
     right[1].and(xboxController.x()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
     right[1].and(xboxController.a()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
     right[1].and(xboxController.b()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
     right[1].and(xboxController.y()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
 
-    // right[2] will enable fine control while held, see DriveWithJoysticksAdvanced
+    right[2].whileTrue(new DriveToBargeWithOdometry(driveTrain, field));
   }
 
   /**
