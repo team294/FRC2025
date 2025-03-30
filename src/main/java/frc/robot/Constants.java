@@ -134,7 +134,7 @@ public final class Constants {
     // and ensures that the robot travels in the requested direction.  So, use min value of all 4 motors,
     // and further derate (initial test by 5%) to account for some battery droop under heavy loads.
 
-    public static final double kMaxSpeedMetersPerSecond = 5.;  // CALIBRATED
+    public static final double kMaxSpeedMetersPerSecond = 4.8;  // CALIBRATED
     public static final double kFullSpeedMetersPerSecond = 0.95 * kMaxSpeedMetersPerSecond;
     public static final double kNominalSpeedMetersPerSecond = 0.5 * kMaxSpeedMetersPerSecond;
 
@@ -151,7 +151,7 @@ public final class Constants {
     public static final double kNominalAngularAccelerationRadiansPerSecondSquared = Math.PI;
 
     // CALIBRATED
-    public static final double kVDriveAvg = 2.392;  // In voltage per meters/second    LAR was 2.251 (FOC off), AVR is 2.392 (FOC on)
+    public static final double kVDriveAvg = 2.344;  // In voltage per meters/second    LAR was 2.251 (FOC off), FOC cal is 2.392 (FOC on), turn for AVR is 2.344 (FOC on)
     private static final double kVmFLrel = 1.0;     // kV modifier for FL drive motor
     private static final double kVmFRrel = 1.0;     // kV modifier for FR drive motor
     private static final double kVmBLrel = 1.0;     // kV modifier for BL drive motor
@@ -172,7 +172,7 @@ public final class Constants {
     // Minimum abs delta (in m/sec) between actual wheel velocity and desired wheel velocity for kADrive to be applied.
     // If the delta is less than this, then don't use kADrive. This prevents the drive motors from jittering.
     // Note that the swerve module kP in the velocity controller will still work to maintain the proper wheel speed.
-    public static final double velMinDeltaUsingkA = 0.3;
+    public static final double velMinDeltaUsingkA = 0.1;        // For LAR was 0.3, for AVR is 0.1
   }
   public static final class DriveConstants {
     // The locations of the wheels relative to the physical center of the robot, in meters.
@@ -290,13 +290,13 @@ public final class Constants {
     // Feedback terms for holonomic drive controllers
 
     // X-velocity controller kP. Units = (meters/sec of velocity) / (meters of position error)
-    public static final double kPXController = 4;
+    public static final double kPXController = 10;     // was 4
 
     // Y-velocity controller kP. Units = (meters/sec of velocity) / (meters of position error)  
-    public static final double kPYController = 4; 
+    public static final double kPYController = 10;     // was 4
 
     // Theta-velocity controller kP. Units = (rad/sec of velocity) / (radians of angle error)
-    public static final double kPThetaController = 3;
+    public static final double kPThetaController = 10;   // was 3
 
     public static final TrajectoryConfig swerveTrajectoryConfig = new TrajectoryConfig(
         SwerveConstants.kNominalSpeedMetersPerSecond,
@@ -315,8 +315,8 @@ public final class Constants {
 
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.45;        // TODO CALIBRATE FOR 2025
-    public static final double reverseIntakePercent = -0.2; // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.45;
+    public static final double reverseIntakePercent = -0.2;
   }
 
   public static final class CoralEffectorConstants {
