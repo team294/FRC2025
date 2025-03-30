@@ -68,7 +68,7 @@ public class LEDAnimationBCR extends Command {
   /**
      * Determines the color pattern based on the cycle counter.
      * @param cycle the current cycle count.
-     * @return an array of Colors representing the LED pattern.
+     * @return an array of BCRColors representing the LED pattern.
      */
     private BCRColor[] getPattern(int cycle) {
       switch (cycle) {
