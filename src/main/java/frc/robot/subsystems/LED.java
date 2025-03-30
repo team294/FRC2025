@@ -304,8 +304,8 @@ public class LED extends SubsystemBase {
   }
 
   /**
-   * Sets LEDs using Color, an index, and a count.
-   * @param color color to set
+   * Sets LEDs using BCRColor, an index, and a count.
+   * @param color BCRColor to set
    * @param index index to start at
    * @param count count of LEDs to set
    */
