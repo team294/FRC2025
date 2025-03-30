@@ -5,33 +5,67 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.LEDConstants.LEDSegmentRange;
+import frc.robot.Constants.*;
+import frc.robot.Constants.LEDConstants.*;
 import frc.robot.subsystems.LED;
+import frc.robot.subsystems.LED.*;
 
 public class LEDFlashAnimation extends Command {
   private LED led;
   private LEDSegmentRange segment;
+  private StripEvents event;
+  private BCRColor color;
+
+  private int runs;
   
   /**
    * Creates a new Flash animation that runs until it is interrupted
    * @param led LED subsystem
    * @param segment segment to run animation on
    */
-  public LEDFlashAnimation(LED led, LEDSegmentRange segment) {
+  public LEDFlashAnimation(StripEvents event, LED led, LEDSegmentRange segment) {
     this.led = led;
     this.segment = segment;
+    this.event = event;
 
     addRequirements(led);
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    runs = 0;
+    led.sendEvent(event);
+
+    switch (event) {
+      case SUBSYSTEM_UNCALIBRATED:
+        color = BCRColor.SUBSYSTEM_UNCALIBRATED;
+        break;
+      case ALGAE_INTAKING:
+        color = BCRColor.ALGAE_MODE;
+        break;
+      case CORAL_INTAKING:
+        color = BCRColor.CORAL_MODE;
+        break;
+      default:
+        break;
+    }
+  }
 
   @Override
-  public void execute() {}
+  public void execute() {
+    if (runs % 7 == 0) {led.setLEDs(color, segment);}
+    else if (runs % 15 == 0) {
+      led.setLEDs(BCRColor.NEUTRAL, segment);
+      runs = 0;
+    }
+
+    runs++;
+  }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    led.sendEvent(StripEvents.NEUTRAL);
+  }
 
   @Override
   public boolean isFinished() {

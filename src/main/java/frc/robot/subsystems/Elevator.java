@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+import frc.robot.subsystems.LED.StripEvents;
 import frc.robot.Constants.Ports;
 import frc.robot.utilities.ElevatorProfileGenerator;
 import frc.robot.utilities.DataLogUtil;
@@ -41,6 +42,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final int logRotationKey;
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
   private final String subsystemName;   // Subsystem name for use in file logging and dashboarrd
+  private final LED led;
 
   // Create variables for the Elevator Kraken motor 1
   private final StatusSignal<Voltage> elevatorMotor1SupplyVoltage;  // Incoming bus voltage to motor, in volts
@@ -77,7 +79,10 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final ElevatorProfileGenerator elevatorProfile;
 
   private boolean elevatorCalibrated = false;       // true = encoder is working and calibrated, false = not calibrated
+  private boolean lastCalibrationState = elevatorCalibrated; // Store last calibration state for LEDs
   private boolean elevatorPositionControl = false;  // true = position control mode (motion profile), false = manual control mode (percent output)
+
+  private boolean sent = false; // true = uncal. state sent to LEDs
 
   // Variables for DataLogging
   private final DataLog log = DataLogManager.getLog();
@@ -103,10 +108,10 @@ public class Elevator extends SubsystemBase implements Loggable {
    * Creates the elevator subsystem.
    * @param subsystemName name of the subsystem for file logging
    */
-  public Elevator(String subsystemName) {
-    
+  public Elevator(String subsystemName, LED led) {
     logRotationKey = DataLogUtil.allocateLogRotation();
     this.subsystemName = subsystemName;
+    this.led = led;
 
     // Get signal and sensor objects for motor 1
     elevatorMotor1SupplyVoltage = elevatorMotor1.getSupplyVoltage();
@@ -183,6 +188,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
     // Start the elevator in uncalibrated mode unless it is properly zeroed
     elevatorCalibrated = isElevatorAtLowerLimit() && (getElevatorEncoderRotations(1) == 0 && getElevatorEncoderRotations(2) == 0);
+    lastCalibrationState = elevatorCalibrated;
 
     // Ensure the elevator starts in manual control mode
     stopElevatorMotors();
@@ -576,6 +582,19 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
+    // TODO verify that this works
+    if (!isElevatorCalibrated() && !sent) {
+      led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
+      sent = true;
+    }
+
+    // TODO verify that this works
+    if (lastCalibrationState != isElevatorCalibrated()) {
+      if (!isElevatorCalibrated()) led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
+      else led.sendEvent(StripEvents.NEUTRAL);
+      lastCalibrationState = isElevatorCalibrated();
+    }
+
     if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Elev Calibrated", isElevatorCalibrated());
       SmartDashboard.putBoolean("Elev Pos Control", isElevatorInPositionControl());

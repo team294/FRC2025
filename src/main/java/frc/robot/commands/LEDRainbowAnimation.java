@@ -30,7 +30,7 @@ public class LEDRainbowAnimation extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RainbowAnimation anim = new RainbowAnimation(1, .7, segment.count, false, segment.index);
+    RainbowAnimation anim = new RainbowAnimation(0.5, 0.7, segment.count, false, segment.index);
     led.animate(anim);
     led.sendEvent(StripEvents.AUTO_DRIVE_IN_PROGRESS);
   }

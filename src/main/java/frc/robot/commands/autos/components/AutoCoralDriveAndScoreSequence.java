@@ -33,10 +33,10 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoCoralDriveAndScoreSequence(boolean fromHP, ReefLocation end, ReefLevel level, DriveTrain driveTrain,
-      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, AllianceSelection alliance,
+      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, AllianceSelection alliance,
       TrajectoryCache cache) {
     addCommands(
-      new AutoDriveToReefAndPrep(level, fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, alliance, cache),
+      new AutoDriveToReefAndPrep(level, fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, led, alliance, cache),
       // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain),
       new CoralEffectorOuttake(coralEffector),
       new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 

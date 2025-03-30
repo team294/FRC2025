@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLevel;
+import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -41,33 +42,37 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param field Field field
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
-      AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field) {
+      AlgaeGrabber algaeGrabber, LED led, Joystick rightJoystick, Field field) {
     addCommands(
-      // Drive to nearest reef position
-      new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+      parallel(
+        new LEDRainbowAnimation(led, LEDSegmentRange.StripAll),
+        sequence(
+          // Drive to nearest reef position
+          new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
 
-      // Move elevator/wrist to correct position based on given level
-      new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber),
+          // Move elevator/wrist to correct position based on given level
+          new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber),
 
-      // TODO if/when L4 scoring is updated, may need to adjust how far we drive in      
-      // Drive forward to get to the reef (offset copied from DriveToReefWithOdometryForCoral and made positive)
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)),
-        0.5, 1.0, 
-        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain),
+          // TODO if/when L4 scoring is updated, may need to adjust how far we drive in      
+          // Drive forward to get to the reef (offset copied from DriveToReefWithOdometryForCoral and made positive)
+          new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)),
+            0.5, 1.0, 
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+            true, true, driveTrain),
 
-      // Score piece
-      new CoralEffectorOuttake(coralEffector),
+          // Score piece
+          new CoralEffectorOuttake(coralEffector),
 
-      // If scoring on L1, wait 0.5 seconds before backing up
-      either(waitSeconds(0.5), none(), () -> level == ReefLevel.L1),
+          // If scoring on L1, wait 0.5 seconds before backing up
+          either(waitSeconds(0.5), none(), () -> level == ReefLevel.L1),
 
-      // TODO if/when L4 scoring is updated, may need to adjust how far we drive out
-      // Back up 
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
-        0.5, 1.0, 
-        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain)
+          // TODO if/when L4 scoring is updated, may need to adjust how far we drive out
+          // Back up 
+          new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
+            0.5, 1.0, 
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+            true, true, driveTrain)))
+
     );
   }
 }

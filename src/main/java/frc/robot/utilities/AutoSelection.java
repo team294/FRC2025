@@ -180,7 +180,7 @@ public class AutoSelection {
 	 * @param coralEffector CoralEffector subsystem
 	 * @return the command to run
 	 */
-	public Command getAutoCommand(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper) {
+	public Command getAutoCommand(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led) {
 		Command autonomousCommandMain = null;
 
 		// Get parameters from Shuffleboard
@@ -207,42 +207,42 @@ public class AutoSelection {
 			DataLogUtil.writeLogEcho(true, "AutoSelect", "run BargeRight_EDC");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, allianceSelection, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeLeft_JKL.value) {
 			DataLogUtil.writeLogEcho(true, "AutoSelect", "run BargeLeft_JKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K, ReefLocation.L));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, allianceSelection, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeRight_ED_AlgaeCD.value) {
 			DataLogUtil.writeLogEcho(true, "AutoSelect", "run BargeRight_ED_AlgaeCD");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, allianceSelection, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeLeft_JK_AlgaeKL.value) {
 			DataLogUtil.writeLogEcho(true, "AutoSelect", "run BargeLeft_JK_AlgaeKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, allianceSelection, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.PushFriend_JK.value) {
 			DataLogUtil.writeLogEcho(true, "AutoSelect", "run PushFriend_J");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache);
+			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, allianceSelection, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.PushFriend_JK_AlgaeKL.value) {
 			DataLogUtil.writeLogEcho(true, "AutoSelect", "run PushFriend_JK_AlgaeKL");
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3));
-			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, allianceSelection, trajectoryCache);
+			autonomousCommandMain = new AutoPushFriendThenCoralCycle(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, allianceSelection, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
@@ -308,10 +308,10 @@ public class AutoSelection {
 	 * @param coralEffector CoralEffector subsystem
 	 * @return the command to run
 	 */
-	public Command scheduleAutoCommand(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper) {
+	public Command scheduleAutoCommand(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led) {
 		return new InstantCommand(
 		  () -> {
-				Command autonomousCommand = getAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
+				Command autonomousCommand = getAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led);
 				if (autonomousCommand != null) {
 					autonomousCommand.schedule();
 				}

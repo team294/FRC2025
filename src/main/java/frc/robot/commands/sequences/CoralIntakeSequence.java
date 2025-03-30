@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.LED.StripEvents;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
@@ -26,14 +28,18 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param log FileLog utility
    */
-  public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector) {
+  public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, LED led) {
     addCommands(
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
       parallel(
-        new HopperSetPercent(HopperConstants.intakePercent, hopper),
-        new CoralEffectorIntakeEnhanced(coralEffector)
-      ).handleInterrupt(hopper::stopHopperMotor),
-      new HopperStop(hopper)
+        new LEDFlashAnimation(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll),
+        sequence(
+          new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
+          parallel(
+            new HopperSetPercent(HopperConstants.intakePercent, hopper),
+            new CoralEffectorIntakeEnhanced(coralEffector)
+          ).handleInterrupt(hopper::stopHopperMotor)),
+          new HopperStop(hopper)
+      )
     );
   }
 }

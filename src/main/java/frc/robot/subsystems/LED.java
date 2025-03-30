@@ -9,15 +9,13 @@ import java.util.Map;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.RainbowAnimation;
 
-import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BCRColor;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
-import frc.robot.commands.LEDRainbowAnimation;
 import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.LEDSegment;
 import frc.robot.utilities.RobotPreferences;
@@ -30,7 +28,7 @@ public class LED extends SubsystemBase {
   private final CANdle candle;
   private HashMap<LEDSegmentRange, LEDSegment> segments;
 
-  private Timer matchTimer;
+  // private Timer matchTimer;
   private CANdleEvents previousEventCANdle;
   private StripEvents previousEventStrip;
   private boolean lastStickyFaultPresentReading = false;
@@ -52,9 +50,9 @@ public class LED extends SubsystemBase {
     ALGAE_INTAKING,
     AUTO_DRIVE_IN_PROGRESS,
     AUTO_DRIVE_COMPLETE,
-    ROBOT_DISABLED,
     SUBSYSTEM_UNCALIBRATED,
-    NEUTRAL
+    NEUTRAL,
+    ROBOT_DISABLED
   }
 
   private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
@@ -65,9 +63,9 @@ public class LED extends SubsystemBase {
     prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 1);
     prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 2);
     prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 2);
-    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 3);
-    prioritiesStripEvents.put(StripEvents.SUBSYSTEM_UNCALIBRATED, 4);
-    prioritiesStripEvents.put(StripEvents.NEUTRAL, 5);
+    prioritiesStripEvents.put(StripEvents.SUBSYSTEM_UNCALIBRATED, 3);
+    prioritiesStripEvents.put(StripEvents.NEUTRAL, 4);
+    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 5);
   }
 
   /**
@@ -76,14 +74,14 @@ public class LED extends SubsystemBase {
    * @param subsystemName the name of the subsystem
    * @param matchTimer a timer that tracks the time elapsed in the match
    */
-  public LED(int CANPort, String subsystemName, Timer matchTimer) {
+  public LED(int CANPort, String subsystemName/*, Timer matchTimer*/) {
     this.subsystemName = subsystemName;
     this.logRotationKey = DataLogUtil.allocateLogRotation();
 
     this.candle = new CANdle(CANPort, "");
     this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
 
-    this.matchTimer = matchTimer;
+    // this.matchTimer = matchTimer;
 
     for (LEDSegmentRange segment : LEDSegmentRange.values()) {
       segments.put(segment, new LEDSegment(segment.index, segment.count, LEDConstants.EmptyPatterns.noPatternAnimation));
@@ -103,7 +101,7 @@ public class LED extends SubsystemBase {
   //   double rightCount = LEDSegmentRange.StripRight.count * percent;
   //   int ledCountRight = (int) rightCount;
     
-  //   //TODO change depending on how strips are wired
+  //   // TODO change depending on how strips are wired
   //   setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft); 
   //   setLEDs(Color.kRed, LEDSegmentRange.StripRight.index, ledCountRight);
   // }
@@ -156,35 +154,23 @@ public class LED extends SubsystemBase {
     if ((previousEventStrip != StripEvents.NEUTRAL && event != StripEvents.ROBOT_DISABLED) && getPriority(event) < getPriority(previousEventStrip)) return;
 
     switch (event) {
+      // TODO: autodrive in progress should be rainbow, subsystem uncalibrated should flash red,
+      // TODO: intaking algae should flash teal (or turqouise idk), intaking coral should flash purple,
+      // TODO: disabled should run a moving animation that snakes orange + blue (doesn't exist yet)
+
       // case MATCH_COUNTDOWN:
       //   // Percent of the way through the last 10 seconds of the match (125 seconds in)
       //   double percent = Math.max(matchTimer.get() - 125, 0) / 10.0;
       //   updateLEDsCountdown(percent);
       //   break;
-      case SUBSYSTEM_UNCALIBRATED:
-        // flash red
-        break;
       case AUTO_DRIVE_COMPLETE:
         updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
         break;
-      case AUTO_DRIVE_IN_PROGRESS:
-        RainbowAnimation anim = new RainbowAnimation(0.5, 0.7, LEDSegmentRange.StripAll.count, false, LEDSegmentRange.StripAll.index); //todo numbers
-        animate(anim);
-        break;
       case ALGAE_MODE:
-        // solid teal when holding algae
-        break;
-      case ALGAE_INTAKING:
-        // flashing teal
+        updateLEDs(BCRColor.ALGAE_MODE, true);
         break;
       case CORAL_MODE:
-        // solid purple when holding ONLY coral
-        break;
-      case CORAL_INTAKING:
-        // flashing purple
-        break;
-      case ROBOT_DISABLED:
-        //TODO make groups of 2 leds orange/blue and move 1 at a time (makes more sense in my head - cameron)
+        updateLEDs(BCRColor.CORAL_MODE, true);
         break;
       default:
         clearAnimation();

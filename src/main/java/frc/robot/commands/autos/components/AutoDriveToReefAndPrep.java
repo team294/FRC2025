@@ -47,11 +47,11 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoDriveToReefAndPrep(ReefLevel level, TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
-        CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache) {
+        CoralEffector coralEffector, Hopper hopper, LED led, AllianceSelection alliance, TrajectoryCache cache) {
     addCommands(
       new DataLogMessage(false, "AutoDriveToReefAndPrep", "Init", "trajectoryName", trajectoryName.toString()),
       parallel(
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, led),
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(trajectoryName), driveTrain, alliance)
       ),
       new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist)
@@ -76,13 +76,13 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
    * @param log FileLog log
    */
   public AutoDriveToReefAndPrep(ReefLevel level, boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
-      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache) {
+      CoralEffector coralEffector, Hopper hopper, LED led, AllianceSelection alliance, TrajectoryCache cache) {
     // Start from either HP or barge
     Trajectory<SwerveSample> trajectory = fromHP ? AutoSelection.getHPToReef(end) : AutoSelection.getBargeToReef(end);
     addCommands(
       new DataLogMessage(false, "AutoDriveToReefAndPrep", "Init", "trajectory", trajectory.name()),
       parallel(
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, led),
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance)
       ),
       new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist)
