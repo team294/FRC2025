@@ -51,7 +51,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       // Move elevator/wrist to correct position based on given level
       new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber),
 
-      // Drive forward to get to the reef (offset copied from DriveToReefWithOdometryForCoral and made positive)
+      // Drive forward to get to the reef 
       new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)),
         0.5, 1.0, 
         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
