@@ -14,8 +14,13 @@ import frc.robot.utilities.*;
 
 
 public class DriveToBargeWithOdometry extends SequentialCommandGroup {
-  /**
-   * Drives to the nearest point from which we can score in the barge
+  /** <p>Drives to the nearest barge scoring location</p>
+   *  
+   *  If the robot is  aligned with the correct alliance barge then the robot will drive foward towards the barge while maintaining its current y value.
+   * 
+   * If the robot is not aligned with the correct alliance barge then the robot will drive foward while driving to the y value of the edge of the barge
+   * 
+   * <p> Command ends when robot reaches final position which if the driver continues to hold the button the robot can only be moved left to right</p>
    * @param driveTrain DriveTrain subsystem
    * @param field Field utility
    * @param log FileLog utility
