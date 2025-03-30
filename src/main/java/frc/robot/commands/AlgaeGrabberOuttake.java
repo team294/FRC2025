@@ -34,7 +34,7 @@ public class AlgaeGrabberOuttake extends Command {
   public void initialize() {
     // If in net score mode, set outtake percent for the net. Otherwise, set outtake percent for the processor.
     algaeGrabber.setAlgaeGrabberPercentOutput(
-      algaeGrabber.getNetScoreMode() ? AlgaeGrabberConstants.netOuttakePercent : AlgaeGrabberConstants.processorOuttakePercent
+      !algaeGrabber.getNetScoreMode() ? AlgaeGrabberConstants.processorOuttakePercent : AlgaeGrabberConstants.netOuttakePercent
     );
     
     timer.stop();
