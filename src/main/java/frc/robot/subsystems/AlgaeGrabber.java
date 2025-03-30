@@ -51,7 +51,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
   // Create Data Log Entries
   private final DataLog log = DataLogManager.getLog();
-  private final DoubleLogEntry dLogTemp = new DoubleLogEntry(log, "/AlgaeGrabber/Temprature");
+  private final DoubleLogEntry dLogTemp = new DoubleLogEntry(log, "/AlgaeGrabber/Temperature");
   private final DoubleLogEntry dLogVoltage = new DoubleLogEntry(log, "/AlgaeGrabber/Voltage");
   private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/AlgaeGrabber/Current");
   private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/AlgaeGrabber/Velocity");
