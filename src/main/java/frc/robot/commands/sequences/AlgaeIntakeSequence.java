@@ -23,6 +23,7 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
  * @param algaeGrabber AlgaeGrabber subsystem
+ * @param led LED subsystem
  * @param log FileLog utility
  */
 public class AlgaeIntakeSequence extends SequentialCommandGroup {

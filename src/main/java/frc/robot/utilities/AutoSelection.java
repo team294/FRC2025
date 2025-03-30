@@ -178,6 +178,9 @@ public class AutoSelection {
 	 * @param driveTrain DriveTrain subsystem
 	 * @param elevator Elevator subsystem
 	 * @param coralEffector CoralEffector subsystem
+	 * @param algaeGrabber AlgaeGrabber subsystem
+	 * @param hopper Hopper subsystem
+	 * @param LED led subsystem
 	 * @return the command to run
 	 */
 	public Command getAutoCommand(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led) {
@@ -306,6 +309,9 @@ public class AutoSelection {
 	 * @param driveTrain DriveTrain subsystem
 	 * @param elevator Elevator subsystem
 	 * @param coralEffector CoralEffector subsystem
+	 * @param algaeGrabber AlgaeGrabber subsystem
+	 * @param hopper Hopper subsystem
+	 * @param LED led subsystem
 	 * @return the command to run
 	 */
 	public Command scheduleAutoCommand(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led) {

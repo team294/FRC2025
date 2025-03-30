@@ -31,6 +31,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
+   * @param led LED subsystem
    * @param alliance AllianceSelection utility
    * @param cache TrajectoryCache utility
    * @param log FileLog utility

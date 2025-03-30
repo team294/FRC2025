@@ -71,6 +71,10 @@ public class AutoDriveToReefAndPrep extends SequentialCommandGroup {
    * @param end ReefLocation (A-L) to drive to
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
+   * @param wrist Wrist subsystem
+   * @param coralEffector CoralEffector subsystem
+   * @param hopper Hopper subsystem
+   * @param led LED subsystem
    * @param alliance AllianceSelection alliance 
    * @param cache TrajectoryCache cache
    * @param log FileLog log

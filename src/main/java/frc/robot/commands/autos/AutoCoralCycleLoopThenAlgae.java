@@ -27,6 +27,11 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param reefLevel ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem
+   * @param wrist Wrist subsystem
+   * @param coralEffector EndEffector subsystem
+   * @param algaeGrabber AlgaeGrabber subsystem
+   * @param hopper Hopper subsystem
+   * @param led LED subsystem
    * @param alliance AllianceSelection alliance
    * @param cache TrajectoryCache cache
    * @param log FileLog log

@@ -21,6 +21,7 @@ public class AutoCoralDriveAndIntakeSequence extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
    * @param hopper Hopper subsystem
+   * @param led LED subsystem
    * @param alliance AllianceSelection alliance
    * @param cache TrajectoryCache cache
    * @param log FileLog log
