@@ -101,6 +101,7 @@ public class LED extends SubsystemBase {
     double rightCount = LEDSegmentRange.StripRight.count * percent;
     int ledCountRight = (int) rightCount;
     
+    // TODO change based on how strips are physically wired on bot
     setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft); 
     setLEDs(Color.kRed, LEDSegmentRange.StripRight.index, ledCountRight);
   }
