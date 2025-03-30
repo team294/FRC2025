@@ -325,7 +325,7 @@ public final class Constants {
     public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
     public static final double outtakePercent = 0.4;      // CALIBRATED
 
-    public static final double centerRotationsUndershoot = 1.0;  // CALIBRATED #3  Measure the typical undershoot with kP.  This value (in motor rotataions) will be added to the encoder reading when the coral sensor is triggered.
+    public static final double centerRotationsUndershoot = 1.625;  // CALIBRATED #3  Measure the typical undershoot with kP.  This value (in motor rotataions) will be added to the encoder reading when the coral sensor is triggered.
     public static final double centeringTolerance = 0.07;  // CALIBRATED #1  Position tolerance (in rotations) for holding coral [smaller than 1/2 of the position window where both sensors see the coral]
     public static final double centeringStepSize = centeringTolerance * 0.5; // #4 If the autoHold oscillates (not setPosition oscillating), then reduce this step size.
 
@@ -411,7 +411,7 @@ public final class Constants {
     public enum ElevatorWristPosition {
       START_CONFIG(0.0, 100.0),
 
-      CORAL_HP(0.0, 78.0),
+      CORAL_HP(0.0, 82.0),
 
       CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
