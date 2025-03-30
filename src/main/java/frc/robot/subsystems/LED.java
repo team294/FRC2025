@@ -304,6 +304,16 @@ public class LED extends SubsystemBase {
   }
 
   /**
+   * Sets LEDs using Color, an index, and a count.
+   * @param color color to set
+   * @param index index to start at
+   * @param count count of LEDs to set
+   */
+  public void setLEDs(BCRColor color, int index, int count) {
+    candle.setLEDs(color.r, color.g, color.b, 0, index, count);
+  }
+
+  /**
    * Gets the priority level for an event.
    * @param event CANdleEvents event
    * @return priority level integer (higher value = higher priority), default is -1

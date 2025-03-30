@@ -4,16 +4,15 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.BCRColor;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.subsystems.LED;
-import frc.robot.subsystems.LED.StripEvents;
 
 public class LEDAnimationBCR extends Command {
   private LED led;
   private LEDSegmentRange segment;
-  private int cycleCounter = 0;
+  private int cycleCounter, t;
   
   /**
    * Creates a blue and orange (BCR) snaking animation that runs until it is interrupted.
@@ -29,33 +28,36 @@ public class LEDAnimationBCR extends Command {
 
   @Override
   public void initialize() {
-    led.sendEvent(StripEvents.ROBOT_DISABLED);
+    cycleCounter = 0;
+    t = 0;
   }
 
   @Override
   public void execute() {
-    // Get the current pattern for the cycle
-    Color[] pattern = getPattern(cycleCounter);
+    if (t >= 2) {
+      // Get the current pattern for the cycle
+      BCRColor[] pattern = getPattern(cycleCounter);
+  
+      // Get the index and count from the segment
+      int segmentIndex = segment.index;
+      int segmentCount = segment.count;
+  
+      // Loop through the LEDs in the segment and apply the pattern
+      for (int i = 0; i < segmentCount; i += 2) {
+        int colorIndex = (i / 2) % 4; // Determine which color pair to use based on the cycle
+        led.setLEDs(pattern[colorIndex], segmentIndex + i, 2);
+      }
+  
+      // Increment the cycleCounter and reset it after a full cycle
+      cycleCounter = (cycleCounter + 1) % 4;
 
-    // Get the index and count from the segment
-    int segmentIndex = segment.index;
-    int segmentCount = segment.count;
-
-
-    // Loop through the LEDs in the segment and apply the pattern
-    for (int i = 0; i < segmentCount; i += 2) {
-      int colorIndex = (i / 2) % 4; // Determine which color pair to use based on the cycle
-      led.setLEDs(pattern[colorIndex], segmentIndex + i, 2);
-    }
-
-    // Increment the cycleCounter and reset it after a full cycle
-    cycleCounter = (cycleCounter + 1) % 4;
+      t = 0;
+    } else t++;
   }
 
   @Override
   public void end(boolean interrupted) {
     led.clearAnimation();
-    led.sendEvent(StripEvents.NEUTRAL);
   }
 
   @Override
@@ -68,18 +70,18 @@ public class LEDAnimationBCR extends Command {
      * @param cycle the current cycle count.
      * @return an array of Colors representing the LED pattern.
      */
-    private Color[] getPattern(int cycle) {
+    private BCRColor[] getPattern(int cycle) {
       switch (cycle) {
         case 0:
-          return new Color[]{Color.kBlue, Color.kBlue, Color.kOrange, Color.kOrange};
+          return new BCRColor[]{BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE};
         case 1:
-          return new Color[]{Color.kOrange, Color.kBlue, Color.kBlue, Color.kOrange};
+          return new BCRColor[]{BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE};
         case 2:
-          return new Color[]{Color.kOrange, Color.kOrange, Color.kBlue, Color.kBlue};
+          return new BCRColor[]{BCRColor.ORANGE, BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE};
         case 3:
-          return new Color[]{Color.kBlue, Color.kOrange, Color.kOrange, Color.kBlue};
+          return new BCRColor[]{BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE, BCRColor.BLUE};
         default:
-          return new Color[]{Color.kBlue, Color.kBlue, Color.kOrange, Color.kOrange};
+          return new BCRColor[]{BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE};
       }
     }
 }
