@@ -58,7 +58,6 @@ public class DriveWithJoysticksAdvanced extends Command {
     this.allianceSelection = allianceSelection;
     this.driveTrain = driveTrain;
     this.field = field;
-    
 
     turnRateController = new ProfiledPIDController(DriveConstants.kPJoystickThetaController, 0, 0, TrajectoryConstants.kThetaControllerConstraints);
     turnRateController.enableContinuousInput(-Math.PI, Math.PI);
@@ -78,12 +77,10 @@ public class DriveWithJoysticksAdvanced extends Command {
 
     // loadingStationLock = false;
     // previousLoadingStationLock = false;
-
-    reefBasedControl = false;
     // previousReefLock = false;
 
+    reefBasedControl = false;
     bargeBasedControl = false;
-
     fineControl = false;
 
     if (Math.abs(driveTrain.getAngularVelocity()) < 0.5) {
@@ -109,7 +106,7 @@ public class DriveWithJoysticksAdvanced extends Command {
     fineControl = reefBasedControl || bargeBasedControl;
 
 
-    fwdVelocity = (bargeBasedControl) ? 0 :(allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getY() : leftJoystick.getY();
+    fwdVelocity = (bargeBasedControl) ? 0 : (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getY() : leftJoystick.getY();
     leftVelocity = (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getX() : leftJoystick.getX();
     turnRate = (reefBasedControl || bargeBasedControl) ? 0 : -rightJoystick.getX();
 

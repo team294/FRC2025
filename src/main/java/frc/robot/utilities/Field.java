@@ -7,8 +7,6 @@ package frc.robot.utilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.print.event.PrintServiceAttributeEvent;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
@@ -351,11 +349,11 @@ public class Field {
     }
 
     /**
-     * Finds and returns the nearest point on the line which denotes positions we can score in the barge
+     * Gets the nearest point on the line which denotes positions we can score in the barge.
      * @param currPos the robot's current position
      * @return Pose2d of the nearest point we can score on the barge
      */
-    public Pose2d getNearestBargeScoringPosition(Pose2d currPos){
+    public Pose2d getNearestBargeScoringPosition(Pose2d currPos) {
         Pose2d bargeScoringPos = (allianceSelection.getAlliance() == Alliance.Blue) ? 
           (currPos.getX() >  FieldConstants.length / 2.0) ? aprilTagFieldLayout.getTagPose(4).get().toPose2d() : aprilTagFieldLayout.getTagPose(14).get().toPose2d()
         : (currPos.getX() >= FieldConstants.length / 2.0) ? aprilTagFieldLayout.getTagPose(5).get().toPose2d() : aprilTagFieldLayout.getTagPose(15).get().toPose2d();
