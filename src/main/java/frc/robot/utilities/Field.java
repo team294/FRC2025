@@ -10,6 +10,7 @@ import java.util.HashMap;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -345,5 +346,19 @@ public class Field {
         //     "Nearest Rotation", nearestAprilTagLoadingStation.getRotation().getDegrees()
         // );
         return nearestAprilTagLoadingStation;
+    }
+
+    /**
+     * Gets the nearest point on the line which denotes positions we can score in the barge.
+     * @param currPos the robot's current position
+     * @return Pose2d of the nearest point we can score on the barge
+     */
+    public Pose2d getNearestBargeScoringPosition(Pose2d currPos) {
+        Pose2d bargeScoringPos = (allianceSelection.getAlliance() == Alliance.Blue) ? 
+          (currPos.getX() >  FieldConstants.length / 2.0) ? aprilTagFieldLayout.getTagPose(4).get().toPose2d() : aprilTagFieldLayout.getTagPose(14).get().toPose2d()
+        : (currPos.getX() >= FieldConstants.length / 2.0) ? aprilTagFieldLayout.getTagPose(5).get().toPose2d() : aprilTagFieldLayout.getTagPose(15).get().toPose2d();
+        bargeScoringPos = bargeScoringPos.rotateAround(bargeScoringPos.getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d((-FieldConstants.bargeScoringOffset), 0, new Rotation2d(0)));
+
+        return new Pose2d(bargeScoringPos.getX(), MathUtil.clamp(currPos.getY(), bargeScoringPos.getY() - (FieldConstants.bargeScorableWidth / 2.0), bargeScoringPos.getY() + (FieldConstants.bargeScorableWidth / 2.0)), bargeScoringPos.getRotation());
     }
 }

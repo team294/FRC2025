@@ -4,43 +4,36 @@
 
 package frc.robot.commands.sequences;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import static edu.wpi.first.wpilibj2.command.Commands.*;
 
-import frc.robot.Constants.CoordType;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.RobotDimensions;
-import frc.robot.commands.DriveToPose;
-import frc.robot.commands.DataLogMessage;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.Field;
+import frc.robot.Constants.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
+import frc.robot.utilities.*;
 
 public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
-  /** <p>Drives to the closest reef scoring position against the reef</p>
-   *  
-   *  Before Joystick Use:
-   *  If the distance to the final point is <= the robot's diameter AND the difference in angle between the current and final position is <= 30 degrees, it will drive to the scoring position.
-   *  Otherwise, it will drive to a point offset (to allow for greater rotation) before driving to the scoring position.
+  /** 
+   * Drives to the closest reef scoring position against the reef.
    * 
-   * <p></p>
+   * <p><b>Before Joystick Use:</b>
+   * <p>If the distance to the final point is <= the robot's diameter AND the difference in angle between the current and final position is <= 30 degrees, it will drive to the scoring position.
+   * Otherwise, it will drive to a point offset (to allow for greater rotation) before driving to the scoring position.
    * 
-   * After Joystick Use:
-   * If the joystick is pushed in the direction opposite to the robot's relative position along the reef, the robot will switch to the other position on that side of the reef
+   * <p><b>After Joystick Use:</b>
+   * <p>If the joystick is pushed in the direction opposite to the robot's relative position along the reef, the robot will switch to the other position on that side of the reef.
    * (Robot on left position, joystick pushed right -> robot moves to the right position)
    * 
-   * <p> Command ends when robot reaches final position (all jogs need to occur before getting to final position)
+   * <p>The sequence ends when robot reaches final position (all jogs need to occur before getting to final position).
    * @param driveTrain DriveTrain subsystem
    * @param field Field utility
-   * @param rightJoystick
-   * @param log FileLog utility
+   * @param rightJoystick Right joystick
    */
   public DriveToReefWithOdometryForCoral(DriveTrain driveTrain, Field field, Joystick rightJoystick) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
       
