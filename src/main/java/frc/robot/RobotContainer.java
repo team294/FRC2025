@@ -24,6 +24,7 @@ import frc.robot.commands.*;
 import frc.robot.commands.autos.components.*;
 import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.LED.StripEvents;
 import frc.robot.utilities.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.Constants.*;
@@ -411,6 +412,8 @@ public class RobotContainer {
     wrist.stopWrist();
     coralEffector.stopCoralEffectorMotor();
 
+    led.sendEvent(StripEvents.ROBOT_DISABLED);
+
     matchTimer.stop();
     SignalLogger.stop();
   }
@@ -481,6 +484,8 @@ public class RobotContainer {
       wrist.stopWrist();
     }
 
+    led.sendEvent(StripEvents.NEUTRAL);
+    
     matchTimer.reset();
     matchTimer.start();
   }

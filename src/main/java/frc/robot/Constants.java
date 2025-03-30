@@ -520,17 +520,7 @@ public final class Constants {
       StripHorizontal(CANdle.index + CANdle.count, 24),
       StripLeft(StripHorizontal.index + StripHorizontal.count, 30),
       StripRight(StripLeft.index + StripLeft.count, 30),
-      StripAll(StripHorizontal.index, StripLeft.count + StripRight.count + StripHorizontal.count),
-
-      // TODO determine if StripLeftSection4 and StripRightSection4 are needed
-      StripLeftSection1(StripLeft.index, StripLeft.count / 4),
-      StripLeftSection2(StripLeft.index, StripLeft.count / 2),
-      StripLeftSection3(StripLeft.index, StripLeft.count * 3 / 4),
-      StripLeftSection4(StripLeft.index, StripLeft.count),
-      StripRightSection1(StripRight.index, StripRight.count / 4),
-      StripRightSection2(StripRight.index, StripRight.count / 2),
-      StripRightSection3(StripRight.index, StripRight.count * 3 / 4),
-      StripRightSection4(StripRight.index, StripRight.count);
+      StripAll(StripHorizontal.index, StripLeft.count + StripRight.count + StripHorizontal.count);
 
       public final int index, count;
       LEDSegmentRange(int index, int count) {

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BCRColor;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
+import frc.robot.commands.LEDbcrAnimation;
 import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.LEDSegment;
 import frc.robot.utilities.RobotPreferences;
@@ -32,6 +33,8 @@ public class LED extends SubsystemBase {
   private CANdleEvents previousEventCANdle;
   private StripEvents previousEventStrip;
   private boolean lastStickyFaultPresentReading = false;
+
+  LEDbcrAnimation bcrAnim = new LEDbcrAnimation(this, LEDSegmentRange.StripAll); // Store blue/orange animation copy for ROBOT_DISABLED
 
   public enum CANdleEvents {
     STICKY_FAULTS_CLEARED,
@@ -154,10 +157,6 @@ public class LED extends SubsystemBase {
     if ((previousEventStrip != StripEvents.NEUTRAL && event != StripEvents.ROBOT_DISABLED) && getPriority(event) < getPriority(previousEventStrip)) return;
 
     switch (event) {
-      // TODO: autodrive in progress should be rainbow, subsystem uncalibrated should flash red,
-      // TODO: intaking algae should flash teal (or turqouise idk), intaking coral should flash purple,
-      // TODO: disabled should run a moving animation that snakes orange + blue (doesn't exist yet)
-
       // case MATCH_COUNTDOWN:
       //   // Percent of the way through the last 10 seconds of the match (125 seconds in)
       //   double percent = Math.max(matchTimer.get() - 125, 0) / 10.0;
@@ -171,6 +170,19 @@ public class LED extends SubsystemBase {
         break;
       case CORAL_MODE:
         updateLEDs(BCRColor.CORAL_MODE, true);
+        break;
+      case ROBOT_DISABLED:
+        // TODO can you run a command in a subsystem?? just "new LEDbcrAnimation(this, LEDSegmentRange.StripAll);"
+        bcrAnim.schedule();
+        break;
+      // * These occur outside of LED.java, see comments *
+      case SUBSYSTEM_UNCALIBRATED: // LEDFlashAnimation, Wrist / Elevator uncalibrated (see each subsystem)
+        break;
+      case ALGAE_INTAKING: // LEDFlashAnimation, intaking algae (see AlgaeGrabberIntake)
+        break;
+      case CORAL_INTAKING: // LEDFlashAnimation, intaking coral (see CoralEffectorIntakeEnhanced)
+        break;
+      case AUTO_DRIVE_IN_PROGRESS: // LEDRainbowAnimation, automated drive and score (see AutomatedDriveToReefAndScoreCoral)
         break;
       default:
         clearAnimation();
