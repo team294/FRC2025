@@ -105,7 +105,7 @@ public class DriveWithJoysticksAdvanced extends Command {
   public void execute() {
     reefBasedControl = rightJoystick.getRawButton(1);     // Turn on fine control, robot-oriented control (not field-relative), and turn off theta joystick
     // loadingStationLock = rightJoystick.getRawButton(2);
-    bargeBasedControl = rightJoystick.getRawButton(2);    // Turn on fine control, forward-back driving, and theta joystick (was button 2, switched to 1)
+    bargeBasedControl = rightJoystick.getRawButton(2);    // Turn on fine control, disables forward-back driving, and theta joystick 
     fineControl = reefBasedControl || bargeBasedControl;
 
 
