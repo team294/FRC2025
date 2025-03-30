@@ -10,6 +10,7 @@ import java.util.Map;
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,9 +33,11 @@ public class LED extends SubsystemBase {
   // private Timer matchTimer;
   private CANdleEvents previousEventCANdle;
   private StripEvents previousEventStrip;
+  private BCRColor dashboardColor = BCRColor.NEUTRAL;
   private boolean lastStickyFaultPresentReading = false;
 
-  LEDbcrAnimation bcrAnim = new LEDbcrAnimation(this, LEDSegmentRange.StripAll); // Store blue/orange animation copy for ROBOT_DISABLED
+  // Store blue/orange animation copy for ROBOT_DISABLED
+  LEDbcrAnimation bcrAnimation = new LEDbcrAnimation(this, LEDSegmentRange.StripAll);
 
   public enum CANdleEvents {
     STICKY_FAULTS_CLEARED,
@@ -97,17 +100,16 @@ public class LED extends SubsystemBase {
    * Updates the LED strips for a countdown animation.
    * @param percent 0-1 progress through the countdown
    */
-  // private void updateLEDsCountdown(double percent) {
-  //   double leftCount = LEDSegmentRange.StripLeft.count * percent;
-  //   int ledCountLeft = (int) leftCount;
+  private void updateLEDsCountdown(double percent) {
+    double leftCount = LEDSegmentRange.StripLeft.count * percent;
+    int ledCountLeft = (int) leftCount;
 
-  //   double rightCount = LEDSegmentRange.StripRight.count * percent;
-  //   int ledCountRight = (int) rightCount;
+    double rightCount = LEDSegmentRange.StripRight.count * percent;
+    int ledCountRight = (int) rightCount;
     
-  //   // TODO change depending on how strips are wired
-  //   setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft); 
-  //   setLEDs(Color.kRed, LEDSegmentRange.StripRight.index, ledCountRight);
-  // }
+    setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft); 
+    setLEDs(Color.kRed, LEDSegmentRange.StripRight.index, ledCountRight);
+  }
 
   /**
    * Changes the color of the LEDs on either the strips or the CANdle.
@@ -164,29 +166,44 @@ public class LED extends SubsystemBase {
       //   break;
       case AUTO_DRIVE_COMPLETE:
         updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
+        dashboardColor = BCRColor.AUTO_DRIVE_COMPLETE;
         break;
       case ALGAE_MODE:
         updateLEDs(BCRColor.ALGAE_MODE, true);
+        dashboardColor = BCRColor.ALGAE_MODE;
         break;
       case CORAL_MODE:
         updateLEDs(BCRColor.CORAL_MODE, true);
+        dashboardColor = BCRColor.CORAL_MODE;
         break;
       case ROBOT_DISABLED:
         // TODO can you run a command in a subsystem?? just "new LEDbcrAnimation(this, LEDSegmentRange.StripAll);"
-        bcrAnim.schedule();
+        bcrAnimation.schedule();
+        dashboardColor = BCRColor.NEUTRAL;
         break;
-      // * These occur outside of LED.java, see comments *
-      case SUBSYSTEM_UNCALIBRATED: // LEDFlashAnimation, Wrist / Elevator uncalibrated (see each subsystem)
+
+      // The events below set the pattern outside of the LED subsystem, see comments
+
+      // LEDFlashAnimation, Wrist / Elevator uncalibrated (see each subsystem)
+      case SUBSYSTEM_UNCALIBRATED:
+        dashboardColor = BCRColor.SUBSYSTEM_UNCALIBRATED;
         break;
-      case ALGAE_INTAKING: // LEDFlashAnimation, intaking algae (see AlgaeGrabberIntake)
+      // LEDFlashAnimation, intaking algae (see AlgaeGrabberIntake)
+      case ALGAE_INTAKING:
+        dashboardColor = BCRColor.ALGAE_MODE;
         break;
-      case CORAL_INTAKING: // LEDFlashAnimation, intaking coral (see CoralEffectorIntakeEnhanced)
+      // LEDFlashAnimation, intaking coral (see CoralEffectorIntakeEnhanced)
+      case CORAL_INTAKING:
+        dashboardColor = BCRColor.CORAL_MODE;
         break;
-      case AUTO_DRIVE_IN_PROGRESS: // LEDRainbowAnimation, automated drive and score (see AutomatedDriveToReefAndScoreCoral)
+      // LEDRainbowAnimation, automated drive and score (see AutomatedDriveToReefAndScoreCoral)
+      case AUTO_DRIVE_IN_PROGRESS:
+        dashboardColor = BCRColor.WHITE;
         break;
       default:
         clearAnimation();
         updateLEDs(BCRColor.NEUTRAL, true);
+        dashboardColor = BCRColor.NEUTRAL;
         break;
     }
 
@@ -324,6 +341,8 @@ public class LED extends SubsystemBase {
         sendEvent(CANdleEvents.STICKY_FAULTS_CLEARED);
         lastStickyFaultPresentReading = false;
       }
+
+      SmartDashboard.putString("LED State", String.format("#%02x%02x%02x", dashboardColor.r, dashboardColor.g, dashboardColor.b));
 
       // If in last 10 seconds of match, send match countdown event
       // if (matchTimer.get() > 125 && matchTimer.get() <= 135) {

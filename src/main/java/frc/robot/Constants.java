@@ -490,7 +490,8 @@ public final class Constants {
     ALGAE_MODE(0, 200, 255),           // Turquoise
     CORAL_MODE(255, 0, 255),           // Purple
     AUTO_DRIVE_COMPLETE(0, 255, 0),    // Green
-    SUBSYSTEM_UNCALIBRATED(255, 0, 0); // Red
+    SUBSYSTEM_UNCALIBRATED(255, 0, 0), // Red
+    WHITE(255, 255, 255);              // White
 
     public final int r, g, b;
     BCRColor(int r, int g, int b) {

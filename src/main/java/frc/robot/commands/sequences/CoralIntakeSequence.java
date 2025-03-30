@@ -27,20 +27,17 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
    * @param hopper Hopper subsystem
    * @param coralEffector CoralEffector subsystem
    * @param led LED subsystem
-   * @param log FileLog utility
    */
   public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, LED led) {
     addCommands(
-      parallel(
-        new LEDFlashAnimation(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll),
         sequence(
           new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
           parallel(
             new HopperSetPercent(HopperConstants.intakePercent, hopper),
             new CoralEffectorIntakeEnhanced(coralEffector)
-          ).handleInterrupt(hopper::stopHopperMotor)),
+          ).handleInterrupt(hopper::stopHopperMotor),
           new HopperStop(hopper)
-      )
+        ).alongWith(new LEDFlashAnimation(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll))
     );
   }
 }

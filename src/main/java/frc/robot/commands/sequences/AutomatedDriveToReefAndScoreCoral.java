@@ -45,8 +45,6 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
       AlgaeGrabber algaeGrabber, LED led, Joystick rightJoystick, Field field) {
     addCommands(
-      parallel(
-        new LEDRainbowAnimation(led, LEDSegmentRange.StripAll),
         sequence(
           // Drive to nearest reef position
           new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
@@ -72,8 +70,8 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
           new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
             0.5, 1.0, 
             TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-            true, true, driveTrain)))
-
+            true, true, driveTrain)
+        ).alongWith(new LEDRainbowAnimation(led, LEDSegmentRange.StripAll))
     );
   }
 }

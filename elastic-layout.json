@@ -165,7 +165,7 @@
           },
           {
             "title": "Game Pieces",
-            "x": 1280.0,
+            "x": 1536.0,
             "y": 384.0,
             "width": 256.0,
             "height": 256.0,
@@ -175,14 +175,14 @@
             },
             "children": [
               {
-                "title": "Coral Safely In",
-                "x": 0.0,
-                "y": 0.0,
+                "title": "Coral Present",
+                "x": 1536.0,
+                "y": 512.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Boolean Box",
                 "properties": {
-                  "topic": "/SmartDashboard/Coral Safely In",
+                  "topic": "/SmartDashboard/Coral in",
                   "period": 0.06,
                   "data_type": "boolean",
                   "true_color": 4294901983,
@@ -291,7 +291,7 @@
           },
           {
             "title": "Clear Sticky Faults",
-            "x": 1024.0,
+            "x": 1280.0,
             "y": 512.0,
             "width": 256.0,
             "height": 128.0,
@@ -306,7 +306,7 @@
             "title": "Problem Subsystem(s)",
             "x": 640.0,
             "y": 512.0,
-            "width": 384.0,
+            "width": 640.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
@@ -365,7 +365,7 @@
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
-              "false_color": 4294901760,
+              "false_color": 4294198070,
               "true_icon": "None",
               "false_icon": "None"
             }
@@ -389,7 +389,7 @@
           },
           {
             "title": "Stop All Motors",
-            "x": 1536.0,
+            "x": 1280.0,
             "y": 384.0,
             "width": 256.0,
             "height": 128.0,
@@ -398,6 +398,19 @@
               "topic": "/SmartDashboard/Stop All Motors",
               "period": 0.06,
               "show_type": false
+            }
+          },
+          {
+            "title": "LED State",
+            "x": 0.0,
+            "y": 640.0,
+            "width": 1792.0,
+            "height": 256.0,
+            "type": "Single Color View",
+            "properties": {
+              "topic": "/SmartDashboard/LED State",
+              "period": 0.06,
+              "data_type": "string"
             }
           }
         ]
@@ -1334,13 +1347,13 @@
         "layouts": [
           {
             "title": "Algae Grabber",
-            "x": 0.0,
+            "x": 512.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 384.0,
+            "height": 512.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "HIDDEN"
+              "label_position": "TOP"
             },
             "children": [
               {
@@ -1403,13 +1416,13 @@
           },
           {
             "title": "Coral Effector",
-            "x": 0.0,
-            "y": 384.0,
+            "x": 256.0,
+            "y": 0.0,
             "width": 256.0,
-            "height": 384.0,
+            "height": 512.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "HIDDEN"
+              "label_position": "TOP"
             },
             "children": [
               {
@@ -1452,14 +1465,14 @@
                 }
               },
               {
-                "title": "Coral Safely In",
-                "x": 640.0,
-                "y": 768.0,
+                "title": "Coral Present",
+                "x": 0.0,
+                "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Boolean Box",
                 "properties": {
-                  "topic": "/SmartDashboard/Coral Safely In",
+                  "topic": "/SmartDashboard/Coral in",
                   "period": 0.06,
                   "data_type": "boolean",
                   "true_color": 4294901983,
@@ -1472,7 +1485,7 @@
           },
           {
             "title": "Hopper",
-            "x": 256.0,
+            "x": 0.0,
             "y": 0.0,
             "width": 256.0,
             "height": 384.0,
@@ -1524,7 +1537,7 @@
           },
           {
             "title": "Elevator",
-            "x": 512.0,
+            "x": 768.0,
             "y": 0.0,
             "width": 256.0,
             "height": 512.0,
@@ -1603,7 +1616,7 @@
           },
           {
             "title": "Elevator Readings",
-            "x": 1024.0,
+            "x": 1280.0,
             "y": 0.0,
             "width": 256.0,
             "height": 640.0,
@@ -1737,7 +1750,7 @@
           },
           {
             "title": "Wrist Readings",
-            "x": 1280.0,
+            "x": 1536.0,
             "y": 0.0,
             "width": 256.0,
             "height": 512.0,
@@ -1857,7 +1870,7 @@
           },
           {
             "title": "Wrist",
-            "x": 768.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 256.0,
             "height": 768.0,
