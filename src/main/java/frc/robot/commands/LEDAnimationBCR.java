@@ -10,17 +10,17 @@ import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.LED.StripEvents;
 
-public class LEDbcrAnimation extends Command {
+public class LEDAnimationBCR extends Command {
   private LED led;
   private LEDSegmentRange segment;
   private int cycleCounter = 0;
   
   /**
-   * Creates a blue and orange snaking animation in groups of 2
+   * Creates a blue and orange (BCR) snaking animation that runs until it is interrupted.
    * @param led LED subsystem
    * @param segment segment to display animation on
    */
-  public LEDbcrAnimation(LED led, LEDSegmentRange segment) {
+  public LEDAnimationBCR(LED led, LEDSegmentRange segment) {
     this.led = led;
     this.segment = segment;
 

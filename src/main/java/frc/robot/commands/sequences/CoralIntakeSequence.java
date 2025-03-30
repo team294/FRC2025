@@ -37,7 +37,7 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
             new CoralEffectorIntakeEnhanced(coralEffector)
           ).handleInterrupt(hopper::stopHopperMotor),
           new HopperStop(hopper)
-        ).alongWith(new LEDFlashAnimation(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll))
+        ).alongWith(new LEDAnimationFlash(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll))
     );
   }
 }

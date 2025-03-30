@@ -8,22 +8,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.*;
 import frc.robot.Constants.LEDConstants.*;
 import frc.robot.subsystems.LED;
-import frc.robot.subsystems.LED.*;
+import frc.robot.subsystems.LED.StripEvents;;
 
-public class LEDFlashAnimation extends Command {
+public class LEDAnimationFlash extends Command {
   private LED led;
   private LEDSegmentRange segment;
   private StripEvents event;
   private BCRColor color;
-
   private int runs;
   
   /**
-   * Creates a new Flash animation that runs until it is interrupted
+   * Creates a new flash animation that runs until it is interrupted.
    * @param led LED subsystem
    * @param segment segment to run animation on
    */
-  public LEDFlashAnimation(StripEvents event, LED led, LEDSegmentRange segment) {
+  public LEDAnimationFlash(StripEvents event, LED led, LEDSegmentRange segment) {
     this.led = led;
     this.segment = segment;
     this.event = event;
@@ -53,8 +52,9 @@ public class LEDFlashAnimation extends Command {
 
   @Override
   public void execute() {
-    if (runs % 7 == 0) {led.setLEDs(color, segment);}
-    else if (runs % 15 == 0) {
+    if (runs % 7 == 0) {
+      led.setLEDs(color, segment);
+    } else if (runs % 15 == 0) {
       led.setLEDs(BCRColor.NEUTRAL, segment);
       runs = 0;
     }

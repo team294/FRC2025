@@ -31,6 +31,7 @@ import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLevel;
 import frc.robot.Constants.FieldConstants.ReefLocation;
+import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -45,7 +46,7 @@ public class RobotContainer {
   private final Timer matchTimer = new Timer();
 
   // Define robot subsystems
-  private final LED led = new LED(Constants.Ports.CANdle, "LED");
+  private final LED led = new LED(Ports.CANdle, "LED", matchTimer);
   private final DriveTrain driveTrain = new DriveTrain(allianceSelection);
   private final Hopper hopper = new Hopper("Hopper");
   private final Wrist wrist = new Wrist("Wrist", led);
@@ -63,6 +64,8 @@ public class RobotContainer {
   // Define other utilities
   private final TrajectoryCache trajectoryCache = new TrajectoryCache();
   private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field);
+
+  private final LEDAnimationBCR ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -396,8 +399,10 @@ public class RobotContainer {
     coralEffector.stopCoralEffectorMotor();
 
     led.sendEvent(StripEvents.ROBOT_DISABLED);
+    ledAnimationBCR.schedule();
 
     matchTimer.stop();
+    matchTimer.reset();
     SignalLogger.stop();
   }
 

@@ -96,7 +96,7 @@
                   "period": 0.06,
                   "data_type": "boolean",
                   "true_color": 4279456444,
-                  "false_color": 4294901760,
+                  "false_color": 4294198070,
                   "true_icon": "None",
                   "false_icon": "None"
                 }
@@ -273,7 +273,7 @@
         ],
         "containers": [
           {
-            "title": "No Problems Exists",
+            "title": "Problem Exists",
             "x": 384.0,
             "y": 512.0,
             "width": 256.0,
@@ -404,7 +404,36 @@
             "title": "LED State",
             "x": 0.0,
             "y": 640.0,
-            "width": 1792.0,
+            "width": 768.0,
+            "height": 256.0,
+            "type": "Single Color View",
+            "properties": {
+              "topic": "/SmartDashboard/LED State",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "Teleop Timer",
+            "x": 768.0,
+            "y": 640.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/SmartDashboard/Teleop Timer",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 15,
+              "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "LED State",
+            "x": 1024.0,
+            "y": 640.0,
+            "width": 768.0,
             "height": 256.0,
             "type": "Single Color View",
             "properties": {

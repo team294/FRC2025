@@ -36,7 +36,7 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
             new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist),
             none(),
             () -> position == ElevatorWristPosition.ALGAE_GROUND)
-      ).alongWith(new LEDFlashAnimation(StripEvents.ALGAE_INTAKING, led, LEDSegmentRange.StripAll))
+      ).alongWith(new LEDAnimationFlash(StripEvents.ALGAE_INTAKING, led, LEDSegmentRange.StripAll))
     );
   }
 }

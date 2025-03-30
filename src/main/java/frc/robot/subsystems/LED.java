@@ -11,16 +11,12 @@ import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.BCRColor;
-import frc.robot.Constants.LEDConstants;
+import frc.robot.Constants.*;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
-import frc.robot.commands.LEDbcrAnimation;
-import frc.robot.utilities.DataLogUtil;
-import frc.robot.utilities.LEDSegment;
-import frc.robot.utilities.RobotPreferences;
+import frc.robot.utilities.*;
 
 
 public class LED extends SubsystemBase {
@@ -30,14 +26,11 @@ public class LED extends SubsystemBase {
   private final CANdle candle;
   private HashMap<LEDSegmentRange, LEDSegment> segments;
 
-  // private Timer matchTimer;
+  private Timer matchTimer;
   private CANdleEvents previousEventCANdle;
   private StripEvents previousEventStrip;
   private BCRColor dashboardColor = BCRColor.NEUTRAL;
   private boolean lastStickyFaultPresentReading = false;
-
-  // Store blue/orange animation copy for ROBOT_DISABLED
-  LEDbcrAnimation bcrAnimation = new LEDbcrAnimation(this, LEDSegmentRange.StripAll);
 
   public enum CANdleEvents {
     STICKY_FAULTS_CLEARED,
@@ -50,6 +43,7 @@ public class LED extends SubsystemBase {
   );
   
   public enum StripEvents {
+    MATCH_COUNTDOWN,
     CORAL_MODE,
     CORAL_INTAKING,
     ALGAE_MODE,
@@ -80,14 +74,14 @@ public class LED extends SubsystemBase {
    * @param subsystemName the name of the subsystem
    * @param matchTimer a timer that tracks the time elapsed in the match
    */
-  public LED(int CANPort, String subsystemName/*, Timer matchTimer*/) {
+  public LED(int CANPort, String subsystemName, Timer matchTimer) {
     this.subsystemName = subsystemName;
     this.logRotationKey = DataLogUtil.allocateLogRotation();
 
     this.candle = new CANdle(CANPort, "");
     this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
 
-    // this.matchTimer = matchTimer;
+    this.matchTimer = matchTimer;
 
     for (LEDSegmentRange segment : LEDSegmentRange.values()) {
       segments.put(segment, new LEDSegment(segment.index, segment.count, LEDConstants.EmptyPatterns.noPatternAnimation));
@@ -159,11 +153,10 @@ public class LED extends SubsystemBase {
     if ((previousEventStrip != StripEvents.NEUTRAL && event != StripEvents.ROBOT_DISABLED) && getPriority(event) < getPriority(previousEventStrip)) return;
 
     switch (event) {
-      // case MATCH_COUNTDOWN:
-      //   // Percent of the way through the last 10 seconds of the match (125 seconds in)
-      //   double percent = Math.max(matchTimer.get() - 125, 0) / 10.0;
-      //   updateLEDsCountdown(percent);
-      //   break;
+      case MATCH_COUNTDOWN:
+        double percent = Math.max(matchTimer.get() - 125, 0) / 10.0;
+        updateLEDsCountdown(percent);
+        break;
       case AUTO_DRIVE_COMPLETE:
         updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
         dashboardColor = BCRColor.AUTO_DRIVE_COMPLETE;
@@ -176,30 +169,30 @@ public class LED extends SubsystemBase {
         updateLEDs(BCRColor.CORAL_MODE, true);
         dashboardColor = BCRColor.CORAL_MODE;
         break;
-      case ROBOT_DISABLED:
-        // TODO can you run a command in a subsystem?? just "new LEDbcrAnimation(this, LEDSegmentRange.StripAll);"
-        bcrAnimation.schedule();
-        dashboardColor = BCRColor.NEUTRAL;
-        break;
 
       // The events below set the pattern outside of the LED subsystem, see comments
 
-      // LEDFlashAnimation, Wrist / Elevator uncalibrated (see each subsystem)
+      // LEDAnimationBCR, robot disabled (see RobotContainer.disabledInit())
+      case ROBOT_DISABLED:
+        dashboardColor = BCRColor.NEUTRAL;
+        break;
+      // LEDAnimationFlash, Wrist / Elevator uncalibrated (see each subsystem)
       case SUBSYSTEM_UNCALIBRATED:
         dashboardColor = BCRColor.SUBSYSTEM_UNCALIBRATED;
         break;
-      // LEDFlashAnimation, intaking algae (see AlgaeGrabberIntake)
+      // LEDAnimationFlash, intaking algae (see AlgaeGrabberIntake)
       case ALGAE_INTAKING:
         dashboardColor = BCRColor.ALGAE_MODE;
         break;
-      // LEDFlashAnimation, intaking coral (see CoralEffectorIntakeEnhanced)
+      // LEDAnimationFlash, intaking coral (see CoralEffectorIntakeEnhanced)
       case CORAL_INTAKING:
         dashboardColor = BCRColor.CORAL_MODE;
         break;
-      // LEDRainbowAnimation, automated drive and score (see AutomatedDriveToReefAndScoreCoral)
+      // LEDAnimationRainbow, automated drive and score (see AutomatedDriveToReefAndScoreCoral)
       case AUTO_DRIVE_IN_PROGRESS:
         dashboardColor = BCRColor.WHITE;
         break;
+
       default:
         clearAnimation();
         updateLEDs(BCRColor.NEUTRAL, true);
@@ -343,11 +336,12 @@ public class LED extends SubsystemBase {
       }
 
       SmartDashboard.putString("LED State", String.format("#%02x%02x%02x", dashboardColor.r, dashboardColor.g, dashboardColor.b));
+      SmartDashboard.putNumber("Teleop Timer", matchTimer.get());
 
       // If in last 10 seconds of match, send match countdown event
-      // if (matchTimer.get() > 125 && matchTimer.get() <= 135) {
-      //   sendEvent(StripEvents.MATCH_COUNTDOWN);
-      // }
+      if (matchTimer.get() > 125 && matchTimer.get() <= 135) {
+        sendEvent(StripEvents.MATCH_COUNTDOWN);
+      }
     }
   }
 }

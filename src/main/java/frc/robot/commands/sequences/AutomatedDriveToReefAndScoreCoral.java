@@ -71,7 +71,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
             0.5, 1.0, 
             TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
             true, true, driveTrain)
-        ).alongWith(new LEDRainbowAnimation(led, LEDSegmentRange.StripAll))
+        ).alongWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll))
     );
   }
 }
