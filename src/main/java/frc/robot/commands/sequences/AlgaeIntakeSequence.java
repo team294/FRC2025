@@ -26,8 +26,10 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
   public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
-      new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
-      new AlgaeGrabberIntake(algaeGrabber),
+      parallel(
+        new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
+        new AlgaeGrabberIntake(algaeGrabber)
+      ),
       either(
         new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist),
         none(),

@@ -421,7 +421,7 @@ public final class Constants {
       ALGAE_GROUND(5.8, -6.5),
       ALGAE_LOWER(34.0, -5.0),
       ALGAE_UPPER(49.7, -5.0),
-      ALGAE_LOLIPOP(10.0, 10.0),
+      ALGAE_LOLLIPOP(12.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
       ALGAE_NET(63.0, 70.0);
