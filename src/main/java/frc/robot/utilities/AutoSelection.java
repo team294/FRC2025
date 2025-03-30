@@ -35,6 +35,7 @@ public class AutoSelection {
 
 		DriveForwardOneMeter("DriveForwardOneMeter", 10),
 		BargeToE("BargeToE", 107), // TODO remove test autos
+
 		Rel4mRotate180("Relative4m-180", 101),
 		RelArcLeft("RelativeArcLeft", 102),
 		RelStraight4m("RelativeStraight4m", 103),
@@ -218,6 +219,7 @@ public class AutoSelection {
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L3, ReefLevel.L3, ReefLevel.L3));
 			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
+
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeLeft_JKL.value) {

@@ -10,7 +10,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.utilities.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
@@ -28,15 +27,11 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
   public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
       new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
-      new AlgaeGrabberIntake(algaeGrabber)
-      // either(
-      //   new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
-      //       0.5, 1.0,
-      //       TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees,
-      //       true, true, driveTrain).asProxy(),
-      //   none(),
-      //   () -> position == ElevatorWristPosition.ALGAE_LOWER || position == ElevatorWristPosition.ALGAE_UPPER
-      // )
+      new AlgaeGrabberIntake(algaeGrabber),
+      either(
+        new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist),
+        none(),
+        () -> position == ElevatorWristPosition.ALGAE_GROUND)
     );
   }
 }

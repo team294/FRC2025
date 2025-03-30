@@ -254,6 +254,9 @@ public final class Constants {
 
     // Calculated by measuring y distance between center of reef wall and reef pole (6.469731 in), converted to meters
     public static final double ReefScoringPositionAprilTagOffset = 0.164331496063;
+
+    public static final double bargeScorableWidth = 3.5;  // Width of alliance barge structure (not net) is 3.72 meters, reduced for consistency
+    public static final double bargeScoringOffset = 1.07; // CALIBRATED 3/29/2025
   }
 
   public static class VisionConstants {
@@ -322,7 +325,7 @@ public final class Constants {
     public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
     public static final double outtakePercent = 0.4;      // CALIBRATED
 
-    public static final double centerRotationsUndershoot = 1.0;  // CALIBRATED #3  Measure the typical undershoot with kP.  This value (in motor rotataions) will be added to the encoder reading when the coral sensor is triggered.
+    public static final double centerRotationsUndershoot = 1.625;  // CALIBRATED #3  Measure the typical undershoot with kP.  This value (in motor rotataions) will be added to the encoder reading when the coral sensor is triggered.
     public static final double centeringTolerance = 0.07;  // CALIBRATED #1  Position tolerance (in rotations) for holding coral [smaller than 1/2 of the position window where both sensors see the coral]
     public static final double centeringStepSize = centeringTolerance * 0.5; // #4 If the autoHold oscillates (not setPosition oscillating), then reduce this step size.
 
@@ -335,8 +338,9 @@ public final class Constants {
 
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.4;   // CALIBRATED
-    public static final double outtakePercent = -1.0; // CALIBRATED
+    public static final double intakePercent = 0.4;             // CALIBRATED 3/29
+    public static final double netOuttakePercent = -0.50;       // CALIBRATED 3/29
+    public static final double processorOuttakePercent = -0.15; // CALIBRATED 3/29
   }
 
   public static final class ElevatorConstants {
@@ -407,20 +411,20 @@ public final class Constants {
     public enum ElevatorWristPosition {
       START_CONFIG(0.0, 100.0),
 
-      CORAL_HP(0.0, 78.0),
+      CORAL_HP(0.0, 82.0),
 
       CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
       CORAL_L3(40.28, 65.0),
       CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
-      ALGAE_GROUND(5.8, -8.5),
+      ALGAE_GROUND(5.8, -6.5),
       ALGAE_LOWER(34.0, -5.0),
       ALGAE_UPPER(49.7, -5.0),
       ALGAE_LOLIPOP(10.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
-      ALGAE_NET(63.0, 80.0);
+      ALGAE_NET(63.0, 70.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double elevatorPosition;

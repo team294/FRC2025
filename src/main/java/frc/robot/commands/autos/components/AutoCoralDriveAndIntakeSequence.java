@@ -23,6 +23,7 @@ public class AutoCoralDriveAndIntakeSequence extends SequentialCommandGroup {
    * @param coralEffector EndEffector subsystem
    * @param hopper Hopper subsystem
    * @param alliance AllianceSelection alliance
+   * @param cache TrajectoryCache cache
    * @param log FileLog log
    */
   public AutoCoralDriveAndIntakeSequence(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist,

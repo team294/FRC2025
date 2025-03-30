@@ -9,6 +9,8 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import java.util.EnumMap;
 import java.util.Map;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
@@ -37,9 +39,8 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
-   * @param rightJoystick Joystick joystick
+   * @param rightJoysitck Right joystick
    * @param field Field field
-   * @param log FileLog log
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
       AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field) {
@@ -51,6 +52,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       // Move elevator/wrist to correct position based on given level
       new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber),
 
+      // TODO if/when L4 scoring is updated, may need to adjust how far we drive in      
       // Drive forward to get to the reef 
       new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)),
         0.5, 1.0, 
@@ -60,6 +62,10 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       // Score piece
       new CoralEffectorOuttake(coralEffector),
 
+      // If scoring on L1, wait 0.5 seconds before backing up
+      either(waitSeconds(0.5), none(), () -> level == ReefLevel.L1),
+
+      // TODO if/when L4 scoring is updated, may need to adjust how far we drive out
       // Back up 
       new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
         0.5, 1.0, 
