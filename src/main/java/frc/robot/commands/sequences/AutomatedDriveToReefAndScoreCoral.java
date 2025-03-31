@@ -46,6 +46,15 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       // Drive to nearest reef position
       new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
 
+      either(
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(- (DriveConstants.L4BackupDistance - DriveConstants.driveBackFromReefDistance), 0, new Rotation2d(0)),
+        0.5, 1.0, 
+        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+        true, true, driveTrain),
+        none(),
+        () -> level == ReefLevel.L4
+      ),
+
       // Move elevator/wrist to correct position based on given level
       new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber),
 
