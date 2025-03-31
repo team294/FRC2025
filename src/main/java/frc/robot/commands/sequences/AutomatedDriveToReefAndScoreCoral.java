@@ -46,24 +46,21 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       // Drive to nearest reef position
       new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
 
-      either(
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(- (DriveConstants.L4BackupDistance - DriveConstants.driveBackFromReefDistance), 0, new Rotation2d(0)),
-        0.5, 1.0, 
-        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain),
-        none(),
-        () -> level == ReefLevel.L4
-      ),
-
       // Move elevator/wrist to correct position based on given level
       new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber),
 
-      // TODO if/when L4 scoring is updated, may need to adjust how far we drive in      
-      // Drive forward to get to the reef (offset copied from DriveToReefWithOdometryForCoral and made positive)
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)),
+      // Drive forward to get to the reef (only if not scoring on L4)
+      either(
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.L4DriveinDistance, 0, new Rotation2d(0)),
         0.5, 1.0, 
         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
         true, true, driveTrain),
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)),
+        0.5, 1.0, 
+        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+        true, true, driveTrain),
+        () -> level == ReefLevel.L4  
+      ),
 
       // Score piece
       new CoralEffectorOuttake(coralEffector),
@@ -71,12 +68,18 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       // If scoring on L1, wait 0.5 seconds before backing up
       either(waitSeconds(0.5), none(), () -> level == ReefLevel.L1),
 
-      // TODO if/when L4 scoring is updated, may need to adjust how far we drive out
-      // Back up 
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
+      // Back up (only if not scoring on L4)
+      either(
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.L4DriveinDistance, 0, new Rotation2d(0)),
         0.5, 1.0, 
         TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-        true, true, driveTrain)
+        true, true, driveTrain),
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero),
+        0.5, 1.0, 
+        TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+        true, true, driveTrain),
+        () -> level == ReefLevel.L4  
+      )
     );
   }
 }
