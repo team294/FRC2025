@@ -58,6 +58,7 @@ public class LEDAnimationBCR extends Command {
   @Override
   public void end(boolean interrupted) {
     led.clearAnimation();
+    led.setLEDs(BCRColor.NEUTRAL);
   }
 
   @Override

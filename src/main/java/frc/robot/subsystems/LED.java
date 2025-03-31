@@ -266,6 +266,14 @@ public class LED extends SubsystemBase {
   }
 
   /**
+   * Sets LEDs using BCRColor constant
+   * @param color BCRColor color
+   */ 
+  public void setLEDs(BCRColor color) {
+    candle.setLEDs(color.r, color.g, color.g);
+  }
+
+  /**
    * Sets LEDs using R, G, and B.
    * @param r red value
    * @param g green value
