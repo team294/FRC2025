@@ -47,7 +47,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
 
             //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus a constant
             new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
-                     new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)))), 
+                     new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)))), 
                      0.02, 1, driveTrain)
           )
       ),
@@ -57,14 +57,14 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
         sequence(
           //Drives to nearest left scoring position (offset off the wall half the robot's width plus a constant)
           new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
-                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)), true)), 
+                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)), true)), 
                         0.02, 1, driveTrain)
         ),
         either(
           sequence(
             //Drives to nearest right scoring position (offset off the wall half the robot's width a constant)
             new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
-                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.driveBackFromReefDistance, 0, new Rotation2d(0)), false)), 
+                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)), false)), 
                         0.02, 1, driveTrain) 
           ),
           sequence(

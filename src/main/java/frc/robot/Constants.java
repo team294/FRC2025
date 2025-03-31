@@ -199,9 +199,10 @@ public final class Constants {
     // Theta kp value for joystick in rad/sec
     public static final double kPJoystickThetaController = 3;
 
-    // How far to back the robot off from the reef after scoring coral or intaking algae
-    public static final double driveBackFromReefDistance = 0.25;
-    public static final double L4DriveinDistance = Units.inchesToMeters(2.84252);
+    // Distance bumpers should be away from the reef
+    // This distance is the where the scoring prep sequence will take place for L1-L3,
+    // along with is how far the robot should be located to score on L4.
+    public static final double distanceFromReefToScore = Units.inchesToMeters(7.25);  // was 0.25 meters, changed to be scoring location for L4
 
     // Back offset for robot to pick up algae, in meters
     public static final double ReefAlgaePickupPositionOffset = 0.2;
