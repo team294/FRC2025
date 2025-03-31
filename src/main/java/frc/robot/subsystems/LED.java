@@ -57,15 +57,15 @@ public class LED extends SubsystemBase {
 
   private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
   static {
-    prioritiesStripEvents.put(StripEvents.CORAL_MODE, 0);
     prioritiesStripEvents.put(StripEvents.CORAL_INTAKING, 0);
-    prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 1);
-    prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 1);
-    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 2);
-    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 2);
-    prioritiesStripEvents.put(StripEvents.SUBSYSTEM_UNCALIBRATED, 3);
-    prioritiesStripEvents.put(StripEvents.NEUTRAL, 4);
-    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 5);
+    prioritiesStripEvents.put(StripEvents.CORAL_MODE, 1);
+    prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 2);
+    prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 3);
+    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 4);
+    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 5);
+    prioritiesStripEvents.put(StripEvents.SUBSYSTEM_UNCALIBRATED, 6);
+    prioritiesStripEvents.put(StripEvents.NEUTRAL, 7);
+    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 8);
   }
 
   /**
@@ -151,7 +151,8 @@ public class LED extends SubsystemBase {
     // Always update state if previous event was idle.
     // Do not update if last event was not idle and the new event priority is less than the previous.
 
-    if ((previousEventStrip != StripEvents.NEUTRAL && event != StripEvents.ROBOT_DISABLED) && getPriority(event) < getPriority(previousEventStrip)) return;
+    if ((previousEventStrip != StripEvents.NEUTRAL && event != StripEvents.ROBOT_DISABLED)
+    && getPriority(event) < getPriority(previousEventStrip)) return;
 
     switch (event) {
       case MATCH_COUNTDOWN:
