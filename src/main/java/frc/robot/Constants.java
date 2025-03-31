@@ -399,8 +399,8 @@ public final class Constants {
 
     // CALIBRATED
     public enum WristAngle {
-      LOWER_LIMIT(-13.0),
-      UPPER_LIMIT(99.0);
+      LOWER_LIMIT(-13.0),  // Wrist chin strap limit (without coral = -26.5 deg).  Elevator needs to be above 5.4" to get to this angle.
+      UPPER_LIMIT(100.5);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
@@ -417,7 +417,8 @@ public final class Constants {
       CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
       CORAL_L3(40.28, 65.0),
-      CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
+      CORAL_L4(71.0, 57.0),
+      CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
       ALGAE_GROUND(5.8, -6.5),
       ALGAE_LOWER(34.0, -5.0),

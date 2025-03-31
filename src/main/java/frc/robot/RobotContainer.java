@@ -181,6 +181,7 @@ public class RobotContainer {
     SmartDashboard.putData("Coral Score Prep Sequence L2", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber));
     SmartDashboard.putData("Coral Score Prep Sequence L3", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber));
     SmartDashboard.putData("Coral Score Prep Sequence L4", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData("Coral Score Prep Sequence L4-Copanel", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4_COPANEL, elevator, wrist, algaeGrabber));
 
     SmartDashboard.putData("Stow Elevator and Wrist", new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist));
 
@@ -235,7 +236,12 @@ public class RobotContainer {
     // xbX, A, B, and Y will automatically drive to the reef and score coral, see right[1] in configureJoystickButtons()
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
-    xbLT.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber));
+    xbLT.onTrue(either(
+        new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber),
+        none(),
+        () -> !coralEffector.isCoralPresent()
+      )
+    );
     xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber));
     xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber));
 
@@ -312,7 +318,7 @@ public class RobotContainer {
     // ex: coP[1].onTrue(new command);
     
     // Elevator and Wrist Commands
-    coP[1].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber));
+    coP[1].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L4_COPANEL, elevator, wrist, algaeGrabber));
     coP[2].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber));
     coP[9].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber));
     coP[10].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber));
