@@ -67,22 +67,28 @@ public class LEDAnimationBCR extends Command {
   }
 
   /**
-     * Determines the color pattern based on the cycle counter.
-     * @param cycle the current cycle count.
-     * @return an array of BCRColors representing the LED pattern.
-     */
-    private BCRColor[] getPattern(int cycle) {
-      switch (cycle) {
-        case 0:
-          return new BCRColor[]{BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE};
-        case 1:
-          return new BCRColor[]{BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE};
-        case 2:
-          return new BCRColor[]{BCRColor.ORANGE, BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE};
-        case 3:
-          return new BCRColor[]{BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE, BCRColor.BLUE};
-        default:
-          return new BCRColor[]{BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE};
-      }
+   * Determines the color pattern based on the cycle counter.
+   * @param cycle the current cycle count
+   * @return an array of BCRColors representing the LED pattern
+   */
+  private BCRColor[] getPattern(int cycle) {
+    switch (cycle) {
+      case 0:
+        return new BCRColor[]{ BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE };
+      case 1:
+        return new BCRColor[]{ BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE };
+      case 2:
+        return new BCRColor[]{ BCRColor.ORANGE, BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE };
+      case 3:
+        return new BCRColor[]{ BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE, BCRColor.BLUE };
+      default:
+        return new BCRColor[]{ BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE };
     }
+  }
+
+  // Returns true if the command should run when the robot is disabled.
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }

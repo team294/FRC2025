@@ -524,7 +524,6 @@ public final class Constants {
     }
 
     public enum LEDSegmentRange {
-      // TODO DETERMINE LED COUNTS FOR 2025
       CANdle(0, 8),
       StripRight(CANdle.count, 40),
       StripHorizontal(StripRight.index + StripRight.count, 40),

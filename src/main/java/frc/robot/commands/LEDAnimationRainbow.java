@@ -52,4 +52,10 @@ public class LEDAnimationRainbow extends Command {
   public boolean isFinished() {
     return false;
   }
+
+  // Returns true if the command should run when the robot is disabled.
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }
