@@ -157,7 +157,8 @@ public class LED extends SubsystemBase {
 
     if (
       event != StripEvents.ROBOT_DISABLED 
-      && previousEventStrip != StripEvents.NEUTRAL 
+      && previousEventStrip != StripEvents.NEUTRAL
+      && !(previousEventStrip == StripEvents.ALGAE_MODE && (event == CORAL_INTAKING || event == CORAL_MODE))
       && getPriority(event) < getPriority(previousEventStrip)
     ) return;
 
