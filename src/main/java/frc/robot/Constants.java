@@ -422,9 +422,9 @@ public final class Constants {
       CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
       ALGAE_GROUND(5.8, -6.5),
-      ALGAE_LOWER(34.0, -5.0),
-      ALGAE_UPPER(49.7, -5.0),
-      ALGAE_LOLIPOP(10.0, 10.0),
+      ALGAE_LOWER(28.0, 10.0),
+      ALGAE_UPPER(43.7, 10.0),
+      ALGAE_LOLLIPOP(12.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
       ALGAE_NET(63.0, 70.0);
