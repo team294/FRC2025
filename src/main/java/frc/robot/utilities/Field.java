@@ -176,16 +176,6 @@ public class Field {
         return allianceSelection.getAlliance() == Alliance.Blue ? reefScoringPositionsByAprilTag.get(position) : flipPosition(reefScoringPositionsByAprilTag.get(position));
     }
 
-     /**
-     * Returns the robot scoring position that the robot should score at at the reef.
-     * @param location ReefLocation reef location to get 
-     * @return robot position to score at with offset for half of width
-     */
-    public Pose2d getRobotReefScoringPosition(ReefLocation location) {
-        Pose2d pos = allianceSelection.getAlliance() == Alliance.Blue ? reefScoringPositionsByAprilTag.get(location) : flipPosition(reefScoringPositionsByAprilTag.get(location));
-        return pos.transformBy(new Transform2d(-RobotDimensions.robotWidth / 2.0, 0, new Rotation2d(0)));
-    }
-
     /**
      * Finds and returns the nearest reef scoring position (against the base).
      * @param currPos the robot's current positions

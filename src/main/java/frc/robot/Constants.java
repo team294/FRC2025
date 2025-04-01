@@ -135,7 +135,7 @@ public final class Constants {
     // and ensures that the robot travels in the requested direction.  So, use min value of all 4 motors,
     // and further derate (initial test by 5%) to account for some battery droop under heavy loads.
 
-    public static final double kMaxSpeedMetersPerSecond = 5.;  // CALIBRATED
+    public static final double kMaxSpeedMetersPerSecond = 4.8;  // CALIBRATED
     public static final double kFullSpeedMetersPerSecond = 0.95 * kMaxSpeedMetersPerSecond;
     public static final double kNominalSpeedMetersPerSecond = 0.5 * kMaxSpeedMetersPerSecond;
 
@@ -152,7 +152,7 @@ public final class Constants {
     public static final double kNominalAngularAccelerationRadiansPerSecondSquared = Math.PI;
 
     // CALIBRATED
-    public static final double kVDriveAvg = 2.392;  // In voltage per meters/second    LAR was 2.251 (FOC off), AVR is 2.392 (FOC on)
+    public static final double kVDriveAvg = 2.344;  // In voltage per meters/second    LAR was 2.251 (FOC off), FOC cal is 2.392 (FOC on), turn for AVR is 2.344 (FOC on)
     private static final double kVmFLrel = 1.0;     // kV modifier for FL drive motor
     private static final double kVmFRrel = 1.0;     // kV modifier for FR drive motor
     private static final double kVmBLrel = 1.0;     // kV modifier for BL drive motor
@@ -173,7 +173,7 @@ public final class Constants {
     // Minimum abs delta (in m/sec) between actual wheel velocity and desired wheel velocity for kADrive to be applied.
     // If the delta is less than this, then don't use kADrive. This prevents the drive motors from jittering.
     // Note that the swerve module kP in the velocity controller will still work to maintain the proper wheel speed.
-    public static final double velMinDeltaUsingkA = 0.3;
+    public static final double velMinDeltaUsingkA = 0.1;        // For LAR was 0.3, for AVR is 0.1
   }
   public static final class DriveConstants {
     // The locations of the wheels relative to the physical center of the robot, in meters.
@@ -291,13 +291,13 @@ public final class Constants {
     // Feedback terms for holonomic drive controllers
 
     // X-velocity controller kP. Units = (meters/sec of velocity) / (meters of position error)
-    public static final double kPXController = 4;
+    public static final double kPXController = 10;     // was 4
 
     // Y-velocity controller kP. Units = (meters/sec of velocity) / (meters of position error)  
-    public static final double kPYController = 4; 
+    public static final double kPYController = 10;     // was 4
 
     // Theta-velocity controller kP. Units = (rad/sec of velocity) / (radians of angle error)
-    public static final double kPThetaController = 3;
+    public static final double kPThetaController = 10;   // was 3
 
     public static final TrajectoryConfig swerveTrajectoryConfig = new TrajectoryConfig(
         SwerveConstants.kNominalSpeedMetersPerSecond,
@@ -316,8 +316,8 @@ public final class Constants {
 
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.45;        // TODO CALIBRATE FOR 2025
-    public static final double reverseIntakePercent = -0.2; // TODO CALIBRATE FOR 2025
+    public static final double intakePercent = 0.45;
+    public static final double reverseIntakePercent = -0.2;
   }
 
   public static final class CoralEffectorConstants {
@@ -399,8 +399,8 @@ public final class Constants {
 
     // CALIBRATED
     public enum WristAngle {
-      LOWER_LIMIT(-13.0),
-      UPPER_LIMIT(99.0);
+      LOWER_LIMIT(-13.0),  // Wrist chin strap limit (without coral = -26.5 deg).  Elevator needs to be above 5.4" to get to this angle.
+      UPPER_LIMIT(100.5);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
@@ -417,12 +417,13 @@ public final class Constants {
       CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
       CORAL_L3(40.28, 65.0),
-      CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
+      CORAL_L4(71.0, 57.0),
+      CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
       ALGAE_GROUND(5.8, -6.5),
-      ALGAE_LOWER(34.0, -5.0),
-      ALGAE_UPPER(49.7, -5.0),
-      ALGAE_LOLIPOP(10.0, 10.0),
+      ALGAE_LOWER(28.0, 10.0),
+      ALGAE_UPPER(43.7, 10.0),
+      ALGAE_LOLLIPOP(12.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
       ALGAE_NET(63.0, 70.0);
