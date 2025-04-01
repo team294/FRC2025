@@ -55,7 +55,7 @@ public class AutoCenterL4 extends SequentialCommandGroup {
       new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber),
 
       // Drive forward to get to the reef (offset copied from DriveToReefWithOdometryForCoral, plus 4 inches)
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d((RobotDimensions.robotWidth / 2.0) + DriveConstants.driveBackFromReefDistance + Units.inchesToMeters(4), 0, new Rotation2d(0)), 
+      new DriveToPose(CoordType.kRelative, () -> new Pose2d((RobotDimensions.robotWidth / 2.0) + DriveConstants.distanceFromReefToScore + Units.inchesToMeters(4), 0, new Rotation2d(0)), 
           0.5, 1.0, 
           TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
           true, true, driveTrain),
@@ -70,7 +70,7 @@ public class AutoCenterL4 extends SequentialCommandGroup {
       new WaitCommand(1.0),
 
       // Back up for save elevator move
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance - 0.6, 0, new Rotation2d(0)), 
+      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToScore - 0.6, 0, new Rotation2d(0)), 
           0.5, 1.0, 
           TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
           true, true, driveTrain),
