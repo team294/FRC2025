@@ -34,7 +34,7 @@ public class LEDAnimationBCR extends Command {
 
   @Override
   public void execute() {
-    if (t >= 2) {
+    if (t >= 6) {
       // Get the current pattern for the cycle
       BCRColor[] pattern = getPattern(cycleCounter);
   

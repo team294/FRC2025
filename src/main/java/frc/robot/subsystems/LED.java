@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdleConfiguration;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
@@ -24,6 +25,7 @@ public class LED extends SubsystemBase {
   private String subsystemName;
 
   private final CANdle candle;
+  private final CANdleConfiguration config = new CANdleConfiguration();
   private HashMap<LEDSegmentRange, LEDSegment> segments;
 
   private Timer matchTimer;
@@ -81,6 +83,9 @@ public class LED extends SubsystemBase {
     this.candle = new CANdle(CANPort, "");
     this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
 
+    config.brightnessScalar = 0.10;
+    candle.configAllSettings(config);
+
     this.matchTimer = matchTimer;
 
     for (LEDSegmentRange segment : LEDSegmentRange.values()) {
@@ -95,15 +100,15 @@ public class LED extends SubsystemBase {
    * @param percent 0-1 progress through the countdown
    */
   private void updateLEDsCountdown(double percent) {
-    double leftCount = LEDSegmentRange.StripLeft.count * percent;
+    double leftCount = LEDSegmentRange.StripRight.count * percent;
     int ledCountLeft = (int) leftCount;
 
-    double rightCount = LEDSegmentRange.StripRight.count * percent;
+    double rightCount = LEDSegmentRange.StripLeft.count * percent;
     int ledCountRight = (int) rightCount;
     
     // TODO change based on how strips are physically wired on bot
-    setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft); 
-    setLEDs(Color.kRed, LEDSegmentRange.StripRight.index, ledCountRight);
+    setLEDs(Color.kRed, LEDSegmentRange.StripRight.index + LEDSegmentRange.StripRight.count - ledCountLeft, ledCountLeft); 
+    setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index, ledCountRight);
   }
 
   /**
@@ -113,8 +118,8 @@ public class LED extends SubsystemBase {
    */
   private void updateLEDs(BCRColor color, boolean strip) {
     if (strip) {
-      setLEDs(color, LEDSegmentRange.StripLeft);
       setLEDs(color, LEDSegmentRange.StripRight);
+      setLEDs(color, LEDSegmentRange.StripLeft);
       setLEDs(color, LEDSegmentRange.StripHorizontal);
     } else {
       setLEDs(color, LEDSegmentRange.CANdle);

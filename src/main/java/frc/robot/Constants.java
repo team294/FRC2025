@@ -524,10 +524,12 @@ public final class Constants {
     public enum LEDSegmentRange {
       // TODO DETERMINE LED COUNTS FOR 2025
       CANdle(0, 8),
-      StripHorizontal(CANdle.index + CANdle.count, 24),
-      StripLeft(StripHorizontal.index + StripHorizontal.count, 30),
-      StripRight(StripLeft.index + StripLeft.count, 30),
-      StripAll(StripHorizontal.index, StripLeft.count + StripRight.count + StripHorizontal.count);
+      StripRight(CANdle.count, 40),
+      StripHorizontal(StripRight.index + StripRight.count, 40),
+      StripLeft(StripHorizontal.index + StripHorizontal.count, 40),
+      StripAll(StripHorizontal.index, StripRight.count + StripHorizontal.count + StripLeft.count),
+      Full(0, CANdle.count + StripRight.count + StripHorizontal.count + StripLeft.count);
+
 
       public final int index, count;
       LEDSegmentRange(int index, int count) {
