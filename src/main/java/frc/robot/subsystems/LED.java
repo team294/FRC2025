@@ -106,7 +106,6 @@ public class LED extends SubsystemBase {
     double rightCount = LEDSegmentRange.StripLeft.count * percent;
     int ledCountRight = (int) rightCount;
     
-    // TODO change based on how strips are physically wired on bot
     setLEDs(Color.kRed, LEDSegmentRange.StripRight.index + LEDSegmentRange.StripRight.count - ledCountLeft, ledCountLeft); 
     setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index, ledCountRight);
   }
@@ -156,15 +155,18 @@ public class LED extends SubsystemBase {
     // Always update state if previous event was idle.
     // Do not update if last event was not idle and the new event priority is less than the previous.
 
-    if ((previousEventStrip != StripEvents.NEUTRAL && event != StripEvents.ROBOT_DISABLED)
-    && getPriority(event) < getPriority(previousEventStrip)) return;
+    if (
+      event != StripEvents.ROBOT_DISABLED 
+      && previousEventStrip != StripEvents.NEUTRAL 
+      && getPriority(event) < getPriority(previousEventStrip)
+    ) return;
 
     switch (event) {
-      case MATCH_COUNTDOWN:
+      case MATCH_COUNTDOWN: // TODO has not been tested
         double percent = Math.max(matchTimer.get() - 125, 0) / 10.0;
         updateLEDsCountdown(percent);
         break;
-      case AUTO_DRIVE_COMPLETE:
+      case AUTO_DRIVE_COMPLETE: // TODO this does not work (has change, needs to be tested)
         updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
         dashboardColor = BCRColor.AUTO_DRIVE_COMPLETE;
         break;
@@ -180,18 +182,18 @@ public class LED extends SubsystemBase {
       // The events below set the pattern outside of the LED subsystem, see comments
 
       // LEDAnimationBCR, robot disabled (see RobotContainer.disabledInit())
-      case ROBOT_DISABLED:
+      case ROBOT_DISABLED: // TODO this does not work (has change, needs to be tested)
         dashboardColor = BCRColor.NEUTRAL;
         break;
       // LEDAnimationFlash, Wrist / Elevator uncalibrated (see each subsystem)
-      case SUBSYSTEM_UNCALIBRATED:
+      case SUBSYSTEM_UNCALIBRATED: // TODO has not been tested
         dashboardColor = BCRColor.SUBSYSTEM_UNCALIBRATED;
         break;
-      // LEDAnimationFlash, intaking algae (see AlgaeGrabberIntake)
+      // LEDAnimationFlash, intaking algae (see AlgaeIntakeSequence)
       case ALGAE_INTAKING:
         dashboardColor = BCRColor.ALGAE_MODE;
         break;
-      // LEDAnimationFlash, intaking coral (see CoralEffectorIntakeEnhanced)
+      // LEDAnimationFlash, intaking coral (see CoralIntakeSequence)
       case CORAL_INTAKING:
         dashboardColor = BCRColor.CORAL_MODE;
         break;

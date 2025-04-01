@@ -408,7 +408,7 @@ public class RobotContainer {
     coralEffector.stopCoralEffectorMotor();
 
     led.sendEvent(LED.StripEvents.ROBOT_DISABLED);
-    ledAnimationBCR.schedule(); // TODO this doesn't work
+    ledAnimationBCR.schedule();
 
     matchTimer.stop();
     matchTimer.reset();

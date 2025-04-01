@@ -44,7 +44,7 @@ public class LEDAnimationRainbow extends Command {
   @Override
   public void end(boolean interrupted) {
     led.clearAnimation();
-    led.sendEvent(LED.StripEvents.AUTO_DRIVE_COMPLETE);
+    led.sendEvent(StripEvents.NEUTRAL);
   }
 
   // Returns true when the command should end.
