@@ -527,7 +527,7 @@ public final class Constants {
       StripRight(CANdle.count, 40),
       StripHorizontal(StripRight.index + StripRight.count, 40),
       StripLeft(StripHorizontal.index + StripHorizontal.count, 40),
-      StripAll(StripHorizontal.index, StripRight.count + StripHorizontal.count + StripLeft.count),
+      StripAll(StripRight.index, StripRight.count + StripHorizontal.count + StripLeft.count),
       Full(0, CANdle.count + StripRight.count + StripHorizontal.count + StripLeft.count);
 
 
