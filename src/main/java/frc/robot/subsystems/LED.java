@@ -83,7 +83,7 @@ public class LED extends SubsystemBase {
     this.candle = new CANdle(CANPort, "");
     this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
 
-    config.brightnessScalar = 0.10;
+    config.brightnessScalar = 0.25;
     candle.configAllSettings(config);
 
     this.matchTimer = matchTimer;

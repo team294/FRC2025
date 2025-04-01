@@ -52,9 +52,9 @@ public class LEDAnimationFlash extends Command {
 
   @Override
   public void execute() {
-    if (runs % 7 == 0) {
+    if (runs % 31 == 0) {
       led.setLEDs(color, segment);
-    } else if (runs % 15 == 0) {
+    } else if (runs % 63 == 0) {
       led.setLEDs(BCRColor.NEUTRAL, segment);
       runs = 0;
     }

@@ -31,7 +31,7 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
       sequence(
           new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
           new AlgaeGrabberIntake(algaeGrabber).
-            alongWith(new LEDAnimationFlash(LED.StripEvents.ALGAE_INTAKING, led, LEDSegmentRange.StripAll)).
+            raceWith(new LEDAnimationFlash(LED.StripEvents.ALGAE_INTAKING, led, LEDSegmentRange.StripAll)).
               handleInterrupt(() -> led.sendEvent(LED.StripEvents.NEUTRAL)),
           runOnce(() -> led.sendEvent(LED.StripEvents.ALGAE_MODE)),
           either(
