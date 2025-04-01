@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdleConfiguration;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
@@ -25,8 +24,6 @@ public class LED extends SubsystemBase {
   private String subsystemName;
 
   private final CANdle candle;
-  private final CANdleConfiguration config = new CANdleConfiguration();
-  private HashMap<LEDSegmentRange, LEDSegment> segments;
 
   private Timer matchTimer;
   private CANdleEvents previousEventCANdle;
@@ -81,16 +78,11 @@ public class LED extends SubsystemBase {
     this.logRotationKey = DataLogUtil.allocateLogRotation();
 
     this.candle = new CANdle(CANPort, "");
-    this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
+    // this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
 
-    config.brightnessScalar = 0.25;
-    candle.configAllSettings(config);
+    candle.configBrightnessScalar(0.25);
 
     this.matchTimer = matchTimer;
-
-    for (LEDSegmentRange segment : LEDSegmentRange.values()) {
-      segments.put(segment, new LEDSegment(segment.index, segment.count, LEDConstants.EmptyPatterns.noPatternAnimation));
-    }
 
     sendEvent(StripEvents.NEUTRAL);
   }
@@ -227,9 +219,6 @@ public class LED extends SubsystemBase {
    */
   public void clearAnimation() {
     candle.clearAnimation(0);
-    for (LEDSegmentRange segmentKey : segments.keySet()) {
-      setAnimation(LEDConstants.EmptyPatterns.noPatternAnimation, segmentKey, false);
-    }
   }
   
   /**
@@ -238,40 +227,6 @@ public class LED extends SubsystemBase {
    */
   public void animate(Animation anim) {
     candle.animate(anim);
-  }
-
-  /**
-   * Sets the pattern and resizes it to fit the LED strip.
-   * @param pattern the pattern to use
-   * @param segment the segment to use
-   */
-  public void setPattern(Color[] pattern, LEDSegmentRange segment) {
-    if (pattern.length == 0) return;
-    for (int indexLED = 0, indexPattern = 0; indexLED < segment.count; indexLED++, indexPattern++) {
-      if (indexPattern >= pattern.length) indexPattern = 0;
-      setLEDs(pattern[indexPattern], segment.index + indexLED);
-    }
-  }
-
-  /**
-   * Sets the animation for a given led segment.
-   * @param animation animation to display
-   * @param segment segment to play animation on
-   * @param loop whether the animation repeats
-   */
-  public void setAnimation(Color[][] animation, LEDSegmentRange segment, boolean loop) {
-    segments.get(segment).setAnimation(animation, loop);
-  }
-
-   /**
-   * Sets the animation for a given LED segment using Color.
-   * @param pattern pattern to display
-   * @param segment segment to play animation on
-   * @param loop whether the animation repeats
-   */
-  public void setAnimation(Color[] pattern, LEDSegmentRange segment, boolean loop) {
-    Color[][] anim = {pattern};
-    segments.get(segment).setAnimation(anim, loop);
   }
 
   /**
