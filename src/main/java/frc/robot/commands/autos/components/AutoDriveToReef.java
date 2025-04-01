@@ -45,7 +45,7 @@ public class AutoDriveToReef extends SequentialCommandGroup {
   } */
 
   /**
-   * Drives to reef location, <b> trajectory gets cut off early </b> to allow for smooth transition into AutomatedDriveToReefAndScoreCoral (does not move elevator)
+   * Drives to reef location, <b> trajectory gets cut off early (commented out) </b> to allow for smooth transition into AutomatedDriveToReefAndScoreCoral (does not move elevator)
    * Runs intake command while driving to ensure coral is fully in, and then move the elevator after done driving.
    * @param fromHP true = starting at HP, false = starting at barge
    * @param end ReefLocation (A-L) to drive to
@@ -66,8 +66,9 @@ public class AutoDriveToReef extends SequentialCommandGroup {
       new DataLogMessage(false, "AutoDriveToReef: Start, trajectory =", trajectory.name()),
 
       parallel(
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
-        // Drives the trajectory, cutting it off 0.3 seconds before it ends
+        // Drives the trajectory while intaking coral to make sure coral is being intaked.
+        // TODO Is the timeout a good idea? What's a good time to have here?
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(3),
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance)//.withTimeout(trajectory.getTotalTime() - 0.3)
       ),
 
