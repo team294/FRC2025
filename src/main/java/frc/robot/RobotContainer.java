@@ -245,8 +245,12 @@ public class RobotContainer {
     xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber));
     xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber));
 
-    // Prep and intake algae from Lolipop with Back
-    xbBack.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOLIPOP, driveTrain, elevator, wrist, algaeGrabber));
+    // Prep and intake algae from Lollipop with Back
+    xbBack.onTrue(either(
+      new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOLLIPOP, driveTrain, elevator, wrist, algaeGrabber),
+      none(),
+      () -> !coralEffector.isCoralPresent()
+    ));
 
     // Prep to score algae in Net with D-Pad Up and Processor with D-Pad Right
     xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET,elevator, wrist, algaeGrabber));
