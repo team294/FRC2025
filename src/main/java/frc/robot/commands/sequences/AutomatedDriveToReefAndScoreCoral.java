@@ -79,6 +79,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
         none(),
         () -> level != ReefLevel.L4  
       ).alongWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll))
+      )
     );
   }
 }
