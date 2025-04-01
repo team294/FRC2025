@@ -30,18 +30,16 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
    */
   public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, LED led) {
     addCommands(
-        sequence(
-          new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
-          parallel(
-            new HopperSetPercent(HopperConstants.intakePercent, hopper),
-            new CoralEffectorIntakeEnhanced(coralEffector).raceWith(new LEDAnimationFlash(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll))
-          ).handleInterrupt(hopper::stopHopperMotor),
-          either(
-            runOnce(() -> led.sendEvent(LED.StripEvents.CORAL_MODE)),
-            runOnce(() -> led.sendEvent(LED.StripEvents.NEUTRAL)), 
-            () -> coralEffector.isCoralPresent()),
-          new HopperStop(hopper)
-        )
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
+      parallel(
+        new HopperSetPercent(HopperConstants.intakePercent, hopper),
+        new CoralEffectorIntakeEnhanced(coralEffector).raceWith(new LEDAnimationFlash(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll))
+      ).handleInterrupt(hopper::stopHopperMotor),
+      either(
+        runOnce(() -> led.sendEvent(LED.StripEvents.CORAL_MODE)),
+        runOnce(() -> led.sendEvent(LED.StripEvents.NEUTRAL)), 
+        () -> coralEffector.isCoralPresent()),
+      new HopperStop(hopper)
     );
   }
 }

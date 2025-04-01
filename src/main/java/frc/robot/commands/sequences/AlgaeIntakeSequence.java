@@ -28,19 +28,17 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
   public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, LED led) {
     addCommands(
-      sequence(
-          new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
-          new AlgaeGrabberIntake(algaeGrabber).
-            raceWith(new LEDAnimationFlash(LED.StripEvents.ALGAE_INTAKING, led, LEDSegmentRange.StripAll)),
-          either(
-            runOnce(() -> led.sendEvent(LED.StripEvents.ALGAE_MODE)),
-            none(), 
-            () -> algaeGrabber.isAlgaePresent()),
-          either(
-            new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist),
-            none(),
-            () -> position == ElevatorWristPosition.ALGAE_GROUND)
-      )
+      new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
+      new AlgaeGrabberIntake(algaeGrabber).
+        raceWith(new LEDAnimationFlash(LED.StripEvents.ALGAE_INTAKING, led, LEDSegmentRange.StripAll)),
+      either(
+        runOnce(() -> led.sendEvent(LED.StripEvents.ALGAE_MODE)),
+        none(), 
+        () -> algaeGrabber.isAlgaePresent()),
+      either(
+        new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist),
+        none(),
+        () -> position == ElevatorWristPosition.ALGAE_GROUND)
     );
   }
 }
