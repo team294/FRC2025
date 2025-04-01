@@ -76,15 +76,13 @@ public class ElevatorWristRegions {
     // Region indicies must be in order from 0, 1, 2, etc
     // Note that some regions have added 1-2" of margin on the elevator position for safety
     public static final Region[] CoralOnlyRegions = {
-        new Region(RegionType.CORAL_ONLY, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 4, 69.5, 97),
-        new Region(RegionType.CORAL_ONLY, 1, 4, 25, 70, 80),
-        new Region(RegionType.CORAL_ONLY, 2, 25, 30, 70, 100),
-        new Region(RegionType.CORAL_ONLY, 3, 30, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, 96.5, 100.5)
+        new Region(RegionType.CORAL_ONLY, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 6.5, 63, 100.5),
+        new Region(RegionType.CORAL_ONLY, 1, 6.5, 55, 90, 100.5),
+        new Region(RegionType.CORAL_ONLY, 2, 55, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, 24, 100.5)
     };
     private static final Region[] StandardRegions = {
-        new Region(RegionType.STANDARD, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 5, 69.5, 97),
-        new Region(RegionType.STANDARD, 1, 5, 25, -21, 80),
-        new Region(RegionType.STANDARD, 2, 25, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, -30, 97)
+        new Region(RegionType.STANDARD, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 4.8, 63, 100.5),
+        new Region(RegionType.STANDARD, 1, 4.8, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, -8.5, 100.5)
     };
 
     /**

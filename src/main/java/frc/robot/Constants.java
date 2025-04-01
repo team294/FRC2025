@@ -199,8 +199,10 @@ public final class Constants {
     // Theta kp value for joystick in rad/sec
     public static final double kPJoystickThetaController = 3;
 
-    // How far to back the robot off from the reef after scoring coral or intaking algae
-    public static final double driveBackFromReefDistance = 0.25;
+    // Distance bumpers should be away from the reef
+    // This distance is the where the scoring prep sequence will take place for L1-L3,
+    // along with is how far the robot should be located to score on L4.
+    public static final double distanceFromReefToScore = Units.inchesToMeters(7.25);  // was 0.25 meters, changed to be scoring location for L4
 
     // Back offset for robot to pick up algae, in meters
     public static final double ReefAlgaePickupPositionOffset = 0.2;
@@ -323,7 +325,7 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;       // CALIBRATED
     public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
-    public static final double outtakePercent = 0.4;      // CALIBRATED
+    public static final double outtakePercent = 0.6;      // CALIBRATED
 
     public static final double centerRotationsUndershoot = 1.625;  // CALIBRATED #3  Measure the typical undershoot with kP.  This value (in motor rotataions) will be added to the encoder reading when the coral sensor is triggered.
     public static final double centeringTolerance = 0.07;  // CALIBRATED #1  Position tolerance (in rotations) for holding coral [smaller than 1/2 of the position window where both sensors see the coral]
@@ -398,8 +400,8 @@ public final class Constants {
 
     // CALIBRATED
     public enum WristAngle {
-      LOWER_LIMIT(-13.0),
-      UPPER_LIMIT(99.0);
+      LOWER_LIMIT(-13.0),  // Wrist chin strap limit (without coral = -26.5 deg).  Elevator needs to be above 5.4" to get to this angle.
+      UPPER_LIMIT(100.5);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
@@ -416,12 +418,13 @@ public final class Constants {
       CORAL_L1(13.0, 95.0),
       CORAL_L2(25.56, 65.0),
       CORAL_L3(40.28, 65.0),
-      CORAL_L4(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
+      CORAL_L4(71.0, 57.0),
+      CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
       ALGAE_GROUND(5.8, -6.5),
-      ALGAE_LOWER(34.0, -5.0),
-      ALGAE_UPPER(49.7, -5.0),
-      ALGAE_LOLIPOP(10.0, 10.0),
+      ALGAE_LOWER(22.3, 24.0),
+      ALGAE_UPPER(38.0, 24.0),
+      ALGAE_LOLLIPOP(12.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
       ALGAE_NET(63.0, 70.0);
