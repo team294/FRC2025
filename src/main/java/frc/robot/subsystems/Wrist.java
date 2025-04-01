@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.nio.channels.WritableByteChannel;
-
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.*;
