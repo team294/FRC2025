@@ -77,7 +77,8 @@ public class ElevatorWristRegions {
     // Note that some regions have added 1-2" of margin on the elevator position for safety
     public static final Region[] CoralOnlyRegions = {
         new Region(RegionType.CORAL_ONLY, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 6.5, 63, 100.5),
-        new Region(RegionType.CORAL_ONLY, 1, 6.5, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, 24, 100.5)
+        new Region(RegionType.CORAL_ONLY, 1, 6.5, 55, 90, 100.5),
+        new Region(RegionType.CORAL_ONLY, 2, 55, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, 24, 100.5)
     };
     private static final Region[] StandardRegions = {
         new Region(RegionType.STANDARD, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 4.8, 63, 100.5),

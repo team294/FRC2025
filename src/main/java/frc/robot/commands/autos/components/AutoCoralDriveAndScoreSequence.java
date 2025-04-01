@@ -41,7 +41,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
       new AutoDriveToReefAndPrep(level, fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, led, alliance, cache),
       // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain),
       new CoralEffectorOuttake(coralEffector),
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
+      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToScore, 0, Rotation2d.kZero), 
           0.5, 1.0, 
           TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
           true, true, driveTrain)
