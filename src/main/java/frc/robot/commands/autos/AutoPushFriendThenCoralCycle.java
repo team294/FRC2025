@@ -46,8 +46,7 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
     
     addCommands(
       new DataLogMessage(false, "AutoPushFriendThenCoralCycle: Start"),
-
-      new DriveResetPose(startingPose, true, driveTrain),
+      new DriveResetPose(startingPose, false, driveTrain),
             
       // Push friend! :D
       new DriveToPose(CoordType.kRelative, new Pose2d(-1.5, 0, new Rotation2d(0)), driveTrain).withTimeout(3),
