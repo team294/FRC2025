@@ -11,7 +11,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorIntakeEnhanced extends Command {
   private final CoralEffector coralEffector;
-  
+  private boolean startedWithCoral;
   
   /**
    * Intakes coral quickly, then ends and auto-holds after the tip of the coral reaches the exit.
@@ -27,7 +27,8 @@ public class CoralEffectorIntakeEnhanced extends Command {
   @Override
   public void initialize() {
     // If there is no coral present or the coral is not safely in the mechanism, run the motor
-    if (!coralEffector.isCoralPresent()) {
+    startedWithCoral = coralEffector.isCoralPresent();
+    if (!startedWithCoral) {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.fastIntakePercent); 
     }
 
@@ -44,7 +45,9 @@ public class CoralEffectorIntakeEnhanced extends Command {
   public void end(boolean interrupted) {
     // Back off the position, since due to coral velocity it likely overshot the balanced position between the sensors.
     // A different option would be to add to the final position by the (coral velocity)*(time delay @ 20ms).
-    coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition() + CoralEffectorConstants.centerRotationsUndershoot, true);
+    if (!startedWithCoral) {
+      coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition() + CoralEffectorConstants.centerRotationsUndershoot, true);
+    }
 
     DataLogUtil.writeMessage("CoralEffectorIntakeEnhanced: End");
   }
