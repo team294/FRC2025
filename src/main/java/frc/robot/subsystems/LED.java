@@ -175,7 +175,7 @@ public class LED extends SubsystemBase {
       // The events below set the pattern outside of the LED subsystem, see comments
 
       // LEDAnimationBCR, robot disabled (see RobotContainer.disabledInit())
-      case ROBOT_DISABLED: // TODO this does not work (has change, needs to be tested)
+      case ROBOT_DISABLED:
         dashboardColor = BCRColor.NEUTRAL;
         break;
       // LEDAnimationFlash, Wrist / Elevator uncalibrated (see each subsystem)
