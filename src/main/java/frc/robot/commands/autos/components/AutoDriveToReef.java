@@ -69,7 +69,7 @@ public class AutoDriveToReef extends SequentialCommandGroup {
         // Drives the trajectory while intaking coral to make sure coral is being intaked.
         // TODO Is the timeout a good idea? What's a good time to have here?
         new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(3),
-        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance)//.withTimeout(trajectory.getTotalTime() - 0.3)
+        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance).withTimeout(trajectory.getTotalTime() - 0.5)
       ),
 
       new DataLogMessage(false, "AutoDriveToReef: Start, trajectory =", trajectory.name())
