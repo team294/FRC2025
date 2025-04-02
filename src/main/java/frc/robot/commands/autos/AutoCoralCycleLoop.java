@@ -45,7 +45,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
 
     else {
       addCommands(
-        new DriveResetPose(AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get(), true, driveTrain)
+        new DriveResetPose(AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get(), false, driveTrain)
       );
 
       // Score the pre-loaded coral with the first reef location
