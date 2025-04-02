@@ -4,6 +4,8 @@
 
 package frc.robot.commands.sequences;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -45,6 +47,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
       AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field) {
     addCommands(
+      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: Start"),
       // Drive to nearest reef position
       new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
 
@@ -75,7 +78,8 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
             true, true, driveTrain),
         none(),
         () -> level != ReefLevel.L4  
-      )
+      ),
+      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
     );
   }
 }
