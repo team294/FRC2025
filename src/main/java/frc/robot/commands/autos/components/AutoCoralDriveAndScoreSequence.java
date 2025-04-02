@@ -47,7 +47,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
       either(
         new AutomatedDriveToReefAndScoreCoral(level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field),
         none(),
-        () -> coralEffector.isCoralPresent() // TODO not sure if this is the right boolean to use?
+        () -> coralEffector.isCoralPresent()
       ),
         new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: End")
       
