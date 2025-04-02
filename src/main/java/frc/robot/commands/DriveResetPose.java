@@ -163,8 +163,9 @@ public class DriveResetPose extends Command {
 
     if (!tolerance || Math.abs(curX - driveTrain.getPose().getX()) > 0.5
         || Math.abs(curY - driveTrain.getPose().getY()) > 0.5
-        || Math.abs(MathBCR.normalizeAngle(curAngle - driveTrain.getPoseAngle())) > 15.0) {
-      driveTrain.resetPose(new Pose2d(curX, curY, Rotation2d.fromDegrees(curAngle)));
+        || Math.abs(MathBCR.normalizeAngle(curAngle - driveTrain.getPoseAngle())) > 15.0
+        || Math.abs(MathBCR.normalizeAngle(curAngle - driveTrain.getGyroRotation())) > 15.0) {
+            driveTrain.resetPose(new Pose2d(curX, curY, Rotation2d.fromDegrees(curAngle)));
     }
   }
 

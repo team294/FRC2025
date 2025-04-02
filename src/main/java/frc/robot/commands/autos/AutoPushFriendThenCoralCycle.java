@@ -43,7 +43,7 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
     Pose2d startingPose = AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get();
     
     addCommands(
-      new DriveResetPose(startingPose, true, driveTrain),
+      new DriveResetPose(startingPose, false, driveTrain),
             
       // Push friend! :D
       new DriveToPose(CoordType.kRelative, new Pose2d(-1.5, 0, new Rotation2d(0)), driveTrain).withTimeout(3),
