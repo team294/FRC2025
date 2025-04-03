@@ -583,17 +583,17 @@ public class Elevator extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
     // TODO verify that this works
-    if (!isElevatorCalibrated() && !sent) {
-      led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
-      sent = true;
-    }
+    // if (!isElevatorCalibrated() && !sent) {
+    //   led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
+    //   sent = true;
+    // }
 
     // TODO verify that this works
-    if (lastCalibrationState != isElevatorCalibrated()) {
-      if (!isElevatorCalibrated()) led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
-      else led.sendEvent(StripEvents.NEUTRAL);
-      lastCalibrationState = isElevatorCalibrated();
-    }
+    // if (lastCalibrationState != isElevatorCalibrated()) {
+    //   if (!isElevatorCalibrated()) led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
+    //   else led.sendEvent(StripEvents.NEUTRAL);
+    //   lastCalibrationState = isElevatorCalibrated();
+    // }
 
     if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Elev Calibrated", isElevatorCalibrated());

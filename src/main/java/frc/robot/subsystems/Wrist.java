@@ -546,17 +546,17 @@ public class Wrist extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
     // TODO verify that this works
-    if (!isWristCalibrated() && !sent) {
-      led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
-      sent = true;
-    }
+    // if (!isWristCalibrated() && !sent) {
+    //   led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
+    //   sent = true;
+    // }
 
     // TODO verify that this works
-    if (lastCalibrationState != isWristCalibrated()) {
-      if (!isWristCalibrated()) led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
-      else led.sendEvent(StripEvents.NEUTRAL);
-      lastCalibrationState = isWristCalibrated();
-    }
+    // if (lastCalibrationState != isWristCalibrated()) {
+    //   if (!isWristCalibrated()) led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
+    //   else led.sendEvent(StripEvents.NEUTRAL);
+    //   lastCalibrationState = isWristCalibrated();
+    // }
 
     if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Wrist CANcoder connected", isCANcoderConnected());

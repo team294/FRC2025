@@ -60,8 +60,8 @@ public class LED extends SubsystemBase {
     prioritiesStripEvents.put(StripEvents.CORAL_MODE, 1);
     prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 2);
     prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 3);
-    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 4);
-    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 5);
+    // prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 4);
+    // prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 5);
     prioritiesStripEvents.put(StripEvents.SUBSYSTEM_UNCALIBRATED, 6);
     prioritiesStripEvents.put(StripEvents.NEUTRAL, 7);
     prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 8);
@@ -159,10 +159,10 @@ public class LED extends SubsystemBase {
         double percent = Math.max(matchTimer.get() - 125, 0) / 10.0;
         updateLEDsCountdown(percent);
         break;
-      case AUTO_DRIVE_COMPLETE: // TODO this does not work (has change, needs to be tested)
-        updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
-        dashboardColor = BCRColor.AUTO_DRIVE_COMPLETE;
-        break;
+      // case AUTO_DRIVE_COMPLETE: // TODO this does not work (has change, needs to be tested)
+      //   updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
+      //   dashboardColor = BCRColor.AUTO_DRIVE_COMPLETE;
+      //   break;
       case ALGAE_MODE:
         updateLEDs(BCRColor.ALGAE_MODE, true);
         dashboardColor = BCRColor.ALGAE_MODE;
@@ -179,9 +179,9 @@ public class LED extends SubsystemBase {
         dashboardColor = BCRColor.NEUTRAL;
         break;
       // LEDAnimationFlash, Wrist / Elevator uncalibrated (see each subsystem)
-      case SUBSYSTEM_UNCALIBRATED: // TODO has not been tested
-        dashboardColor = BCRColor.SUBSYSTEM_UNCALIBRATED;
-        break;
+      // case SUBSYSTEM_UNCALIBRATED: // TODO has not been tested
+      //   dashboardColor = BCRColor.SUBSYSTEM_UNCALIBRATED;
+      //   break;
       // LEDAnimationFlash, intaking algae (see AlgaeIntakeSequence)
       case ALGAE_INTAKING:
         dashboardColor = BCRColor.ALGAE_MODE;
@@ -190,10 +190,10 @@ public class LED extends SubsystemBase {
       case CORAL_INTAKING:
         dashboardColor = BCRColor.CORAL_MODE;
         break;
-      // LEDAnimationRainbow, automated drive and score (see AutomatedDriveToReefAndScoreCoral)
-      case AUTO_DRIVE_IN_PROGRESS:
-        dashboardColor = BCRColor.WHITE;
-        break;
+      // // LEDAnimationRainbow, automated drive and score (see AutomatedDriveToReefAndScoreCoral)
+      // case AUTO_DRIVE_IN_PROGRESS:
+      //   dashboardColor = BCRColor.WHITE;
+      //   break;
 
       default:
         clearAnimation();

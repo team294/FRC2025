@@ -82,9 +82,9 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
               true, true, driveTrain),
           none(),
           () -> level != ReefLevel.L4   
-        ).raceWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll)),
+        ),//.raceWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll)),
 
-        runOnce(() -> led.sendEvent(StripEvents.AUTO_DRIVE_COMPLETE)),
+        // runOnce(() -> led.sendEvent(StripEvents.AUTO_DRIVE_COMPLETE)),
 
         new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
       )
