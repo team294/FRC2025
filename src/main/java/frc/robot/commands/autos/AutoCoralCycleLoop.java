@@ -9,6 +9,7 @@ import java.util.List;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
@@ -23,7 +24,6 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * TODO Figure out proper exit conditions and timeouts
    * @param reefLocations list of ReefLocation to visit, in order
    * @param reefLevels list of ReefLevel to score on, in order
-   * @param reefLevel ReefLevel (L1, L2, L3, L4) to score on
    * @param endAtHP true = end at the coral loading station, false = end at the reef 
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem
@@ -32,13 +32,16 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
    * @param led LED subsystem
+   * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection utility
-   * @param cache TrajectoryCache utility
+   * @param field Field utility
    * @param log FileLog utility
    */
   public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, AllianceSelection alliance, TrajectoryCache cache) {
-    
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance, Field field) {
+
+    addCommands(new DataLogMessage(false, "AutoCoralCycleLoop: Start"));
+
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
       addCommands(none());
@@ -46,13 +49,13 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
 
     else {
       addCommands(
-        new DriveResetPose(AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get(), true, driveTrain)
+        new DriveResetPose(AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get(), false, driveTrain)
       );
 
       // Score the pre-loaded coral with the first reef location
       if (reefLocations.size() >= 1 && reefLevels.size() >= 1) {
         addCommands(
-          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, alliance, cache)
+          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, alliance, field)
         );
       }
 
@@ -67,7 +70,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
           ReefLocation end = reefLocations.get(i + 1);
 
           addCommands(
-            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, alliance, cache)
+            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, alliance, field)
           );
         }
       }
@@ -75,9 +78,11 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
       // Drive back to and end at HP after the last reef location if we are to end at HP. Otherwise, we are ending at reef 
       if (endAtHP && reefLocations.size() > 0) {
         addCommands(
-          new AutoCoralDriveAndIntakeSequence(reefLocations.get(reefLocations.size() - 1), driveTrain, elevator, wrist, coralEffector, hopper, led, alliance, cache)
+          new AutoCoralDriveAndIntakeSequence(reefLocations.get(reefLocations.size() - 1), driveTrain, elevator, wrist, coralEffector, hopper, led, alliance)
         );
       }
+
+      addCommands(new DataLogMessage(false, "AutoCoralCycleLoop: End"));
     }
   }
 }

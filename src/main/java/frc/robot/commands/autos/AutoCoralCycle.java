@@ -4,8 +4,10 @@
 
 package frc.robot.commands.autos;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.FieldConstants.*;
+import frc.robot.commands.DataLogMessage;
 import frc.robot.commands.autos.components.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
@@ -25,17 +27,20 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
    * @param led LED subsystem
+   * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection alliance
-   * @param cache TrajectoryCache cache
+   * @param field Field field
    * @param log FileLog log
    */
   public AutoCoralCycle(ReefLocation start, ReefLocation end, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
-          CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, AllianceSelection alliance, TrajectoryCache cache) {
+          CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance, Field field) {
     addCommands(
+      new DataLogMessage(false, "AutoCoralCycle: Start"),
       // Drives from start reef location to HP and intakes coral  
-      new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, led, alliance, cache),
+      new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, led, alliance),
       // Drives from HP to end reef location and scores coral
-      new AutoCoralDriveAndScoreSequence(true, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, alliance, cache)
+      new AutoCoralDriveAndScoreSequence(true, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, alliance, field),
+      new DataLogMessage(false, "AutoCoralCycle: End")
     );
   }
 }
