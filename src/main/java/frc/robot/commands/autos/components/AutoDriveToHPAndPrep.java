@@ -57,8 +57,7 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
 
     addCommands(
       new DataLogMessage(false, "AutoDriveToHPAndPrep: Start, start position =", start.toString()),
-      deadlineFor(
-        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist).withDeadline(
         new WaitUntilCommand(() -> elevator.getElevatorPosition() < ElevatorWristPosition.CORAL_L2.elevatorPosition)
       ),
       parallel(
