@@ -57,9 +57,9 @@ public class Wrist extends SubsystemBase implements Loggable {
   private final StatusSignal<Current> wristStatorCurrent;  // Motor stator current, in amps (positive = forward, negative = reverse)
   private final StatusSignal<Angle> wristEncoderPosition;  // Encoder position, in pinion rotations
   private final StatusSignal<AngularVelocity> wristEncoderVelocity;
-  private final StatusSignal<Voltage> wristVoltage;
+  // private final StatusSignal<Voltage> wristVoltage;
   private final StatusSignal<ControlModeValue> wristControlMode;
-  private final StatusSignal<AngularAcceleration> wristEncoderAcceleration;
+  // private final StatusSignal<AngularAcceleration> wristEncoderAcceleration;
 
   // Create CANcoder
   private final CANcoder canCoder = new CANcoder(Ports.CANWristEncoder);
@@ -75,16 +75,16 @@ public class Wrist extends SubsystemBase implements Loggable {
   private final DoubleLogEntry dLogWristTemp = new DoubleLogEntry(log, "/Wrist/Motor Temp");
   private final DoubleLogEntry dLogWristPctOut = new DoubleLogEntry(log, "/Wrist/Pct Out");
   private final DoubleLogEntry dLogWristCurrent = new DoubleLogEntry(log, "/Wrist/Current (amps)");
-  private final DoubleLogEntry dLogWristVoltage = new DoubleLogEntry(log, "/Wrist/Wrist Voltage");
+  // private final DoubleLogEntry dLogWristVoltage = new DoubleLogEntry(log, "/Wrist/Wrist Voltage");
   private final DoubleLogEntry dLogBatteryVoltage = new DoubleLogEntry(log, "/Wrist/Battery Voltage");
   private final DoubleLogEntry dLogCANcoderRotRaw = new DoubleLogEntry(log, "/Wrist/CANcoder Rot Raw");
-  private final DoubleLogEntry dLogWristEncoderRotRaw = new DoubleLogEntry(log, "/Wrist/Encoder Rot Raw");
+  // private final DoubleLogEntry dLogWristEncoderRotRaw = new DoubleLogEntry(log, "/Wrist/Encoder Rot Raw");
   private final DoubleLogEntry dLogWristCalZero = new DoubleLogEntry(log, "/Wrist/WristCalZero");
   private final DoubleLogEntry dLogWristTarget = new DoubleLogEntry(log, "/Wrist/Target");
   private final DoubleLogEntry dLogWristEncAngle = new DoubleLogEntry(log, "/Wrist/Encoder Angle (deg)");
   private final DoubleLogEntry dLogWristAngle = new DoubleLogEntry(log, "/Wrist/Wrist Angle (Deg)");
   private final DoubleLogEntry dLogWristVelDPS = new DoubleLogEntry(log, "/Wrist/Wrist Velocity dps");
-  private final DoubleLogEntry dLogWristAccelDPS2 = new DoubleLogEntry(log, "/Wrist/Wrist Acceleration dps");
+  // private final DoubleLogEntry dLogWristAccelDPS2 = new DoubleLogEntry(log, "/Wrist/Wrist Acceleration dps");
   private final BooleanLogEntry dLogWristCalibrated = new BooleanLogEntry(log, "/Wrist/Wrist Calibrated?");
   private final BooleanLogEntry dLogCANcoderConnected = new BooleanLogEntry(log, "/Wrist/CANcoder Connected?");
 
@@ -106,9 +106,9 @@ public class Wrist extends SubsystemBase implements Loggable {
     wristStatorCurrent = wristMotor.getStatorCurrent();
     wristEncoderPosition = wristMotor.getPosition();
     wristEncoderVelocity = wristMotor.getVelocity();
-    wristVoltage = wristMotor.getMotorVoltage();
+    // wristVoltage = wristMotor.getMotorVoltage();
     wristControlMode = wristMotor.getControlMode();
-    wristEncoderAcceleration = wristMotor.getAcceleration();
+    // wristEncoderAcceleration = wristMotor.getAcceleration();
 
     // Create the motor configuration for using the rotor encoder
     wristMotor_RotorEncoderConfig = new TalonFXConfiguration();
@@ -545,16 +545,16 @@ public class Wrist extends SubsystemBase implements Loggable {
       dLogWristTemp.append(wristTemp.refresh().getValueAsDouble(), timeNow);
       dLogWristPctOut.append(getWristMotorPercentOutput(), timeNow);
       dLogWristCurrent.append(wristStatorCurrent.refresh().getValueAsDouble(), timeNow);
-      dLogWristVoltage.append(wristVoltage.refresh().getValueAsDouble(), timeNow);
+      // dLogWristVoltage.append(wristVoltage.refresh().getValueAsDouble(), timeNow);
       dLogBatteryVoltage.append(wristSupplyVoltage.refresh().getValueAsDouble(), timeNow);
       dLogCANcoderRotRaw.append(getCANcoderRotationsRaw(), timeNow);
-      dLogWristEncoderRotRaw.append(getWristEncoderRotationsRaw(), timeNow);
+      // dLogWristEncoderRotRaw.append(getWristEncoderRotationsRaw(), timeNow);
       dLogWristCalZero.append(encoderZero, timeNow);
       dLogWristTarget.append(getCurrentWristTarget(), timeNow);
       dLogWristEncAngle.append(getWristEncoderDegrees(), timeNow);
       dLogWristAngle.append(getWristAngle(), timeNow);
       dLogWristVelDPS.append(wristEncoderVelocity.refresh().getValueAsDouble() * WristConstants.kWristDegreesPerRotation, timeNow);
-      dLogWristAccelDPS2.append(wristEncoderAcceleration.refresh().getValueAsDouble() * WristConstants.kWristDegreesPerRotation, timeNow);
+      // dLogWristAccelDPS2.append(wristEncoderAcceleration.refresh().getValueAsDouble() * WristConstants.kWristDegreesPerRotation, timeNow);
       dLogWristCalibrated.append(isWristCalibrated(), timeNow);
       dLogCANcoderConnected.append(isCANcoderConnected(), timeNow);
     }
