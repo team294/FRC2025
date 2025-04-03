@@ -265,11 +265,11 @@ public final class Constants {
   public static class VisionConstants {
     public static class PhotonVisionConstants {        
       public static final Transform3d robotToCamLeft = new Transform3d(
-        new Translation3d(Units.inchesToMeters(9.72 - 0.8), Units.inchesToMeters(12.02), Units.inchesToMeters(12.7204)),
+        new Translation3d(Units.inchesToMeters(9.72 - 0.8 + 0.6), Units.inchesToMeters(12.02 + 0.4), Units.inchesToMeters(12.7204)),
         new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-34.5))); // Cam mounted facing forward-right on the left side of the robot
       public static final Transform3d robotToCamRight = new Transform3d(
-        new Translation3d(Units.inchesToMeters(9.72 + 0.8), Units.inchesToMeters(-12.02), Units.inchesToMeters(12.7204)),
-        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(30.5))); // Cam mounted facing forward-left on the right side of the robot
+        new Translation3d(Units.inchesToMeters(9.72 + 0.8 - 0.6), Units.inchesToMeters(-12.02 - 0.4), Units.inchesToMeters(12.7204)),
+        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(30.5 + 1.0))); // Cam mounted facing forward-left on the right side of the robot
 
       public static final String leftAprilTagCameraName = "LeftCamera";
       public static final String rightAprilTagCameraName = "RightCamera";
