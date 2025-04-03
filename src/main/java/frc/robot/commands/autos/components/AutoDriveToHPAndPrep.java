@@ -4,9 +4,10 @@
 
 package frc.robot.commands.autos.components;
 
-import static edu.wpi.first.wpilibj2.command.Commands.parallel;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLocation;
@@ -56,7 +57,10 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
 
     addCommands(
       new DataLogMessage(false, "AutoDriveToHPAndPrep: Start, start position =", start.toString()),
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L2, RegionType.CORAL_ONLY, elevator, wrist), // TODO L1 or L2
+      deadlineFor(
+        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
+        new WaitUntilCommand(() -> elevator.getElevatorPosition() < ElevatorWristPosition.CORAL_L2.elevatorPosition)
+      ),
       parallel(
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance),
         new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist)
