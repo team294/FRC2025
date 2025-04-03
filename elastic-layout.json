@@ -2256,7 +2256,7 @@
             "x": 512.0,
             "y": 512.0,
             "width": 256.0,
-            "height": 256.0,
+            "height": 384.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -2289,12 +2289,68 @@
                 }
               }
             ]
+          },
+          {
+            "title": "Climber - Ratchet",
+            "x": 768.0,
+            "y": 512.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Ratchet Disengaged (safe)",
+                "x": 1664.0,
+                "y": 768.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Ratchet Disengaged",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Engage Ratchet",
+                "x": 1536.0,
+                "y": 768.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Ratchet Engage",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Disengage Ratchet",
+                "x": 1536.0,
+                "y": 768.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Ratchet Disengage",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              }
+            ]
           }
         ],
         "containers": [
           {
             "title": "Stop All Motors",
-            "x": 896.0,
+            "x": 1536.0,
             "y": 768.0,
             "width": 256.0,
             "height": 128.0,
@@ -2571,13 +2627,52 @@
                 }
               }
             ]
+          },
+          {
+            "title": "Climber Sequences",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "HIDDEN"
+            },
+            "children": [
+              {
+                "title": "Climber Prep Sequence",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Prep Sequence",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              },
+              {
+                "title": "Climber Set Angle to Lift",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 256.0,
+                "height": 128.0,
+                "type": "Command",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Set Angle to Lift",
+                  "period": 0.06,
+                  "show_type": false
+                }
+              }
+            ]
           }
         ],
         "containers": [
           {
             "title": "Stop All Motors",
-            "x": 896.0,
-            "y": 0.0,
+            "x": 1024.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
