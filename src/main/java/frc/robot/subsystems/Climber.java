@@ -246,6 +246,9 @@ public class Climber extends SubsystemBase implements Loggable {
     }
 
     stopClimber();
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    updateClimberLog(true);
   }
 
   /**

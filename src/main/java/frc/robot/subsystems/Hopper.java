@@ -83,6 +83,9 @@ public class Hopper extends SubsystemBase implements Loggable {
     hopperConfigurator.apply(hopperConfig);
 
     stopHopperMotor();
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    updateLog(true);
   }
 
   /**
