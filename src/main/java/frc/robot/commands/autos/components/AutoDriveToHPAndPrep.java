@@ -12,6 +12,7 @@ import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLocation;
 import frc.robot.commands.*;
+import frc.robot.commands.sequences.CoralIntakeSequence;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
@@ -28,7 +29,6 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
    * @param coralEffector EndEffector subsystem
    * @param alliance AllianceSelection alliance 
    * @param cache TrajectoryCache cache
-   * @param log FileLog log
    */
   public AutoDriveToHPAndPrep(TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
           AllianceSelection alliance, TrajectoryCache cache) {    
@@ -47,22 +47,22 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
+   * @param hopper Hopper subsystem
    * @param coralEffector EndEffector subsystem
-   * @param alliance AllianceSelection alliance 
-   * @param cache TrajectoryCache cache
-   * @param log FileLog log
+   * @param led LED subsystem
+   * @param alliance AllianceSelection alliance
    */
-  public AutoDriveToHPAndPrep(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
-          AllianceSelection alliance) {
+  public AutoDriveToHPAndPrep(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector,
+          LED led, AllianceSelection alliance) {
 
     addCommands(
       new DataLogMessage(false, "AutoDriveToHPAndPrep: Start, start position =", start.toString()),
       
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist).until(
         () -> elevator.getElevatorPosition() < ElevatorWristPosition.CORAL_L3.elevatorPosition),
-      parallel(
+      deadline(
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance),
-        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist)
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, led)
       ),
       new DataLogMessage(false, "AutoDriveToHPAndPrep: Start")
     );
