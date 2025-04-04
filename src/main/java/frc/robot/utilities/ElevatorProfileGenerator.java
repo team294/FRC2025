@@ -77,6 +77,9 @@ public class ElevatorProfileGenerator {
     disableProfileControl();
     
     this.elevator = elevator;
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    updateElevatorProfileLog(true);
   }
 
   /**

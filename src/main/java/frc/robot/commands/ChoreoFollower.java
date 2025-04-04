@@ -86,6 +86,27 @@ public class ChoreoFollower extends Command {
     this.driveTrain = driveTrain;
 
     addRequirements(driveTrain);
+
+    // Prime data logging at boot time
+    long timeNow = RobotController.getFPGATime();
+    Pose2d poseCurr = poseSupplier.get();
+    ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
+    dLogCurPose2D.append(poseCurr, timeNow);
+    dLogTrajPose2D.append(poseCurr, timeNow);
+
+    dLogTime.append(-1, timeNow);
+    dLogTrajX.append(-1, timeNow);
+    dLogTrajY.append(-1, timeNow);
+    dLogTrajVel.append(-1, timeNow);
+    dLogTrajVelAng.append(-1, timeNow);
+    dLogTrajRot.append(-1, timeNow);
+    dLogTrajRotVel.append(-1, timeNow);
+    dLogRobotX.append(poseCurr.getX(), timeNow);
+    dLogRobotY.append(poseCurr.getY(), timeNow);
+    dLogRobotVel.append(Math.hypot(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond), timeNow);
+    dLogRobotVelAng.append(Math.toDegrees(Math.atan2(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond)), timeNow);
+    dLogRobotRot.append(poseCurr.getRotation().getDegrees(), timeNow);
+    dLogRobotRotVel.append(driveTrain.getAngularVelocity(), timeNow);
   }
 
   // Called when the command is initially scheduled.

@@ -89,6 +89,9 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
     algaeGrabberConfigurator.apply(algaeGrabberConfig);
 
     stopAlgaeGrabberMotor();
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    updateLog(true);
   }
 
   /** 
