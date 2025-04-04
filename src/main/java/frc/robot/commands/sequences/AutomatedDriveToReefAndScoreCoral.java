@@ -51,18 +51,21 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: Start"),
       
       // Move elevator 0.6 seconds after driving (only in auto)
-      parallel(
-        // Drive to nearest reef position
-        new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
-        either(
+      either(
+        parallel(
+          // Drive to nearest reef position
+          new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
           sequence(
             waitSeconds(0.6),
             // Move elevator/wrist to correct position based on given level
             new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
-          ),
-          none(),
-          () -> DriverStation.isAutonomous()
-        )
+          )
+        ),
+        sequence(
+          new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+          new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
+        ),
+        () -> DriverStation.isAutonomous()
       ),
 
       // If not scoring on L4, drive forward to get to the reef
