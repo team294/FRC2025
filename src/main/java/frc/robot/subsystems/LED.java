@@ -143,15 +143,16 @@ public class LED extends SubsystemBase {
    * @param event StripEvent event happening
    */
   public void sendEvent(StripEvents event) {
-    // If new event is robot disabled, always update LEDs to match it.
-    // Always update state if previous event was idle.
-    // Do not update if last event was not idle and the new event priority is less than the previous.
+    // Always update state if previous event was neutral or disabled.
+    // Do not update if last event was not neutral or disabled and the new event priority is less than the previous.
+    // If previous event was algae mode and new event is coral intaking or coral mode, override priorities and update state.
 
     if (
-      event != StripEvents.ROBOT_DISABLED 
-      && previousEventStrip != StripEvents.NEUTRAL
-      && !(previousEventStrip == StripEvents.ALGAE_MODE && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
-      && getPriority(event) < getPriority(previousEventStrip)
+      previousEventStrip != StripEvents.NEUTRAL || previousEventStrip != StripEvents.ROBOT_DISABLED
+      && (
+        !(previousEventStrip == StripEvents.ALGAE_MODE && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
+        || getPriority(event) < getPriority(previousEventStrip)
+      )
     ) return;
 
     switch (event) {
