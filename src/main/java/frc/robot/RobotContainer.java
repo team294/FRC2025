@@ -62,7 +62,9 @@ public class RobotContainer {
 
   // Define other utilities
   private final TrajectoryCache trajectoryCache = new TrajectoryCache();
-  private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field);
+  // private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field);
+  private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, 
+      field, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
 
   private final LEDAnimationBCR ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
   private final LEDSendNeutral ledSendNeutral = new LEDSendNeutral(led);
@@ -162,7 +164,7 @@ public class RobotContainer {
     // SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber));
     
     // Autos
-    SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led));
+    SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand());
     SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, allianceSelection, field));
     SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, led, allianceSelection));
     SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, allianceSelection, field));
@@ -382,7 +384,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoSelection.getAutoCommand(driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led);
+    return autoSelection.getAutoCommand();
   }
 
   /**
@@ -391,6 +393,7 @@ public class RobotContainer {
   public void robotPeriodic(){
     DataLogUtil.advanceLogRotation();
     allianceSelection.periodic();
+    autoSelection.periodic();
   }
 
   /**
