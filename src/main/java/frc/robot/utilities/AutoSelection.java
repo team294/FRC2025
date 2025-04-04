@@ -98,6 +98,9 @@ public class AutoSelection {
 	
 	private Command cachedAutonomousCommand;
 	private int logRotationKey;
+	private int autoPlan;
+	private double waitTime;
+	private Alliance alliance;
 
 	private SendableChooser<Integer> autoRoutineChooser = new SendableChooser<>();
 	// private SendableChooser<Integer> startPositionChooser = new SendableChooser<>();
@@ -186,6 +189,11 @@ public class AutoSelection {
 		// Auto selections
 		autoRoutineChooser.setDefaultOption(RoutineSelectionOption.NONE.name, RoutineSelectionOption.NONE.value);
 
+		// Set initial values
+		autoPlan = -999;
+		waitTime = 0;
+		alliance = allianceSelection.getAlliance();
+
 		for (RoutineSelectionOption option : RoutineSelectionOption.values()){
 			if (option == RoutineSelectionOption.NONE) continue;
 			autoRoutineChooser.addOption(option.name, option.value);
@@ -214,11 +222,11 @@ public class AutoSelection {
 		Command autonomousCommandMain = null;
 
 		// Get parameters from Shuffleboard
-		int autoPlan = autoRoutineChooser.getSelected();
+		autoPlan = autoRoutineChooser.getSelected();
 		RoutineSelectionOption autoSelectionOption = RoutineSelectionOption.NONE;
 		DataLogUtil.writeMessage(true, "AutoSelect, autoPlan =", autoPlan);
 
-		double waitTime = SmartDashboard.getNumber("Autonomous delay", 0);
+		waitTime = SmartDashboard.getNumber("Autonomous delay", 0);
 		waitTime = MathUtil.clamp(waitTime, 0, 15); // make sure autoDelay isn't negative and is only active during auto
 
 		if (autoPlan == RoutineSelectionOption.NONE.value) {
@@ -383,30 +391,16 @@ public class AutoSelection {
 	 */
 	public void periodic() {
 		if (DataLogUtil.isMyLogRotation(logRotationKey)) {
-		Alliance newAlliance = alliance;
+			int newAutoPlan = autoRoutineChooser.getSelected();
+			double newWaitTime = SmartDashboard.getNumber("Autonomous delay", 0);
+			Alliance newAlliance = allianceSelection.getAlliance();
 
-		switch (allianceChooser.getSelected()) {
-			case Auto:
-			// Do not auto change alliance in Auto or Teleop mode
-			if (DriverStation.isDisabled()) {
-				Optional<Alliance> ally = DriverStation.getAlliance();
-				if (ally.isPresent()) newAlliance = ally.get();
+			if ( (newAutoPlan != autoPlan) || (newWaitTime != waitTime) ||
+				 (newAlliance != alliance)) {
+				alliance = newAlliance;
+				// Note that buildAutoCommand will update autoPlan and waitTime
+				buildAutoCommand();
 			}
-			break;
-			case Red:
-			newAlliance = Alliance.Red;
-			break;
-			case Blue:
-			newAlliance = Alliance.Blue;
-			break;
-		}
-
-		if (alliance != newAlliance) {
-			setAlliance(newAlliance);
-			for (Consumer<Alliance> setters : newAllianceCalls) {
-			setters.accept(newAlliance);
-			}
-		}
 		}
 	}
 

@@ -389,6 +389,7 @@ public class RobotContainer {
   public void robotPeriodic(){
     DataLogUtil.advanceLogRotation();
     allianceSelection.periodic();
+    autoSelection.periodic();
   }
 
   /**
