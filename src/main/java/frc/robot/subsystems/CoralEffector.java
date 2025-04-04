@@ -120,6 +120,9 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     coralEffectorConfigurator.apply(coralEffectorConfig);
 
     stopCoralEffectorMotor();
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    updateLog(true);
   }
 
   /**

@@ -197,6 +197,9 @@ public class DriveTrain extends SubsystemBase implements Loggable {
 
     // Create field object on Shuffleboard
     SmartDashboard.putData("Field", field);
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    updateDriveLog(true);
   }
 
   // ************ Gyro methods

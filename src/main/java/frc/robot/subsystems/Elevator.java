@@ -186,6 +186,9 @@ public class Elevator extends SubsystemBase implements Loggable {
 
     // Ensure the elevator starts in manual control mode
     stopElevatorMotors();
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    updateLog(true);
   }
 
   /**

@@ -263,6 +263,9 @@ public class Wrist extends SubsystemBase implements Loggable {
     }
 
     stopWrist();
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    updateWristLog(true);
   }
 
   /**

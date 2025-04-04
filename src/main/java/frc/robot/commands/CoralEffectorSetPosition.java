@@ -42,6 +42,11 @@ public class CoralEffectorSetPosition extends Command {
     if (SmartDashboard.getNumber("CoralEffector Goal Position", -9999.9) == -9999.9) {
       SmartDashboard.putNumber("CoralEffector Goal Position", 0);
     }
+
+    // Prime DataLog when robot boots
+    long timeNow = RobotController.getFPGATime();
+    dLogPosition.append(-1, timeNow);
+    bLogAutoHold.append(false, timeNow);
   }
 
   /**
@@ -59,6 +64,11 @@ public class CoralEffectorSetPosition extends Command {
     this.autoHold = autoHold;
     this.fromShuffleboard = false;
     addRequirements(coralEffector);
+
+    // Prime DataLog when robot boots
+    long timeNow = RobotController.getFPGATime();
+    dLogPosition.append(-1, timeNow);
+    bLogAutoHold.append(false, timeNow);
   }
 
   // Called when the command is initially scheduled.
