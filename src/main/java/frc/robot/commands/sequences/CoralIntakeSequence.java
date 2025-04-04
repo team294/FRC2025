@@ -33,7 +33,10 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
       parallel(
         new HopperSetPercent(HopperConstants.intakePercent, hopper),
-        new CoralEffectorIntakeEnhanced(coralEffector).raceWith(new LEDAnimationFlash(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll))
+        deadline(
+          new CoralEffectorIntakeEnhanced(coralEffector), 
+          new LEDAnimationFlash(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll)
+        )
       ).handleInterrupt(hopper::stopHopperMotor),
       new LEDSendNeutral(led),
       // either(
