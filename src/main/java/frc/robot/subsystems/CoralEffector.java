@@ -202,6 +202,14 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     return coralEffectorStatorCurrent.getValueAsDouble();
   }
 
+  /**
+   * Gets if the endEffector is in hold mode
+   * @return the hold mode of the endeffector
+   */
+  public boolean getHoldMode(){
+    return autoHoldMode;
+  }
+
   // ********** Coral sensor methods
 
   /**
