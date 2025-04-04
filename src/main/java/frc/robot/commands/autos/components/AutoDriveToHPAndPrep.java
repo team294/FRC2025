@@ -62,7 +62,7 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
       
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist).until(
         () -> elevator.getElevatorPosition() < ElevatorWristPosition.CORAL_L3.elevatorPosition),
-      parallel(
+      deadline(
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance),
         new CoralIntakeSequence(elevator, wrist, hopper, coralEffector)
       ),
