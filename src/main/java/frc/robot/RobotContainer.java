@@ -65,6 +65,7 @@ public class RobotContainer {
   private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field);
 
   private final LEDAnimationBCR ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
+  private final LEDSendNeutral ledSendNeutral = new LEDSendNeutral(led);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -482,6 +483,7 @@ public class RobotContainer {
     }
 
     led.sendEvent(LED.StripEvents.NEUTRAL);
+    ledSendNeutral.schedule();
     
     matchTimer.reset();
     matchTimer.start();

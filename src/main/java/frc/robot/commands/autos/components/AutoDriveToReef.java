@@ -80,7 +80,7 @@ public class AutoDriveToReef extends SequentialCommandGroup {
       // If the endeffector is not in hold mode(Coral is not safely in intake) then do nothing, otherwise intake the coral until the piece is present
       either(
         none(), 
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector), 
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, led), 
         () -> (coralEffector.getHoldMode())),
       
       new DataLogMessage(false, "AutoDriveToReef: End, trajectory =", trajectory.name())

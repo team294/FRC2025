@@ -27,7 +27,7 @@ public class ScorePieceSequence extends SequentialCommandGroup {
         new AlgaeGrabberOuttake(algaeGrabber).andThen(
           either( // if coral is present after outtaking algae, send CORAL_MODE event
             runOnce(() -> led.sendEvent(LED.StripEvents.CORAL_MODE)),
-            runOnce(() -> led.sendEvent(LED.StripEvents.SCORING_COMPLETE)),
+            z,
             () -> coralEffector.isCoralPresent()
           )
         ),
