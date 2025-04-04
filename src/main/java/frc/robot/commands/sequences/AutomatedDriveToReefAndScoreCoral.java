@@ -71,36 +71,35 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
         () -> DriverStation.isAutonomous()
       ),
 
-        // If not scoring on L4, drive forward to get to the reef
-        either(
-          new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)),
-              0.5, 1.0, 
-              TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-              true, true, driveTrain),
-          none(),
-          () -> level != ReefLevel.L4
-        ),
+      // If not scoring on L4, drive forward to get to the reef
+      either(
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)),
+            0.5, 1.0, 
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+            true, true, driveTrain),
+        none(),
+        () -> level != ReefLevel.L4
+      ),
 
-        // Score piece
-        new CoralEffectorOuttake(coralEffector),
+      // Score piece
+      new CoralEffectorOuttake(coralEffector),
 
-        // If scoring on L1, wait 0.5 seconds before backing up
-        either(waitSeconds(0.5), none(), () -> level == ReefLevel.L1),
+      // If scoring on L1, wait 0.5 seconds before backing up
+      either(waitSeconds(0.5), none(), () -> level == ReefLevel.L1),
 
-        // If not scoring on L4, back up
-        either(
-          new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToScore, 0, Rotation2d.kZero),
-              0.5, 1.0, 
-              TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-              true, true, driveTrain),
-          none(),
-          () -> level != ReefLevel.L4   
-        ).raceWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll)),
+      // If not scoring on L4, back up
+      either(
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToScore, 0, Rotation2d.kZero),
+            0.5, 1.0, 
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+            true, true, driveTrain),
+        none(),
+        () -> level != ReefLevel.L4   
+      ).raceWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll)),
 
-        runOnce(() -> led.sendEvent(StripEvents.AUTO_DRIVE_COMPLETE)),
+      runOnce(() -> led.sendEvent(StripEvents.AUTO_DRIVE_COMPLETE)),
 
-        new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
-      )
+      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
     );
   }
 }
