@@ -741,6 +741,7 @@ public class DriveTrain extends SubsystemBase implements Loggable {
             SmartDashboard.putNumber("Vision " + camera.getCameraName() + " X", camPose.estimatedPose.toPose2d().getX());
             SmartDashboard.putNumber("Vision " + camera.getCameraName() + " Y", camPose.estimatedPose.toPose2d().getY());
             SmartDashboard.putNumber("Vision " + camera.getCameraName() + " rot", camPose.estimatedPose.toPose2d().getRotation().getDegrees());
+            camera.dLogEstPose2D.append(camPose.estimatedPose.toPose2d());
   
             // Only run camera updates for pose estimator if useVisionForOdometry is true
             if (camResult.hasTargets() && useVisionForOdometry) {
@@ -750,8 +751,15 @@ public class DriveTrain extends SubsystemBase implements Loggable {
               } else if (bestTarget.getBestCameraToTarget().getX() < 3) {
                 poseEstimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds, farMatrix);
               }
+              SmartDashboard.putNumber("Vision " + camera.getCameraName() + " AprilTag", bestTarget.getFiducialId());
+            } else {
+              SmartDashboard.putNumber("Vision " + camera.getCameraName() + " AprilTag", -1);
             }
+          } else {
+            SmartDashboard.putNumber("Vision " + camera.getCameraName() + " AprilTag", -1);
           }
+        } else {
+          SmartDashboard.putNumber("Vision " + camera.getCameraName() + " AprilTag", -1);
         }
       }
     }

@@ -7,10 +7,12 @@ import choreo.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
 import frc.robot.Constants.FieldConstants.*;
+import frc.robot.Constants.ElevatorWristConstants.*;
 import frc.robot.commands.*;
 import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
+import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 public class AutoDriveToReef extends SequentialCommandGroup {
   /** Below constructor is outdated and not used anywhere
@@ -66,9 +68,11 @@ public class AutoDriveToReef extends SequentialCommandGroup {
       new DataLogMessage(false, "AutoDriveToReef: Start, trajectory =", trajectory.name()),
 
       parallel(
-        // Drives the trajectory while intaking coral to make sure coral is being intaked.
-        // TODO Is the timeout a good idea? What's a good time to have here?
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(3),
+        // Drives the trajectory while intaking coral to make sure coral is being intaked. Timeout in case coral doesn't make it into hopper.
+        sequence(
+          new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(3),
+          new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
+        ),
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance).withTimeout(trajectory.getTotalTime() - 0.5)
       ),
 

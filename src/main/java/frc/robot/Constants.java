@@ -202,7 +202,7 @@ public final class Constants {
     // Distance bumpers should be away from the reef
     // This distance is the where the scoring prep sequence will take place for L1-L3,
     // along with is how far the robot should be located to score on L4.
-    public static final double distanceFromReefToScore = Units.inchesToMeters(7.25);  // was 0.25 meters, changed to be scoring location for L4
+    public static final double distanceFromReefToScore = Units.inchesToMeters(6.25);  // was 0.25 meters, changed to be scoring location for L4
 
     // Back offset for robot to pick up algae, in meters
     public static final double ReefAlgaePickupPositionOffset = 0.2;
@@ -258,16 +258,16 @@ public final class Constants {
     public static final double ReefScoringPositionAprilTagOffset = 0.164331496063;
 
     public static final double bargeScorableWidth = 3.5;  // Width of alliance barge structure (not net) is 3.72 meters, reduced for consistency
-    public static final double bargeScoringOffset = 1.07; // CALIBRATED 3/29/2025
+    public static final double bargeScoringOffset = 1.32; // CALIBRATED 3/29/2025, was 1.07 in lab, changed at AVR
   }
 
   public static class VisionConstants {
     public static class PhotonVisionConstants {        
       public static final Transform3d robotToCamLeft = new Transform3d(
-        new Translation3d(Units.inchesToMeters(9.72 - 0.8 + 0.6), Units.inchesToMeters(12.02 + 0.4), Units.inchesToMeters(12.7204)),
+        new Translation3d(Units.inchesToMeters(9.72 - 0.8 + 0.6), Units.inchesToMeters(12.02 + 0.4 - 0.5), Units.inchesToMeters(12.7204)),
         new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-34.5))); // Cam mounted facing forward-right on the left side of the robot
       public static final Transform3d robotToCamRight = new Transform3d(
-        new Translation3d(Units.inchesToMeters(9.72 + 0.8 - 0.6), Units.inchesToMeters(-12.02 - 0.4), Units.inchesToMeters(12.7204)),
+        new Translation3d(Units.inchesToMeters(9.72 + 0.8 - 0.6), Units.inchesToMeters(-12.02 - 0.4 - 0.5), Units.inchesToMeters(12.7204)),
         new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(30.5 + 1.0))); // Cam mounted facing forward-left on the right side of the robot
 
       public static final String leftAprilTagCameraName = "LeftCamera";

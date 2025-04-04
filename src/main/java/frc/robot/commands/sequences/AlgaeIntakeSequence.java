@@ -31,9 +31,19 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
         new AlgaeGrabberIntake(algaeGrabber)
       ),
       either(
+        sequence(
+          new AlgaeGrabberSetPercent(0.1, algaeGrabber),
+          waitSeconds(3),
+          new AlgaeGrabberStop(algaeGrabber)
+        ),
+        none(),
+        () -> position == ElevatorWristPosition.ALGAE_LOWER || position == ElevatorWristPosition.ALGAE_UPPER
+      ),
+      either(
         new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist),
         none(),
-        () -> position == ElevatorWristPosition.ALGAE_GROUND || position == ElevatorWristPosition.ALGAE_LOLLIPOP)
+        () -> position == ElevatorWristPosition.ALGAE_GROUND || position == ElevatorWristPosition.ALGAE_LOLLIPOP
+      )
     );
   }
 }
