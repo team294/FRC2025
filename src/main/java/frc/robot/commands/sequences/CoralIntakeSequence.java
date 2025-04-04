@@ -35,9 +35,10 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
         new HopperSetPercent(HopperConstants.intakePercent, hopper),
         new CoralEffectorIntakeEnhanced(coralEffector).raceWith(new LEDAnimationFlash(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll))
       ).handleInterrupt(hopper::stopHopperMotor),
+      new LEDSendNeutral(led),
       // either(
       //   runOnce(() -> led.sendEvent(LED.StripEvents.CORAL_MODE)),
-      //   runOnce(() -> led.sendEvent(LED.StripEvents.NEUTRAL)), 
+      //   new LEDSendNeutral(led), 
       //   () -> coralEffector.isCoralPresent()),
       new HopperStop(hopper)
     );
