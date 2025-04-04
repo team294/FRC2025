@@ -188,6 +188,11 @@ public class RobotContainer {
     // SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
     // SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
 
+    SmartDashboard.putData("Coral Outtake and Stow Elevator", sequence(
+      new CoralEffectorOuttake(coralEffector),
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist)
+    ));
+
     // Stop All Motors
     SmartDashboard.putData("Stop All Motors", parallel(
       new HopperStop(hopper),
