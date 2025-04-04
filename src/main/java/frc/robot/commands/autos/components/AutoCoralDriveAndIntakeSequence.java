@@ -29,7 +29,7 @@ public class AutoCoralDriveAndIntakeSequence extends SequentialCommandGroup {
     addCommands(
       new DataLogMessage(false, "AutoCoralDriveAndIntakeSequence: Start, starting reef location =", start.toString()),
       new AutoDriveToHPAndPrep(start, driveTrain, elevator, wrist, coralEffector, alliance),
-      new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(0.75),
+      new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(0.5),
       new DataLogMessage(false, "AutoCoralDriveAndIntakeSequence: End")
     );
   }
