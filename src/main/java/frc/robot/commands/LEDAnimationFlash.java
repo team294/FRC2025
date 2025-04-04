@@ -64,6 +64,7 @@ public class LEDAnimationFlash extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    led.clearAnimation();
     led.sendEvent(StripEvents.NEUTRAL);
   }
 

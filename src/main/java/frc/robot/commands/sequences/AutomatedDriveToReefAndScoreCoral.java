@@ -82,7 +82,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       ),
 
       // Score piece
-      new CoralEffectorOuttake(coralEffector),
+      new CoralEffectorOuttake(coralEffector, led),
 
       // If scoring on L1, wait 0.5 seconds before backing up
       either(waitSeconds(0.5), none(), () -> level == ReefLevel.L1),

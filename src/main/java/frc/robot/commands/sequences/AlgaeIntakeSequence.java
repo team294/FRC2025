@@ -35,7 +35,7 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
       ),
       
       new LEDSendNeutral(led),
-        // either(
+      // either(
       //   runOnce(() -> led.sendEvent(LED.StripEvents.ALGAE_MODE)),
       //   new LEDSendNeutral(led), 
       //   () -> algaeGrabber.isAlgaePresent()),

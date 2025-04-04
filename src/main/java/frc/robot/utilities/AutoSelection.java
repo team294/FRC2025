@@ -297,12 +297,12 @@ public class AutoSelection {
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
 			autoSelectionOption = RoutineSelectionOption.AutoCenterL1;
-			autonomousCommandMain = new AutoCenterL1(driveTrain, elevator, wrist, coralEffector, algaeGrabber, allianceSelection);
+			autonomousCommandMain = new AutoCenterL1(driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, allianceSelection);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL4.value) {
 			autoSelectionOption = RoutineSelectionOption.AutoCenterL4;
-			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, field, rightJoystick, allianceSelection);
+			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, field, rightJoystick, allianceSelection);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.Rel4mRotate180.value) {

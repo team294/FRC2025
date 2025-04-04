@@ -128,7 +128,7 @@ public class RobotContainer {
     SmartDashboard.putData("CoralEffector Reverse", new CoralEffectorSetPercent(-0.05, coralEffector));
     SmartDashboard.putData("CoralEffector STOP", new CoralEffectorStop(coralEffector));
     SmartDashboard.putData("CoralEffector Intake", new CoralEffectorIntake(coralEffector));
-    SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector));
+    SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector, led));
     SmartDashboard.putData("CoralEffector Intake Enhanced", new CoralEffectorIntakeEnhanced(coralEffector));
     SmartDashboard.putData("CoralEffector Set Percent", new CoralEffectorSetPercent(coralEffector));
     SmartDashboard.putData("CoralEffector Set Position", new CoralEffectorSetPosition(false, coralEffector));
@@ -138,7 +138,7 @@ public class RobotContainer {
     SmartDashboard.putData("AlgaeGrabber Out", new AlgaeGrabberSetPercent(-0.1, algaeGrabber));
     SmartDashboard.putData("AlgaeGrabber STOP", new AlgaeGrabberStop(algaeGrabber));
     SmartDashboard.putData("AlgaeGrabber Intake", new AlgaeGrabberIntake(algaeGrabber));
-    SmartDashboard.putData("AlgaeGrabber Outtake", new AlgaeGrabberOuttake(algaeGrabber));
+    SmartDashboard.putData("AlgaeGrabber Outtake", new AlgaeGrabberOuttake(algaeGrabber, led));
 
     // Wrist
     SmartDashboard.putData("Wrist STOP", new WristStop(wrist));
@@ -295,8 +295,8 @@ public class RobotContainer {
 
     // ex: left[1].onTrue(new command);
 
-    left[1].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
-    left[2].onTrue(new CoralEffectorOuttake(coralEffector));
+    left[1].onTrue(new AlgaeGrabberOuttake(algaeGrabber, led));
+    left[2].onTrue(new CoralEffectorOuttake(coralEffector, led));
 
     right[1].and(xboxController.x()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, rightJoystick, field));
     right[1].and(xboxController.a()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, rightJoystick, field));
@@ -362,8 +362,8 @@ public class RobotContainer {
       () -> allianceSelection.getAlliance() == Alliance.Red));
 
     // Release Game Piece Commands
-    coP[15].onTrue(new CoralEffectorOuttake(coralEffector));
-    coP[16].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
+    coP[15].onTrue(new CoralEffectorOuttake(coralEffector, led));
+    coP[16].onTrue(new AlgaeGrabberOuttake(algaeGrabber, led));
 
     // Manual Calibration Commands
     coP[17].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator));
