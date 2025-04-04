@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
@@ -41,6 +42,7 @@ public class ChoreoFollower extends Command {
   private final DataLog log = DataLogManager.getLog();
   private final StructLogEntry<Pose2d> dLogCurPose2D = StructLogEntry.create(log, "/ChoreoFollower/curPose2d", Pose2d.struct);
   private final StructLogEntry<Pose2d> dLogTrajPose2D = StructLogEntry.create(log, "/ChoreoFollower/trajPose2d", Pose2d.struct);
+  private final StringLogEntry dLogTrajType = new StringLogEntry(log, "/ChoreoFollower/trajType");
   private final DoubleLogEntry dLogTime = new DoubleLogEntry(log, "/ChoreoFollower/time");
   private final DoubleLogEntry dLogTrajX = new DoubleLogEntry(log, "/ChoreoFollower/trajX");
   private final DoubleLogEntry dLogTrajY = new DoubleLogEntry(log, "/ChoreoFollower/trajY");
@@ -101,6 +103,7 @@ public class ChoreoFollower extends Command {
     mirrorTrajectoryThisInit = mirrorTrajectory.getAsBoolean();
 
     DataLogUtil.writeMessage("ChoreoFollower:  Init, Is Flipped =", mirrorTrajectoryThisInit);
+    dLogTrajType.append("ChoreoFollower");
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
@@ -172,6 +175,7 @@ public class ChoreoFollower extends Command {
     // driveTrain.enableFastLogging(false);
     timer.stop();
     DataLogUtil.writeMessage("ChoreoFollower:  End");
+    dLogTrajType.append("None");
   }
 
   // Returns true when the command should end.

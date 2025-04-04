@@ -5,9 +5,13 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StructLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.DataLogUtil;
+import frc.robot.utilities.StringUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,11 +34,17 @@ public class PhotonCameraWrapper extends SubsystemBase {
   private Transform3d robotToCam;
   private String cameraName;
 
+  private final DataLog log = DataLogManager.getLog();
+  public final StructLogEntry<Pose2d> dLogEstPose2D;
+
+
   public PhotonCameraWrapper(Transform3d robotToCam, String cameraName, int logRotationKey) {
     
     this.logRotationKey = logRotationKey;
     this.robotToCam = robotToCam;
     this.cameraName = cameraName;
+
+    dLogEstPose2D = StructLogEntry.create(log, StringUtil.buildString("/", cameraName, "/estPose2d"), Pose2d.struct);
   }
 
   /**

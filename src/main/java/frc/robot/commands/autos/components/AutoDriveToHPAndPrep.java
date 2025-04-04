@@ -4,7 +4,10 @@
 
 package frc.robot.commands.autos.components;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLocation;
@@ -54,9 +57,13 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
 
     addCommands(
       new DataLogMessage(false, "AutoDriveToHPAndPrep: Start, start position =", start.toString()),
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
-      new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance),
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
+      
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist).until(
+        () -> elevator.getElevatorPosition() < ElevatorWristPosition.CORAL_L3.elevatorPosition),
+      parallel(
+        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance),
+        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist)
+      ),
       new DataLogMessage(false, "AutoDriveToHPAndPrep: Start")
     );
   }
