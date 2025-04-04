@@ -24,7 +24,7 @@ public class CoralEffectorOuttake extends Command {
     this.coralEffector = coralEffector;
     
     this.timer = new Timer();
-    this.seconds = 0.1;
+    this.seconds = 0.02;
     addRequirements(coralEffector);
   }
 
