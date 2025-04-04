@@ -64,7 +64,7 @@ public class RobotContainer {
   private final TrajectoryCache trajectoryCache = new TrajectoryCache();
   // private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field);
   private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, 
-      field, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
+      field, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led);
 
   private final LEDAnimationBCR ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
   private final LEDSendNeutral ledSendNeutral = new LEDSendNeutral(led);
