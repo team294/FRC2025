@@ -55,8 +55,8 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
       new DriveToPose(CoordType.kAbsolute, startingPose, driveTrain),
 
       // Based on whether grabAlgae is true or not, do coral cycle loop with or without ending by grabbing coral
-      either(
-        new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
+      either( //Below coralcycleloopthenalgae will drive to barge and score currently
+        new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
         new AutoCoralCycleLoop(reefLocations, reefLevels, endAtHP, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
         () -> grabAlgae
       ),

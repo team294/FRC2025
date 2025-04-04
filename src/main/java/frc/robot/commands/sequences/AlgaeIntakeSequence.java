@@ -15,16 +15,15 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 /**
  * Intakes algae by moving the wrist and elevator to the indicated intake position, and then 
- * running the algaeGrabber until the algae is in the mechanism. Then backs up the robot.
+ * running the algaeGrabber until the algae is in the mechanism.
  * @param position position to move elevator to (use ElevatorWristConstants.ElevatorWristPosition.ALGAE_...)
- * @param driveTrain DriveTrain subsystem
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
  * @param algaeGrabber AlgaeGrabber subsystem
  * @param log FileLog utility
  */
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
-  public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
+  public AlgaeIntakeSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
       parallel(
         new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),

@@ -28,6 +28,8 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * Scores each coral in the locations of the given list at the given level, then grabs the algae at the ending position and backs up.
    * @param reefLocations list of ReefLocation to visit, in order
    * @param reefLevels list of ReefLevel to score on, in order
+   * @param scoreFirstAlgae true = score the algae picked up, false = only pick up algae
+   * //@param grabSecondAlgae true = drive to IJ algae and pick it up (made for only center auto), false = end after scoring one. Can only be true if scoreFirstAlgae is true
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
@@ -39,7 +41,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param field Field field
    * @param log FileLog log
    */
-  public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, DriveTrain driveTrain, Elevator elevator, 
+  public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreFirstAlgae, DriveTrain driveTrain, Elevator elevator, 
       Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
     
     // No reef locations provided, so do nothing
@@ -58,27 +60,45 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
 
         // First, do the loop for the coral cycles (ends at reef, bumpers distanceFromReefToScore away from reef aka 6.25 inches)
         new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
-      
-        // Back up based on an offset (if it is the right or left branch) TODO calibrate distance, andrew estimates we should be ~7 inches away bumper to reef distance
-        new DriveToPose(CoordType.kRelative, new Pose2d(-0.65, yRelativeOffset, new Rotation2d(0)), driveTrain),
         
-        // Prep the wrist and elevator for intaking from the reef
-        new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
-
-        // Start running the algaeGrabber and drive into the reef TODO calibrate distance
+        // Drive to algae position (Luke said it works)
+        new DriveToReefWithOdometryForAlgae(driveTrain, field), // ends 0.2 meters away
+        
         parallel(
-          // Cannot use AlgaeIntakeSequence due to the commands in parallel both requiring the driveTrain
-          // new AlgaeIntakeSequence(position, driveTrain, elevator, wrist, algaeGrabber),
+          new AlgaeIntakeSequence(position, elevator, wrist, algaeGrabber),
+          // We check if algae is present to end the driving because the algae intake sequence runs longer when intaking from the reef
+          new DriveToPose(CoordType.kRelative, new Pose2d(Units.inchesToMeters(3), 0, Rotation2d.kZero), driveTrain).until(() -> algaeGrabber.isAlgaePresent())
+        ),
+      
+        // If we want to score algae, then score it. If not, just back up and end auto
+        either(
           sequence(
-            new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
-            new AlgaeGrabberIntake(algaeGrabber)
+            // Drive to barge, move elevator up, score, move elevator down.
+            new DriveToBargeWithOdometry(driveTrain, field),
+            new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
+            new AlgaeGrabberOuttake(algaeGrabber),
+            new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
+          
+            // // Now, we go to grab a second algae, IJ, if the boolean to do so is true
+            // either(
+            //   sequence(
+            //     // Drive to IJ
+            //     // AlgaeIntakeSequence
+            //     // Back up
+            //     none()
+            //   ), 
+            //   none(), 
+            //   () -> grabSecondAlgae
+            // )
           ),
-          new DriveToPose(CoordType.kRelative, new Pose2d(0.6, 0, new Rotation2d(0)), driveTrain)
+
+          
+          new DriveToPose(CoordType.kRelative, new Pose2d(-0.3, 0, Rotation2d.kZero), driveTrain),
+          () -> scoreFirstAlgae
         ),
 
-        // After intaking the algae, back up TODO calibrate distance
-        new DriveToPose(CoordType.kRelative, new Pose2d(-0.5, 0, new Rotation2d(0)), driveTrain),
-
+        
+  
         new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae", "End")
       );
     }
