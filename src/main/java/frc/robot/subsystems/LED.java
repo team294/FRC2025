@@ -50,6 +50,7 @@ public class LED extends SubsystemBase {
     AUTO_DRIVE_IN_PROGRESS,
     AUTO_DRIVE_COMPLETE,
     SUBSYSTEM_UNCALIBRATED,
+    SCORING_COMPLETE,
     NEUTRAL,
     ROBOT_DISABLED
   }
@@ -63,8 +64,9 @@ public class LED extends SubsystemBase {
     // prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 4);
     // prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 5);
     prioritiesStripEvents.put(StripEvents.SUBSYSTEM_UNCALIBRATED, 6);
-    prioritiesStripEvents.put(StripEvents.NEUTRAL, 7);
-    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 8);
+    prioritiesStripEvents.put(StripEvents.SCORING_COMPLETE, 7);
+    prioritiesStripEvents.put(StripEvents.NEUTRAL, 8);
+    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 9);
   }
 
   /**
@@ -148,7 +150,7 @@ public class LED extends SubsystemBase {
     // If previous event was algae mode and new event is coral intaking or coral mode, override priorities and update state.
 
     if (
-      previousEventStrip != StripEvents.NEUTRAL || previousEventStrip != StripEvents.ROBOT_DISABLED
+      previousEventStrip != StripEvents.NEUTRAL || previousEventStrip != StripEvents.ROBOT_DISABLED || previousEventStrip == StripEvents.SCORING_COMPLETE
       && (
         !(previousEventStrip == StripEvents.ALGAE_MODE && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
         || getPriority(event) < getPriority(previousEventStrip)
@@ -164,6 +166,10 @@ public class LED extends SubsystemBase {
       //   updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
       //   dashboardColor = BCRColor.AUTO_DRIVE_COMPLETE;
       //   break;
+      case SCORING_COMPLETE:
+        updateLEDs(BCRColor.SCORING_COMPLETE, true);
+        dashboardColor = BCRColor.SCORING_COMPLETE;
+        break;
       case ALGAE_MODE:
         updateLEDs(BCRColor.ALGAE_MODE, true);
         dashboardColor = BCRColor.ALGAE_MODE;

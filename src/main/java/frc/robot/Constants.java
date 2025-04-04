@@ -494,6 +494,7 @@ public final class Constants {
     CORAL_MODE(255, 0, 255),           // Purple
     AUTO_DRIVE_COMPLETE(0, 255, 0),    // Green
     SUBSYSTEM_UNCALIBRATED(255, 0, 0), // Red
+    SCORING_COMPLETE(0, 255, 0),       // Green
     BLUE(19, 82, 188),                 // Blue
     ORANGE(240, 107, 14),              // Orange
     WHITE(255, 255, 255);              // White

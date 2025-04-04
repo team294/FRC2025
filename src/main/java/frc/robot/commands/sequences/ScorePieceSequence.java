@@ -27,13 +27,13 @@ public class ScorePieceSequence extends SequentialCommandGroup {
         new AlgaeGrabberOuttake(algaeGrabber).andThen(
           either( // if coral is present after outtaking algae, send CORAL_MODE event
             runOnce(() -> led.sendEvent(LED.StripEvents.CORAL_MODE)),
-            runOnce(() -> led.sendEvent(LED.StripEvents.NEUTRAL)),
+            runOnce(() -> led.sendEvent(LED.StripEvents.SCORING_COMPLETE)),
             () -> coralEffector.isCoralPresent()
           )
         ),
         sequence( 
           new CoralEffectorOuttake(coralEffector),
-          runOnce(() -> led.sendEvent(LED.StripEvents.NEUTRAL))
+          runOnce(() -> led.sendEvent(LED.StripEvents.SCORING_COMPLETE))
           // new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
           //     0.5, 1.0, 
           //     TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
