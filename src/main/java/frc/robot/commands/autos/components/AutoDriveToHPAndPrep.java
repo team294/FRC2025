@@ -12,6 +12,7 @@ import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLocation;
 import frc.robot.commands.*;
+import frc.robot.commands.sequences.CoralIntakeSequence;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
@@ -47,12 +48,13 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
+   * @param hopper Hopper subsystem
    * @param coralEffector EndEffector subsystem
    * @param alliance AllianceSelection alliance 
    * @param cache TrajectoryCache cache
    * @param log FileLog log
    */
-  public AutoDriveToHPAndPrep(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
+  public AutoDriveToHPAndPrep(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, 
           AllianceSelection alliance) {
 
     addCommands(
@@ -62,7 +64,7 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
         () -> elevator.getElevatorPosition() < ElevatorWristPosition.CORAL_L3.elevatorPosition),
       parallel(
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance),
-        new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist)
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector)
       ),
       new DataLogMessage(false, "AutoDriveToHPAndPrep: Start")
     );
