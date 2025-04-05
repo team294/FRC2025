@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLevel;
+import frc.robot.Constants.FieldConstants.ReefLocation;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -100,4 +101,75 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
     );
   }
+
+  /**
+   * AutomatedDriveToReefAndScoreCoral for autonomous only
+   * If not scoring on L4, the robot will drive fully up against the reef, and then back up after scoring.
+   * If scoring on L4, the robot will score while not fully up against the reef, and the routine ends when the piece is scored.
+   * @param location Reef location to score on
+   * @param level ReefLevel (L1, L2, L3, L4) to score on
+   * @param driveTrain DriveTrain subsystem
+   * @param elevator Elevator subsystem
+   * @param wrist Wrist subsystem
+   * @param coralEffector EndEffector subsystem
+   * @param algaeGrabber AlgaeGrabber subsystem
+   * @param rightJoysitck Right joystick
+   * @param field Field field
+   */
+  public AutomatedDriveToReefAndScoreCoral(ReefLocation location, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
+      AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field) {
+    addCommands(
+      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: Start"),
+      
+      // Move elevator 0.6 seconds after driving (only in auto)
+      either(
+        parallel(
+          // Drive to specific reef location position
+          new DriveToReefWithOdometryForCoral(location, driveTrain, field, rightJoystick), // Edited line from above
+          sequence(
+            deadline(
+              waitSeconds(0.6),
+              new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
+            ),
+            // Move elevator/wrist to correct position based on given level
+            new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
+          )
+        ),
+        sequence(
+          //Teleop 
+          new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick), 
+          new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
+        ),
+        () -> DriverStation.isAutonomous()
+      ),
+
+      // If not scoring on L4, drive forward to get to the reef
+      either(
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)),
+            0.5, 1.0, 
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+            true, true, driveTrain),
+        none(),
+        () -> level != ReefLevel.L4
+      ),
+
+      // Score piece
+      new CoralEffectorOuttake(coralEffector),
+
+      // If scoring on L1, wait 0.5 seconds before backing up
+      either(waitSeconds(0.5), none(), () -> level == ReefLevel.L1),
+
+      // If not scoring on L4, back up
+      either(
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToScore, 0, Rotation2d.kZero),
+            0.5, 1.0, 
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+            true, true, driveTrain),
+        none(),
+        () -> level != ReefLevel.L4  
+      ),
+      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
+    );
+  }
+
 }

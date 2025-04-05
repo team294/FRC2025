@@ -22,7 +22,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
   /**
    * Drive from barge to end (reef location) and score a coral.
    * @param fromHP true = starting at HP, false = starting at barge
-   * @param end ReefLocation (A-L) to end at
+   * @param location ReefLocation (A-L) to end at
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
@@ -35,17 +35,17 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param field Field field
    * @param log FileLog log
    */
-  public AutoCoralDriveAndScoreSequence(boolean fromHP, ReefLocation end, ReefLevel level, DriveTrain driveTrain,
+  public AutoCoralDriveAndScoreSequence(boolean fromHP, ReefLocation location, ReefLevel level, DriveTrain driveTrain,
       Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
       Field field) {
     addCommands(
-      new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: Start, goal reef location =", end.toString()),
+      new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: Start, goal reef location =", location.toString()),
       // Drive to reef while intaking to ensure coral is intaked (timeout on the intake command for 4 seconds)
-      new AutoDriveToReef(fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
+      new AutoDriveToReef(fromHP, location, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
       
       // If coral is detected, score. If not, end the score sequence and skip to the next part of the auto
       either(
-        new AutomatedDriveToReefAndScoreCoral(level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field),
+        new AutomatedDriveToReefAndScoreCoral(location, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field),
         none(),
         () -> coralEffector.isCoralPresent()
       ),

@@ -264,6 +264,16 @@ public class Field {
     }
 
     /**
+     * Returns scoring position based on ReefLocation passed in
+     * @param location ReefLocation location
+     * @param offset Transform2d offset
+     * @return reef scoring position
+     */
+    public Pose2d getReefScoringPositionWithOffset(ReefLocation location, Transform2d offset) {
+        return getReefScoringPosition(location).transformBy(offset);
+    }
+
+    /**
      * Finds and returns the nearest Algae pickup position (against the base)
      * @param currPos the robot's current positions
      * @return The Pose2d of the nearest pickup position

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.Constants.*;
+import frc.robot.Constants.FieldConstants.ReefLocation;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
@@ -80,6 +81,19 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
                   new Transform2d(field.getNearestAprilTagReef(driveTrain.getPose()), driveTrain.getPose()).getY() > 0)
       ),
 
+      new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "End")
+    );
+  }
+
+  public DriveToReefWithOdometryForCoral(ReefLocation location, DriveTrain driveTrain, Field field, Joystick rightJoystick) {
+    addCommands(
+      new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
+
+      //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus a constant
+      new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
+                new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)))), 
+                0.02, 1, driveTrain),
+        
       new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "End")
     );
   }
