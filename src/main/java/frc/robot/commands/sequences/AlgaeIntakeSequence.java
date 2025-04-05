@@ -28,9 +28,12 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
   public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, LED led) {
     addCommands(
-      new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
+      
       deadline(
-        new AlgaeGrabberIntake(algaeGrabber),
+        parallel(
+          new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
+          new AlgaeGrabberIntake(algaeGrabber)
+        ),
         new LEDAnimationFlash(LED.StripEvents.ALGAE_INTAKING, led, LEDSegmentRange.StripAll)
       ),
       
@@ -38,7 +41,9 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
       either(
         runOnce(() -> led.sendEvent(LED.StripEvents.ALGAE_MODE)),
         new LEDSendNeutral(led), 
-        () -> algaeGrabber.isAlgaePresent()),
+        () -> algaeGrabber.isAlgaePresent()
+      ),
+
       either(
         sequence(
           new AlgaeGrabberSetPercent(0.1, algaeGrabber),
@@ -48,6 +53,7 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
         none(),
         () -> position == ElevatorWristPosition.ALGAE_LOWER || position == ElevatorWristPosition.ALGAE_UPPER
       ),
+
       either(
         new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist),
         none(),
