@@ -28,14 +28,12 @@ import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.Wait;
 import frc.robot.Constants.*;
 import frc.robot.Constants.WristConstants.WristAngle;
-import frc.robot.subsystems.LED.StripEvents;
 
 public class Wrist extends SubsystemBase implements Loggable {
   
   private final int logRotationKey;
   private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
   private String subsystemName;         // Subsystem name for use in file logging and dashboard
-  private LED led;
 
   // Create wrist motor
   private final TalonFX wristMotor = new TalonFX(Ports.CANWrist);
@@ -93,16 +91,12 @@ public class Wrist extends SubsystemBase implements Loggable {
   private double encoderZero = 0;   // Reference raw encoder angle for wrist encoder (may be motor built-in encoder or remote CANcoder) at 0 degrees.
 
   private boolean wristCalibrated = false;                // Default to wrist being uncalibrated. Calibrate from robot preferences or "Calibrate Wrist Zero" button on dashboard.
-  private boolean lastCalibrationState = wristCalibrated; // Store last calibration state for LEDs
-
-  private boolean sent = false; // true = uncal. state sent to LEDs
 
   private double safeAngle; // Current wrist target on position control on the motor (if in position mode)
 
-  public Wrist(String subsystemName, LED led) {
+  public Wrist(String subsystemName) {
     logRotationKey = DataLogUtil.allocateLogRotation();
     this.subsystemName = subsystemName;
-    this.led = led;
 
     // Get signal and sensor objects for motor
     wristSupplyVoltage = wristMotor.getSupplyVoltage();
@@ -226,7 +220,6 @@ public class Wrist extends SubsystemBase implements Loggable {
     if (usingCANcoder) {
       encoderZero = WristConstants.offsetAngleCANcoder;
       wristCalibrated = true;
-      lastCalibrationState = wristCalibrated;
       DataLogUtil.writeLogEcho(true, "Wrist", "CANcoder calibrated", "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), 
           "Enc Raw", getWristEncoderRotationsRaw(), "Angle", getWristAngle(), "Target", getCurrentWristTarget());
 
@@ -250,7 +243,6 @@ public class Wrist extends SubsystemBase implements Loggable {
       Wait.waitTime(250);
     } else {
       wristCalibrated = false;
-      lastCalibrationState = wristCalibrated;
       // Record the missing CanCoder as a sticky fault
       RobotPreferences.recordStickyFaults("Wrist-CANcoder");
       DataLogUtil.writeLogEcho(true, "Wrist", "CANcoder not calibrated");
@@ -463,7 +455,6 @@ public class Wrist extends SubsystemBase implements Loggable {
   public void setWristUncalibrated() {
     stopWrist();
     wristCalibrated = false;
-    lastCalibrationState = wristCalibrated;
 
     DataLogUtil.writeLogEcho(true, "Wrist", "Uncalibrate", 
       "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getWristEncoderRotationsRaw(), "Angle", getWristAngle(), "Target", getCurrentWristTarget());
@@ -477,7 +468,6 @@ public class Wrist extends SubsystemBase implements Loggable {
     stopWrist(); // Stop the motor so it does not jump to a new value
     encoderZero = getWristEncoderRotationsRaw() * WristConstants.kWristDegreesPerRotation - angle;
     wristCalibrated = true;
-    lastCalibrationState = wristCalibrated;
 
     DataLogUtil.writeLogEcho(true, "Wrist", "Calibrate", "Using CANcoder", usingCANcoder,
       "Enc Zero", encoderZero,  "CANcoder Rot", getCANcoderRotationsRaw(), "Enc Raw", getWristEncoderRotationsRaw(), "Angle", getWristAngle(), "Target", getCurrentWristTarget());
@@ -574,18 +564,6 @@ public class Wrist extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    // TODO verify that this works
-    // if (!isWristCalibrated() && !sent) {
-    //   led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
-    //   sent = true;
-    // }
-
-    // TODO verify that this works
-    // if (lastCalibrationState != isWristCalibrated()) {
-    //   if (!isWristCalibrated()) led.sendEvent(StripEvents.SUBSYSTEM_UNCALIBRATED);
-    //   else led.sendEvent(StripEvents.NEUTRAL);
-    //   lastCalibrationState = isWristCalibrated();
-    // }
 
     if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Wrist CANcoder connected", isCANcoderConnected());
