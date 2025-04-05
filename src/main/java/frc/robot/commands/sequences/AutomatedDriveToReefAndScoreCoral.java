@@ -113,7 +113,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
-   * @param rightJoysitck Right joystick
+   * @param rightJoystick Right joystick
    * @param field Field field
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLocation location, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
@@ -125,7 +125,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       either(
         parallel(
           // Drive to specific reef location position
-          new DriveToReefWithOdometryForCoral(location, driveTrain, field, rightJoystick), // Edited line from above
+          new DriveToReefWithOdometryForCoral(location, driveTrain, field), // Edited line from above
           sequence(
             deadline(
               waitSeconds(0.6),

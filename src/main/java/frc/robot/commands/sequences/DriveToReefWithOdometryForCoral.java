@@ -85,12 +85,18 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
     );
   }
 
-  public DriveToReefWithOdometryForCoral(ReefLocation location, DriveTrain driveTrain, Field field, Joystick rightJoystick) {
+  /**
+   * For autonomous only
+   * @param location
+   * @param driveTrain
+   * @param field
+   */
+  public DriveToReefWithOdometryForCoral(ReefLocation location, DriveTrain driveTrain, Field field) {
     addCommands(
       new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
 
       //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus a constant
-      new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
+      new DriveToPose(CoordType.kAbsolute, () -> (field.getReefScoringPositionWithOffset(location, 
                 new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)))), 
                 0.02, 1, driveTrain),
         

@@ -264,7 +264,7 @@ public class Field {
     }
 
     /**
-     * Returns scoring position based on ReefLocation passed in
+     * Returns robot's scoring position based on ReefLocation passed in
      * @param location ReefLocation location
      * @param offset Transform2d offset
      * @return reef scoring position
