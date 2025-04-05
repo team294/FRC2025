@@ -34,13 +34,14 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
+   * @param led LED subsystem
    * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection alliance
    * @param field Field field
    * @param log FileLog log
    */
   public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance, Field field) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
@@ -57,7 +58,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
         new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae", "Start", lastCoralLocation, lastCoralLocation.toString(), "onRightSide", lastCoralLocation.onRightSide, "yRelativeOffset", yRelativeOffset),
 
         // First, do the loop for the coral cycles (ends at reef, bumpers distanceFromReefToScore away from reef aka 6.25 inches)
-        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
+        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, alliance, field),
       
         // Back up based on an offset (if it is the right or left branch) TODO calibrate distance, andrew estimates we should be ~7 inches away bumper to reef distance
         new DriveToPose(CoordType.kRelative, new Pose2d(-0.65, yRelativeOffset, new Rotation2d(0)), driveTrain),

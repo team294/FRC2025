@@ -27,6 +27,7 @@ import frc.robot.subsystems.AlgaeGrabber;
 import frc.robot.subsystems.CoralEffector;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.utilities.AllianceSelection;
@@ -35,7 +36,7 @@ import frc.robot.utilities.DataLogUtil;
 
 
 public class AutoCenterL4 extends SequentialCommandGroup {
-  public AutoCenterL4(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Field field, Joystick rightJoystick, AllianceSelection allianceSelection) {
+  public AutoCenterL4(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, LED led, Field field, Joystick rightJoystick, AllianceSelection allianceSelection) {
     addCommands(
 
       // Turn on vision odometry
@@ -64,7 +65,7 @@ public class AutoCenterL4 extends SequentialCommandGroup {
       new WaitCommand(0.75),
 
       // Score coral on L4
-      new CoralEffectorOuttake(coralEffector),
+      new CoralEffectorOuttake(coralEffector, led),
 
       // Wait after scoring
       new WaitCommand(1.0),

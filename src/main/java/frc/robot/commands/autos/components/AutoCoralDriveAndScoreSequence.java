@@ -31,21 +31,22 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param hopper Hopper subsystem
    * @param rightJoystick Joystick joystick
    * @param algaeGrabber AlgaeGrabber subsystem
+   * @param hopper Hopper subsystem
+   * @param led LED subsystem
    * @param alliance AllianceSelection alliance
    * @param field Field field
-   * @param log FileLog log
    */
   public AutoCoralDriveAndScoreSequence(boolean fromHP, ReefLocation location, ReefLevel level, DriveTrain driveTrain,
-      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
+      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance,
       Field field) {
     addCommands(
       new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: Start, goal reef location =", location.toString()),
       // Drive to reef while intaking to ensure coral is intaked (timeout on the intake command for 4 seconds)
-      new AutoDriveToReef(fromHP, location, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
+      new AutoDriveToReef(fromHP, location, driveTrain, elevator, wrist, coralEffector, hopper, led, alliance),
       
       // If coral is detected, score. If not, end the score sequence and skip to the next part of the auto
       either(
-        new AutomatedDriveToReefAndScoreCoral(location, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field),
+        new AutomatedDriveToReefAndScoreCoral(level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, rightJoystick, field),
         none(),
         () -> coralEffector.isCoralPresent()
       ),
