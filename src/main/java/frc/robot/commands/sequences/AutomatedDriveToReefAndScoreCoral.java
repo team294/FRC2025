@@ -22,6 +22,7 @@ import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
+import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
   // Map to link ReefLevels to ElevatorPositions
@@ -56,7 +57,10 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
           // Drive to nearest reef position
           new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
           sequence(
-            waitSeconds(0.6),
+            deadline(
+              waitSeconds(0.6),
+              new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
+            ),
             // Move elevator/wrist to correct position based on given level
             new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
           )
