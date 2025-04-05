@@ -28,7 +28,7 @@
                   "topic": "/SmartDashboard/Autonomous delay",
                   "period": 0.06,
                   "data_type": "double",
-                  "show_submit_button": false
+                  "show_submit_button": true
                 }
               },
               {
@@ -42,6 +42,20 @@
                   "topic": "/SmartDashboard/Autonomous routine",
                   "period": 0.06,
                   "sort_options": false
+                }
+              },
+              {
+                "title": "Autonomous cached",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Autonomous cached",
+                  "period": 0.06,
+                  "data_type": "string",
+                  "show_submit_button": false
                 }
               }
             ]

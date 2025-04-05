@@ -49,4 +49,10 @@ public class DataLogMessage extends Command {
   public boolean isFinished() {
     return true;
   }
+
+  // Returns whether the command should be able to run while the robot is disabled (default = false). 
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }

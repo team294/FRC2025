@@ -39,7 +39,7 @@ public class WristElevatorSafeMove extends Command {
   private final double wristBuffer = 1.5;       // How much to target to keep the wrist within min/max for each region, in degrees
   private final double wristTargetTol = 2.0;    // Wrist tolerance to goal postion for this command to end, in degrees
   private final double elevatorMovingTol = 2.0; // Elevator tolerances when moving between regions, in inches
-  private final double elevatorTargetTol = 1.0; // Elevator tolerance to goal postion for this command to end, in inches
+  private final double elevatorTargetTol = 1.5; // Elevator tolerance to goal postion for this command to end, in inches
 
   /**
    * Moves the wrist and elevator in sequence, accounting for interlocks and regions.
