@@ -16,6 +16,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -55,6 +56,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   private final DoubleLogEntry dLogVoltage = new DoubleLogEntry(log, "/AlgaeGrabber/Voltage");
   private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/AlgaeGrabber/Current");
   private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/AlgaeGrabber/Velocity");
+  private final BooleanLogEntry dLogAlgaePresent = new BooleanLogEntry(log, "/AlgaeGrabber/Algae present");
 
   private boolean netScoreMode = true;
 
@@ -180,6 +182,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
       dLogVoltage.append(algaeGrabberVoltage.refresh().getValueAsDouble(), timeNow);
       dLogCurrent.append(getAlgaeGrabberAmps(), timeNow);
       dLogVelocity.append(getAlgaeGrabberVelocity(), timeNow);
+      dLogAlgaePresent.append(isAlgaePresent(), timeNow);
     }
   }
 
