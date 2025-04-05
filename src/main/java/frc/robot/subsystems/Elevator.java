@@ -172,7 +172,7 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorMotor2Configurator.apply(elevatorMotor2Config);
 
     // This is a blocking call and will wait up to 200ms for the zero to apply
-    checkAndZeroElevatorEncoders();
+    checkAndCalibrateEncoders();
 
     // Wait 0.25 seconds before checking the limit switch or encoder ticks.
     // The reason is that zeroing the encoder (above) can be delayed up to 50ms for a round trip 
@@ -314,12 +314,24 @@ public class Elevator extends SubsystemBase implements Loggable {
    * Checks if the elevator is at the lower limit switch.
    * If it is, then zeros the elevator encoder and waits up to 200ms for the new setting to be applied.
    */
-  public void checkAndZeroElevatorEncoders() {
+  public void checkAndZeroEncoders() {
     if (isElevatorAtLowerLimit()) {
       stopElevatorMotors(); // Ensure PID loop or motion profile will not move to last set position when resetting encoder
 
-      elevatorMotor1.setPosition(ElevatorPosition.LOWER_LIMIT.value);
-      elevatorMotor2.setPosition(ElevatorPosition.LOWER_LIMIT.value);
+      elevatorMotor1.setPosition(ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick);
+      elevatorMotor2.setPosition(ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick);
+
+      DataLogUtil.writeMessageEcho(subsystemName, ":  checkAndZeroEncoders... Zeroed!");
+    }
+  }
+
+  /**
+   * Checks if the elevator is at the lower limit switch.
+   * If it is, then zeros the elevator encoder, enables soft limits, sets the elevatorCalibrated flag, and waits up to 400ms for the new setting to be applied.
+   */
+  public void checkAndCalibrateEncoders() {
+    if (isElevatorAtLowerLimit()) {
+      checkAndZeroEncoders();
       elevatorCalibrated = true;
   
       // Set software limits after setting encoderZero
@@ -340,7 +352,7 @@ public class Elevator extends SubsystemBase implements Loggable {
       // This is a blocking call and will wait up to 50ms-70ms for the config to apply
       elevatorMotor2Configurator.apply(elevatorMotor2Config);
 
-      DataLogUtil.writeMessageEcho(subsystemName, ":  checkAndZeroElevatorEncoders... Calibrated!");
+      DataLogUtil.writeMessageEcho(subsystemName, ":  checkAndCalibrateEncoders... Calibrated!");
     }
   }
 
@@ -610,8 +622,17 @@ public class Elevator extends SubsystemBase implements Loggable {
     // Elevator is not calibrated and is at the lower limit, so update encoder calibration.
     if (!isElevatorCalibrated() && isElevatorAtLowerLimit()) {
       // This is a blocking call and will wait up to 200ms for the zero to apply.
-      checkAndZeroElevatorEncoders();
+      checkAndCalibrateEncoders();
       DataLogUtil.writeMessageEcho(subsystemName, ": Calibrate Encoders in periodic(), Elevator Pos after cal =", getElevatorPosition());
+    }
+
+    // Elevator is calibrated but the zero position is "drifting upwards."  Re-zero if the elevator drifts upwards too much
+    if (isElevatorCalibrated() && isElevatorAtLowerLimit() && 
+        getElevatorPosition() > 1.0 && getElevatorPosition() < 2.0) {
+      // This is a blocking call and will wait up to 200ms for the zero to apply.
+      double elevPosPre = getElevatorPosition();
+      checkAndZeroEncoders();
+      DataLogUtil.writeMessageEcho(subsystemName, ": Zero Encoders in periodic(), Pos before =", elevPosPre, ", Pos after =", getElevatorPosition());
     }
 
     // If the elevator is at or below the lower limit, prevent it from going down any further.

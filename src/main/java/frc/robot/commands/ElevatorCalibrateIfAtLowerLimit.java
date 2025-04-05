@@ -27,7 +27,7 @@ public class ElevatorCalibrateIfAtLowerLimit extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.checkAndZeroElevatorEncoders();
+    elevator.checkAndCalibrateEncoders();
     DataLogUtil.writeLog(false, "ElevatorCalibrateIfAtLowerLimit", "Initialize");
   }
 
@@ -44,6 +44,12 @@ public class ElevatorCalibrateIfAtLowerLimit extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    return true;
+  }
+
+  // Returns whether the command should be able to run while the robot is disabled (default = false). 
+  @Override
+  public boolean runsWhenDisabled() {
     return true;
   }
 }
