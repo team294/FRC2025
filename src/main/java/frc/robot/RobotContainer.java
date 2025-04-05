@@ -74,6 +74,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     DataLogUtil.writeLogEcho(true, "RobotContainer", "Constructor", "Version", Constants.bcrRobotCodeVersion);
+    SignalLogger.enableAutoLogging(false);
 
     SmartDashboard.putBoolean("RobotPrefs Initialized", RobotPreferences.prefsExist());
     if(!RobotPreferences.prefsExist()) {
