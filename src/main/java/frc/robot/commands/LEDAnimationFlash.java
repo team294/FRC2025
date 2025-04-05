@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.*;
 import frc.robot.Constants.LEDConstants.*;
 import frc.robot.subsystems.LED;
-import frc.robot.subsystems.LED.StripEvents;;
+import frc.robot.subsystems.LED.StripEvents;
+import frc.robot.utilities.DataLogUtil;;
 
 public class LEDAnimationFlash extends Command {
   private LED led;
@@ -32,6 +33,7 @@ public class LEDAnimationFlash extends Command {
 
   @Override
   public void initialize() {
+    DataLogUtil.writeMessage("LEDAnimationFlash Init");
     runs = 0;
     led.sendEvent(event);
 
@@ -52,6 +54,7 @@ public class LEDAnimationFlash extends Command {
 
   @Override
   public void execute() {
+    DataLogUtil.writeMessage("LEDAnimationFlash Execute");
     if (runs % 16 == 0) {
       led.setLEDs(color, segment);
     } else if (runs % 33 == 0) {
@@ -64,6 +67,7 @@ public class LEDAnimationFlash extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    DataLogUtil.writeMessage("LEDAnimationFlash: End");
     led.clearAnimation();
     led.sendEvent(StripEvents.NEUTRAL);
   }

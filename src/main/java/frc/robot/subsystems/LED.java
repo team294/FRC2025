@@ -150,17 +150,23 @@ public class LED extends SubsystemBase {
     // If previous event was algae mode and new event is coral intaking or coral mode, override priorities and update state.
 
     if (
-      previousEventStrip != StripEvents.NEUTRAL || previousEventStrip != StripEvents.ROBOT_DISABLED || previousEventStrip == StripEvents.SCORING_COMPLETE
+      previousEventStrip != StripEvents.NEUTRAL && previousEventStrip != StripEvents.ROBOT_DISABLED && previousEventStrip == StripEvents.SCORING_COMPLETE
       && (
         !(previousEventStrip == StripEvents.ALGAE_MODE && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
         || getPriority(event) < getPriority(previousEventStrip)
       )
-    ) return;
+    ) {
+      DataLogUtil.writeMessage("LED SendEvent: Return");
+      return;
+    }
 
+    
+    DataLogUtil.writeMessage("LED SendEvent: switch statement");
     switch (event) {
       case MATCH_COUNTDOWN: // TODO has not been tested
         double percent = Math.max(matchTimer.get() - 125, 0) / 10.0;
         updateLEDsCountdown(percent);
+        DataLogUtil.writeMessage("LED Match Countdown");
         break;
       // case AUTO_DRIVE_COMPLETE: // TODO this does not work (has change, needs to be tested)
       //   updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
@@ -169,14 +175,17 @@ public class LED extends SubsystemBase {
       case SCORING_COMPLETE:
         updateLEDs(BCRColor.SCORING_COMPLETE, true);
         dashboardColor = BCRColor.SCORING_COMPLETE;
+        DataLogUtil.writeMessage("LED Scoring Complete");
         break;
       case ALGAE_MODE:
         updateLEDs(BCRColor.ALGAE_MODE, true);
         dashboardColor = BCRColor.ALGAE_MODE;
+        DataLogUtil.writeMessage("LED Algae Mode");
         break;
       case CORAL_MODE:
         updateLEDs(BCRColor.CORAL_MODE, true);
         dashboardColor = BCRColor.CORAL_MODE;
+        DataLogUtil.writeMessage("LED Coral Mode");
         break;
 
       // The events below set the pattern outside of the LED subsystem, see comments
@@ -192,10 +201,12 @@ public class LED extends SubsystemBase {
       // LEDAnimationFlash, intaking algae (see AlgaeIntakeSequence)
       case ALGAE_INTAKING:
         dashboardColor = BCRColor.ALGAE_MODE;
+        DataLogUtil.writeMessage("LED Algae Intaking");
         break;
       // LEDAnimationFlash, intaking coral (see CoralIntakeSequence)
       case CORAL_INTAKING:
         dashboardColor = BCRColor.CORAL_MODE;
+        DataLogUtil.writeMessage("LED Coral Intaking");
         break;
       // // LEDAnimationRainbow, automated drive and score (see AutomatedDriveToReefAndScoreCoral)
       // case AUTO_DRIVE_IN_PROGRESS:
@@ -206,6 +217,7 @@ public class LED extends SubsystemBase {
         clearAnimation();
         updateLEDs(BCRColor.NEUTRAL, true);
         dashboardColor = BCRColor.NEUTRAL;
+        DataLogUtil.writeMessage("LED Neutral");
         break;
     }
 

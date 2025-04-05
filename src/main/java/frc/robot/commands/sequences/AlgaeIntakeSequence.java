@@ -34,11 +34,11 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
         new LEDAnimationFlash(LED.StripEvents.ALGAE_INTAKING, led, LEDSegmentRange.StripAll)
       ),
       
-      new LEDSendNeutral(led),
-      // either(
-      //   runOnce(() -> led.sendEvent(LED.StripEvents.ALGAE_MODE)),
-      //   new LEDSendNeutral(led), 
-      //   () -> algaeGrabber.isAlgaePresent()),
+      // new LEDSendNeutral(led),
+      either(
+        runOnce(() -> led.sendEvent(LED.StripEvents.ALGAE_MODE)),
+        new LEDSendNeutral(led), 
+        () -> algaeGrabber.isAlgaePresent()),
       either(
         sequence(
           new AlgaeGrabberSetPercent(0.1, algaeGrabber),
