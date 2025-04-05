@@ -48,10 +48,10 @@ public class RobotContainer {
   private final LED led = new LED(Ports.CANdle, "LED", matchTimer);
   private final DriveTrain driveTrain = new DriveTrain(allianceSelection);
   private final Hopper hopper = new Hopper("Hopper");
-  private final Wrist wrist = new Wrist("Wrist", led);
+  private final Wrist wrist = new Wrist("Wrist");
   private final CoralEffector coralEffector = new CoralEffector("CoralEffector", wrist);
   private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber");
-  private final Elevator elevator = new Elevator("Elevator", led);
+  private final Elevator elevator = new Elevator("Elevator");
   // private final Climber climber = new Climber("Climber");
 
   // Define controllers
@@ -74,6 +74,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     DataLogUtil.writeLogEcho(true, "RobotContainer", "Constructor", "Version", Constants.bcrRobotCodeVersion);
+    SignalLogger.enableAutoLogging(false);
 
     SmartDashboard.putBoolean("RobotPrefs Initialized", RobotPreferences.prefsExist());
     if(!RobotPreferences.prefsExist()) {
@@ -485,7 +486,6 @@ public class RobotContainer {
       wrist.stopWrist();
     }
 
-    led.sendEvent(LED.StripEvents.NEUTRAL);
     ledSendNeutral.schedule();
     
     matchTimer.reset();
