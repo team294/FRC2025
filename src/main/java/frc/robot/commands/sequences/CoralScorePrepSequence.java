@@ -26,7 +26,10 @@ public class CoralScorePrepSequence extends SequentialCommandGroup {
   public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
       either(
-        new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist),
+        sequence(
+          new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist),
+          new WristSetAngle(position, wrist)
+        ),
         none(),
         () -> !algaeGrabber.isAlgaePresent()
       )
