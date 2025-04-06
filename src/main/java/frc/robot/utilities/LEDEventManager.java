@@ -2,11 +2,14 @@ package frc.robot.utilities;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.ctre.phoenix.led.RainbowAnimation;
+import com.ctre.phoenix.led.StrobeAnimation;
+import frc.robot.commands.LEDAnimationBCR;
+
 import frc.robot.Constants.BCRColor;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
-import frc.robot.commands.LEDAnimationBCR;
-import frc.robot.commands.LEDAnimationFlash;
-import frc.robot.commands.LEDAnimationRainbow;
+// import frc.robot.commands.LEDAnimationFlash;
 import frc.robot.subsystems.LED;
 
 
@@ -16,42 +19,45 @@ public class LEDEventManager {
     private StripEvents previousEventStrip;
 
     private final LEDAnimationBCR ledAnimationBCR;
-    private final LEDAnimationFlash ledAnimationFlashCoral;
-    private final LEDAnimationFlash ledAnimationFlashAlgae;
-    private final LEDAnimationRainbow ledAnimationRainbow;
+    private final RainbowAnimation ledAnimationRainbow;
+    private final StrobeAnimation ledAnimationStrobeCoral;
+    private final StrobeAnimation ledAnimationStrobeAlgae;
 
     public enum StripEvents {
-        MATCH_COUNTDOWN,
-        CORAL_MODE,
-        CORAL_INTAKING,
-        ALGAE_MODE,
-        ALGAE_INTAKING,
-        AUTO_DRIVE_IN_PROGRESS,
-        AUTO_DRIVE_COMPLETE,
-        NEUTRAL,
-        ROBOT_DISABLED,
-        STICKY_FAULT_ACTIVE
-      }
+      // STICKY_FAULT_ACTIVE,
+      MATCH_COUNTDOWN,
+      CORAL_MODE,
+      CORAL_INTAKING,
+      ALGAE_MODE,
+      ALGAE_INTAKING,
+      AUTO_DRIVE_IN_PROGRESS,
+      AUTO_DRIVE_COMPLETE,
+      NEUTRAL,
+      ROBOT_DISABLED
+    }
 
-      private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
-        static {
-            prioritiesStripEvents.put(StripEvents.STICKY_FAULT_ACTIVE, 0);
-            prioritiesStripEvents.put(StripEvents.CORAL_INTAKING, 1);
-            prioritiesStripEvents.put(StripEvents.CORAL_MODE, 2);
-            prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 3);
-            prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 4);
-            prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 5);
-            prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 6);
-            prioritiesStripEvents.put(StripEvents.NEUTRAL, 7);
-            prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 8);
-        }
+    private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
+      static {
+        // prioritiesStripEvents.put(StripEvents.STICKY_FAULT_ACTIVE, 0);
+        prioritiesStripEvents.put(StripEvents.CORAL_INTAKING, 1);
+        prioritiesStripEvents.put(StripEvents.CORAL_MODE, 2);
+        prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 3);
+        prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 4);
+        prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 5);
+        prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 6);
+        prioritiesStripEvents.put(StripEvents.NEUTRAL, 7);
+        prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 8);
+      }
 
     public LEDEventManager(LED led) {
         this.led = led;
         ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
-        ledAnimationFlashCoral = new LEDAnimationFlash(BCRColor.CORAL_MODE, led, LEDSegmentRange.StripAll);
-        ledAnimationFlashAlgae = new LEDAnimationFlash(BCRColor.ALGAE_MODE, led, LEDSegmentRange.StripAll);
-        ledAnimationRainbow = new LEDAnimationRainbow(led, LEDSegmentRange.StripAll);
+        ledAnimationStrobeCoral = new StrobeAnimation(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b, 0, 0.4, LEDSegmentRange.StripAll.count);
+        ledAnimationStrobeAlgae = new StrobeAnimation(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b, 0, 0.4, LEDSegmentRange.StripAll.count);
+        // ledAnimationFlashCoral = new LEDAnimationFlash(BCRColor.CORAL_MODE, led, LEDSegmentRange.StripAll);
+        // ledAnimationFlashAlgae = new LEDAnimationFlash(BCRColor.ALGAE_MODE, led, LEDSegmentRange.StripAll);
+        ledAnimationRainbow = new RainbowAnimation(0.5, 0.7, LEDSegmentRange.StripAll.count, false, LEDSegmentRange.StripAll.index);
+        
 
         sendEvent(StripEvents.NEUTRAL);
     }
@@ -82,7 +88,7 @@ public class LEDEventManager {
     DataLogUtil.writeMessage("LED SendEvent: switch statement");
     switch (event) {
       case CORAL_INTAKING:
-        ledAnimationFlashCoral.schedule();
+        led.animate(ledAnimationStrobeCoral);
         DataLogUtil.writeMessage("LED Coral Intaking");
         break;
       case CORAL_MODE:
@@ -90,7 +96,7 @@ public class LEDEventManager {
         DataLogUtil.writeMessage("LED Coral Mode");
         break;
       case ALGAE_INTAKING:
-        ledAnimationFlashAlgae.schedule();
+        led.animate(ledAnimationStrobeAlgae);
         DataLogUtil.writeMessage("LED Algae Intaking");
         break;
       case ALGAE_MODE:
@@ -98,7 +104,7 @@ public class LEDEventManager {
         DataLogUtil.writeMessage("LED Algae Mode");
         break;
       case AUTO_DRIVE_IN_PROGRESS:
-        ledAnimationRainbow.schedule();
+        led.animate(ledAnimationRainbow);
         DataLogUtil.writeMessage("LED Auto Drive in Progress");
         break;
       case AUTO_DRIVE_COMPLETE:
