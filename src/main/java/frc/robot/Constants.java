@@ -508,7 +508,7 @@ public final class Constants {
   }
 
   public static final class LEDConstants {
-    public static int ledPerGap = 2;
+    public static int ledStickyFaultDisplayCount = 3;
 
     public static final class EmptyPatterns {
       public static final Color[] noPatternStatic = {};
@@ -520,8 +520,8 @@ public final class Constants {
       StripRight(CANdle.count, 40),
       StripHorizontal(StripRight.index + StripRight.count, 40),
       StripLeft(StripHorizontal.index + StripHorizontal.count, 40),
-      // StripRightTop(StripRight.index, 3), // TODO verify that this is the top and not the bottom
-      // StripLeftTop(StripLeft.index + StripLeft.count - 3, 3), // TODO verify that this is the top and not the bottom
+      // StripRightTop(StripRight.index + StripRight.count - ledStickyFaultDisplayCount, ledStickyFaultDisplayCount), // TODO verify that this is the top and not the bottom
+      // StripLeftTop(StripLeft.index, ledStickyFaultDisplayCount), // TODO verify that this is the top and not the bottom
       StripAll(StripRight.index, StripRight.count + StripHorizontal.count + StripLeft.count),
       Full(0, CANdle.count + StripRight.count + StripHorizontal.count + StripLeft.count);
 
