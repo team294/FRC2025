@@ -20,13 +20,14 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
  * @param algaeGrabber AlgaeGrabber subsystem
- * @param log FileLog utility
  */
 public class AlgaeScorePrepSequence extends SequentialCommandGroup {
   public AlgaeScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
-      new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
-      runOnce(() -> algaeGrabber.setNetScoreMode(position != ElevatorWristPosition.ALGAE_PROCESSOR))
+      parallel(
+        new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
+        runOnce(() -> algaeGrabber.setNetScoreMode(position != ElevatorWristPosition.ALGAE_PROCESSOR))
+      )
     );
   }
 }

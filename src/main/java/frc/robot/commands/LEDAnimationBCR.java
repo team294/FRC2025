@@ -13,6 +13,10 @@ public class LEDAnimationBCR extends Command {
   private LED led;
   private LEDSegmentRange segment;
   private int cycleCounter, t;
+  private BCRColor[] arrayOne = { BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE };
+  private BCRColor[] arrayTwo = { BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE };
+  private BCRColor[] arrayThree = { BCRColor.ORANGE, BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE };
+  private BCRColor[] arrayFour = { BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE, BCRColor.BLUE };
   
   /**
    * Creates a blue and orange (BCR) snaking animation that runs until it is interrupted.
@@ -74,15 +78,15 @@ public class LEDAnimationBCR extends Command {
   private BCRColor[] getPattern(int cycle) {
     switch (cycle) {
       case 0:
-        return new BCRColor[]{ BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE };
+        return arrayOne;
       case 1:
-        return new BCRColor[]{ BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE };
+        return arrayTwo;
       case 2:
-        return new BCRColor[]{ BCRColor.ORANGE, BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE };
+        return arrayThree;
       case 3:
-        return new BCRColor[]{ BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE, BCRColor.BLUE };
+        return arrayFour;
       default:
-        return new BCRColor[]{ BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE };
+        return arrayOne;
     }
   }
 

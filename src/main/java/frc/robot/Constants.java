@@ -504,15 +504,6 @@ public final class Constants {
       this.r = r;
       this.g = g;
       this.b = b;
-      this.col = Color.kBlack;
-    }
-
-    public final Color col;
-    BCRColor (Color c) {
-      this.r = 0;
-      this.g = 0;
-      this.b = 0;
-      this.col = c;
     }
   }
 
