@@ -65,7 +65,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
         new DriveToReefWithOdometryForAlgae(driveTrain, field), // ends 0.2 meters away
         
         parallel(
-          new AlgaeIntakeSequence(position, elevator, wrist, algaeGrabber),
+          new AlgaeIntakeSequence(position, elevator, wrist, algaeGrabber, led),
           // We check if algae is present to end the driving because the algae intake sequence runs longer when intaking from the reef
           new DriveToPose(CoordType.kRelative, new Pose2d(Units.inchesToMeters(3), 0, Rotation2d.kZero), driveTrain).until(() -> algaeGrabber.isAlgaePresent())
         ),
