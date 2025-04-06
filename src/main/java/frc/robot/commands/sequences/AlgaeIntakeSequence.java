@@ -4,10 +4,12 @@
 
 package frc.robot.commands.sequences;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
@@ -20,15 +22,27 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
  * @param algaeGrabber AlgaeGrabber subsystem
- * @param log FileLog utility
+ * @param led LED subsystem
  */
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
-  public AlgaeIntakeSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
+  public AlgaeIntakeSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, LED led) {
     addCommands(
-      parallel(
-        new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
-        new AlgaeGrabberIntake(algaeGrabber)
+      
+      deadline(
+        parallel(
+          new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
+          new AlgaeGrabberIntake(algaeGrabber)
+        ),
+        new LEDAnimationFlash(LED.StripEvents.ALGAE_INTAKING, led, LEDSegmentRange.StripAll)
       ),
+      
+      // new LEDSendNeutral(led),
+      either(
+        runOnce(() -> led.sendEvent(LED.StripEvents.ALGAE_MODE)),
+        new LEDSendNeutral(led), 
+        () -> algaeGrabber.isAlgaePresent()
+      ),
+
       either(
         sequence(
           new AlgaeGrabberSetPercent(0.1, algaeGrabber),
@@ -38,6 +52,7 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
         none(),
         () -> position == ElevatorWristPosition.ALGAE_LOWER || position == ElevatorWristPosition.ALGAE_UPPER
       ),
+
       either(
         new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist),
         none(),

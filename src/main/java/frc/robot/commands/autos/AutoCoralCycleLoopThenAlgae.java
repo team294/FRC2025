@@ -36,13 +36,13 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
+   * @param led LED subsystem
    * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection alliance
    * @param field Field field
-   * @param log FileLog log
    */
   public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreFirstAlgae, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance, Field field) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
@@ -59,7 +59,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
         new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae", "Start", lastCoralLocation, lastCoralLocation.toString(), "onRightSide", lastCoralLocation.onRightSide, "yRelativeOffset", yRelativeOffset),
 
         // First, do the loop for the coral cycles (ends at reef, bumpers distanceFromReefToScore away from reef aka 6.25 inches)
-        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
+        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, alliance, field),
         
         // Drive to algae position (Luke said it works)
         new DriveToReefWithOdometryForAlgae(driveTrain, field), // ends 0.2 meters away
@@ -76,7 +76,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
             // Drive to barge, move elevator up, score, move elevator down.
             new DriveToBargeWithOdometry(driveTrain, field),
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
-            new AlgaeGrabberOuttake(algaeGrabber),
+            new AlgaeGrabberOuttake(algaeGrabber, led),
             new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
           
             // // Now, we go to grab a second algae, IJ, if the boolean to do so is true

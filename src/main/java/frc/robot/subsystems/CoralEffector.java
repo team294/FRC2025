@@ -120,6 +120,9 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     coralEffectorConfigurator.apply(coralEffectorConfig);
 
     stopCoralEffectorMotor();
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    updateLog(true);
   }
 
   /**
@@ -197,6 +200,14 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   public double getCoralEffectorAmps() {
     coralEffectorStatorCurrent.refresh();
     return coralEffectorStatorCurrent.getValueAsDouble();
+  }
+
+  /**
+   * Gets if the endEffector is in hold mode
+   * @return the hold mode of the endeffector: True = hold mode, False = not in hold mode
+   */
+  public boolean getHoldMode(){
+    return autoHoldMode;
   }
 
   // ********** Coral sensor methods

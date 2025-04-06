@@ -95,7 +95,6 @@ public class Wrist extends SubsystemBase implements Loggable {
   private double safeAngle; // Current wrist target on position control on the motor (if in position mode)
 
   public Wrist(String subsystemName) {
-    
     logRotationKey = DataLogUtil.allocateLogRotation();
     this.subsystemName = subsystemName;
 
@@ -263,6 +262,9 @@ public class Wrist extends SubsystemBase implements Loggable {
     }
 
     stopWrist();
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    updateWristLog(true);
   }
 
   /**
@@ -562,6 +564,7 @@ public class Wrist extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
+
     if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       SmartDashboard.putBoolean("Wrist CANcoder connected", isCANcoderConnected());
       SmartDashboard.putBoolean("Wrist calibrated", wristCalibrated);
