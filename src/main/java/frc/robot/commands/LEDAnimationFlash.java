@@ -8,25 +8,25 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.*;
 import frc.robot.Constants.LEDConstants.*;
 import frc.robot.subsystems.LED;
-import frc.robot.subsystems.LED.StripEvents;
+import frc.robot.utilities.LEDEventManager.StripEvents;
 import frc.robot.utilities.DataLogUtil;;
 
 public class LEDAnimationFlash extends Command {
   private LED led;
   private LEDSegmentRange segment;
-  private StripEvents event;
   private BCRColor color;
   private int runs;
   
   /**
    * Creates a new flash animation that runs until it is interrupted.
+   * @param color BCRColor color to flash
    * @param led LED subsystem
    * @param segment segment to run animation on
    */
-  public LEDAnimationFlash(StripEvents event, LED led, LEDSegmentRange segment) {
+  public LEDAnimationFlash(BCRColor color, LED led, LEDSegmentRange segment) {
     this.led = led;
     this.segment = segment;
-    this.event = event;
+    this.color = color;
 
     addRequirements(led);
   }
@@ -35,30 +35,15 @@ public class LEDAnimationFlash extends Command {
   public void initialize() {
     DataLogUtil.writeMessage("LEDAnimationFlash Init");
     runs = 0;
-    led.sendEvent(event);
-
-    switch (event) {
-      case SUBSYSTEM_UNCALIBRATED:
-        color = BCRColor.SUBSYSTEM_UNCALIBRATED;
-        break;
-      case ALGAE_INTAKING:
-        color = BCRColor.ALGAE_MODE;
-        break;
-      case CORAL_INTAKING:
-        color = BCRColor.CORAL_MODE;
-        break;
-      default:
-        break;
-    }
   }
 
   @Override
   public void execute() {
     DataLogUtil.writeMessage("LEDAnimationFlash Execute");
     if (runs % 16 == 0) {
-      led.setLEDs(color, segment);
+      led.updateLEDs(color, true);
     } else if (runs % 33 == 0) {
-      led.setLEDs(BCRColor.NEUTRAL, segment);
+      led.updateLEDs(BCRColor.NEUTRAL, true);
       runs = 0;
     }
 
@@ -69,7 +54,6 @@ public class LEDAnimationFlash extends Command {
   public void end(boolean interrupted) {
     DataLogUtil.writeMessage("LEDAnimationFlash: End");
     led.clearAnimation();
-    led.sendEvent(StripEvents.NEUTRAL);
   }
 
   @Override

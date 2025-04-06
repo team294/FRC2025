@@ -26,20 +26,19 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    * @param coralEffector EndEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
-   * @param led LED subsystem
+   * @param ledEventManager LEDEventManager utility
    * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection alliance
    * @param field Field field
-   * @param log FileLog log
    */
   public AutoCoralCycle(ReefLocation start, ReefLocation end, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
-          CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance, Field field) {
+          CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LEDEventManager ledEventManager, Joystick rightJoystick, AllianceSelection alliance, Field field) {
     addCommands(
       new DataLogMessage(false, "AutoCoralCycle: Start"),
       // Drives from start reef location to HP and intakes coral  
-      new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, led, alliance),
+      new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, ledEventManager, alliance),
       // Drives from HP to end reef location and scores coral
-      new AutoCoralDriveAndScoreSequence(true, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, alliance, field),
+      new AutoCoralDriveAndScoreSequence(true, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, ledEventManager, rightJoystick, alliance, field),
       new DataLogMessage(false, "AutoCoralCycle: End")
     );
   }

@@ -27,10 +27,11 @@ public class AutoCenterL1 extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
+   * @param ledEventManager LEDEventManager utility
    * @param allianceSelection AllianceSelection utility
    * @param log FileLog utility
    */
-  public AutoCenterL1(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, LED led, AllianceSelection allianceSelection) {
+  public AutoCenterL1(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, LEDEventManager ledEventManager, AllianceSelection allianceSelection) {
     addCommands(
       // Turn off vision odometry
       new VisionOdometryStateSet(false, driveTrain),
@@ -48,7 +49,7 @@ public class AutoCenterL1 extends SequentialCommandGroup {
       ),
 
       // Score coral on L1
-      new CoralEffectorOuttake(coralEffector, led),
+      new CoralEffectorOuttake(coralEffector, ledEventManager),
 
       // Wait for two seconds
       waitSeconds(2.0),

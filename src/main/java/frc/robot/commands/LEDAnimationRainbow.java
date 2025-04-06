@@ -9,7 +9,6 @@ import com.ctre.phoenix.led.RainbowAnimation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.subsystems.LED;
-import frc.robot.subsystems.LED.StripEvents;
 
 public class LEDAnimationRainbow extends Command {
   private LED led;
@@ -32,7 +31,6 @@ public class LEDAnimationRainbow extends Command {
   public void initialize() {
     RainbowAnimation anim = new RainbowAnimation(0.5, 0.7, segment.count, false, segment.index);
     led.animate(anim);
-    led.sendEvent(StripEvents.AUTO_DRIVE_IN_PROGRESS);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,7 +42,6 @@ public class LEDAnimationRainbow extends Command {
   @Override
   public void end(boolean interrupted) {
     led.clearAnimation();
-    led.sendEvent(StripEvents.NEUTRAL);
   }
 
   // Returns true when the command should end.

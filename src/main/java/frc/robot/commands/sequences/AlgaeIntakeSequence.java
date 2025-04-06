@@ -13,6 +13,7 @@ import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
+import frc.robot.utilities.LEDEventManager;
 
 
 /**
@@ -23,10 +24,10 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
  * @param algaeGrabber AlgaeGrabber subsystem
- * @param led LED subsystem
+ * @param ledEventManager LEDEventManager utility
  */
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
-  public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, LED led) {
+  public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, LEDEventManager ledEventManager) {
     addCommands(
       
       deadline(
@@ -34,13 +35,13 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
           new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
           new AlgaeGrabberIntake(algaeGrabber)
         ),
-        new LEDAnimationFlash(LED.StripEvents.ALGAE_INTAKING, led, LEDSegmentRange.StripAll)
+        runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.ALGAE_INTAKING))
       ),
       
       // new LEDSendNeutral(led),
       either(
-        runOnce(() -> led.sendEvent(LED.StripEvents.ALGAE_MODE)),
-        new LEDSendNeutral(led), 
+        runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.ALGAE_MODE)),
+        runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL)), 
         () -> algaeGrabber.isAlgaePresent()
       ),
 

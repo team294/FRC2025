@@ -56,12 +56,12 @@ public class AutoDriveToReef extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param coralEffector CoralEffector subsystem
    * @param hopper Hopper subsystem
-   * @param led LED subsystem
+   * @param ledEventManager LEDEventManager utility
    * @param alliance AllianceSelection alliance 
    * @param log FileLog log
    */
   public AutoDriveToReef(boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
-      CoralEffector coralEffector, Hopper hopper, LED led, AllianceSelection alliance) {
+      CoralEffector coralEffector, Hopper hopper, LEDEventManager ledEventManager, AllianceSelection alliance) {
 
     // Choose trajectory to drive (Start from either HP or barge)
     Trajectory<SwerveSample> trajectory = fromHP ? AutoSelection.getHPToReef(end) : AutoSelection.getBargeToReef(end);
@@ -72,7 +72,7 @@ public class AutoDriveToReef extends SequentialCommandGroup {
         // Drives the trajectory while intaking coral to make sure coral is being intaked. Timeout in case coral doesn't make it into hopper.
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance).withTimeout(trajectory.getTotalTime() - 0.5),
         sequence(
-          new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, led).withTimeout(3),
+          new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, ledEventManager).withTimeout(3),
           new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
         )
       ),
@@ -80,7 +80,7 @@ public class AutoDriveToReef extends SequentialCommandGroup {
       // If the endeffector is not in hold mode(Coral is not safely in intake) then do nothing, otherwise intake the coral until the piece is present
       either(
         none(), 
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, led), 
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, ledEventManager), 
         () -> (coralEffector.getHoldMode())),
       
       new DataLogMessage(false, "AutoDriveToReef: End, trajectory =", trajectory.name())

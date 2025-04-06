@@ -13,7 +13,7 @@ import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.LED.StripEvents;
+import frc.robot.utilities.LEDEventManager;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
@@ -28,20 +28,20 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param led LED subsystem
    */
-  public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, LED led) {
+  public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, LEDEventManager ledEventManager) {
     addCommands(
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
       parallel(
         new HopperSetPercent(HopperConstants.intakePercent, hopper),
         deadline(
-          new CoralEffectorIntakeEnhanced(coralEffector), 
-          new LEDAnimationFlash(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll)
+          new CoralEffectorIntakeEnhanced(coralEffector),
+          runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.CORAL_INTAKING))
         )
       ).handleInterrupt(hopper::stopHopperMotor),
       // new LEDSendNeutral(led),
       either(
-        runOnce(() -> led.sendEvent(LED.StripEvents.CORAL_MODE)),
-        new LEDSendNeutral(led), 
+        runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.CORAL_MODE)),
+        runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL)),
         () -> coralEffector.isCoralPresent()),
       new HopperStop(hopper)
     );

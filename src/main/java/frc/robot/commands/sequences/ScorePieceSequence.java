@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.utilities.LEDEventManager;
 
 public class ScorePieceSequence extends SequentialCommandGroup {
   /**
@@ -18,14 +19,14 @@ public class ScorePieceSequence extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param driveTrain DriveTrain subsystem
-   * @param led LED subsystem
+   * @param ledEventManager LEDEventManager utility
    */
-  public ScorePieceSequence(CoralEffector coralEffector, AlgaeGrabber algaeGrabber, DriveTrain driveTrain, LED led) {
+  public ScorePieceSequence(CoralEffector coralEffector, AlgaeGrabber algaeGrabber, DriveTrain driveTrain, LEDEventManager ledEventManager) {
     addCommands(
       either(
-        new AlgaeGrabberOuttake(algaeGrabber, led),
+        new AlgaeGrabberOuttake(algaeGrabber, ledEventManager),
         sequence( 
-          new CoralEffectorOuttake(coralEffector, led)
+          new CoralEffectorOuttake(coralEffector, ledEventManager)
           // new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
           //     0.5, 1.0, 
           //     TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
