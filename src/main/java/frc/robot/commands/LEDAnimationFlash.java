@@ -40,9 +40,9 @@ public class LEDAnimationFlash extends Command {
   @Override
   public void execute() {
     DataLogUtil.writeMessage("LEDAnimationFlash Execute");
-    if (runs % 16 == 0) {
+    if (runs % 8 == 0) {
       led.updateLEDs(color, true);
-    } else if (runs % 33 == 0) {
+    } else if (runs % 17 == 0) {
       led.updateLEDs(BCRColor.NEUTRAL, true);
       runs = 0;
     }
