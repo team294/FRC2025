@@ -359,7 +359,7 @@ public class Field {
      * @param currPos the robot's current position
      * @return ElevatorWristPosition determining whether the algae is on the upper or lower position
      */
-    public ElevatorWristPosition nearestAlgaeLocation(Pose2d currPos) {
+    public ElevatorWristPosition getNearestAlgaeElevatorPosition(Pose2d currPos) {
         double angleDeg = getNearestAlgaePickupPosition(currPos).getRotation().getDegrees();
         boolean isUpper = (angleDeg / 20.0) % 2 == 0;
         isUpper = (currPos.getX() < FieldConstants.length / 2.0) ? isUpper : !isUpper;
