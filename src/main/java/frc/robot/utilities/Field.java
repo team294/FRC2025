@@ -20,6 +20,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.FieldConstants.AlgaeLocation;
 import frc.robot.Constants.FieldConstants.ReefLocation;
 import frc.robot.Constants.RobotDimensions;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 
 public class Field {
     private final HashMap<ReefLocation, Pose2d> reefScoringPositions;
@@ -353,8 +354,15 @@ public class Field {
         return new Pose2d(bargeScoringPos.getX(), MathUtil.clamp(currPos.getY(), bargeScoringPos.getY() - (FieldConstants.bargeScorableWidth / 2.0), bargeScoringPos.getY() + (FieldConstants.bargeScorableWidth / 2.0)), bargeScoringPos.getRotation());
     }
 
-    public boolean isNearestAlgaeUpper(Pose2d currPos) {
+    /**
+     * Gets the location (upper or lower) of the nearest reef algae
+     * @param currPos the robot's current position
+     * @return ElevatorWristPosition determining whether the algae is on the upper or lower position
+     */
+    public ElevatorWristPosition nearestAlgaeLocation(Pose2d currPos) {
         double angleDeg = getNearestAlgaePickupPosition(currPos).getRotation().getDegrees();
-        return (currPos.getX() < FieldConstants.length / 2.0) ? ((angleDeg / 20.0) % 2 == 0) : !((angleDeg / 20.0) % 2 == 0);
+        boolean isUpper = (angleDeg / 20.0) % 2 == 0;
+        isUpper = (currPos.getX() < FieldConstants.length / 2.0) ? isUpper : !isUpper;
+        return isUpper ? ElevatorWristPosition.ALGAE_UPPER : ElevatorWristPosition.ALGAE_UPPER;
     }
 }
