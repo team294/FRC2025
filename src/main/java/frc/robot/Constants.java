@@ -326,7 +326,8 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;       // CALIBRATED
     public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
-    public static final double outtakePercent = 0.6;      // CALIBRATED
+    public static final double outtakePercent = 0.6;      // CALIBRATED - used for L1 and L4
+    public static final double fastOuttakePercent = 1.0;  // UNCALIBRATED - used for L2 and L3
 
     public static final double centerRotationsUndershoot = 1.625;  // CALIBRATED #3  Measure the typical undershoot with kP.  This value (in motor rotataions) will be added to the encoder reading when the coral sensor is triggered.
     public static final double centeringTolerance = 0.07;  // CALIBRATED #1  Position tolerance (in rotations) for holding coral [smaller than 1/2 of the position window where both sensors see the coral]

@@ -58,6 +58,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private final Wrist wrist;
   private boolean autoHoldMode = false;
   private double targetPosition = 0;
+  private boolean L1or4ScoreMode = true;
 
   private final DataLog log = DataLogManager.getLog();
   private final DoubleLogEntry dLogTemp = new DoubleLogEntry(log, "/CoralEffector/Temperature");
@@ -131,6 +132,22 @@ public class CoralEffector extends SubsystemBase implements Loggable {
    */
   public String getName() {
     return subsystemName;
+  }
+
+  /**
+   * Set coral score mode boolean
+   * @param mode true = L1 / L4, false = L2 / L3
+   */
+  public void setL1or4ScoreMode(boolean mode) {
+    L1or4ScoreMode = mode;
+  }
+
+  /**
+   * Returns whether or not scoring in L1 or L4
+   * @return true = L1 / L4, false = L2 / L4
+   */
+  public boolean getL1or4ScoreMode() {
+    return L1or4ScoreMode;
   }
 
   // ********** Motor movement methods

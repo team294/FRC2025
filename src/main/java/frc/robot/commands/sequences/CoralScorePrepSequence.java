@@ -21,14 +21,16 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
  * @param algaeGrabber AlgaeGrabber subsystem
+ * @param coralEffector CoralEffector subsystem
  */
 public class CoralScorePrepSequence extends SequentialCommandGroup {
-  public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
+  public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, CoralEffector coralEffector) {
     addCommands(
       either(
         sequence(
           new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist),
-          new WristSetAngle(position, wrist)
+          new WristSetAngle(position, wrist),
+          runOnce(() -> coralEffector.setL1or4ScoreMode(position == ElevatorWristPosition.CORAL_L1 || position == ElevatorWristPosition.CORAL_L4 ? true : false))
         ),
         none(),
         () -> !algaeGrabber.isAlgaePresent()
