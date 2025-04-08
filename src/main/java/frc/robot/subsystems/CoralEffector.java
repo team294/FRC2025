@@ -89,8 +89,8 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     coralEffectorConfig = new TalonFXConfiguration();
     coralEffectorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     coralEffectorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    coralEffectorConfig.Voltage.PeakForwardVoltage = 2.0;  // Voltage limit needed to cap feedback during PositionVoltage control to prevent oscillation
-    coralEffectorConfig.Voltage.PeakReverseVoltage = -2.0;  // Voltage limit needed to cap feedback during PositionVoltage control to prevent oscillation
+    coralEffectorConfig.Voltage.PeakForwardVoltage = 3.5;  // Voltage limit needed to cap feedback during PositionVoltage control to prevent oscillation, was 2.0
+    coralEffectorConfig.Voltage.PeakReverseVoltage = -3.5;  // Voltage limit needed to cap feedback during PositionVoltage control to prevent oscillation, was 2.0
     coralEffectorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;  // Time from 0 to full power, in seconds
     coralEffectorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3;  // Time from 0 to full power, in seconds
 
