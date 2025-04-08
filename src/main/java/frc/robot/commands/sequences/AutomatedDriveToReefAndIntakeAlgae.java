@@ -1,0 +1,79 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands.sequences;
+
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.Constants.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
+import frc.robot.utilities.*;
+import frc.robot.utilities.ElevatorWristRegions.RegionType;
+
+public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
+  /**
+   * Drives to nearest reef position and picks up coral (whether coral is higher vs. lower determined automatically).
+   * The robot will drive fully up against the reef, and then back up after picking up the algae.
+   * @param driveTrain DriveTrain subsystem
+   * @param elevator Elevator subsystem
+   * @param wrist Wrist subsystem
+   * @param algaeGrabber AlgaeGrabber subsystem
+   * @param led LED subsystem
+   * @param field Field field
+   */
+  public AutomatedDriveToReefAndIntakeAlgae(DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
+      AlgaeGrabber algaeGrabber, LED led, Field field) {
+    addCommands(
+      new DataLogMessage(false, "AutomatedDriveToReefAndIntakeAlgae: Start"),
+      
+      // Move elevator 0.6 seconds after driving (only in auto)
+      either(
+        parallel(
+          // Drive to nearest reef position
+          new DriveToReefWithOdometryForAlgae(driveTrain, field),
+          sequence(
+            deadline(
+              waitSeconds(0.4),
+              new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
+            ),
+            // Move elevator/wrist to correct position based on given level
+            new AlgaeScorePrepSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), elevator, wrist, algaeGrabber)
+          )
+        ),
+        sequence(
+          new DriveToReefWithOdometryForAlgae(driveTrain, field),
+          new CoralScorePrepSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), elevator, wrist, algaeGrabber)
+        ),
+        () -> DriverStation.isAutonomous()
+      ),
+
+      // Drive forward to get to the reef
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.distanceFromReefToPickupAlgae, 0, new Rotation2d(0)),
+            0.5, 1.0, 
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+            true, true, driveTrain),
+
+      // Intake algae
+      new AlgaeIntakeSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), driveTrain, elevator, wrist, algaeGrabber, led),
+
+
+      // Back up
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToPickupAlgae, 0, Rotation2d.kZero),
+            0.5, 1.0, 
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+            true, true, driveTrain),
+  
+      //.raceWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll)),
+
+      // runOnce(() -> led.sendEvent(StripEvents.AUTO_DRIVE_COMPLETE)),
+
+      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
+    );
+  }
+}
