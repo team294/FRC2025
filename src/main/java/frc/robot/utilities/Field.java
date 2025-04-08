@@ -266,6 +266,26 @@ public class Field {
     }
 
     /**
+     * Gets the Pose2d of the given algae pickup position. This position is flipped depending on the alliance.
+     * @param position the pair of letters value associated with one of the 6 algae positions (AB-KL starting at the upper 9 o'clock position and moving CCW)
+     * @return Pose2d of one of the algae pickup positions (against the base).
+     */
+    public Pose2d getAlgaePickupPosition(AlgaeLocation location) {
+        return allianceSelection.getAlliance() == Alliance.Blue ? reefAlgaePickupPositions.get(location) : flipPosition(reefAlgaePickupPositions.get(location));
+    }
+
+    /**
+     * Gets the Pose2d of the given algae pickup position with an offset. This position (and offset) is flipped depending on the alliance.
+     * @param position the pair of letters value associated with one of the 6 algae positions (AB-KL starting at the upper 9 o'clock position and moving CCW)
+     * @param offset the offset by which the returned pose2d is tranformed
+     * @return Pose2d of one of the algae pickup positions (against the base), with offset.
+     */
+    public Pose2d getAlgaePickupPositionWithOffset(AlgaeLocation location, Transform2d offset) {
+        Pose2d algaePickupPositionWithOffset = reefAlgaePickupPositions.get(location).transformBy(offset);
+        return allianceSelection.getAlliance() == Alliance.Blue ? algaePickupPositionWithOffset : flipPosition(algaePickupPositionWithOffset);
+    }
+
+    /**
      * Finds and returns the nearest Algae pickup position (against the base)
      * @param currPos the robot's current positions
      * @return The Pose2d of the nearest pickup position
