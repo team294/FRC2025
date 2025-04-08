@@ -18,7 +18,68 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
   /**
-   * Drives to nearest reef position and picks up coral (whether coral is higher vs. lower determined automatically).
+   * Drives to nearest reef position and picks up algae (Algae level is manually input).
+   * The robot will drive fully up against the reef, and then back up after picking up the algae.
+   * @param algaeLevel the height of the algae, upper or lower
+   * @param driveTrain DriveTrain subsystem
+   * @param elevator Elevator subsystem
+   * @param wrist Wrist subsystem
+   * @param algaeGrabber AlgaeGrabber subsystem
+   * @param led LED subsystem
+   * @param field Field field
+   */
+  public AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition algaeLevel, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
+      AlgaeGrabber algaeGrabber, LED led, Field field) {
+    addCommands(
+      new DataLogMessage(false, "AutomatedDriveToReefAndIntakeAlgae: Start"),
+      
+      // Move elevator 0.6 seconds after driving (only in auto)
+      either(
+        parallel(
+          // Drive to nearest reef position
+          new DriveToReefWithOdometryForAlgae(driveTrain, field),
+          sequence(
+            deadline(
+              waitSeconds(0.4),
+              new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
+            ),
+            // Move elevator/wrist to correct position based on given level
+            new AlgaeIntakeSequence(algaeLevel, driveTrain, elevator, wrist, algaeGrabber, led)
+          )
+        ),
+        sequence(
+          new DriveToReefWithOdometryForAlgae(driveTrain, field),
+          new AlgaeIntakeSequence(algaeLevel, driveTrain, elevator, wrist, algaeGrabber, led)
+        ),
+        () -> DriverStation.isAutonomous()
+      ),
+
+      // Drive forward to get to the reef
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.distanceFromReefToPickupAlgae, 0, new Rotation2d(0)),
+            0.5, 1.0, 
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+            true, true, driveTrain),
+
+      // Intake algae
+      new AlgaeIntakeSequence(algaeLevel, driveTrain, elevator, wrist, algaeGrabber, led),
+
+
+      // Back up
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToPickupAlgae, 0, Rotation2d.kZero),
+            0.5, 1.0, 
+            TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+            true, true, driveTrain),
+  
+      //.raceWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll)),
+
+      // runOnce(() -> led.sendEvent(StripEvents.AUTO_DRIVE_COMPLETE)),
+
+      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
+    );
+  }
+
+  /**
+   * Drives to nearest reef position and picks up algae (whether algae is higher vs. lower determined automatically).
    * The robot will drive fully up against the reef, and then back up after picking up the algae.
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
@@ -43,12 +104,12 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
               new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
             ),
             // Move elevator/wrist to correct position based on given level
-            new AlgaeScorePrepSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), elevator, wrist, algaeGrabber)
+            new AlgaeIntakeSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), driveTrain, elevator, wrist, algaeGrabber, led)
           )
         ),
         sequence(
           new DriveToReefWithOdometryForAlgae(driveTrain, field),
-          new CoralScorePrepSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), elevator, wrist, algaeGrabber)
+          new AlgaeIntakeSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), driveTrain, elevator, wrist, algaeGrabber, led)
         ),
         () -> DriverStation.isAutonomous()
       ),
