@@ -29,7 +29,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param reefLocations list of ReefLocation to visit, in order
    * @param reefLevels list of ReefLevel to score on, in order
    * @param scoreFirstAlgae true = score the algae picked up, false = only pick up algae
-   * //@param grabSecondAlgae true = drive to IJ algae and pick it up (made for only center auto), false = end after scoring one. Can only be true if scoreFirstAlgae is true
+   * @param grabSecondAlgae true = drive to IJ algae and pick it up (made for only center auto), false = end after scoring one. Can only be true if scoreFirstAlgae is true
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
@@ -41,7 +41,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
-  public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreFirstAlgae, DriveTrain driveTrain, Elevator elevator, 
+  public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreFirstAlgae, boolean grabSecondAlgae, DriveTrain driveTrain, Elevator elevator, 
       Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance, Field field) {
     
     // No reef locations provided, so do nothing
