@@ -58,7 +58,6 @@ public class AutoDriveToReef extends SequentialCommandGroup {
    * @param hopper Hopper subsystem
    * @param led LED subsystem
    * @param alliance AllianceSelection alliance 
-   * @param log FileLog log
    */
   public AutoDriveToReef(boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
       CoralEffector coralEffector, Hopper hopper, LED led, AllianceSelection alliance) {
@@ -77,10 +76,13 @@ public class AutoDriveToReef extends SequentialCommandGroup {
         )
       ),
 
-      // If the endeffector is not in hold mode(Coral is not safely in intake) then do nothing, otherwise intake the coral until the piece is present
+      // If the endeffector is in hold mode (Coral is safely in intake) then do nothing, otherwise stop driving and intake the coral until the piece is present
       either(
         none(), 
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, led), 
+        parallel(
+          new DriveStop(driveTrain),
+          new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, led)
+        ),
         () -> (coralEffector.getHoldMode())),
       
       new DataLogMessage(false, "AutoDriveToReef: End, trajectory =", trajectory.name())
