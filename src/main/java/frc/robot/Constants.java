@@ -205,6 +205,8 @@ public final class Constants {
     // along with is how far the robot should be located to score on L4.
     public static final double distanceFromReefToScore = Units.inchesToMeters(6.25);  // was 0.25 meters, changed to be scoring location for L4
 
+    public static final double distanceFromReefToElevate = 0.5; // TODO: Calibrate or otherwise determine proper value
+
     // Back offset for robot to pick up algae, in meters
     public static final double ReefAlgaePickupPositionOffset = 0.2;
   }

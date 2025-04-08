@@ -13,9 +13,11 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLevel;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
@@ -51,6 +53,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
       AlgaeGrabber algaeGrabber, LED led, Joystick rightJoystick, Field field) {
+
     addCommands(
       new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: Start"),
       
@@ -69,7 +72,14 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
           )
         ),
         sequence(
-          new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+          deadline(
+            new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+            sequence(
+              new WaitUntilCommand( () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
+                      new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0))).getTranslation().getDistance(driveTrain.getPose().getTranslation()) <= DriveConstants.distanceFromReefToElevate)),
+              new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
+            )
+          ),
           new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
         ),
         () -> DriverStation.isAutonomous()
