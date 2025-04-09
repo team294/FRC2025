@@ -6,14 +6,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.*;
-import frc.robot.Constants.LEDConstants.*;
 import frc.robot.subsystems.LED;
-import frc.robot.utilities.LEDEventManager.StripEvents;
 import frc.robot.utilities.DataLogUtil;;
 
 public class LEDAnimationFlash extends Command {
   private LED led;
-  private LEDSegmentRange segment;
   private BCRColor color;
   private int runs;
   
@@ -21,11 +18,9 @@ public class LEDAnimationFlash extends Command {
    * Creates a new flash animation that runs until it is interrupted.
    * @param color BCRColor color to flash
    * @param led LED subsystem
-   * @param segment segment to run animation on
    */
-  public LEDAnimationFlash(BCRColor color, LED led, LEDSegmentRange segment) {
+  public LEDAnimationFlash(BCRColor color, LED led) {
     this.led = led;
-    this.segment = segment;
     this.color = color;
 
     addRequirements(led);

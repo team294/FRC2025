@@ -13,7 +13,6 @@ import frc.robot.utilities.LEDEventManager;
 
 public class AlgaeGrabberOuttake extends Command {
   private final AlgaeGrabber algaeGrabber;
-  private final LEDEventManager ledEventManager;
   
   private final Timer timer;
   private final double seconds;
@@ -23,9 +22,8 @@ public class AlgaeGrabberOuttake extends Command {
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */
-  public AlgaeGrabberOuttake(AlgaeGrabber algaeGrabber, LEDEventManager ledEventManager) {
+  public AlgaeGrabberOuttake(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
-    this.ledEventManager = ledEventManager;
     
     this.timer = new Timer();
     this.seconds = 2.0;
@@ -56,7 +54,7 @@ public class AlgaeGrabberOuttake extends Command {
   @Override
   public void end(boolean interrupted) {
     algaeGrabber.stopAlgaeGrabberMotor();
-    ledEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL);
+    LEDEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL);
     timer.stop();
     timer.reset();
 

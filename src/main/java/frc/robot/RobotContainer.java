@@ -62,10 +62,9 @@ public class RobotContainer {
 
   // Define other utilities
   private final TrajectoryCache trajectoryCache = new TrajectoryCache();
-  private final LEDEventManager ledEventManager = new LEDEventManager(led);
   // private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field);
   private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, 
-      field, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, ledEventManager);
+      field, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
 
   // private final LEDAnimationBCR ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
   // private final LEDSendNeutral ledSendNeutral = new LEDSendNeutral(led);
@@ -76,6 +75,9 @@ public class RobotContainer {
   public RobotContainer() {
     DataLogUtil.writeLogEcho(true, "RobotContainer", "Constructor", "Version", Constants.bcrRobotCodeVersion);
     SignalLogger.enableAutoLogging(false);
+    
+    // Start LEDEventManager
+    LEDEventManager.start(led);
 
     SmartDashboard.putBoolean("RobotPrefs Initialized", RobotPreferences.prefsExist());
     if(!RobotPreferences.prefsExist()) {
@@ -130,7 +132,7 @@ public class RobotContainer {
     SmartDashboard.putData("CoralEffector Reverse", new CoralEffectorSetPercent(-0.05, coralEffector));
     SmartDashboard.putData("CoralEffector STOP", new CoralEffectorStop(coralEffector));
     SmartDashboard.putData("CoralEffector Intake", new CoralEffectorIntake(coralEffector));
-    SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector, ledEventManager));
+    SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector));
     SmartDashboard.putData("CoralEffector Intake Enhanced", new CoralEffectorIntakeEnhanced(coralEffector));
     SmartDashboard.putData("CoralEffector Set Percent", new CoralEffectorSetPercent(coralEffector));
     SmartDashboard.putData("CoralEffector Set Position", new CoralEffectorSetPosition(false, coralEffector));
@@ -140,7 +142,7 @@ public class RobotContainer {
     SmartDashboard.putData("AlgaeGrabber Out", new AlgaeGrabberSetPercent(-0.1, algaeGrabber));
     SmartDashboard.putData("AlgaeGrabber STOP", new AlgaeGrabberStop(algaeGrabber));
     SmartDashboard.putData("AlgaeGrabber Intake", new AlgaeGrabberIntake(algaeGrabber));
-    SmartDashboard.putData("AlgaeGrabber Outtake", new AlgaeGrabberOuttake(algaeGrabber, ledEventManager));
+    SmartDashboard.putData("AlgaeGrabber Outtake", new AlgaeGrabberOuttake(algaeGrabber));
 
     // Wrist
     SmartDashboard.putData("Wrist STOP", new WristStop(wrist));
@@ -167,9 +169,9 @@ public class RobotContainer {
     
     // Autos
     SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand());
-    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, ledEventManager, rightJoystick, allianceSelection, field));
-    SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, ledEventManager, allianceSelection));
-    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, ledEventManager, rightJoystick, allianceSelection, field));
+    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field));
+    SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, allianceSelection));
+    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field));
 
     // Copanel buttons
 
@@ -178,13 +180,13 @@ public class RobotContainer {
     SmartDashboard.putData("Vision Disable Odometry Updates", new VisionOdometryStateSet(false, driveTrain));
 
     // Sequences
-    SmartDashboard.putData("Algae Intake Sequence Ground", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber, ledEventManager));
-    SmartDashboard.putData("Algae Intake Sequence Lower", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, ledEventManager));
-    SmartDashboard.putData("Algae Intake Sequence Upper", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, ledEventManager));
+    SmartDashboard.putData("Algae Intake Sequence Ground", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData("Algae Intake Sequence Lower", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData("Algae Intake Sequence Upper", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber));
     SmartDashboard.putData("Algae Score Prep Sequence Processor", new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber));
     SmartDashboard.putData("Algae Score Prep Sequence Net", new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET, elevator, wrist, algaeGrabber));
 
-    SmartDashboard.putData("Coral Intake Sequence", new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, ledEventManager));
+    SmartDashboard.putData("Coral Intake Sequence", new CoralIntakeSequence(elevator, wrist, hopper, coralEffector));
     SmartDashboard.putData("Coral Score Prep Sequence L1", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, coralEffector));
     SmartDashboard.putData("Coral Score Prep Sequence L2", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber, coralEffector));
     SmartDashboard.putData("Coral Score Prep Sequence L3", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, coralEffector));
@@ -239,23 +241,23 @@ public class RobotContainer {
     // ex: xbA.onTrue(new command(param1, param2));
 
     // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
-    xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, ledEventManager));
+    xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector));
 
     // xbX, A, B, and Y will automatically drive to the reef and score coral, see right[1] in configureJoystickButtons()
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
     xbLT.onTrue(either(
-        new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber, ledEventManager),
+        new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, driveTrain, elevator, wrist, algaeGrabber),
         none(),
         () -> !coralEffector.isCoralPresent()
       )
     );
-    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, ledEventManager));
-    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, ledEventManager));
+    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber));
+    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber));
 
     // Prep and intake algae from Lollipop with Back
     xbBack.onTrue(either(
-      new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOLLIPOP, driveTrain, elevator, wrist, algaeGrabber, ledEventManager),
+      new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOLLIPOP, driveTrain, elevator, wrist, algaeGrabber),
       none(),
       () -> !coralEffector.isCoralPresent()
     ));
@@ -297,13 +299,13 @@ public class RobotContainer {
 
     // ex: left[1].onTrue(new command);
 
-    left[1].onTrue(new AlgaeGrabberOuttake(algaeGrabber, ledEventManager));
-    left[2].onTrue(new CoralEffectorOuttake(coralEffector, ledEventManager));
+    left[1].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
+    left[2].onTrue(new CoralEffectorOuttake(coralEffector));
 
-    right[1].and(xboxController.x()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, ledEventManager, rightJoystick, field));
-    right[1].and(xboxController.a()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, algaeGrabber, ledEventManager, rightJoystick, field));
-    right[1].and(xboxController.b()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, algaeGrabber, ledEventManager, rightJoystick, field));
-    right[1].and(xboxController.y()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, algaeGrabber, ledEventManager, rightJoystick, field));
+    right[1].and(xboxController.x()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
+    right[1].and(xboxController.a()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
+    right[1].and(xboxController.b()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
+    right[1].and(xboxController.y()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
 
     right[2].whileTrue(new DriveToBargeWithOdometry(driveTrain, field));
   }
@@ -364,8 +366,8 @@ public class RobotContainer {
       () -> allianceSelection.getAlliance() == Alliance.Red));
 
     // Release Game Piece Commands
-    coP[15].onTrue(new CoralEffectorOuttake(coralEffector, ledEventManager));
-    coP[16].onTrue(new AlgaeGrabberOuttake(algaeGrabber, ledEventManager));
+    coP[15].onTrue(new CoralEffectorOuttake(coralEffector));
+    coP[16].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
 
     // Manual Calibration Commands
     coP[17].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator));
@@ -413,7 +415,7 @@ public class RobotContainer {
     wrist.stopWrist();
     coralEffector.stopCoralEffectorMotor();
 
-    ledEventManager.sendEvent(LEDEventManager.StripEvents.ROBOT_DISABLED);
+    LEDEventManager.sendEvent(LEDEventManager.StripEvents.ROBOT_DISABLED);
 
     matchTimer.stop();
     matchTimer.reset();
@@ -486,7 +488,7 @@ public class RobotContainer {
       wrist.stopWrist();
     }
 
-    ledEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL);
+    LEDEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL);
     
     matchTimer.reset();
     matchTimer.start();

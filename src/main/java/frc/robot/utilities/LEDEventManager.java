@@ -14,59 +14,49 @@ import frc.robot.subsystems.LED;
 
 
 public class LEDEventManager {
-    private final LED led;
+  private static LED led;
+  private static LEDAnimationBCR ledAnimationBCR;
 
-    private StripEvents previousEventStrip;
+  private static StripEvents previousEventStrip;
 
-    private final LEDAnimationBCR ledAnimationBCR;
-    private final RainbowAnimation ledAnimationRainbow;
-    private final StrobeAnimation ledAnimationStrobeCoral;
-    private final StrobeAnimation ledAnimationStrobeAlgae;
+  private static final RainbowAnimation ledAnimationRainbow = new RainbowAnimation(0.5, 0.7, LEDSegmentRange.StripAll.count, false, LEDSegmentRange.StripAll.index);
+  private static final StrobeAnimation ledAnimationStrobeAlgae = new StrobeAnimation(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b, 0, 0.4, LEDSegmentRange.StripAll.count);
+  private static final StrobeAnimation ledAnimationStrobeCoral = new StrobeAnimation(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b, 0, 0.4, LEDSegmentRange.StripAll.count);
+  // private final LEDAnimationFlash ledAnimationFlashAlgae;
+  // private final LEDAnimationFlash ledAnimationFlashCoral;
 
-    public enum StripEvents {
-      // STICKY_FAULT_ACTIVE,
-      MATCH_COUNTDOWN,
-      CORAL_MODE,
-      CORAL_INTAKING,
-      ALGAE_MODE,
-      ALGAE_INTAKING,
-      AUTO_DRIVE_IN_PROGRESS,
-      AUTO_DRIVE_COMPLETE,
-      NEUTRAL,
-      ROBOT_DISABLED
-    }
+  public enum StripEvents {
+    // STICKY_FAULT_ACTIVE,
+    MATCH_COUNTDOWN,
+    CORAL_MODE,
+    CORAL_INTAKING,
+    ALGAE_MODE,
+    ALGAE_INTAKING,
+    AUTO_DRIVE_IN_PROGRESS,
+    AUTO_DRIVE_COMPLETE,
+    NEUTRAL,
+    ROBOT_DISABLED
+  }
 
-    private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
-      static {
-        // prioritiesStripEvents.put(StripEvents.STICKY_FAULT_ACTIVE, 0);
-        prioritiesStripEvents.put(StripEvents.CORAL_INTAKING, 1);
-        prioritiesStripEvents.put(StripEvents.CORAL_MODE, 2);
-        prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 3);
-        prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 4);
-        prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 5);
-        prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 6);
-        prioritiesStripEvents.put(StripEvents.NEUTRAL, 7);
-        prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 8);
-      }
-
-    public LEDEventManager(LED led) {
-        this.led = led;
-        ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
-        ledAnimationStrobeCoral = new StrobeAnimation(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b, 0, 0.4, LEDSegmentRange.StripAll.count);
-        ledAnimationStrobeAlgae = new StrobeAnimation(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b, 0, 0.4, LEDSegmentRange.StripAll.count);
-        // ledAnimationFlashCoral = new LEDAnimationFlash(BCRColor.CORAL_MODE, led, LEDSegmentRange.StripAll);
-        // ledAnimationFlashAlgae = new LEDAnimationFlash(BCRColor.ALGAE_MODE, led, LEDSegmentRange.StripAll);
-        ledAnimationRainbow = new RainbowAnimation(0.5, 0.7, LEDSegmentRange.StripAll.count, false, LEDSegmentRange.StripAll.index);
-        
-
-        sendEvent(StripEvents.NEUTRAL);
-    }
+  private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
+  
+  static {
+    // prioritiesStripEvents.put(StripEvents.STICKY_FAULT_ACTIVE, 0);
+    prioritiesStripEvents.put(StripEvents.CORAL_INTAKING, 1);
+    prioritiesStripEvents.put(StripEvents.CORAL_MODE, 2);
+    prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 3);
+    prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 4);
+    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 5);
+    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 6);
+    prioritiesStripEvents.put(StripEvents.NEUTRAL, 7);
+    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 8);
+  }
 
   /**
    * Sends an event to the LED Strips and update the LEDs if necessary.
    * @param event StripEvent event happening
    */
-  public void sendEvent(StripEvents event) {
+  public static void sendEvent(StripEvents event) {
     // Always update state if previous event was neutral or disabled.
     // Do not update if last event was not neutral or disabled and the new event priority is less than the previous.
     // If previous event was algae mode and new event is coral intaking or coral mode, override priorities and update state.
@@ -115,9 +105,9 @@ public class LEDEventManager {
         ledAnimationBCR.schedule();
         DataLogUtil.writeMessage("LED Robot Disabled");
         break;
-    //   case STICKY_FAULT_ACTIVE: // TODO top few LEDs on vertical strips turn red, maybe make a boolean so they cant get overriden until its cleared or read the boolean in LED (lastStickyFaultPresentReading)
-    //     DataLogUtil.writeMessage("LED Sticky Fault Active");
-    //     break;
+      // case STICKY_FAULT_ACTIVE: // TODO top few LEDs on vertical strips turn red, maybe make a boolean so they cant get overriden until its cleared or read the boolean in LED (lastStickyFaultPresentReading)
+      //   DataLogUtil.writeMessage("LED Sticky Fault Active");
+      //   break;
       default:
         led.clearAnimation();
         led.updateLEDs(BCRColor.NEUTRAL, true);
@@ -130,11 +120,20 @@ public class LEDEventManager {
   }
 
   /**
+   * This method must be called once in RobotContainer
+   * @param ledInstance LED subsystem
+   */
+  public static void start(LED ledInstance) {
+    led = ledInstance;
+    ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
+  }
+
+  /**
    * Gets the priority level for an event.
    * @param event StripEvents event
    * @return priority level integer (higher value = higher priority), default is -1
    */
-  private int getPriority(StripEvents event) {
+  private static int getPriority(StripEvents event) {
     return event != null ? prioritiesStripEvents.getOrDefault(event, -1) : -1;
   }
 }

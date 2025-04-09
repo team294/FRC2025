@@ -43,12 +43,11 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
-   * @param ledEventManager LEDEventManager utility
    * @param rightJoysitck Right joystick
    * @param field Field field
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
-      AlgaeGrabber algaeGrabber, LEDEventManager ledEventManager, Joystick rightJoystick, Field field) {
+      AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field) {
     addCommands(
       parallel(
         sequence(
@@ -86,7 +85,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
           ),
 
           // Score piece
-          new CoralEffectorOuttake(coralEffector, ledEventManager),
+          new CoralEffectorOuttake(coralEffector),
 
           // If scoring on L1, wait 0.5 seconds before backing up
           either(waitSeconds(0.5), none(), () -> level == ReefLevel.L1),
@@ -101,10 +100,10 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
             () -> level == ReefLevel.L1 
           )
         ),
-        runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.AUTO_DRIVE_IN_PROGRESS))
+        runOnce(() -> LEDEventManager.sendEvent(LEDEventManager.StripEvents.AUTO_DRIVE_IN_PROGRESS))
       ),
 
-      runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.AUTO_DRIVE_COMPLETE)),
+      runOnce(() -> LEDEventManager.sendEvent(LEDEventManager.StripEvents.AUTO_DRIVE_COMPLETE)),
 
       new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
     );

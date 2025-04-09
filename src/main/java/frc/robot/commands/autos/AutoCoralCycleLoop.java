@@ -31,13 +31,12 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
-   * @param ledEventManager LEDEventManager utility
    * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection utility
    * @param field Field utility
    */
   public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LEDEventManager ledEventManager, Joystick rightJoystick, AllianceSelection alliance, Field field) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
 
     addCommands(new DataLogMessage(false, "AutoCoralCycleLoop: Start"));
 
@@ -54,7 +53,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
       // Score the pre-loaded coral with the first reef location
       if (reefLocations.size() >= 1 && reefLevels.size() >= 1) {
         addCommands(
-          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, ledEventManager, rightJoystick, alliance, field)
+          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
         );
       }
 
@@ -69,7 +68,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
           ReefLocation end = reefLocations.get(i + 1);
 
           addCommands(
-            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, ledEventManager, rightJoystick, alliance, field)
+            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
           );
         }
       }
@@ -77,7 +76,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
       // Drive back to and end at HP after the last reef location if we are to end at HP. Otherwise, we are ending at reef 
       if (endAtHP && reefLocations.size() > 0) {
         addCommands(
-          new AutoCoralDriveAndIntakeSequence(reefLocations.get(reefLocations.size() - 1), driveTrain, elevator, wrist, coralEffector, hopper, ledEventManager, alliance)
+          new AutoCoralDriveAndIntakeSequence(reefLocations.get(reefLocations.size() - 1), driveTrain, elevator, wrist, coralEffector, hopper, alliance)
         );
       }
 

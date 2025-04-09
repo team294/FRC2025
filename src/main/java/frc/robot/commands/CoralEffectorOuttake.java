@@ -13,7 +13,6 @@ import frc.robot.utilities.LEDEventManager;
 
 public class CoralEffectorOuttake extends Command {
   private final CoralEffector coralEffector;
-  private final LEDEventManager ledEventManager;
   
   private final Timer timer;
   private final double seconds;
@@ -22,9 +21,8 @@ public class CoralEffectorOuttake extends Command {
    * Outtake coral from the coralEffector by running the motor until the coral is out of the mechanism.
    * @param coralEffector CoralEffector subsystem
    */
-  public CoralEffectorOuttake(CoralEffector coralEffector, LEDEventManager ledEventManager) {
+  public CoralEffectorOuttake(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    this.ledEventManager = ledEventManager;
     
     this.timer = new Timer();
     this.seconds = 0.02;
@@ -51,7 +49,7 @@ public class CoralEffectorOuttake extends Command {
   @Override
   public void end(boolean interrupted) {
     coralEffector.stopCoralEffectorMotor();
-    ledEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL);
+    LEDEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL);
     timer.stop();
     timer.reset();
 

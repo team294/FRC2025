@@ -52,7 +52,6 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
     this.logRotationKey = DataLogUtil.allocateLogRotation();
 
     this.candle = new CANdle(CANPort, "");
-    // this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
 
     candle.configBrightnessScalar(0.25);
 

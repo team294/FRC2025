@@ -49,11 +49,10 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param hopper Hopper subsystem
    * @param coralEffector EndEffector subsystem
-   * @param ledEventManager LEDEventManager subsystem
    * @param alliance AllianceSelection alliance
    */
   public AutoDriveToHPAndPrep(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector,
-          LEDEventManager ledEventManager, AllianceSelection alliance) {
+         AllianceSelection alliance) {
 
     addCommands(
       new DataLogMessage(false, "AutoDriveToHPAndPrep: Start, start position =", start.toString()),
@@ -62,7 +61,7 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
         () -> elevator.getElevatorPosition() < ElevatorWristPosition.CORAL_L3.elevatorPosition),
       deadline(
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance),
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector, ledEventManager)
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector)
       ),
       new DataLogMessage(false, "AutoDriveToHPAndPrep: Start")
     );
