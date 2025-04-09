@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
-import frc.robot.subsystems.LED;
 import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.LEDEventManager;
 

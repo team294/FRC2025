@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
-import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.LEDEventManager;
@@ -41,7 +40,6 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
           runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.CORAL_INTAKING))
         )
       ).handleInterrupt(hopper::stopHopperMotor),
-      // new LEDSendNeutral(led),
       either(
         runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.CORAL_MODE)),
         runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL)),
