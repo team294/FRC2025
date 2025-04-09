@@ -13,7 +13,7 @@ import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.subsystems.LED;
 
 
-public class LEDEventManager {
+public class LEDEventUtil {
   private static LED led;
   private static LEDAnimationBCR ledAnimationBCR;
 
