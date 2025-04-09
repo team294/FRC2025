@@ -50,10 +50,9 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
       AlgaeGrabber algaeGrabber, LEDEventManager ledEventManager, Joystick rightJoystick, Field field) {
     addCommands(
-      deadline(
+      parallel(
         sequence(
           new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: Start"),
-      
           // Move elevator 0.6 seconds after driving (only in auto)
           either(
             parallel(
@@ -62,15 +61,16 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
               sequence(
                 deadline(
                   waitSeconds(0.4),
+                  waitUntil(() -> coralEffector.getHoldMode()),
                   new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
                 ),
                 // Move elevator/wrist to correct position based on given level
-                new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
+                new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
               )
             ),
             sequence(
               new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
-              new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
+              new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
             ),
             () -> DriverStation.isAutonomous()
           ),
@@ -82,7 +82,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
                 TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
                 true, true, driveTrain),
             none(),
-            () -> level != ReefLevel.L4
+            () -> level == ReefLevel.L1
           ),
 
           // Score piece
@@ -98,7 +98,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
                 TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
                 true, true, driveTrain),
             none(),
-            () -> level != ReefLevel.L4   
+            () -> level == ReefLevel.L1 
           )
         ),
         runOnce(() -> ledEventManager.sendEvent(LEDEventManager.StripEvents.AUTO_DRIVE_IN_PROGRESS))

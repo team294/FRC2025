@@ -45,7 +45,7 @@ public class AutoCenterL1 extends SequentialCommandGroup {
         new DriveToPose(CoordType.kRelative, new Pose2d(Units.inchesToMeters(91 - RobotDimensions.robotLength / 2.0), 0, new Rotation2d(0)), driveTrain),
         
         // Prep to score coral on L1
-        new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber)
+        new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, coralEffector)
       ),
 
       // Score coral on L1
