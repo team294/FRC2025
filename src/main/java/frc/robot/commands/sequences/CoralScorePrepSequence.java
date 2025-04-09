@@ -31,7 +31,7 @@ public class CoralScorePrepSequence extends SequentialCommandGroup {
           waitUntil(() -> coralEffector.getHoldMode()),
           new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist),
           new WristSetAngle(position, wrist),
-          runOnce(() -> coralEffector.setL1or4ScoreMode(position == ElevatorWristPosition.CORAL_L1 || position == ElevatorWristPosition.CORAL_L4 ? true : false))
+          runOnce(() -> coralEffector.setL1or4ScoreMode(position == ElevatorWristPosition.CORAL_L1 || position == ElevatorWristPosition.CORAL_L4))
         ),
         none(),
         () -> !algaeGrabber.isAlgaePresent()
