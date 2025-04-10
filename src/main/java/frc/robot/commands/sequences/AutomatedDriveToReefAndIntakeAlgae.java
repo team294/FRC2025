@@ -114,12 +114,12 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
               new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
             ),
             // Move elevator/wrist to correct position based on given level
-            new AlgaeIntakeSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), driveTrain, elevator, wrist, algaeGrabber, led)
+            new AlgaeIntakeSequence(() -> (field.getNearestAlgaeElevatorPosition(driveTrain.getPose())), driveTrain, elevator, wrist, algaeGrabber, led)
           )
         ),
         sequence(
           new DriveToReefWithOdometryForAlgae(driveTrain, field),
-          new WristElevatorSafeMove(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), RegionType.STANDARD, elevator, wrist)
+          new WristElevatorSafeMove(() -> (field.getNearestAlgaeElevatorPosition(driveTrain.getPose())), RegionType.STANDARD, elevator, wrist)
         ),
         () -> DriverStation.isAutonomous()
       ),
@@ -132,7 +132,7 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
             true, true, driveTrain),
 
         // Intake algae
-        new AlgaeIntakeSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), driveTrain, elevator, wrist, algaeGrabber, led).until(() -> algaeGrabber.isAlgaePresent())
+        new AlgaeIntakeSequence(() -> (field.getNearestAlgaeElevatorPosition(driveTrain.getPose())), driveTrain, elevator, wrist, algaeGrabber, led).until(() -> algaeGrabber.isAlgaePresent())
       ),
 
       parallel(
