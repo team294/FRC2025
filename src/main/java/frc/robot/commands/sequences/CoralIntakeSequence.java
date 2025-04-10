@@ -32,7 +32,7 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
       parallel(
         new HopperSetPercent(HopperConstants.intakePercent, hopper),
-        deadline(
+        parallel(
           sequence(
             new CoralEffectorIntakeEnhanced(coralEffector),
             new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist)

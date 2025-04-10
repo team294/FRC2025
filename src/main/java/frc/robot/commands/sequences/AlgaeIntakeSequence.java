@@ -28,7 +28,7 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
   public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
       
-      deadline(
+      parallel(
         parallel(
           new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
           new AlgaeGrabberIntake(algaeGrabber)
