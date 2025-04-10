@@ -49,26 +49,36 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
         ),
         sequence(
           new DriveToReefWithOdometryForAlgae(driveTrain, field),
-          new AlgaeIntakeSequence(algaeLevel, driveTrain, elevator, wrist, algaeGrabber, led)
+          new WristElevatorSafeMove(algaeLevel, RegionType.STANDARD, elevator, wrist)
         ),
         () -> DriverStation.isAutonomous()
       ),
 
       // Drive forward to get to the reef
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.distanceFromReefToPickupAlgae, 0, new Rotation2d(0)),
+      parallel(
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(algaeLevel.equals(ElevatorWristPosition.ALGAE_LOWER) ? DriveConstants.distanceFromReefToPickupAlgaeLower : DriveConstants.distanceFromReefToPickupAlgaeUpper, 0, new Rotation2d(0)),
             0.5, 1.0, 
             TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
             true, true, driveTrain),
 
-      // Intake algae
-      new AlgaeIntakeSequence(algaeLevel, driveTrain, elevator, wrist, algaeGrabber, led),
+        // Intake algae
+        new AlgaeIntakeSequence(algaeLevel, driveTrain, elevator, wrist, algaeGrabber, led).until(() -> algaeGrabber.isAlgaePresent())
+      ),
 
-
-      // Back up
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToPickupAlgae, 0, Rotation2d.kZero),
+      parallel(
+        // Hold algae and back up
+        new AlgaeGrabberSetPercent(0.1, algaeGrabber),
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-(algaeLevel.equals(ElevatorWristPosition.ALGAE_LOWER) ? DriveConstants.distanceFromReefToPickupAlgaeLower : DriveConstants.distanceFromReefToPickupAlgaeUpper), 0, Rotation2d.kZero),
             0.5, 1.0, 
             TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-            true, true, driveTrain),
+            true, true, driveTrain)
+      ).handleInterrupt(algaeGrabber::stopAlgaeGrabberMotor),
+
+      parallel(
+        new AlgaeGrabberStop(algaeGrabber),
+        // Stow wrist
+        new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist)
+      ),
   
       //.raceWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll)),
 
@@ -109,27 +119,36 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
         ),
         sequence(
           new DriveToReefWithOdometryForAlgae(driveTrain, field),
-          new AlgaeIntakeSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), driveTrain, elevator, wrist, algaeGrabber, led)
+          new WristElevatorSafeMove(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), RegionType.STANDARD, elevator, wrist)
         ),
         () -> DriverStation.isAutonomous()
       ),
 
       // Drive forward to get to the reef
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.distanceFromReefToPickupAlgae, 0, new Rotation2d(0)),
+      parallel(
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()).equals(ElevatorWristPosition.ALGAE_LOWER) ? DriveConstants.distanceFromReefToPickupAlgaeLower : DriveConstants.distanceFromReefToPickupAlgaeUpper, 0, new Rotation2d(0)),
             0.5, 1.0, 
             TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
             true, true, driveTrain),
 
-      // Intake algae
-      new AlgaeIntakeSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), driveTrain, elevator, wrist, algaeGrabber, led),
+        // Intake algae
+        new AlgaeIntakeSequence(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()), driveTrain, elevator, wrist, algaeGrabber, led).until(() -> algaeGrabber.isAlgaePresent())
+      ),
 
-
-      // Back up
-        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToPickupAlgae, 0, Rotation2d.kZero),
+      parallel(
+        // Hold algae and back up
+        new AlgaeGrabberSetPercent(0.1, algaeGrabber),
+        new DriveToPose(CoordType.kRelative, () -> new Pose2d(-(field.getNearestAlgaeElevatorPosition(driveTrain.getPose()).equals(ElevatorWristPosition.ALGAE_LOWER) ? DriveConstants.distanceFromReefToPickupAlgaeLower : DriveConstants.distanceFromReefToPickupAlgaeUpper), 0, Rotation2d.kZero),
             0.5, 1.0, 
             TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-            true, true, driveTrain),
-  
+            true, true, driveTrain)
+      ).handleInterrupt(algaeGrabber::stopAlgaeGrabberMotor),
+
+      parallel(
+        new AlgaeGrabberStop(algaeGrabber),
+        // Stow wrist
+        new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist)
+      ),
       //.raceWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll)),
 
       // runOnce(() -> led.sendEvent(StripEvents.AUTO_DRIVE_COMPLETE)),
