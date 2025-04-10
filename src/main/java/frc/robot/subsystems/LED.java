@@ -82,10 +82,6 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
       setLEDs(color, LEDSegmentRange.StripRight);
       setLEDs(color, LEDSegmentRange.StripLeft);
       setLEDs(color, LEDSegmentRange.StripHorizontal);
-      // if (lastStickyFaultPresentReading) {
-      //   setLEDs(BCRColor.SUBSYSTEM_UNCALIBRATED, LEDSegmentRange.StripLeftTop);
-      //   setLEDs(BCRColor.SUBSYSTEM_UNCALIBRATED, LEDSegmentRange.StripRightTop);
-      // }
     } else {
       setLEDs(color, LEDSegmentRange.CANdle);
     }

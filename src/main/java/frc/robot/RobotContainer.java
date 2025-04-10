@@ -65,9 +65,6 @@ public class RobotContainer {
   private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, 
       field, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
 
-  // private final LEDAnimationBCR ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
-  // private final LEDSendNeutral ledSendNeutral = new LEDSendNeutral(led);
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */

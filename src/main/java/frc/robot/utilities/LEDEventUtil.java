@@ -26,7 +26,6 @@ public class LEDEventUtil {
   // private final LEDAnimationFlash ledAnimationFlashCoral;
 
   public enum StripEvents {
-    // STICKY_FAULT_ACTIVE,
     MATCH_COUNTDOWN,
     CORAL_MODE,
     CORAL_INTAKING,
@@ -41,7 +40,6 @@ public class LEDEventUtil {
   private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
   
   static {
-    // prioritiesStripEvents.put(StripEvents.STICKY_FAULT_ACTIVE, 0);
     prioritiesStripEvents.put(StripEvents.CORAL_INTAKING, 1);
     prioritiesStripEvents.put(StripEvents.CORAL_MODE, 2);
     prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 3);
@@ -112,10 +110,6 @@ public class LEDEventUtil {
         ledAnimationBCR.schedule();
         DataLogUtil.writeMessage("LED Robot Disabled");
         break;
-      // case STICKY_FAULT_ACTIVE: // TODO top few LEDs on vertical strips turn red, maybe make a boolean so they cant get overriden until its cleared or read the boolean in LED (lastStickyFaultPresentReading)
-      //   LED.dashboardColor = BCRColor.STICKY_FAULT_ACTIVE;
-      //   DataLogUtil.writeMessage("LED Sticky Fault Active");
-      //   break;
       default:
         led.clearAnimation();
         led.updateLEDs(BCRColor.NEUTRAL, true);
