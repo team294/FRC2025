@@ -9,7 +9,6 @@ import frc.robot.commands.LEDAnimationBCR;
 import frc.robot.commands.LEDSendNeutral;
 import frc.robot.Constants.BCRColor;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
-// import frc.robot.commands.LEDAnimationFlash;
 import frc.robot.subsystems.LED;
 
 
@@ -20,11 +19,10 @@ public class LEDEventUtil {
 
   private static StripEvents previousEventStrip;
 
-  private static final RainbowAnimation ledAnimationRainbow = new RainbowAnimation(1.0, 0.7, LEDSegmentRange.StripAll.count, false, LEDSegmentRange.StripAll.index);
+  private static final RainbowAnimation ledAnimationRainbowReef = new RainbowAnimation(1.0, 0.7, LEDSegmentRange.StripAll.count, false, LEDSegmentRange.StripAll.index);
+  private static final RainbowAnimation ledAnimationRainbowBarge = new RainbowAnimation(1.0, 0.7, LEDSegmentRange.StripAll.count, true, LEDSegmentRange.StripAll.index);
   private static final StrobeAnimation ledAnimationStrobeAlgae = new StrobeAnimation(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b, 0, 0, LEDSegmentRange.StripAll.count, LEDSegmentRange.StripAll.index);
   private static final StrobeAnimation ledAnimationStrobeCoral = new StrobeAnimation(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b, 0, 0, LEDSegmentRange.StripAll.count, LEDSegmentRange.StripAll.index);
-  // private final LEDAnimationFlash ledAnimationFlashAlgae;
-  // private final LEDAnimationFlash ledAnimationFlashCoral;
 
   public enum StripEvents {
     MATCH_COUNTDOWN,
@@ -32,7 +30,8 @@ public class LEDEventUtil {
     CORAL_INTAKING,
     ALGAE_MODE,
     ALGAE_INTAKING,
-    AUTO_DRIVE_IN_PROGRESS,
+    AUTO_DRIVE_IN_PROGRESS_REEF,
+    AUTO_DRIVE_IN_PROGRESS_BARGE,
     NEUTRAL,
     ROBOT_DISABLED
   }
@@ -44,7 +43,8 @@ public class LEDEventUtil {
     prioritiesStripEvents.put(StripEvents.CORAL_MODE, 2);
     prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 3);
     prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 4);
-    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 5);
+    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF, 5);
+    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS_BARGE, 5);
     prioritiesStripEvents.put(StripEvents.NEUTRAL, 6);
     prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 7);
   }
@@ -93,17 +93,22 @@ public class LEDEventUtil {
         led.updateLEDs(BCRColor.ALGAE_MODE, true);
         DataLogUtil.writeMessage("LED Algae Mode");
         break;
-      case AUTO_DRIVE_IN_PROGRESS:
-        LED.dashboardColor = BCRColor.WHITE;
-        led.animate(ledAnimationRainbow);
-        DataLogUtil.writeMessage("LED Auto Drive in Progress");
+      case AUTO_DRIVE_IN_PROGRESS_REEF:
+        LED.dashboardColor = BCRColor.NEUTRAL;
+        led.animate(ledAnimationRainbowReef);
+        DataLogUtil.writeMessage("LED Reef Auto Drive in Progress");
         break;
+      case AUTO_DRIVE_IN_PROGRESS_BARGE:
+        LED.dashboardColor = BCRColor.NEUTRAL;
+        led.animate(ledAnimationRainbowBarge);
+        DataLogUtil.writeMessage("LED Barge Auto Drive in Progress");
       case ROBOT_DISABLED:
-        LED.dashboardColor = BCRColor.WHITE;
+        LED.dashboardColor = BCRColor.NEUTRAL;
         ledAnimationBCR.schedule();
         DataLogUtil.writeMessage("LED Robot Disabled");
         break;
       default:
+        LED.dashboardColor = BCRColor.NEUTRAL;
         led.clearAnimation();
         ledSendNeutral.schedule();
         DataLogUtil.writeMessage("LED Neutral");
