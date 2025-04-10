@@ -76,7 +76,8 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
             new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
             sequence(
               new WaitUntilCommand( () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
-                      new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0))).getTranslation().getDistance(driveTrain.getPose().getTranslation()) <= DriveConstants.distanceFromReefToElevate)),
+                      new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, 
+                                      new Rotation2d(0))).getTranslation().getDistance(driveTrain.getPose().getTranslation()) <= DriveConstants.distanceFromReefToElevate)),
               new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
             )
           ),

@@ -35,7 +35,6 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param led LED subsystem
    * @param alliance AllianceSelection alliance
    * @param field Field field
-   * @param log FileLog log
    */
   public AutoCoralDriveAndScoreSequence(boolean fromHP, ReefLocation end, ReefLevel level, DriveTrain driveTrain,
       Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance,

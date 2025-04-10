@@ -58,7 +58,6 @@ public class AutoDriveToReef extends SequentialCommandGroup {
    * @param hopper Hopper subsystem
    * @param led LED subsystem
    * @param alliance AllianceSelection alliance 
-   * @param log FileLog log
    */
   public AutoDriveToReef(boolean fromHP, ReefLocation end, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
       CoralEffector coralEffector, Hopper hopper, LED led, AllianceSelection alliance) {

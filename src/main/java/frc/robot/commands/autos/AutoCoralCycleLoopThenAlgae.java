@@ -38,7 +38,6 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection alliance
    * @param field Field field
-   * @param log FileLog log
    */
   public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, DriveTrain driveTrain, Elevator elevator, 
       Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance, Field field) {
