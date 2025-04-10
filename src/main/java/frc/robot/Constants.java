@@ -328,7 +328,8 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;       // CALIBRATED
     public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
-    public static final double outtakePercent = 0.6;      // CALIBRATED
+    public static final double outtakePercent = 0.4;      // CALIBRATED 4/7. Used for L1 and L4
+    public static final double fastOuttakePercent = 1.0;  // CALIBRATED 4/7. Used for L2 and L3
 
     public static final double centerRotationsUndershoot = 1.625;  // CALIBRATED #3  Measure the typical undershoot with kP.  This value (in motor rotataions) will be added to the encoder reading when the coral sensor is triggered.
     public static final double centeringTolerance = 0.07;  // CALIBRATED #1  Position tolerance (in rotations) for holding coral [smaller than 1/2 of the position window where both sensors see the coral]
@@ -419,8 +420,8 @@ public final class Constants {
       CORAL_HP(0.0, 82.0),
 
       CORAL_L1(13.0, 95.0),
-      CORAL_L2(25.56, 65.0),
-      CORAL_L3(40.28, 65.0),
+      CORAL_L2(22.06, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef
+      CORAL_L3(37.28, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef
       CORAL_L4(71.0, 57.0),
       CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
