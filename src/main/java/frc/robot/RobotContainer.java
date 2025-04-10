@@ -30,7 +30,6 @@ import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLevel;
 import frc.robot.Constants.FieldConstants.ReefLocation;
-import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -76,8 +75,8 @@ public class RobotContainer {
     DataLogUtil.writeLogEcho(true, "RobotContainer", "Constructor", "Version", Constants.bcrRobotCodeVersion);
     SignalLogger.enableAutoLogging(false);
     
-    // Start LEDEventManager
-    LEDEventManager.start(led);
+    // Start LEDEventUtil
+    LEDEventUtil.start(led);
 
     SmartDashboard.putBoolean("RobotPrefs Initialized", RobotPreferences.prefsExist());
     if(!RobotPreferences.prefsExist()) {
@@ -415,7 +414,7 @@ public class RobotContainer {
     wrist.stopWrist();
     coralEffector.stopCoralEffectorMotor();
 
-    LEDEventManager.sendEvent(LEDEventManager.StripEvents.ROBOT_DISABLED);
+    LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ROBOT_DISABLED);
 
     matchTimer.stop();
     matchTimer.reset();
@@ -488,7 +487,7 @@ public class RobotContainer {
       wrist.stopWrist();
     }
 
-    LEDEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL);
+    LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
     
     matchTimer.reset();
     matchTimer.start();

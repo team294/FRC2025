@@ -12,7 +12,7 @@ import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.utilities.LEDEventManager;
+import frc.robot.utilities.LEDEventUtil;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
@@ -37,12 +37,12 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
             new CoralEffectorIntakeEnhanced(coralEffector),
             new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist)
           ),
-          runOnce(() -> LEDEventManager.sendEvent(LEDEventManager.StripEvents.CORAL_INTAKING))
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_INTAKING))
         )
       ).handleInterrupt(hopper::stopHopperMotor),
       either(
-        runOnce(() -> LEDEventManager.sendEvent(LEDEventManager.StripEvents.CORAL_MODE)),
-        runOnce(() -> LEDEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL)),
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
         () -> coralEffector.isCoralPresent()),
       new HopperStop(hopper)
     );

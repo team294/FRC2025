@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AlgaeGrabberConstants;
 import frc.robot.subsystems.AlgaeGrabber;
 import frc.robot.utilities.DataLogUtil;
-import frc.robot.utilities.LEDEventManager;
+import frc.robot.utilities.LEDEventUtil;
 
 public class AlgaeGrabberOuttake extends Command {
   private final AlgaeGrabber algaeGrabber;
@@ -54,7 +54,7 @@ public class AlgaeGrabberOuttake extends Command {
   @Override
   public void end(boolean interrupted) {
     algaeGrabber.stopAlgaeGrabberMotor();
-    LEDEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL);
+    LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
     timer.stop();
     timer.reset();
 

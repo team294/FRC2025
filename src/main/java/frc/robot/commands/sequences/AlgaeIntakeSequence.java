@@ -12,7 +12,7 @@ import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
-import frc.robot.utilities.LEDEventManager;
+import frc.robot.utilities.LEDEventUtil;
 
 
 /**
@@ -33,13 +33,13 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
           new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
           new AlgaeGrabberIntake(algaeGrabber)
         ),
-        runOnce(() -> LEDEventManager.sendEvent(LEDEventManager.StripEvents.ALGAE_INTAKING))
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_INTAKING))
       ),
       
       // new LEDSendNeutral(led),
       either(
-        runOnce(() -> LEDEventManager.sendEvent(LEDEventManager.StripEvents.ALGAE_MODE)),
-        runOnce(() -> LEDEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL)), 
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)), 
         () -> algaeGrabber.isAlgaePresent()
       ),
 

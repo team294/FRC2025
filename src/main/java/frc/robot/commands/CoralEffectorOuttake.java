@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
 import frc.robot.utilities.DataLogUtil;
-import frc.robot.utilities.LEDEventManager;
+import frc.robot.utilities.LEDEventUtil;
 
 public class CoralEffectorOuttake extends Command {
   private final CoralEffector coralEffector;
@@ -49,7 +49,7 @@ public class CoralEffectorOuttake extends Command {
   @Override
   public void end(boolean interrupted) {
     coralEffector.stopCoralEffectorMotor();
-    LEDEventManager.sendEvent(LEDEventManager.StripEvents.NEUTRAL);
+    LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
     timer.stop();
     timer.reset();
 
