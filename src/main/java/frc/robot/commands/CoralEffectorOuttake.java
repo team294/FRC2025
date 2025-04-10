@@ -34,7 +34,10 @@ public class CoralEffectorOuttake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.outtakePercent);
+    // Use fast outtake percent if scoring on L2 or L3, and otherwise the normal outtake percent
+    coralEffector.setCoralEffectorPercentOutput(
+      !coralEffector.getL1or4ScoreMode() ? CoralEffectorConstants.fastOuttakePercent : CoralEffectorConstants.outtakePercent
+    );
 
     DataLogUtil.writeMessage("CoralEffectorOuttake: Init, Coral in = ", coralEffector.isCoralPresent());
   }
