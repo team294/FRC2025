@@ -490,10 +490,9 @@ public final class Constants {
   public enum BCRColor {
     CANDLE_IDLE(0, 0, 0),              // CANdle Black (off)
     CANDLE_STICKY_FAULT(255, 0, 0),    // CANdle Red
-    NEUTRAL(0, 0, 0),                  // Black (off)
-    ALGAE_MODE(0, 200, 255),           // Turquoise
+    NEUTRAL(255, 255, 255),            // White
+    ALGAE_MODE(0, 255, 0),             // Turquoise
     CORAL_MODE(255, 0, 255),           // Purple
-    AUTO_DRIVE_COMPLETE(0, 255, 0),    // Green
     STICKY_FAULT_ACTIVE(255, 0, 0),    // Red
     BLUE(19, 82, 188),                 // Blue
     ORANGE(240, 107, 14),              // Orange

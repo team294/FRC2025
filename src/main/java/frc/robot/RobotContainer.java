@@ -411,6 +411,7 @@ public class RobotContainer {
     wrist.stopWrist();
     coralEffector.stopCoralEffectorMotor();
 
+    LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
     LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ROBOT_DISABLED);
 
     matchTimer.stop();

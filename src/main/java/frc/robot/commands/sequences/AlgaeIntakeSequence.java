@@ -34,8 +34,8 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
           new AlgaeGrabberIntake(algaeGrabber)
         ),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_INTAKING))
-      ),
-
+      ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
       either(
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)), 

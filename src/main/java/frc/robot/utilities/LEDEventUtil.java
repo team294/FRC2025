@@ -6,7 +6,7 @@ import java.util.Map;
 import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 import frc.robot.commands.LEDAnimationBCR;
-
+import frc.robot.commands.LEDSendNeutral;
 import frc.robot.Constants.BCRColor;
 import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 // import frc.robot.commands.LEDAnimationFlash;
@@ -16,12 +16,13 @@ import frc.robot.subsystems.LED;
 public class LEDEventUtil {
   private static LED led;
   private static LEDAnimationBCR ledAnimationBCR;
+  private static LEDSendNeutral ledSendNeutral;
 
   private static StripEvents previousEventStrip;
 
-  private static final RainbowAnimation ledAnimationRainbow = new RainbowAnimation(0.5, 0.7, LEDSegmentRange.StripAll.count, false, LEDSegmentRange.StripAll.index);
-  private static final StrobeAnimation ledAnimationStrobeAlgae = new StrobeAnimation(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b, 0, 0.4, LEDSegmentRange.StripAll.count);
-  private static final StrobeAnimation ledAnimationStrobeCoral = new StrobeAnimation(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b, 0, 0.4, LEDSegmentRange.StripAll.count);
+  private static final RainbowAnimation ledAnimationRainbow = new RainbowAnimation(1.0, 0.7, LEDSegmentRange.StripAll.count, false, LEDSegmentRange.StripAll.index);
+  private static final StrobeAnimation ledAnimationStrobeAlgae = new StrobeAnimation(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b, 0, 0, LEDSegmentRange.StripAll.count, LEDSegmentRange.StripAll.index);
+  private static final StrobeAnimation ledAnimationStrobeCoral = new StrobeAnimation(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b, 0, 0, LEDSegmentRange.StripAll.count, LEDSegmentRange.StripAll.index);
   // private final LEDAnimationFlash ledAnimationFlashAlgae;
   // private final LEDAnimationFlash ledAnimationFlashCoral;
 
@@ -32,7 +33,6 @@ public class LEDEventUtil {
     ALGAE_MODE,
     ALGAE_INTAKING,
     AUTO_DRIVE_IN_PROGRESS,
-    AUTO_DRIVE_COMPLETE,
     NEUTRAL,
     ROBOT_DISABLED
   }
@@ -45,9 +45,8 @@ public class LEDEventUtil {
     prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 3);
     prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 4);
     prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 5);
-    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 6);
-    prioritiesStripEvents.put(StripEvents.NEUTRAL, 7);
-    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 8);
+    prioritiesStripEvents.put(StripEvents.NEUTRAL, 6);
+    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 7);
   }
 
   /**
@@ -63,8 +62,7 @@ public class LEDEventUtil {
     if (
       previousEventStrip != StripEvents.NEUTRAL && previousEventStrip != StripEvents.ROBOT_DISABLED
       && (
-        !(previousEventStrip == StripEvents.AUTO_DRIVE_COMPLETE && (event == StripEvents.CORAL_INTAKING || event == StripEvents.ALGAE_INTAKING))
-        && !((previousEventStrip == StripEvents.ALGAE_INTAKING || previousEventStrip == StripEvents.ALGAE_MODE) && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
+        !((previousEventStrip == StripEvents.ALGAE_INTAKING || previousEventStrip == StripEvents.ALGAE_MODE) && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
         && getPriority(event) < getPriority(previousEventStrip)
       )
     ) {
@@ -100,11 +98,6 @@ public class LEDEventUtil {
         led.animate(ledAnimationRainbow);
         DataLogUtil.writeMessage("LED Auto Drive in Progress");
         break;
-      case AUTO_DRIVE_COMPLETE:
-        LED.dashboardColor = BCRColor.AUTO_DRIVE_COMPLETE;
-        led.updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
-        DataLogUtil.writeMessage("LED Auto Drive Complete");
-        break;
       case ROBOT_DISABLED:
         LED.dashboardColor = BCRColor.WHITE;
         ledAnimationBCR.schedule();
@@ -112,7 +105,7 @@ public class LEDEventUtil {
         break;
       default:
         led.clearAnimation();
-        led.updateLEDs(BCRColor.NEUTRAL, true);
+        ledSendNeutral.schedule();
         DataLogUtil.writeMessage("LED Neutral");
         break;
     }
@@ -128,6 +121,7 @@ public class LEDEventUtil {
   public static void start(LED ledInstance) {
     led = ledInstance;
     ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
+    ledSendNeutral = new LEDSendNeutral(led);
   }
 
   /**

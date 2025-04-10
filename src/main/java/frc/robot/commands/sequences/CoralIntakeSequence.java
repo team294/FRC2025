@@ -38,8 +38,9 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
             new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist)
           ),
           runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_INTAKING))
-        )
+        ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))
       ).handleInterrupt(hopper::stopHopperMotor),
+      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
       either(
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
