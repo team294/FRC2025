@@ -304,8 +304,8 @@ public class RobotContainer {
     right[1].and(xboxController.b()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, rightJoystick, field));
     right[1].and(xboxController.y()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, rightJoystick, field));
 
-    right[1].and(xboxController.povLeft()).whileTrue(new AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, led, field))
-    right[1].and(xboxController.povDown()).whileTrue(new AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, led, field))
+    right[1].and(xboxController.povLeft()).whileTrue(new AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, led, field));
+    right[1].and(xboxController.povDown()).whileTrue(new AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, led, field));
 
     right[2].whileTrue(new DriveToBargeWithOdometry(driveTrain, field));
   }
