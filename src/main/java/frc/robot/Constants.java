@@ -318,7 +318,7 @@ public final class Constants {
 
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.45;
+    public static final double intakePercent = 0.65; // Calibrated 4/9, was 0.45
     public static final double reverseIntakePercent = -0.2;
   }
 
