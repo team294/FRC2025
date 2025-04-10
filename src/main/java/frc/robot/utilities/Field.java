@@ -6,6 +6,7 @@ package frc.robot.utilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -379,10 +380,10 @@ public class Field {
      * @param currPos the robot's current position
      * @return ElevatorWristPosition determining whether the algae is on the upper or lower position
      */
-    public ElevatorWristPosition getNearestAlgaeElevatorPosition(Pose2d currPos) {
-        double angleDeg = getNearestAlgaePickupPosition(currPos).getRotation().getDegrees();
+    public ElevatorWristPosition getNearestAlgaeElevatorPosition(Supplier<Pose2d> currPos) {
+        double angleDeg = getNearestAlgaePickupPosition(currPos.get()).getRotation().getDegrees();
         boolean isUpper = (angleDeg / 20.0) % 2 == 0;
-        isUpper = (currPos.getX() < FieldConstants.length / 2.0) ? isUpper : !isUpper;
+        isUpper = (currPos.get().getX() < FieldConstants.length / 2.0) ? isUpper : !isUpper;
         return isUpper ? ElevatorWristPosition.ALGAE_UPPER : ElevatorWristPosition.ALGAE_UPPER;
     }
 }

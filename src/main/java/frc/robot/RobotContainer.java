@@ -192,6 +192,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Stow Elevator and Wrist", new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist));
 
+    SmartDashboard.putData("AutomatedDriveToReefAndIntakeAlgae", new AutomatedDriveToReefAndIntakeAlgae(driveTrain, elevator, wrist, algaeGrabber, led, field));
     // SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
     // SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
 
