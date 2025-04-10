@@ -66,7 +66,7 @@ public class LEDEventUtil {
       previousEventStrip != StripEvents.NEUTRAL && previousEventStrip != StripEvents.ROBOT_DISABLED
       && (
         !(previousEventStrip == StripEvents.AUTO_DRIVE_COMPLETE && (event == StripEvents.CORAL_INTAKING || event == StripEvents.ALGAE_INTAKING))
-        && !(previousEventStrip == StripEvents.ALGAE_MODE && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
+        && !((previousEventStrip == StripEvents.ALGAE_INTAKING || previousEventStrip == StripEvents.ALGAE_MODE) && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
         && getPriority(event) < getPriority(previousEventStrip)
       )
     ) {
@@ -78,34 +78,42 @@ public class LEDEventUtil {
     DataLogUtil.writeMessage("LED SendEvent: switch statement");
     switch (event) {
       case CORAL_INTAKING:
+        LED.dashboardColor = BCRColor.CORAL_MODE;
         led.animate(ledAnimationStrobeCoral);
         DataLogUtil.writeMessage("LED Coral Intaking");
         break;
       case CORAL_MODE:
+        LED.dashboardColor = BCRColor.CORAL_MODE;
         led.updateLEDs(BCRColor.CORAL_MODE, true);
         DataLogUtil.writeMessage("LED Coral Mode");
         break;
       case ALGAE_INTAKING:
+        LED.dashboardColor = BCRColor.ALGAE_MODE;
         led.animate(ledAnimationStrobeAlgae);
         DataLogUtil.writeMessage("LED Algae Intaking");
         break;
       case ALGAE_MODE:
+        LED.dashboardColor = BCRColor.ALGAE_MODE;
         led.updateLEDs(BCRColor.ALGAE_MODE, true);
         DataLogUtil.writeMessage("LED Algae Mode");
         break;
       case AUTO_DRIVE_IN_PROGRESS:
+        LED.dashboardColor = BCRColor.WHITE;
         led.animate(ledAnimationRainbow);
         DataLogUtil.writeMessage("LED Auto Drive in Progress");
         break;
       case AUTO_DRIVE_COMPLETE:
+        LED.dashboardColor = BCRColor.AUTO_DRIVE_COMPLETE;
         led.updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
         DataLogUtil.writeMessage("LED Auto Drive Complete");
         break;
       case ROBOT_DISABLED:
+        LED.dashboardColor = BCRColor.WHITE;
         ledAnimationBCR.schedule();
         DataLogUtil.writeMessage("LED Robot Disabled");
         break;
       // case STICKY_FAULT_ACTIVE: // TODO top few LEDs on vertical strips turn red, maybe make a boolean so they cant get overriden until its cleared or read the boolean in LED (lastStickyFaultPresentReading)
+      //   LED.dashboardColor = BCRColor.STICKY_FAULT_ACTIVE;
       //   DataLogUtil.writeMessage("LED Sticky Fault Active");
       //   break;
       default:

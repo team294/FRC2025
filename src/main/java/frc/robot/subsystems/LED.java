@@ -27,7 +27,7 @@ public class LED extends SubsystemBase {
 
   private Timer matchTimer;
   private CANdleEvents previousEventCANdle;
-  private BCRColor dashboardColor = BCRColor.NEUTRAL;
+  public static BCRColor dashboardColor = BCRColor.NEUTRAL;
   private boolean lastStickyFaultPresentReading = false;
 
   public enum CANdleEvents {
@@ -79,7 +79,6 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
    */
   public void updateLEDs(BCRColor color, boolean strip) {
     if (strip) {
-      dashboardColor = color;
       setLEDs(color, LEDSegmentRange.StripRight);
       setLEDs(color, LEDSegmentRange.StripLeft);
       setLEDs(color, LEDSegmentRange.StripHorizontal);
