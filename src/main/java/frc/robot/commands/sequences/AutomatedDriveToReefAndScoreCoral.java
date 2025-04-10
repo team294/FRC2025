@@ -63,15 +63,16 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
           sequence(
             deadline(
               waitSeconds(0.4),
+              waitUntil(() -> coralEffector.getHoldMode()),
               new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
             ),
             // Move elevator/wrist to correct position based on given level
-            new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
+            new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
           )
         ),
         sequence(
           new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
-          new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber)
+          new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
         ),
         () -> DriverStation.isAutonomous()
       ),
@@ -83,7 +84,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
             TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
             true, true, driveTrain),
         none(),
-        () -> level != ReefLevel.L4
+        () -> level == ReefLevel.L1
       ),
 
       // Score piece
@@ -99,7 +100,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
             TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
             true, true, driveTrain),
         none(),
-        () -> level != ReefLevel.L4   
+        () -> level == ReefLevel.L1 
       ),//.raceWith(new LEDAnimationRainbow(led, LEDSegmentRange.StripAll)),
 
       // runOnce(() -> led.sendEvent(StripEvents.AUTO_DRIVE_COMPLETE)),

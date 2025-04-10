@@ -53,7 +53,7 @@ public class AutoCenterL4 extends SequentialCommandGroup {
       // new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
 
       // Move elevator to L4
-      new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber),
+      new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, coralEffector),
 
       // Drive forward to get to the reef (offset copied from DriveToReefWithOdometryForCoral, plus 4 inches)
       new DriveToPose(CoordType.kRelative, () -> new Pose2d((RobotDimensions.robotWidth / 2.0) + DriveConstants.distanceFromReefToScore + Units.inchesToMeters(4), 0, new Rotation2d(0)), 
