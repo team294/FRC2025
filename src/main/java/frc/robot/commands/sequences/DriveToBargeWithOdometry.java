@@ -4,6 +4,8 @@
 
 package frc.robot.commands.sequences;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
@@ -15,18 +17,21 @@ public class DriveToBargeWithOdometry extends SequentialCommandGroup {
   /** 
    * Drives to the nearest barge scoring location.
    * 
-   * <p>If the robot is aligned with the correct alliance barge, the robot will drive foward towards the barge while maintaining its current y value.
-   * <p>If the robot is not aligned with the correct alliance barge, the robot will drive foward while driving to the y value of the edge of the barge.
+   * <h1>If the robot is aligned with the correct alliance barge, the robot will drive foward towards the barge while maintaining its current y value.
+   * If the robot is not aligned with the correct alliance barge, the robot will drive foward while driving to the y value of the edge of the barge.
    * 
-   * <p>The sequence ends when robot reaches final position. If the driver continues to hold the button, the robot can only move left to right.
+   * The sequence ends when robot reaches final position. If the driver continues to hold the button, the robot can only move left to right.</h1>
    * @param driveTrain DriveTrain subsystem
    * @param field Field utility
-   * @param log FileLog utility
    */
   public DriveToBargeWithOdometry(DriveTrain driveTrain, Field field) {
     addCommands(
-      new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestBargeScoringPosition(driveTrain.getPose())), 
-      0.02, 1, driveTrain)
+      parallel(
+        new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestBargeScoringPosition(driveTrain.getPose())), 
+        0.02, 1, driveTrain),
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_BARGE))
+      ),
+      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))
     );
   }
 }
