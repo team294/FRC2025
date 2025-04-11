@@ -46,7 +46,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
       
       // If coral is detected, score. If not, end the score sequence and skip to the next part of the auto
       either(
-        new AutomatedDriveToReefAndScoreCoral(location, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, rightJoystick, field),
+        new AutomatedDriveToReefAndScoreCoral(location, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, field),
         none(),
         () -> coralEffector.isCoralPresent()
       ),
