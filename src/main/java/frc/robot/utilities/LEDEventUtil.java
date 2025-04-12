@@ -8,7 +8,7 @@ import com.ctre.phoenix.led.StrobeAnimation;
 import frc.robot.commands.LEDAnimationBCR;
 import frc.robot.commands.LEDSendNeutral;
 import frc.robot.Constants.BCRColor;
-import frc.robot.Constants.LEDConstants.LEDSegmentRange;
+import frc.robot.Constants.LEDConstants.LEDSegments;
 import frc.robot.subsystems.LED;
 
 
@@ -19,10 +19,10 @@ public class LEDEventUtil {
 
   private static StripEvents previousEventStrip;
 
-  private static final RainbowAnimation ledAnimationRainbowReef = new RainbowAnimation(1.0, 0.8, LEDSegmentRange.StripAll.count, false, LEDSegmentRange.StripAll.index);
-  private static final RainbowAnimation ledAnimationRainbowBarge = new RainbowAnimation(1.0, 0.8, LEDSegmentRange.StripAll.count, true, LEDSegmentRange.StripAll.index);
-  private static final StrobeAnimation ledAnimationStrobeAlgae = new StrobeAnimation(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b, 0, 0, LEDSegmentRange.StripAll.count, LEDSegmentRange.StripAll.index);
-  private static final StrobeAnimation ledAnimationStrobeCoral = new StrobeAnimation(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b, 0, 0, LEDSegmentRange.StripAll.count, LEDSegmentRange.StripAll.index);
+  private static final RainbowAnimation ledAnimationRainbowReef = new RainbowAnimation(1.0, 0.8, LEDSegments.StripAll.count, false, LEDSegments.StripAll.index);
+  private static final RainbowAnimation ledAnimationRainbowBarge = new RainbowAnimation(1.0, 0.8, LEDSegments.StripAll.count, true, LEDSegments.StripAll.index);
+  private static final StrobeAnimation ledAnimationStrobeAlgae = new StrobeAnimation(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b, 0, 0, LEDSegments.StripAll.count, LEDSegments.StripAll.index);
+  private static final StrobeAnimation ledAnimationStrobeCoral = new StrobeAnimation(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b, 0, 0, LEDSegments.StripAll.count, LEDSegments.StripAll.index);
 
   public enum StripEvents {
     MATCH_COUNTDOWN,
@@ -133,7 +133,7 @@ public class LEDEventUtil {
    */
   public static void start(LED ledInstance) {
     led = ledInstance;
-    ledAnimationBCR = new LEDAnimationBCR(led, LEDSegmentRange.StripAll);
+    ledAnimationBCR = new LEDAnimationBCR(led, LEDSegments.StripAll);
     ledSendNeutral = new LEDSendNeutral(led);
   }
 

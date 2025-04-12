@@ -512,14 +512,7 @@ public final class Constants {
   }
 
   public static final class LEDConstants {
-    public static int ledStickyFaultDisplayCount = 3;
-
-    public static final class EmptyPatterns {
-      public static final Color[] noPatternStatic = {};
-      public static final Color[][] noPatternAnimation = {{}};
-    }
-
-    public enum LEDSegmentRange {
+    public enum LEDSegments {
       CANdle(0, 8),
       StripRight(CANdle.count, 40),
       StripHorizontal(StripRight.index + StripRight.count, 40),
@@ -529,7 +522,7 @@ public final class Constants {
 
 
       public final int index, count;
-      LEDSegmentRange(int index, int count) {
+      LEDSegments(int index, int count) {
         this.index = index;
         this.count = count;
       }

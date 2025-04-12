@@ -6,12 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.BCRColor;
-import frc.robot.Constants.LEDConstants.LEDSegmentRange;
+import frc.robot.Constants.LEDConstants.LEDSegments;
 import frc.robot.subsystems.LED;
 
 public class LEDAnimationBCR extends Command {
   private LED led;
-  private LEDSegmentRange segment;
+  private LEDSegments segment;
   private int cycleCounter, t;
   private BCRColor[] arrayOne = { BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE, BCRColor.ORANGE };
   private BCRColor[] arrayTwo = { BCRColor.ORANGE, BCRColor.BLUE, BCRColor.BLUE, BCRColor.ORANGE };
@@ -23,7 +23,7 @@ public class LEDAnimationBCR extends Command {
    * @param led LED subsystem
    * @param segment segment to display animation on
    */
-  public LEDAnimationBCR(LED led, LEDSegmentRange segment) {
+  public LEDAnimationBCR(LED led, LEDSegments segment) {
     this.led = led;
     this.segment = segment;
 

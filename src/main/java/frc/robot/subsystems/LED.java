@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
-import frc.robot.Constants.LEDConstants.LEDSegmentRange;
+import frc.robot.Constants.LEDConstants.LEDSegments;
 import frc.robot.utilities.*;
 
 
@@ -63,14 +63,14 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
    * @param percent Percent of last 10 seconds left in match
    */
   public void updateLEDsCountdown(double percent) {
-    double leftCount = LEDSegmentRange.StripLeft.count * percent;
+    double leftCount = LEDSegments.StripLeft.count * percent;
     int ledCountLeft = (int) leftCount;
 
-    double rightCount = LEDSegmentRange.StripRight.count * percent;
+    double rightCount = LEDSegments.StripRight.count * percent;
     int ledCountRight = (int) rightCount;
     
-    setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegmentRange.StripRight.index, ledCountRight);
-    setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft);
+    setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegments.StripRight.index, ledCountRight);
+    setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegments.StripLeft.index + LEDSegments.StripLeft.count - ledCountLeft, ledCountLeft);
   }
 
   /**
@@ -80,9 +80,9 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
    */
   public void updateLEDs(BCRColor color, boolean strip) {
     if (strip) {
-      setLEDs(color, LEDSegmentRange.StripAll);
+      setLEDs(color, LEDSegments.StripAll);
     } else {
-      setLEDs(color, LEDSegmentRange.CANdle);
+      setLEDs(color, LEDSegments.CANdle);
       DataLogUtil.writeMessage("CANdle updated color");
     }
   }
@@ -175,7 +175,7 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
    * @param color BCRColor value
    * @param segment segment to light up
    */
-  public void setLEDs(BCRColor color, LEDSegmentRange segment) {
+  public void setLEDs(BCRColor color, LEDSegments segment) {
     candle.setLEDs(color.r, color.g, color.b, 0, segment.index, segment.count);
   }
 
