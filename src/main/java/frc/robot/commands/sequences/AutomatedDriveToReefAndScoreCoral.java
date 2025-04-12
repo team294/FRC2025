@@ -115,7 +115,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * If not scoring on L4, the robot will drive fully up against the reef, and then back up after scoring.
    * If scoring on L4, the robot will score while not fully up against the reef, and the routine ends when the piece is scored.
    * @param location Reef location to score on
-   * @param score whether we are on the 
+   * @param score true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
