@@ -162,6 +162,7 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber));
     SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber));
     SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber));
+    SmartDashboard.putData("Climber Toggle Coast", new ClimberToggleCoastMode(climber));
     
     // Autos
     SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand());
@@ -264,10 +265,10 @@ public class RobotContainer {
     xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber));
 
     // Manually control elevator with right joystick
-    xbRJoystickTrigger.whileTrue(new ClimberManualControl(xboxController, climber, true));
+    xbLJoystickTrigger.whileTrue(new ClimberManualControl(xboxController, climber, false));
 
     // Manually control wrist with the left joystick
-    xbLJoystickTrigger.whileTrue(new WristManualControl(xboxController, wrist, false));
+    xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, true));
 
     // Stop all motors with LB
     xbLB.onTrue(parallel(
@@ -275,7 +276,8 @@ public class RobotContainer {
       new AlgaeGrabberStop(algaeGrabber),
       new CoralEffectorStop(coralEffector),
       new WristStop(wrist),
-      new ElevatorStop(elevator)
+      new ElevatorStop(elevator),
+      new ClimberStop(climber)
     ));
 
     // Move wrist and elevator to home
@@ -356,8 +358,8 @@ public class RobotContainer {
     coP[14].onFalse(new CoralEffectorStop(coralEffector));
 
     // Climber Commands
-    coP[15].onTrue(new ClimberPrepSequence(elevator, wrist, climber));
-    coP[16].onTrue(new ClimberSetAngleToLift(climber));
+    coP[15].onTrue(new ClimberSetAngleToLift(climber));
+    coP[16].onTrue(new ClimberPrepSequence(elevator, wrist, climber));
     coP[17].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.DEFAULT, climber));
     coP[18].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.START_CONFIG, climber));
 

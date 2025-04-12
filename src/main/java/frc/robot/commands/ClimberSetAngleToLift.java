@@ -18,9 +18,10 @@ public class ClimberSetAngleToLift extends SequentialCommandGroup {
     */
   public ClimberSetAngleToLift(Climber climber) {
     addCommands(
+      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
       parallel(
         new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber),
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBING))
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_LIFTING))
       ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))
     );
   }
