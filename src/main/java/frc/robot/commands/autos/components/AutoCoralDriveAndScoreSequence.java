@@ -35,7 +35,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
-  public AutoCoralDriveAndScoreSequence(boolean fromHP, boolean isLastCoral, ReefLocation location, ReefLevel level, DriveTrain driveTrain,
+  public AutoCoralDriveAndScoreSequence(boolean fromHP, boolean score, ReefLocation location, ReefLevel level, DriveTrain driveTrain,
       Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
       Field field) {
     addCommands(
@@ -43,9 +43,9 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
       // Drive to reef while intaking to ensure coral is intaked (timeout on the intake command for 4 seconds)
       new AutoDriveToReef(fromHP, location, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
       
-      // If coral is detected, score (dependent on if isLastCoral is false). If not, end the score sequence and skip to the next part of the auto
+      // If coral is detected, score (dependent on if isLastCoral is false). If not, wait 0.5 seconds and try again, then end the score sequence and skip to the next part of the auto
       either(
-        new AutomatedDriveToReefAndScoreCoral(location, isLastCoral, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field),
+        new AutomatedDriveToReefAndScoreCoral(location, score, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field),
         none(),
         () -> coralEffector.isCoralPresent()
       ),

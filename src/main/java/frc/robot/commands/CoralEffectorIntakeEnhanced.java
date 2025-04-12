@@ -45,8 +45,12 @@ public class CoralEffectorIntakeEnhanced extends Command {
   public void end(boolean interrupted) {
     // Back off the position, since due to coral velocity it likely overshot the balanced position between the sensors.
     // A different option would be to add to the final position by the (coral velocity)*(time delay @ 20ms).
-    if (!startedWithCoral && coralEffector.isCoralPresent()) {
-      coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition() + CoralEffectorConstants.centerRotationsUndershoot, true);
+    if (coralEffector.isCoralPresent()) {
+      if (!startedWithCoral) {
+        coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition() + CoralEffectorConstants.centerRotationsUndershoot, true);
+      } else {
+        coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition(), true);
+      }
     }
 
     DataLogUtil.writeMessage("CoralEffectorIntakeEnhanced: End");

@@ -480,7 +480,7 @@ public class RobotContainer {
     driveTrain.setVisionForOdometryState(true);
 
     coralEffector.stopCoralEffectorMotor();
-    coralIntakeSequence.schedule();
+    if (!coralEffector.getHoldMode()) coralIntakeSequence.schedule();
 
     if (elevator.isElevatorCalibrated()) {
       elevator.setElevatorProfileTarget(elevator.getElevatorPosition());

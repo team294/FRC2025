@@ -30,7 +30,7 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
-  public AutoCoralCycle(ReefLocation start, ReefLocation end, boolean isLastCoral, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
+  public AutoCoralCycle(ReefLocation start, ReefLocation end, boolean score, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
           CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
     addCommands(
       new DataLogMessage(false, "AutoCoralCycle: Start"),
@@ -39,7 +39,7 @@ public class AutoCoralCycle extends SequentialCommandGroup {
 
       // If not the last coral, then drives from HP to reef location and scores coral
       // Otherwise, if it is the last coral, then drives from HP to end reef location and stops there
-      new AutoCoralDriveAndScoreSequence(true, isLastCoral, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
+      new AutoCoralDriveAndScoreSequence(true, score, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
       
       new DataLogMessage(false, "AutoCoralCycle: End")
     );
