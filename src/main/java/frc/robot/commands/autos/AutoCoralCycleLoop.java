@@ -10,6 +10,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
@@ -24,6 +25,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * TODO Figure out proper exit conditions and timeouts
    * @param reefLocations list of ReefLocation to visit, in order
    * @param reefLevels list of ReefLevel to score on, in order
+   * @param scoreLastCoral true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
    * @param endAtHP true = end at the coral loading station, false = end at the reef 
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem
@@ -35,7 +37,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * @param alliance AllianceSelection utility
    * @param field Field utility
    */
-  public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
+  public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreLastCoral, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
       Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
 
     addCommands(new DataLogMessage(false, "AutoCoralCycleLoop: Start"));
@@ -47,13 +49,18 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
 
     else {
       addCommands(
-        new DriveResetPose(() -> AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get(), false, driveTrain)
+        new DriveResetPose(() -> AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get(), false, driveTrain),
+        either(
+          new InstantCommand(() -> coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition(), true)),
+          none(),
+          () -> coralEffector.isCoralPresent()
+        )
       );
 
       // Score the pre-loaded coral with the first reef location
       if (reefLocations.size() >= 1 && reefLevels.size() >= 1) {
         addCommands(
-          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
+          new AutoCoralDriveAndScoreSequence(false, false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
         );
       }
 
@@ -66,9 +73,11 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
 
           ReefLocation start = reefLocations.get(i);
           ReefLocation end = reefLocations.get(i + 1);
+          boolean isLastCoral = !scoreLastCoral && reefLocations.get(i) == reefLocations.get(reefLocations.size() - 1); // TODO this boolean does not work
 
           addCommands(
-            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
+            // If it is the final coral location, then isFinalCoral = true and the elevator does not move up. If not, then the elevator moves up to score
+            new AutoCoralCycle(start, end, isLastCoral, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
           );
         }
       }
