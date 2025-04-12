@@ -25,13 +25,23 @@ import frc.robot.utilities.LEDEventUtil;
  * @param algaeGrabber AlgaeGrabber subsystem
  */
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
-  public AlgaeIntakeSequence(ElevatorWristPosition position, DriveTrain driveTrain, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
+  public AlgaeIntakeSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
       
       parallel(
-        parallel(
+        sequence(
           new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
-          new AlgaeGrabberIntake(algaeGrabber)
+          parallel(
+            new AlgaeGrabberIntake(algaeGrabber),
+            either(
+              sequence(
+                waitSeconds(0.5),
+                new WristSetAngle(wrist.getWristAngle() + 5.0, wrist)
+              ),
+              none(),
+              () -> position == ElevatorWristPosition.ALGAE_LOWER || position == ElevatorWristPosition.ALGAE_UPPER
+            )
+          )
         ),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_INTAKING))
       ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
