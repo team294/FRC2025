@@ -479,13 +479,13 @@ public final class Constants {
     // TODO UNCALIBRATED
     public enum ClimberAngle {
       LOWER_LIMIT(-2.0),
-      UPPER_LIMIT(135.0),
+      UPPER_LIMIT(165.0),
       CALIBRATE_MANUAL(80.0),
 
       DEFAULT(80.0),
       START_CONFIG(90.0),
-      CLIMB_START(45.0),
-      CLIMB_END(133.0);
+      CLIMB_START(0.0),
+      CLIMB_END(150.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
