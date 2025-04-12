@@ -82,9 +82,19 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
           )
         ),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF))
-      ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+      ).handleInterrupt(
+        () -> either(
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+          () -> algaeGrabber.isAlgaePresent()
+        )
+      ),
 
-      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+      either(
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+        () -> algaeGrabber.isAlgaePresent()
+      ),
 
       new DataLogMessage(false, "AutomatedDriveToReefAndIntakeAlgae: End")
     );

@@ -30,7 +30,7 @@ public class DriveToBargeWithOdometry extends SequentialCommandGroup {
         new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestBargeScoringPosition(driveTrain.getPose())), 
         0.02, 1, driveTrain),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_BARGE))
-      ),
+      ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
       runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))
     );
   }
