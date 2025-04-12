@@ -25,6 +25,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * TODO Figure out proper exit conditions and timeouts
    * @param reefLocations list of ReefLocation to visit, in order
    * @param reefLevels list of ReefLevel to score on, in order
+   * @param scoreLastCoral true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
    * @param endAtHP true = end at the coral loading station, false = end at the reef 
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem

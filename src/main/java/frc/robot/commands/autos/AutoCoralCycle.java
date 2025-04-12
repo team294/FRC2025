@@ -19,6 +19,7 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    *   - Drives to reef and scores the coral
    * @param start ReefLocation (A-L) to start at
    * @param end ReefLocation (A-L) to end at
+   * @param score true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem

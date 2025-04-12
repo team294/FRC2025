@@ -22,6 +22,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
   /**
    * Drive from barge to end (reef location) and score a coral.
    * @param fromHP true = starting at HP, false = starting at barge
+   * @param score true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
    * @param location ReefLocation (A-L) to end at
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsystem
