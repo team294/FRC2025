@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
-import frc.robot.Constants.LEDConstants.LEDSegmentRange;
+import frc.robot.Constants.LEDConstants.LEDSegments;
 import frc.robot.utilities.*;
 
 
@@ -27,47 +27,19 @@ public class LED extends SubsystemBase {
 
   private Timer matchTimer;
   private CANdleEvents previousEventCANdle;
-  private StripEvents previousEventStrip;
-  private BCRColor dashboardColor = BCRColor.NEUTRAL;
+  public static BCRColor dashboardColor = BCRColor.NEUTRAL;
   private boolean lastStickyFaultPresentReading = false;
 
   public enum CANdleEvents {
     STICKY_FAULTS_CLEARED,
     STICKY_FAULT_PRESENT,
-  }
+}
 
-  Map<CANdleEvents, Integer> prioritiesCANdleEvents = Map.of(
-    CANdleEvents.STICKY_FAULTS_CLEARED, 1,
-    CANdleEvents.STICKY_FAULT_PRESENT, 1
-  );
-  
-  public enum StripEvents {
-    MATCH_COUNTDOWN,
-    CORAL_MODE,
-    CORAL_INTAKING,
-    ALGAE_MODE,
-    ALGAE_INTAKING,
-    AUTO_DRIVE_IN_PROGRESS,
-    AUTO_DRIVE_COMPLETE,
-    SUBSYSTEM_UNCALIBRATED,
-    SCORING_COMPLETE,
-    NEUTRAL,
-    ROBOT_DISABLED
-  }
-
-  private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
-  static {
-    prioritiesStripEvents.put(StripEvents.CORAL_INTAKING, 0);
-    prioritiesStripEvents.put(StripEvents.CORAL_MODE, 1);
-    prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 2);
-    prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 3);
-    // prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS, 4);
-    // prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_COMPLETE, 5);
-    prioritiesStripEvents.put(StripEvents.SUBSYSTEM_UNCALIBRATED, 6);
-    prioritiesStripEvents.put(StripEvents.SCORING_COMPLETE, 7);
-    prioritiesStripEvents.put(StripEvents.NEUTRAL, 8);
-    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 9);
-  }
+private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new HashMap<>();
+    static {
+        prioritiesCANdleEvents.put(CANdleEvents.STICKY_FAULTS_CLEARED, 0);
+        prioritiesCANdleEvents.put(CANdleEvents.STICKY_FAULT_PRESENT, 0);
+    }
 
   /**
    * Creates the LED subsystem.
@@ -80,28 +52,25 @@ public class LED extends SubsystemBase {
     this.logRotationKey = DataLogUtil.allocateLogRotation();
 
     this.candle = new CANdle(CANPort, "");
-    // this.segments = new HashMap<LEDSegmentRange, LEDSegment>();
 
     candle.configBrightnessScalar(0.25);
 
     this.matchTimer = matchTimer;
-
-    sendEvent(StripEvents.NEUTRAL);
   }
 
   /**
    * Updates the LED strips for a countdown animation.
-   * @param percent 0-1 progress through the countdown
+   * @param percent Percent of last 10 seconds left in match
    */
-  private void updateLEDsCountdown(double percent) {
-    double leftCount = LEDSegmentRange.StripRight.count * percent;
+  public void updateLEDsCountdown(double percent) {
+    double leftCount = LEDSegments.StripLeft.count * percent;
     int ledCountLeft = (int) leftCount;
 
-    double rightCount = LEDSegmentRange.StripLeft.count * percent;
+    double rightCount = LEDSegments.StripRight.count * percent;
     int ledCountRight = (int) rightCount;
     
-    setLEDs(Color.kRed, LEDSegmentRange.StripRight.index + LEDSegmentRange.StripRight.count - ledCountLeft, ledCountLeft); 
-    setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index, ledCountRight);
+    setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegments.StripRight.index, ledCountRight);
+    setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegments.StripLeft.index + LEDSegments.StripLeft.count - ledCountLeft, ledCountLeft);
   }
 
   /**
@@ -109,20 +78,19 @@ public class LED extends SubsystemBase {
    * @param color BCRColor to make LEDs (solid)
    * @param strip true = update strips, false = update CANdle
    */
-  private void updateLEDs(BCRColor color, boolean strip) {
+  public void updateLEDs(BCRColor color, boolean strip) {
     if (strip) {
-      setLEDs(color, LEDSegmentRange.StripRight);
-      setLEDs(color, LEDSegmentRange.StripLeft);
-      setLEDs(color, LEDSegmentRange.StripHorizontal);
+      setLEDs(color, LEDSegments.StripAll);
     } else {
-      setLEDs(color, LEDSegmentRange.CANdle);
+      setLEDs(color, LEDSegments.CANdle);
+      DataLogUtil.writeMessage("CANdle updated color");
     }
   }
 
   /**
-   * Sends an event to the CANdle and update the LEDs if necessary.
-   * @param event CANdleEvent event happening
-   */
+  * Sends an event to the CANdle and update the LEDs if necessary.
+  * @param event CANdleEvent event happening
+  */
   public void sendEvent(CANdleEvents event) {
     // Do not update if the new event priority is less than the previous
     if (getPriority(event) < getPriority(previousEventCANdle)) return;
@@ -130,99 +98,16 @@ public class LED extends SubsystemBase {
     switch (event) {
       case STICKY_FAULT_PRESENT:
         updateLEDs(BCRColor.CANDLE_STICKY_FAULT, false);
+        DataLogUtil.writeMessage("LED CANdle Sticky Fault Displaying");
         break;
       default:
-        updateLEDs(BCRColor.CANDLE_IDLE, false);
+        updateLEDs(BCRColor.CANDLE_NEUTRAL, false);
+        DataLogUtil.writeMessage("LED CANdle Display Cleared");
         break;
     }
 
     // Update previous event since we updated the LEDs
     previousEventCANdle = event;
-  }
-
-  /**
-   * Sends an event to the LED Strips and update the LEDs if necessary.
-   * @param event StripEvent event happening
-   */
-  public void sendEvent(StripEvents event) {
-    // Always update state if previous event was neutral or disabled.
-    // Do not update if last event was not neutral or disabled and the new event priority is less than the previous.
-    // If previous event was algae mode and new event is coral intaking or coral mode, override priorities and update state.
-
-    if (
-      previousEventStrip != StripEvents.NEUTRAL && previousEventStrip != StripEvents.ROBOT_DISABLED && previousEventStrip == StripEvents.SCORING_COMPLETE
-      && (
-        !(previousEventStrip == StripEvents.ALGAE_MODE && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
-        || getPriority(event) < getPriority(previousEventStrip)
-      )
-    ) {
-      DataLogUtil.writeMessage("LED SendEvent: Return");
-      return;
-    }
-
-    
-    DataLogUtil.writeMessage("LED SendEvent: switch statement");
-    switch (event) {
-      case MATCH_COUNTDOWN: // TODO has not been tested
-        double percent = Math.max(matchTimer.get() - 125, 0) / 10.0;
-        updateLEDsCountdown(percent);
-        DataLogUtil.writeMessage("LED Match Countdown");
-        break;
-      // case AUTO_DRIVE_COMPLETE: // TODO this does not work (has change, needs to be tested)
-      //   updateLEDs(BCRColor.AUTO_DRIVE_COMPLETE, true);
-      //   dashboardColor = BCRColor.AUTO_DRIVE_COMPLETE;
-      //   break;
-      case SCORING_COMPLETE:
-        updateLEDs(BCRColor.SCORING_COMPLETE, true);
-        dashboardColor = BCRColor.SCORING_COMPLETE;
-        DataLogUtil.writeMessage("LED Scoring Complete");
-        break;
-      case ALGAE_MODE:
-        updateLEDs(BCRColor.ALGAE_MODE, true);
-        dashboardColor = BCRColor.ALGAE_MODE;
-        DataLogUtil.writeMessage("LED Algae Mode");
-        break;
-      case CORAL_MODE:
-        updateLEDs(BCRColor.CORAL_MODE, true);
-        dashboardColor = BCRColor.CORAL_MODE;
-        DataLogUtil.writeMessage("LED Coral Mode");
-        break;
-
-      // The events below set the pattern outside of the LED subsystem, see comments
-
-      // LEDAnimationBCR, robot disabled (see RobotContainer.disabledInit())
-      case ROBOT_DISABLED:
-        dashboardColor = BCRColor.NEUTRAL;
-        break;
-      // LEDAnimationFlash, Wrist / Elevator uncalibrated (see each subsystem)
-      // case SUBSYSTEM_UNCALIBRATED: // TODO has not been tested
-      //   dashboardColor = BCRColor.SUBSYSTEM_UNCALIBRATED;
-      //   break;
-      // LEDAnimationFlash, intaking algae (see AlgaeIntakeSequence)
-      case ALGAE_INTAKING:
-        dashboardColor = BCRColor.ALGAE_MODE;
-        DataLogUtil.writeMessage("LED Algae Intaking");
-        break;
-      // LEDAnimationFlash, intaking coral (see CoralIntakeSequence)
-      case CORAL_INTAKING:
-        dashboardColor = BCRColor.CORAL_MODE;
-        DataLogUtil.writeMessage("LED Coral Intaking");
-        break;
-      // // LEDAnimationRainbow, automated drive and score (see AutomatedDriveToReefAndScoreCoral)
-      // case AUTO_DRIVE_IN_PROGRESS:
-      //   dashboardColor = BCRColor.WHITE;
-      //   break;
-
-      default:
-        clearAnimation();
-        updateLEDs(BCRColor.NEUTRAL, true);
-        dashboardColor = BCRColor.NEUTRAL;
-        DataLogUtil.writeMessage("LED Neutral");
-        break;
-    }
-
-    // Update previous event since the LEDs were updated
-    previousEventStrip = event;
   }
 
   /**
@@ -290,7 +175,7 @@ public class LED extends SubsystemBase {
    * @param color BCRColor value
    * @param segment segment to light up
    */
-  public void setLEDs(BCRColor color, LEDSegmentRange segment) {
+  public void setLEDs(BCRColor color, LEDSegments segment) {
     candle.setLEDs(color.r, color.g, color.b, 0, segment.index, segment.count);
   }
 
@@ -312,21 +197,12 @@ public class LED extends SubsystemBase {
   private int getPriority(CANdleEvents event) {
     return event != null ? prioritiesCANdleEvents.getOrDefault(event, -1) : -1;
   }
-
-  /**
-   * Gets the priority level for an event.
-   * @param event StripEvents event
-   * @return priority level integer (higher value = higher priority), default is -1
-   */
-  private int getPriority(StripEvents event) {
-    return event != null ? prioritiesStripEvents.getOrDefault(event, -1) : -1;
-  }
-
+  
   @Override
   public void periodic() {
     if(DataLogUtil.isMyLogRotation(logRotationKey)) {
       // If there is a sticky fault, send sticky fault present event
-      if (RobotPreferences.isStickyFaultActive()) {
+      if (RobotPreferences.isStickyFaultActive() && !lastStickyFaultPresentReading) {
         sendEvent(CANdleEvents.STICKY_FAULT_PRESENT);
         lastStickyFaultPresentReading = true;
       }
@@ -338,11 +214,11 @@ public class LED extends SubsystemBase {
       }
 
       SmartDashboard.putString("LED State", String.format("#%02x%02x%02x", dashboardColor.r, dashboardColor.g, dashboardColor.b));
-      SmartDashboard.putNumber("Teleop Timer", matchTimer.get());
+      SmartDashboard.putNumber("Teleop Timer", 135.0 - matchTimer.get());
 
       // If in last 10 seconds of match, send match countdown event
       if (matchTimer.get() > 125 && matchTimer.get() <= 135) {
-        sendEvent(StripEvents.MATCH_COUNTDOWN);
+        updateLEDsCountdown(Math.max(matchTimer.get() - 125, 0) / 10.0);
       }
     }
   }

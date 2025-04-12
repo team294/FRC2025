@@ -5,13 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants.BCRColor;
 import frc.robot.subsystems.LED;
 
 public class LEDSendNeutral extends InstantCommand {
   private final LED led;
 
   /**
-   * Send NEUTRAL Strip Event to LEDs
+   * Sends NEUTRAL Strip Event to LEDs 
    * @param led LED subsystem
    */
   public LEDSendNeutral(LED led) {
@@ -20,8 +21,9 @@ public class LEDSendNeutral extends InstantCommand {
     addRequirements(led);
   }
 
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    led.sendEvent(LED.StripEvents.NEUTRAL);
+    led.updateLEDs(BCRColor.NEUTRAL, true);
   }
 }

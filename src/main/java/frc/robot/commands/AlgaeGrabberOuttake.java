@@ -8,12 +8,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AlgaeGrabberConstants;
 import frc.robot.subsystems.AlgaeGrabber;
-import frc.robot.subsystems.LED;
 import frc.robot.utilities.DataLogUtil;
+import frc.robot.utilities.LEDEventUtil;
 
 public class AlgaeGrabberOuttake extends Command {
   private final AlgaeGrabber algaeGrabber;
-  private final LED led;
   
   private final Timer timer;
   private final double seconds;
@@ -23,9 +22,8 @@ public class AlgaeGrabberOuttake extends Command {
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param log FileLog utility
    */
-  public AlgaeGrabberOuttake(AlgaeGrabber algaeGrabber, LED led) {
+  public AlgaeGrabberOuttake(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
-    this.led = led;
     
     this.timer = new Timer();
     this.seconds = 2.0;
@@ -56,7 +54,7 @@ public class AlgaeGrabberOuttake extends Command {
   @Override
   public void end(boolean interrupted) {
     algaeGrabber.stopAlgaeGrabberMotor();
-    led.sendEvent(LED.StripEvents.NEUTRAL);
+    LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
     timer.stop();
     timer.reset();
 
