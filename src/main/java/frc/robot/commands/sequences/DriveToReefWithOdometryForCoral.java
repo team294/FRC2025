@@ -87,9 +87,10 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
 
   /**
    * For autonomous only
-   * @param location
-   * @param driveTrain
-   * @param field
+   * Drives to reef with odometry to the given reef position to the reef
+   * @param location specific reef location to drive to 
+   * @param driveTrain DriveTrain subsystem
+   * @param field Field utility
    */
   public DriveToReefWithOdometryForCoral(ReefLocation location, DriveTrain driveTrain, Field field) {
     addCommands(
