@@ -37,8 +37,10 @@ import frc.robot.Constants.FieldConstants;
         DToHP("DToHP"),
         HPToD("HPToD"),
         BargeRightToE("BargeRightToE"),
+        BargeCenterToG("BargeCenterToG"),
         EToHP("EToHP"),
-        HPToE("HPToE");
+        HPToE("HPToE"),
+        BargeScoringToIJ("BargeScoringToIJ");
 
         @SuppressWarnings({"MemberName", "PMD.SingularField"})
         public final String trajFileName;

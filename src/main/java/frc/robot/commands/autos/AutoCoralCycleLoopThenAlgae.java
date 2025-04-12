@@ -22,9 +22,11 @@ import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 import frc.robot.commands.sequences.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
+import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 
 public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
   /**
+   * Currently written for center auto only. Scores GH algae and then IJ algae into barge.
    * Scores each coral in the locations of the given list at the given level, then grabs the algae at the ending position and backs up.
    * @param reefLocations list of ReefLocation to visit, in order
    * @param reefLevels list of ReefLevel to score on, in order
@@ -42,7 +44,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param field Field field
    */
   public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreFirstAlgae, boolean grabSecondAlgae, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance, Field field) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led, Joystick rightJoystick, AllianceSelection alliance, Field field, TrajectoryCache cache) {
     
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
@@ -50,25 +52,18 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
     }
 
     else {
-      int lastIndex = reefLocations.size() - 1;
-      ReefLocation lastCoralLocation = reefLocations.get(lastIndex);
-      ElevatorWristPosition position = lastCoralLocation.isAlgaeLower ? ElevatorWristPosition.ALGAE_LOWER : ElevatorWristPosition.ALGAE_UPPER;
-      double yRelativeOffset = lastCoralLocation.onRightSide ? 0.164 : -0.164; // From ReefScoringPositionAprilTagOffset  
+      //int lastIndex = reefLocations.size() - 1;
+      //ReefLocation lastCoralLocation = reefLocations.get(lastIndex);
+      //ElevatorWristPosition position = lastCoralLocation.isAlgaeLower ? ElevatorWristPosition.ALGAE_LOWER : ElevatorWristPosition.ALGAE_UPPER;
 
       addCommands(
-        new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae", "Start", lastCoralLocation, lastCoralLocation.toString(), "onRightSide", lastCoralLocation.onRightSide, "yRelativeOffset", yRelativeOffset),
+        new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae: Start"),
 
         // First, do the loop for the coral cycles (ends at reef, bumpers distanceFromReefToScore away from reef aka 6.25 inches)
         new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, alliance, field),
         
-        // Drive to algae position (Luke said it works)
-        new DriveToReefWithOdometryForAlgae(driveTrain, field), // ends 0.2 meters away
-        
-        parallel(
-          new AlgaeIntakeSequence(position, elevator, wrist, algaeGrabber, led),
-          // We check if algae is present to end the driving because the algae intake sequence runs longer when intaking from the reef
-          new DriveToPose(CoordType.kRelative, new Pose2d(Units.inchesToMeters(3), 0, Rotation2d.kZero), driveTrain).until(() -> algaeGrabber.isAlgaePresent())
-        ),
+        // Drive and intake algae from the reef (from GH only)
+        new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.GH, driveTrain, elevator, wrist, algaeGrabber, led, field),
       
         // If we want to score algae, then score it. If not, just back up and end auto
         either(
@@ -77,19 +72,24 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
             new DriveToBargeWithOdometry(driveTrain, field),
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
             new AlgaeGrabberOuttake(algaeGrabber, led),
-            new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
+            new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
           
-            // // Now, we go to grab a second algae, IJ, if the boolean to do so is true
-            // either(
-            //   sequence(
-            //     // Drive to IJ
-            //     // AlgaeIntakeSequence
-            //     // Back up
-            //     none()
-            //   ), 
-            //   none(), 
-            //   () -> grabSecondAlgae
-            // )
+            // Now, we go to grab a second algae, IJ, if the boolean to do so is true
+            either(
+              sequence(
+                // Drive partially to IJ with trajectory, then finish driving and grab algae (we can figure out avoiding a stop if necessary after verifying that this works)
+                new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.BargeScoringToIJ), driveTrain, alliance),
+                new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.IJ, driveTrain, elevator, wrist, algaeGrabber, led, field),
+                
+                // Drive to barge, move elevator up, score, move elevator down.
+                new DriveToBargeWithOdometry(driveTrain, field),
+                new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
+                new AlgaeGrabberOuttake(algaeGrabber, led),
+                new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
+              ), 
+              none(), 
+              () -> grabSecondAlgae
+            )
           ),
 
           

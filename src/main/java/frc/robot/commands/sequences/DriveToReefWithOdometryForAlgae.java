@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
+import frc.robot.Constants.FieldConstants.AlgaeLocation;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
@@ -18,7 +19,6 @@ public class DriveToReefWithOdometryForAlgae extends SequentialCommandGroup {
    * Drives to the nearest algae pickup position on the reef with an offset.
    * @param driveTrain DriveTrain subsystem
    * @param field Field utility
-   * @param log FileLog utility
    */
   public DriveToReefWithOdometryForAlgae(DriveTrain driveTrain, Field field) {
     addCommands(
@@ -31,4 +31,23 @@ public class DriveToReefWithOdometryForAlgae extends SequentialCommandGroup {
       new DataLogMessage(false, "DriveToReefWithOdometryForAlgae", "End")
     );
   }
+
+  /**
+   * Drive to specific algae pickup position on the reef with an offset
+   * @param algaeLocation algae location on the reef to drive to
+   * @param driveTrain DriveTrain subsystem
+   * @param field Field utility
+   */
+  public DriveToReefWithOdometryForAlgae(AlgaeLocation algaeLocation, DriveTrain driveTrain, Field field) {
+    addCommands(
+      new DataLogMessage(false, "DriveToReefWithOdometryForAlgae", "Start"),
+
+      new DriveToPose(CoordType.kAbsolute, () -> (field.getAlgaePickupPositionWithOffset(algaeLocation, 
+          new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.ReefAlgaePickupPositionOffset, 0, new Rotation2d(0)))),
+          0.02, 1, driveTrain),
+
+      new DataLogMessage(false, "DriveToReefWithOdometryForAlgae", "End")
+    );
+  }
+  
 }
