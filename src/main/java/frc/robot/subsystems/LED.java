@@ -83,6 +83,7 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
       setLEDs(color, LEDSegmentRange.StripAll);
     } else {
       setLEDs(color, LEDSegmentRange.CANdle);
+      DataLogUtil.writeMessage("CANdle updated color");
     }
   }
 
@@ -100,7 +101,7 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
         DataLogUtil.writeMessage("LED CANdle Sticky Fault Displaying");
         break;
       default:
-        updateLEDs(BCRColor.CANDLE_IDLE, false);
+        updateLEDs(BCRColor.CANDLE_NEUTRAL, false);
         DataLogUtil.writeMessage("LED CANdle Display Cleared");
         break;
     }
@@ -201,7 +202,7 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
   public void periodic() {
     if(DataLogUtil.isMyLogRotation(logRotationKey)) {
       // If there is a sticky fault, send sticky fault present event
-      if (RobotPreferences.isStickyFaultActive()) {
+      if (RobotPreferences.isStickyFaultActive() && !lastStickyFaultPresentReading) {
         sendEvent(CANdleEvents.STICKY_FAULT_PRESENT);
         lastStickyFaultPresentReading = true;
       }

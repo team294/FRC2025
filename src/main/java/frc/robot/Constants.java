@@ -493,7 +493,7 @@ public final class Constants {
 
   // Colors for the LEDs based on different robot states (see BCRRobotState)
   public enum BCRColor {
-    CANDLE_IDLE(0, 0, 0),              // CANdle Black (off)
+    CANDLE_NEUTRAL(0, 0, 0),              // CANdle Black (off)
     CANDLE_STICKY_FAULT(255, 0, 0),    // CANdle Red
     NEUTRAL(255, 255, 255),            // White
     ALGAE_MODE(0, 255, 0),             // Turquoise
