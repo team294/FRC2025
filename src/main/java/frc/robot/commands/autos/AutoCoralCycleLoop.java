@@ -53,7 +53,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
       // Score the pre-loaded coral with the first reef location
       if (reefLocations.size() >= 1 && reefLevels.size() >= 1) {
         addCommands(
-          new AutoCoralDriveAndScoreSequence(false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
+          new AutoCoralDriveAndScoreSequence(false, false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
         );
       }
 
@@ -66,9 +66,18 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
 
           ReefLocation start = reefLocations.get(i);
           ReefLocation end = reefLocations.get(i + 1);
+          boolean isLastCoral;
+          if (reefLocations.get(i) == reefLocations.get(reefLocations.size() - 1)) {
+            isLastCoral = true;
+          }
+          else {
+            isLastCoral = false;
+          }       
 
           addCommands(
-            new AutoCoralCycle(start, end, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
+            // If it is the final coral location, then isFinalCoral = true and the elevator does not move up. If not, then the elevator moves up to score
+            new AutoCoralCycle(start, end, isLastCoral, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
+            
           );
         }
       }

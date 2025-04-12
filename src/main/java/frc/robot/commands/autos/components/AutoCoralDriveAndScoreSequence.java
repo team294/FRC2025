@@ -35,7 +35,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
-  public AutoCoralDriveAndScoreSequence(boolean fromHP, ReefLocation location, ReefLevel level, DriveTrain driveTrain,
+  public AutoCoralDriveAndScoreSequence(boolean fromHP, boolean isLastCoral, ReefLocation location, ReefLevel level, DriveTrain driveTrain,
       Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
       Field field) {
     addCommands(
@@ -43,28 +43,15 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
       // Drive to reef while intaking to ensure coral is intaked (timeout on the intake command for 4 seconds)
       new AutoDriveToReef(fromHP, location, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
       
-      // If coral is detected, score. If not, end the score sequence and skip to the next part of the auto
+      // If coral is detected, score (dependent on if isLastCoral is false). If not, end the score sequence and skip to the next part of the auto
       either(
-        new AutomatedDriveToReefAndScoreCoral(location, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field),
+        new AutomatedDriveToReefAndScoreCoral(location, isLastCoral, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field),
         none(),
         () -> coralEffector.isCoralPresent()
       ),
-        new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: End")
-      
-      // // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log),
-      // new CoralEffectorOuttake(coralEffector, log),
-      // // Back up from reef by driveBackFromReefDistance
-      // new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
-      //     0.5, 1.0, 
-      //     TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-      //     true, true, driveTrain, log)
-      /*new AutoDriveToReefAndPrep(level, fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, alliance, cache),
-      // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain),
-      new CoralEffectorOuttake(coralEffector),
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToScore, 0, Rotation2d.kZero), 
-          0.5, 1.0, 
-          TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          true, true, driveTrain)*/
+
+
+      new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: End")
     );
   }
 }

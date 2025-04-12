@@ -124,7 +124,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param rightJoystick Right joystick
    * @param field Field field
    */
-  public AutomatedDriveToReefAndScoreCoral(ReefLocation location, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
+  public AutomatedDriveToReefAndScoreCoral(ReefLocation location, boolean isLastCoral, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
       AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, Field field) {
     addCommands(
       new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: Start"),
@@ -146,8 +146,12 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
                 waitSeconds(0.6),
                 new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
               ),
-              // Move elevator/wrist to correct position based on given level
-              new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
+
+              // Move elevator/wrist to correct position based on given level, only if isLastCoral is not true (meaning we are not at the last coral so we still want to move elevator)
+              either(
+                new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector),
+                none(),
+                () -> !isLastCoral
             )
           ),
         
@@ -161,8 +165,12 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
             () -> level == ReefLevel.L1
           ),
     
-          // Score piece
-          new CoralEffectorOuttake(coralEffector),
+          // Score piece (only if it is not the last coral location)
+          either(
+            new CoralEffectorOuttake(coralEffector),
+            none(),
+            () -> !isLastCoral
+          ),
     
           // If scoring on L1, wait 0.5 seconds then back up
           either(
@@ -180,7 +188,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF))
       ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),     
       
-      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))),
 
       new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
     );
