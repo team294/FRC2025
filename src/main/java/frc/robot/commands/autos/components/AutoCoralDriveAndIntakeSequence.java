@@ -21,15 +21,13 @@ public class AutoCoralDriveAndIntakeSequence extends SequentialCommandGroup {
    * @param coralEffector EndEffector subsystem
    * @param hopper Hopper subsystem
    * @param alliance AllianceSelection alliance
-   * @param cache TrajectoryCache cache
-   * @param log FileLog log
    */
   public AutoCoralDriveAndIntakeSequence(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
       CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance) {
     addCommands(
       new DataLogMessage(false, "AutoCoralDriveAndIntakeSequence: Start, starting reef location =", start.toString()),
       new AutoDriveToHPAndPrep(start, driveTrain, elevator, wrist, hopper, coralEffector, alliance),
-      new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(0.294),
+      new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(0.125),
       new DataLogMessage(false, "AutoCoralDriveAndIntakeSequence: End")
     );
   }

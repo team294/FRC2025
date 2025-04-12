@@ -267,6 +267,16 @@ public class Field {
     }
 
     /**
+     * Returns robot's scoring position based on ReefLocation passed in
+     * @param location ReefLocation location
+     * @param offset Transform2d offset
+     * @return reef scoring position
+     */
+    public Pose2d getReefScoringPositionWithOffset(ReefLocation location, Transform2d offset) {
+        return getReefScoringPosition(location).transformBy(offset);
+    }
+    
+    /**
      * Gets the Pose2d of the given algae pickup position. This position is flipped depending on the alliance.
      * @param position the pair of letters value associated with one of the 6 algae positions (AB-KL starting at the upper 9 o'clock position and moving CCW)
      * @return Pose2d of one of the algae pickup positions (against the base).

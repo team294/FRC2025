@@ -59,7 +59,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
         new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae: Start"),
 
         // First, do the loop for the coral cycles (ends at reef, bumpers distanceFromReefToScore away from reef aka 6.25 inches)
-        new AutoCoralCycleLoop(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
+        new AutoCoralCycleLoop(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
         
         // Drive and intake algae from the reef (from GH only)
         new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.GH, driveTrain, elevator, wrist, algaeGrabber, field),

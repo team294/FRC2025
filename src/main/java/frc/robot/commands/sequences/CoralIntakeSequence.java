@@ -44,7 +44,7 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
       either(
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-        () -> coralEffector.isCoralPresent()),
+        () -> coralEffector.getHoldMode()),
       new HopperStop(hopper)
     );
   }
