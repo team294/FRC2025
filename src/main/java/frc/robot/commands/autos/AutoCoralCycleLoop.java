@@ -35,7 +35,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * @param alliance AllianceSelection utility
    * @param field Field utility
    */
-  public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
+  public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreLastCoral, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
       Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
 
     addCommands(new DataLogMessage(false, "AutoCoralCycleLoop: Start"));
@@ -66,18 +66,11 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
 
           ReefLocation start = reefLocations.get(i);
           ReefLocation end = reefLocations.get(i + 1);
-          boolean isLastCoral;
-          if (reefLocations.get(i) == reefLocations.get(reefLocations.size() - 1)) {
-            isLastCoral = true;
-          }
-          else {
-            isLastCoral = false;
-          }       
+          boolean isLastCoral = !scoreLastCoral && reefLocations.get(i) == reefLocations.get(reefLocations.size() - 1);       
 
           addCommands(
             // If it is the final coral location, then isFinalCoral = true and the elevator does not move up. If not, then the elevator moves up to score
             new AutoCoralCycle(start, end, isLastCoral, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
-            
           );
         }
       }
