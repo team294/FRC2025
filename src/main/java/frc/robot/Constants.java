@@ -480,7 +480,7 @@ public final class Constants {
     public enum ClimberAngle {
       LOWER_LIMIT(-2.0),
       UPPER_LIMIT(135.0),
-      CALIBRATE_MANUAL(-84.0),
+      CALIBRATE_MANUAL(80.0),
 
       DEFAULT(80.0),
       CLIMB_START(45.0),
