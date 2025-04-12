@@ -222,10 +222,12 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
 
           // Drive forward to get to the reef
           parallel(
-            new DriveToPose(CoordType.kRelative, () -> new Pose2d(field.getNearestAlgaeElevatorPosition(() -> driveTrain.getPose()).equals(ElevatorWristPosition.ALGAE_LOWER) ? DriveConstants.distanceFromReefToPickupAlgaeLower : DriveConstants.distanceFromReefToPickupAlgaeUpper, 0, new Rotation2d(0)),
-                0.5, 1.0, 
-                TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-                true, true, driveTrain),
+            sequence(
+              new DriveToPose(CoordType.kRelative, () -> new Pose2d(field.getNearestAlgaeElevatorPosition(() -> driveTrain.getPose()).equals(ElevatorWristPosition.ALGAE_LOWER) ? DriveConstants.distanceFromReefToPickupAlgaeLower : DriveConstants.distanceFromReefToPickupAlgaeUpper, 0, new Rotation2d(0)),
+              0.5, 1.0, 
+              TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+              true, true, driveTrain)
+            ),
 
             // Intake algae
             new AlgaeIntakeSequence(field.getNearestAlgaeElevatorPosition(() -> driveTrain.getPose()), elevator, wrist, algaeGrabber).until(() -> algaeGrabber.isAlgaePresent())

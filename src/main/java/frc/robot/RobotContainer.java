@@ -173,8 +173,6 @@ public class RobotContainer {
     SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field));
 
     // Copanel buttons
-
-    // Vision
     SmartDashboard.putData("Vision Enable Odometry Updates", new VisionOdometryStateSet(true, driveTrain));
     SmartDashboard.putData("Vision Disable Odometry Updates", new VisionOdometryStateSet(false, driveTrain));
 
