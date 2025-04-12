@@ -66,52 +66,52 @@ public class LEDEventUtil {
         && getPriority(event) < getPriority(previousEventStrip)
       )
     ) {
-      DataLogUtil.writeMessage("LED SendEvent: Return");
+      DataLogUtil.writeMessage("LED Strips SendEvent: Return");
       return;
     }
 
     
-    DataLogUtil.writeMessage("LED SendEvent: switch statement");
+    DataLogUtil.writeMessage("LED Strips SendEvent: switch statement");
     switch (event) {
       case CORAL_INTAKING:
         LED.dashboardColor = BCRColor.CORAL_MODE;
         led.animate(ledAnimationStrobeCoral);
-        DataLogUtil.writeMessage("LED Coral Intaking");
+        DataLogUtil.writeMessage("LED Strips Coral Intaking");
         break;
       case CORAL_MODE:
         LED.dashboardColor = BCRColor.CORAL_MODE;
         led.updateLEDs(BCRColor.CORAL_MODE, true);
-        DataLogUtil.writeMessage("LED Coral Mode");
+        DataLogUtil.writeMessage("LED Strips Coral Mode");
         break;
       case ALGAE_INTAKING:
         LED.dashboardColor = BCRColor.ALGAE_MODE;
         led.animate(ledAnimationStrobeAlgae);
-        DataLogUtil.writeMessage("LED Algae Intaking");
+        DataLogUtil.writeMessage("LED Strips Algae Intaking");
         break;
       case ALGAE_MODE:
         LED.dashboardColor = BCRColor.ALGAE_MODE;
         led.updateLEDs(BCRColor.ALGAE_MODE, true);
-        DataLogUtil.writeMessage("LED Algae Mode");
+        DataLogUtil.writeMessage("LED Strips Algae Mode");
         break;
       case AUTO_DRIVE_IN_PROGRESS_REEF:
         LED.dashboardColor = BCRColor.NEUTRAL;
         led.animate(ledAnimationRainbowReef);
-        DataLogUtil.writeMessage("LED Reef Auto Drive in Progress");
+        DataLogUtil.writeMessage("LED Strips Reef Auto Drive in Progress");
         break;
       case AUTO_DRIVE_IN_PROGRESS_BARGE:
         LED.dashboardColor = BCRColor.NEUTRAL;
         led.animate(ledAnimationRainbowBarge);
-        DataLogUtil.writeMessage("LED Barge Auto Drive in Progress");
+        DataLogUtil.writeMessage("LED Strips Barge Auto Drive in Progress");
       case ROBOT_DISABLED:
         LED.dashboardColor = BCRColor.NEUTRAL;
         ledAnimationBCR.schedule();
-        DataLogUtil.writeMessage("LED Robot Disabled");
+        DataLogUtil.writeMessage("LED Strips Robot Disabled");
         break;
       default:
         LED.dashboardColor = BCRColor.NEUTRAL;
         led.clearAnimation();
         ledSendNeutral.schedule();
-        DataLogUtil.writeMessage("LED Neutral");
+        DataLogUtil.writeMessage("LED Strips Neutral");
         break;
     }
 

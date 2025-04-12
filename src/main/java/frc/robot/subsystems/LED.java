@@ -60,16 +60,17 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
 
   /**
    * Updates the LED strips for a countdown animation.
+   * @param percent Percent of last 10 seconds left in match
    */
   public void updateLEDsCountdown(double percent) {
-    double leftCount = LEDSegmentRange.StripRight.count * percent;
+    double leftCount = LEDSegmentRange.StripLeft.count * percent;
     int ledCountLeft = (int) leftCount;
 
-    double rightCount = LEDSegmentRange.StripLeft.count * percent;
+    double rightCount = LEDSegmentRange.StripRight.count * percent;
     int ledCountRight = (int) rightCount;
     
-    setLEDs(Color.kRed, LEDSegmentRange.StripRight.index + LEDSegmentRange.StripRight.count - ledCountLeft, ledCountLeft); 
-    setLEDs(Color.kRed, LEDSegmentRange.StripLeft.index, ledCountRight);
+    setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegmentRange.StripRight.index, ledCountRight);
+    setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegmentRange.StripLeft.index + LEDSegmentRange.StripLeft.count - ledCountLeft, ledCountLeft);
   }
 
   /**
@@ -79,9 +80,7 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
    */
   public void updateLEDs(BCRColor color, boolean strip) {
     if (strip) {
-      setLEDs(color, LEDSegmentRange.StripRight);
-      setLEDs(color, LEDSegmentRange.StripLeft);
-      setLEDs(color, LEDSegmentRange.StripHorizontal);
+      setLEDs(color, LEDSegmentRange.StripAll);
     } else {
       setLEDs(color, LEDSegmentRange.CANdle);
     }
@@ -98,9 +97,11 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
     switch (event) {
       case STICKY_FAULT_PRESENT:
         updateLEDs(BCRColor.CANDLE_STICKY_FAULT, false);
+        DataLogUtil.writeMessage("LED CANdle Sticky Fault Displaying");
         break;
       default:
         updateLEDs(BCRColor.CANDLE_IDLE, false);
+        DataLogUtil.writeMessage("LED CANdle Display Cleared");
         break;
     }
 

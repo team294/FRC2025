@@ -498,7 +498,7 @@ public final class Constants {
     NEUTRAL(255, 255, 255),            // White
     ALGAE_MODE(0, 255, 0),             // Turquoise
     CORAL_MODE(255, 0, 255),           // Purple
-    STICKY_FAULT_ACTIVE(255, 0, 0),    // Red
+    MATCH_COUNTDOWN(255, 0, 0),    // Red
     BLUE(19, 82, 188),                 // Blue
     ORANGE(240, 107, 14),              // Orange
     WHITE(255, 255, 255);              // White
