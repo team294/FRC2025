@@ -207,8 +207,13 @@ public final class Constants {
 
     public static final double distanceFromReefToElevate = 0.1; // TODO: Calibrate or otherwise determine proper value
 
+    // Distance bumpers should be away from the reef
+    // This distance is where the algae intake prep will take place for both levels
+    public static final double distanceFromReefToPickupAlgaeUpper = Units.inchesToMeters(7.25);
+    public static final double distanceFromReefToPickupAlgaeLower = Units.inchesToMeters(7.75);
+
     // Back offset for robot to pick up algae, in meters
-    public static final double ReefAlgaePickupPositionOffset = 0.2;
+    public static final double ReefAlgaePickupPositionOffset = 0.45;
   }
 
   public static class FieldConstants {
@@ -426,7 +431,7 @@ public final class Constants {
       CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
       ALGAE_GROUND(5.8, -6.5),
-      ALGAE_LOWER(22.3, 24.0),
+      ALGAE_LOWER(22.55, 24.0), //elevator position was 22.3 inches, increased to 22.55 to prevent wheel rubbing against reef pole
       ALGAE_UPPER(38.0, 24.0),
       ALGAE_LOLLIPOP(12.0, 10.0),
 
