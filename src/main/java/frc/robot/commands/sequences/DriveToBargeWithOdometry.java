@@ -4,6 +4,8 @@
 
 package frc.robot.commands.sequences;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
@@ -21,12 +23,15 @@ public class DriveToBargeWithOdometry extends SequentialCommandGroup {
    * <p>The sequence ends when robot reaches final position. If the driver continues to hold the button, the robot can only move left to right.
    * @param driveTrain DriveTrain subsystem
    * @param field Field utility
-   * @param log FileLog utility
    */
   public DriveToBargeWithOdometry(DriveTrain driveTrain, Field field) {
     addCommands(
-      new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestBargeScoringPosition(driveTrain.getPose())), 
-      0.02, 1, driveTrain)
+      parallel(
+        new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestBargeScoringPosition(driveTrain.getPose())), 
+        0.02, 1, driveTrain),
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_BARGE))
+      ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))
     );
   }
 }

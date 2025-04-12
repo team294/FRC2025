@@ -97,7 +97,6 @@ public class AutoSelection {
 	private final CoralEffector coralEffector;
 	private final AlgaeGrabber algaeGrabber;
 	private final Hopper hopper;
-	private final LED led;
 	
 	private Command cachedAutonomousCommand;
 	private int logRotationKey;
@@ -124,10 +123,9 @@ public class AutoSelection {
 	 * @param coralEffector
 	 * @param algaeGrabber
 	 * @param hopper
-	 * @param LED
 	 */
 	public AutoSelection(Joystick rightJoystick, TrajectoryCache trajectoryCache, AllianceSelection allianceSelection, Field field,
-						 DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, LED led) {
+						 DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper) {
 		this.rightJoystick = rightJoystick;
 		this.trajectoryCache = trajectoryCache;
 		this.allianceSelection = allianceSelection;
@@ -138,7 +136,6 @@ public class AutoSelection {
 		this.coralEffector = coralEffector;
 		this.algaeGrabber = algaeGrabber;
 		this.hopper = hopper;
-		this.led = led;
 
 		logRotationKey = DataLogUtil.allocateLogRotation();
 
@@ -258,7 +255,7 @@ public class AutoSelection {
 			autoSelectionOption = RoutineSelectionOption.BargeRight_EDC;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4, ReefLevel.L4, ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, allianceSelection, field);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
 
 		}
 
@@ -266,7 +263,7 @@ public class AutoSelection {
 			autoSelectionOption = RoutineSelectionOption.BargeLeft_JKL;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K, ReefLocation.L));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4, ReefLevel.L4, ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, allianceSelection, field);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
 		}
 
 		// else if (autoPlan == RoutineSelectionOption.BargeRight_ED_AlgaeCD.value) {
@@ -287,17 +284,17 @@ public class AutoSelection {
 			autoSelectionOption = RoutineSelectionOption.CenterOneCoralTwoAlgae;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.G));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, allianceSelection, field, trajectoryCache);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
 			autoSelectionOption = RoutineSelectionOption.AutoCenterL1;
-			autonomousCommandMain = new AutoCenterL1(driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, allianceSelection);
+			autonomousCommandMain = new AutoCenterL1(driveTrain, elevator, wrist, coralEffector, algaeGrabber, allianceSelection);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL4.value) {
 			autoSelectionOption = RoutineSelectionOption.AutoCenterL4;
-			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, field, rightJoystick, allianceSelection);
+			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, field, rightJoystick, allianceSelection);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.Rel4mRotate180.value) {
