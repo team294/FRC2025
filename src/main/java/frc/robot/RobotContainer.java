@@ -192,6 +192,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Stow Elevator and Wrist", new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist));
 
+    SmartDashboard.putData("AutomatedDriveToReefAndIntakeAlgae", new AutomatedDriveToReefAndIntakeAlgae(driveTrain, elevator, wrist, algaeGrabber, led, field));
     // SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
     // SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
 
@@ -249,8 +250,8 @@ public class RobotContainer {
         () -> !coralEffector.isCoralPresent()
       )
     );
-    xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, elevator, wrist, algaeGrabber, led));
-    xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, elevator, wrist, algaeGrabber, led));
+    //xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, led));  //Replaced with AutomatedDriveToReefAndIntakeAlgae in conjuction with rigth joystick button
+    //xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, led));
 
     // Prep and intake algae from Lollipop with Back
     xbBack.onTrue(either(
@@ -303,6 +304,9 @@ public class RobotContainer {
     right[1].and(xboxController.a()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, rightJoystick, field));
     right[1].and(xboxController.b()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, rightJoystick, field));
     right[1].and(xboxController.y()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, algaeGrabber, led, rightJoystick, field));
+
+    right[1].and(xboxController.povLeft()).whileTrue(new AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, led, field));
+    right[1].and(xboxController.povDown()).whileTrue(new AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, led, field));
 
     right[2].whileTrue(new DriveToBargeWithOdometry(driveTrain, field));
   }

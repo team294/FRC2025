@@ -6,6 +6,7 @@ package frc.robot.utilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -17,14 +18,16 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.FieldConstants.AlgaeLocation;
 import frc.robot.Constants.FieldConstants.ReefLocation;
 import frc.robot.Constants.RobotDimensions;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 
 public class Field {
     private final HashMap<ReefLocation, Pose2d> reefScoringPositions;
     private final HashMap<ReefLocation, Pose2d> reefScoringPositionsByAprilTag;
     private final ArrayList<Pose2d> reefScoringPositionListByAprilTag;
-    private final HashMap<String, Pose2d> reefAlgaePickupPositions;
+    private final HashMap<AlgaeLocation, Pose2d> reefAlgaePickupPositions;
     private final ArrayList<Pose2d> reefAlgaePickupPositionsList;
     private final HashMap<Integer, Pose2d> reefAprilTagPositions;
     private final ArrayList<Pose2d> reefAprilTagPositionList;
@@ -109,13 +112,13 @@ public class Field {
         reefScoringPositionsByAprilTag.put(ReefLocation.L, aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
         reefScoringPositionListByAprilTag = new ArrayList<Pose2d>(reefScoringPositionsByAprilTag.values());
 
-        reefAlgaePickupPositions = new HashMap<String, Pose2d>(6);
-        reefAlgaePickupPositions.put("AB", aprilTagFieldLayout.getTagPose(18).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositions.put("CD", aprilTagFieldLayout.getTagPose(17).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositions.put("EF", aprilTagFieldLayout.getTagPose(22).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositions.put("GH", aprilTagFieldLayout.getTagPose(21).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositions.put("IJ", aprilTagFieldLayout.getTagPose(20).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositions.put("KL", aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions = new HashMap<AlgaeLocation, Pose2d>(6);
+        reefAlgaePickupPositions.put(AlgaeLocation.AB, aprilTagFieldLayout.getTagPose(18).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions.put(AlgaeLocation.CD, aprilTagFieldLayout.getTagPose(17).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions.put(AlgaeLocation.EF, aprilTagFieldLayout.getTagPose(22).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions.put(AlgaeLocation.GH, aprilTagFieldLayout.getTagPose(21).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions.put(AlgaeLocation.IJ, aprilTagFieldLayout.getTagPose(20).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
+        reefAlgaePickupPositions.put(AlgaeLocation.KL, aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
         reefAlgaePickupPositionsList = new ArrayList<Pose2d>(reefAlgaePickupPositions.values());
 
         reefAprilTagPositions = new HashMap<Integer, Pose2d>(18);
@@ -264,6 +267,26 @@ public class Field {
     }
 
     /**
+     * Gets the Pose2d of the given algae pickup position. This position is flipped depending on the alliance.
+     * @param position the pair of letters value associated with one of the 6 algae positions (AB-KL starting at the upper 9 o'clock position and moving CCW)
+     * @return Pose2d of one of the algae pickup positions (against the base).
+     */
+    public Pose2d getAlgaePickupPosition(AlgaeLocation location) {
+        return allianceSelection.getAlliance() == Alliance.Blue ? reefAlgaePickupPositions.get(location) : flipPosition(reefAlgaePickupPositions.get(location));
+    }
+
+    /**
+     * Gets the Pose2d of the given algae pickup position with an offset. This position (and offset) is flipped depending on the alliance.
+     * @param position the pair of letters value associated with one of the 6 algae positions (AB-KL starting at the upper 9 o'clock position and moving CCW)
+     * @param offset the offset by which the returned pose2d is tranformed
+     * @return Pose2d of one of the algae pickup positions (against the base), with offset.
+     */
+    public Pose2d getAlgaePickupPositionWithOffset(AlgaeLocation location, Transform2d offset) {
+        Pose2d algaePickupPositionWithOffset = reefAlgaePickupPositions.get(location).transformBy(offset);
+        return allianceSelection.getAlliance() == Alliance.Blue ? algaePickupPositionWithOffset : flipPosition(algaePickupPositionWithOffset);
+    }
+
+    /**
      * Finds and returns the nearest Algae pickup position (against the base)
      * @param currPos the robot's current positions
      * @return The Pose2d of the nearest pickup position
@@ -350,5 +373,17 @@ public class Field {
         bargeScoringPos = bargeScoringPos.rotateAround(bargeScoringPos.getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d((-FieldConstants.bargeScoringOffset), 0, new Rotation2d(0)));
 
         return new Pose2d(bargeScoringPos.getX(), MathUtil.clamp(currPos.getY(), bargeScoringPos.getY() - (FieldConstants.bargeScorableWidth / 2.0), bargeScoringPos.getY() + (FieldConstants.bargeScorableWidth / 2.0)), bargeScoringPos.getRotation());
+    }
+
+    /**
+     * Gets the location (upper or lower) of the nearest reef algae
+     * @param currPos the robot's current position
+     * @return ElevatorWristPosition determining whether the algae is on the upper or lower position
+     */
+    public ElevatorWristPosition getNearestAlgaeElevatorPosition(Supplier<Pose2d> currPos) {
+        double angleDeg = getNearestAlgaePickupPosition(currPos.get()).getRotation().getDegrees();
+        boolean isUpper = (angleDeg / 20.0) % 2 == 0;
+        isUpper = (currPos.get().getX() < FieldConstants.length / 2.0) ? isUpper : !isUpper;
+        return isUpper ? ElevatorWristPosition.ALGAE_UPPER : ElevatorWristPosition.ALGAE_UPPER;
     }
 }
