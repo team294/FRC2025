@@ -455,17 +455,17 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // CALIBRATED
     public static final double maxManualPercentOutput = 0.2;        // CALIBRATED
-    public static final double maxPercentOutput = 0.2;              // CALIBRATED
+    public static final double maxPercentOutput = 0.6;              // TODO UNCALIBRATED
 
     // Should be updated in RobotPreferences, so it cannot be final
-    public static double offsetAngleCANcoder = -50.6;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED
+    public static double offsetAngleCANcoder = -52.9;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED
 
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
     // This value is the center of the region of *unallowed* motion
-    public static double cancoderDiscontinuityPoint = 0.625;          // TODO CHECK IF CALIBRATED
+    public static double cancoderDiscontinuityPoint = 0.578;          // TODO UNCALIBRATED
 
 
-    public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025 kP = (desired-output-volts) / (error-in-wrist-rotations)
+    public static final double kP = (compensationVoltage * maxPercentOutput) / 0.01;    // TODO CALIBRATE FOR 2025 kP = (desired-output-volts) / (error-in-wrist-rotations)
     public static final double kI = 0.0;    // CALIBRATED
     public static final double kD = 0.0;    // CALIBRATED
     public static final double kG = 0.0;    // CALIBRATED   kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
@@ -479,10 +479,10 @@ public final class Constants {
     // TODO UNCALIBRATED
     public enum ClimberAngle {
       LOWER_LIMIT(-2.0),
-      UPPER_LIMIT(165.0),
-      CALIBRATE_MANUAL(80.0),
+      UPPER_LIMIT(155.0),
+      CALIBRATE_MANUAL(68.0),
 
-      DEFAULT(80.0),
+      DEFAULT(68.0),
       START_CONFIG(90.0),
       CLIMB_START(0.0),
       CLIMB_END(150.0);

@@ -23,6 +23,7 @@ public class LEDEventUtil {
   private static final RainbowAnimation ledAnimationRainbowBarge = new RainbowAnimation(1.0, 0.8, LEDSegments.StripAll.count, true, LEDSegments.StripAll.index);
   private static final StrobeAnimation ledAnimationStrobeAlgae = new StrobeAnimation(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b, 0, 0, LEDSegments.StripAll.count, LEDSegments.StripAll.index);
   private static final StrobeAnimation ledAnimationStrobeCoral = new StrobeAnimation(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b, 0, 0, LEDSegments.StripAll.count, LEDSegments.StripAll.index);
+  private static final StrobeAnimation ledAnimationStrobeClimber = new StrobeAnimation(BCRColor.BLUE.r, BCRColor.BLUE.g, BCRColor.BLUE.b, 0, 0, LEDSegments.StripAll.count, LEDSegments.StripAll.index);
 
   public enum StripEvents {
     MATCH_COUNTDOWN,
@@ -32,7 +33,9 @@ public class LEDEventUtil {
     ALGAE_INTAKING,
     AUTO_DRIVE_IN_PROGRESS_REEF,
     AUTO_DRIVE_IN_PROGRESS_BARGE,
-    CLIMBING,
+    CLIMBER_PREPPING,
+    CLIMBER_PREPPED,
+    CLIMBER_LIFTING,
     NEUTRAL,
     ROBOT_DISABLED
   }
@@ -46,9 +49,11 @@ public class LEDEventUtil {
     prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 4);
     prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF, 5);
     prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS_BARGE, 5);
-    prioritiesStripEvents.put(StripEvents.CLIMBING, 6);
-    prioritiesStripEvents.put(StripEvents.NEUTRAL, 7);
-    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 8);
+    prioritiesStripEvents.put(StripEvents.CLIMBER_PREPPING, 6);
+    prioritiesStripEvents.put(StripEvents.CLIMBER_PREPPED, 7);
+    prioritiesStripEvents.put(StripEvents.CLIMBER_LIFTING, 8);
+    prioritiesStripEvents.put(StripEvents.NEUTRAL, 9);
+    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 10);
   }
 
   /**
@@ -105,10 +110,20 @@ public class LEDEventUtil {
         led.animate(ledAnimationRainbowBarge);
         DataLogUtil.writeMessage("LED Strips Barge Auto Drive in Progress");
         break;
-      case CLIMBING:
+      case CLIMBER_PREPPING:
+        LED.dashboardColor = BCRColor.BLUE;
+        led.animate(ledAnimationStrobeClimber);
+        DataLogUtil.writeMessage("LED Strips Climber Prepping");
+        break;
+      case CLIMBER_PREPPED:
+        LED.dashboardColor = BCRColor.BLUE;
+        led.updateLEDs(BCRColor.BLUE, true);
+        DataLogUtil.writeMessage("LED Strips Climber Prepped");
+        break;
+      case CLIMBER_LIFTING:
         LED.dashboardColor = BCRColor.BLUE;
         led.animate(ledAnimationRainbowBarge);
-        DataLogUtil.writeMessage("LED Strips Climbing");
+        DataLogUtil.writeMessage("LED Strips Climber Lifting");
         break;
       case ROBOT_DISABLED:
         LED.dashboardColor = BCRColor.NEUTRAL;

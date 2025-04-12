@@ -71,6 +71,8 @@ public class Climber extends SubsystemBase implements Loggable {
 
   private double safeAngle; // Current climber target on position control on the motor (if in position mode)
 
+  private boolean isInCoastMode = false;
+
   public Climber(String subsystemName) {
     
     logRotationKey = DataLogUtil.allocateLogRotation();
@@ -471,6 +473,19 @@ public class Climber extends SubsystemBase implements Loggable {
       // This is a blocking call and will wait up to 50ms-70ms for the config to apply.
       climberMotorConfigurator.apply(climberMotor_RotorEncoderConfig);      
     }
+  }
+
+  /**
+   * Set Coast Mode of Climber Motor
+   * @param coastMode true = coast, false = brake
+   */
+  public void setCoastMode(boolean coastMode) {
+    climberMotor.setNeutralMode(coastMode ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+    isInCoastMode = coastMode;
+  }
+
+  public boolean getCoastMode() {
+    return isInCoastMode;
   }
 
   //****** Information methods
