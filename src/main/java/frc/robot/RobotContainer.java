@@ -52,7 +52,7 @@ public class RobotContainer {
   private final CoralEffector coralEffector = new CoralEffector("CoralEffector", wrist);
   private final AlgaeGrabber algaeGrabber = new AlgaeGrabber("AlgaeGrabber");
   private final Elevator elevator = new Elevator("Elevator");
-  // private final Climber climber = new Climber("Climber");
+  private final Climber climber = new Climber("Climber");
 
   // Define controllers
   private final Joystick leftJoystick = new Joystick(OIConstants.usbLeftJoystick);
@@ -158,11 +158,11 @@ public class RobotContainer {
     SmartDashboard.putData("Elevator Set Position", new ElevatorSetPosition(elevator));
 
     // Climber
-    // SmartDashboard.putData("Climber STOP", new ClimberStop(climber));
-    // SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber));
-    // SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber));
-    // SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber));
-    // SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber));
+    SmartDashboard.putData("Climber STOP", new ClimberStop(climber));
+    SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber));
+    SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber));
+    SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber));
+    SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber));
     
     // Autos
     SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand());
@@ -193,8 +193,8 @@ public class RobotContainer {
     SmartDashboard.putData("Stow Elevator and Wrist", new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist));
 
     SmartDashboard.putData("AutomatedDriveToReefAndIntakeAlgae", new AutomatedDriveToReefAndIntakeAlgae(driveTrain, elevator, wrist, algaeGrabber, led, field));
-    // SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
-    // SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
+    SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
+    SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
 
     // Stop All Motors
     SmartDashboard.putData("Stop All Motors", parallel(

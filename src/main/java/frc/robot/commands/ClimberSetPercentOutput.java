@@ -27,8 +27,8 @@ public class ClimberSetPercentOutput extends Command {
     this.fromShuffleboard = true;
     addRequirements(climber);
 
-    if (SmartDashboard.getNumber("Climber Set Percent", -9999) == -9999) {
-      SmartDashboard.putNumber("Climber Set Percent", 0);
+    if (SmartDashboard.getNumber("Climber Goal Percent", -9999) == -9999) {
+      SmartDashboard.putNumber("Climber Goal Percent", 0);
     }
   }
 
@@ -50,7 +50,7 @@ public class ClimberSetPercentOutput extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Set Percent", 0);
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Goal Percent", 0);
     climber.setClimberPercentOutput(percent);
     DataLogUtil.writeLog(false, "ClimberSetPercentOutput", "Init", "Percent", percent);
   }
