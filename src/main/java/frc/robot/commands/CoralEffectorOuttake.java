@@ -8,12 +8,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CoralEffectorConstants;
 import frc.robot.subsystems.CoralEffector;
-import frc.robot.subsystems.LED;
 import frc.robot.utilities.DataLogUtil;
+import frc.robot.utilities.LEDEventUtil;
 
 public class CoralEffectorOuttake extends Command {
   private final CoralEffector coralEffector;
-  private final LED led;
   
   private final Timer timer;
   private final double seconds;
@@ -22,9 +21,8 @@ public class CoralEffectorOuttake extends Command {
    * Outtake coral from the coralEffector by running the motor until the coral is out of the mechanism.
    * @param coralEffector CoralEffector subsystem
    */
-  public CoralEffectorOuttake(CoralEffector coralEffector, LED led) {
+  public CoralEffectorOuttake(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    this.led = led;
     
     this.timer = new Timer();
     this.seconds = 0.02;
@@ -51,7 +49,7 @@ public class CoralEffectorOuttake extends Command {
   @Override
   public void end(boolean interrupted) {
     coralEffector.stopCoralEffectorMotor();
-    led.sendEvent(LED.StripEvents.NEUTRAL);
+    LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
     timer.stop();
     timer.reset();
 
