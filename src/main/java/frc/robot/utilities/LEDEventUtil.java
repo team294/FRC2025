@@ -32,7 +32,6 @@ public class LEDEventUtil {
     ALGAE_INTAKING,
     AUTO_DRIVE_IN_PROGRESS_REEF,
     AUTO_DRIVE_IN_PROGRESS_BARGE,
-    CLIMBING,
     NEUTRAL,
     ROBOT_DISABLED
   }
@@ -46,9 +45,8 @@ public class LEDEventUtil {
     prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 4);
     prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF, 5);
     prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS_BARGE, 5);
-    prioritiesStripEvents.put(StripEvents.CLIMBING, 6);
-    prioritiesStripEvents.put(StripEvents.NEUTRAL, 7);
-    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 8);
+    prioritiesStripEvents.put(StripEvents.NEUTRAL, 6);
+    prioritiesStripEvents.put(StripEvents.ROBOT_DISABLED, 7);
   }
 
   /**
@@ -104,11 +102,6 @@ public class LEDEventUtil {
         LED.dashboardColor = BCRColor.ORANGE;
         led.animate(ledAnimationRainbowBarge);
         DataLogUtil.writeMessage("LED Strips Barge Auto Drive in Progress");
-        break;
-      case CLIMBING:
-        LED.dashboardColor = BCRColor.BLUE;
-        led.animate(ledAnimationRainbowBarge);
-        DataLogUtil.writeMessage("LED Strips Climbing");
         break;
       case ROBOT_DISABLED:
         LED.dashboardColor = BCRColor.NEUTRAL;
