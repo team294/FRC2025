@@ -80,13 +80,13 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
             sequence(
               waitUntil(() -> coralEffector.getHoldMode()),
               deadline(
-                new WaitUntilCommand( () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
-                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, 
-                                        new Rotation2d(0))).getTranslation().getDistance(driveTrain.getPose().getTranslation()) <= DriveConstants.distanceFromReefToElevate)),
-                
+                new WaitUntilCommand( () -> (driveTrain.getPose().minus(field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
+                                              new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, 
+                                              new Rotation2d(0)))).getTranslation().getNorm() <= DriveConstants.distanceFromReefToElevate)),
+
                 new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
               ),
-              new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
+              new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist)
             )
           ),
           new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
