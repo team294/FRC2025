@@ -18,14 +18,13 @@ public class ScorePieceSequence extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param driveTrain DriveTrain subsystem
-   * @param led LED subsystem
    */
-  public ScorePieceSequence(CoralEffector coralEffector, AlgaeGrabber algaeGrabber, DriveTrain driveTrain, LED led) {
+  public ScorePieceSequence(CoralEffector coralEffector, AlgaeGrabber algaeGrabber, DriveTrain driveTrain) {
     addCommands(
       either(
-        new AlgaeGrabberOuttake(algaeGrabber, led),
+        new AlgaeGrabberOuttake(algaeGrabber),
         sequence( 
-          new CoralEffectorOuttake(coralEffector, led)
+          new CoralEffectorOuttake(coralEffector)
           // new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
           //     0.5, 1.0, 
           //     TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 

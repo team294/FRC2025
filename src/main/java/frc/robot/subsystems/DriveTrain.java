@@ -116,8 +116,6 @@ public class DriveTrain extends SubsystemBase implements Loggable {
   List<PhotonCameraWrapper> cameras = new ArrayList<PhotonCameraWrapper>(2);
   private boolean useVisionForOdometry = false; // false = will not use vision in odometry, true = uses vision for odometry
 
-  private boolean lastCoastReading;
-
   // Odometry class for tracking robot pose
   private final SwerveDrivePoseEstimator poseEstimator; 
   private final Field2d field = new Field2d();  // Field to display on Shuffleboard
@@ -155,9 +153,6 @@ public class DriveTrain extends SubsystemBase implements Loggable {
     swerveBackRight = new SwerveModule("BR",
       CANDriveBackRightMotor, CANDriveTurnBackRightMotor, CANTurnEncoderBackRight, 
       false, true, false, offsetAngleBackRightMotor, SwerveConstants.kVmBR);
-
-    // Sets last coast reading to false (for LED purposes)
-    lastCoastReading = false;
     
     // Put drive mode on Shuffleboard
     setDriveModeCoast(false);
@@ -324,9 +319,6 @@ public class DriveTrain extends SubsystemBase implements Loggable {
     swerveBackRight.setMotorModeCoast(setCoast);
 
     SmartDashboard.putString("Drive Mode", setCoast ? "Coast" : "Brake");
-
-    if (setCoast && !lastCoastReading) lastCoastReading = true;
-    else if (!setCoast && lastCoastReading) lastCoastReading = false;
   }
 
   /**
