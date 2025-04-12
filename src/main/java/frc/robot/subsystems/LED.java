@@ -64,10 +64,10 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
    */
   public void updateLEDsCountdown(double percent) {
     double leftCount = LEDSegments.StripLeft.count * percent;
-    int ledCountLeft = (int) leftCount;
+    int ledCountLeft = Math.min((int) leftCount + 1, LEDSegments.StripLeft.count);
 
     double rightCount = LEDSegments.StripRight.count * percent;
-    int ledCountRight = (int) rightCount;
+    int ledCountRight = Math.min((int) rightCount + 1, LEDSegments.StripLeft.count);
     
     setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegments.StripRight.index, ledCountRight);
     setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegments.StripLeft.index + LEDSegments.StripLeft.count - ledCountLeft, ledCountLeft);
