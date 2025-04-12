@@ -65,6 +65,9 @@ public class RobotContainer {
   private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, 
       field, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
 
+  // Define commands
+  private final CoralIntakeSequence coralIntakeSequence = new CoralIntakeSequence(elevator, wrist, hopper, coralEffector);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -477,6 +480,7 @@ public class RobotContainer {
     driveTrain.setVisionForOdometryState(true);
 
     coralEffector.stopCoralEffectorMotor();
+    coralIntakeSequence.schedule();
 
     if (elevator.isElevatorCalibrated()) {
       elevator.setElevatorProfileTarget(elevator.getElevatorPosition());

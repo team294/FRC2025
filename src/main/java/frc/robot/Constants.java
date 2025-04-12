@@ -347,7 +347,7 @@ public final class Constants {
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.4;             // CALIBRATED 3/29
-    public static final double netOuttakePercent = -0.50;       // CALIBRATED 3/29
+    public static final double netOuttakePercent = -0.35;       // CALIBRATED 4/12
     public static final double processorOuttakePercent = -0.15; // CALIBRATED 3/29
   }
 
@@ -433,7 +433,7 @@ public final class Constants {
       ALGAE_LOLLIPOP(12.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
-      ALGAE_NET(63.0, 70.0);
+      ALGAE_NET(73.0, 65.0); // CALIBRATED 4/12 - was 63.0, 70.0
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double elevatorPosition;
