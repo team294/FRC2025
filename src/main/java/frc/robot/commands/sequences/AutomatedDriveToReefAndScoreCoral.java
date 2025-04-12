@@ -62,8 +62,10 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
           sequence(
             deadline(
               waitSeconds(0.4),
-              waitUntil(() -> coralEffector.getHoldMode()),
-              new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
+              sequence(
+                waitUntil(() -> coralEffector.getHoldMode()),
+                new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
+              )
             ),
             // Move elevator/wrist to correct position based on given level
             new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
