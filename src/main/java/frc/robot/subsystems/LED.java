@@ -214,7 +214,7 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
       }
 
       SmartDashboard.putString("LED State", String.format("#%02x%02x%02x", dashboardColor.r, dashboardColor.g, dashboardColor.b));
-      SmartDashboard.putNumber("Teleop Timer", matchTimer.get());
+      SmartDashboard.putNumber("Teleop Timer", 135.0 - matchTimer.get());
 
       // If in last 10 seconds of match, send match countdown event
       if (matchTimer.get() > 125 && matchTimer.get() <= 135) {
