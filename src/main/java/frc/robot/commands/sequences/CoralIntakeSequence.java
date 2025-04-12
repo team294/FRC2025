@@ -10,10 +10,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
-import frc.robot.Constants.LEDConstants.LEDSegmentRange;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.LED.StripEvents;
+import frc.robot.utilities.LEDEventUtil;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
@@ -28,23 +27,23 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param led LED subsystem
    */
-  public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector, LED led) {
+  public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector) {
     addCommands(
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
       parallel(
         new HopperSetPercent(HopperConstants.intakePercent, hopper),
-        deadline(
+        parallel(
           sequence(
             new CoralEffectorIntakeEnhanced(coralEffector),
             new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist)
           ),
-          new LEDAnimationFlash(StripEvents.CORAL_INTAKING, led, LEDSegmentRange.StripAll)
-        )
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_INTAKING))
+        ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))
       ).handleInterrupt(hopper::stopHopperMotor),
-      // new LEDSendNeutral(led),
+      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
       either(
-        runOnce(() -> led.sendEvent(LED.StripEvents.CORAL_MODE)),
-        new LEDSendNeutral(led), 
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
         () -> coralEffector.isCoralPresent()),
       new HopperStop(hopper)
     );

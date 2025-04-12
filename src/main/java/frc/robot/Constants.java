@@ -12,7 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.utilities.TrapezoidProfileBCR;
 
 /**
@@ -493,14 +492,12 @@ public final class Constants {
 
   // Colors for the LEDs based on different robot states (see BCRRobotState)
   public enum BCRColor {
-    CANDLE_IDLE(0, 0, 0),              // CANdle Black (off)
+    CANDLE_NEUTRAL(0, 0, 0),              // CANdle Black (off)
     CANDLE_STICKY_FAULT(255, 0, 0),    // CANdle Red
-    NEUTRAL(0, 0, 0),                  // Black (off)
-    ALGAE_MODE(0, 200, 255),           // Turquoise
+    NEUTRAL(255, 255, 255),            // White
+    ALGAE_MODE(0, 255, 0),             // Turquoise
     CORAL_MODE(255, 0, 255),           // Purple
-    AUTO_DRIVE_COMPLETE(0, 255, 0),    // Green
-    SUBSYSTEM_UNCALIBRATED(255, 0, 0), // Red
-    SCORING_COMPLETE(0, 255, 0),       // Green
+    MATCH_COUNTDOWN(255, 0, 0),    // Red
     BLUE(19, 82, 188),                 // Blue
     ORANGE(240, 107, 14),              // Orange
     WHITE(255, 255, 255);              // White
@@ -514,14 +511,7 @@ public final class Constants {
   }
 
   public static final class LEDConstants {
-    public static int ledPerGap = 2;
-
-    public static final class EmptyPatterns {
-      public static final Color[] noPatternStatic = {};
-      public static final Color[][] noPatternAnimation = {{}};
-    }
-
-    public enum LEDSegmentRange {
+    public enum LEDSegments {
       CANdle(0, 8),
       StripRight(CANdle.count, 40),
       StripHorizontal(StripRight.index + StripRight.count, 40),
@@ -531,7 +521,7 @@ public final class Constants {
 
 
       public final int index, count;
-      LEDSegmentRange(int index, int count) {
+      LEDSegments(int index, int count) {
         this.index = index;
         this.count = count;
       }
