@@ -121,6 +121,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
+   * @param hopper Hopper subsystem
    * @param rightJoystick Right joystick
    * @param field Field field
    */
@@ -152,46 +153,49 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
                 new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector),
                 none(),
                 () -> !isLastCoral
+              )
             )
           ),
-        
-          // If scoring on L1, drive forward to get to the reef
-          either(
-            new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)),
-                0.5, 1.0, 
-                TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-                true, true, driveTrain),
-            none(),
-            () -> level == ReefLevel.L1
-          ),
-    
-          // Score piece (only if it is not the last coral location)
-          either(
-            new CoralEffectorOuttake(coralEffector),
-            none(),
-            () -> !isLastCoral
-          ),
-    
-          // If scoring on L1, wait 0.5 seconds then back up
-          either(
+
+          either( // Runs this whole code section if isLastCoral is not true and we actually want to move elevator and score
+            // If scoring on L1, drive forward to get to the reef
             sequence(
-              waitSeconds(0.5),
-              new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToScore, 0, Rotation2d.kZero),
-                  0.5, 1.0, 
-                  TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-                  true, true, driveTrain)
+              either(
+                new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)),
+                    0.5, 1.0, 
+                    TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+                    true, true, driveTrain),
+                none(),
+                () -> level == ReefLevel.L1 
+              ),
+        
+              // Score piece (only if it is not the last coral location)
+              new CoralEffectorOuttake(coralEffector),
+
+        
+              // If scoring on L1, wait 0.5 seconds then back up
+              either(
+                sequence(
+                  waitSeconds(0.5),
+                  new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToScore, 0, Rotation2d.kZero),
+                      0.5, 1.0, 
+                      TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
+                      true, true, driveTrain)
+                ),
+                none(),
+                () -> level == ReefLevel.L1  
+              )
             ),
             none(),
-            () -> level == ReefLevel.L1  
-          )    
+            () -> !isLastCoral  
+          )
         ),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF))
       ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),     
       
-      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))),
+      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
 
       new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
     );
   }
-
 }
