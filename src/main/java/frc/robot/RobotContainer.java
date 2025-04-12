@@ -264,7 +264,7 @@ public class RobotContainer {
     xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber));
 
     // Manually control elevator with right joystick
-    xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, true));
+    xbRJoystickTrigger.whileTrue(new ClimberManualControl(xboxController, climber, true));
 
     // Manually control wrist with the left joystick
     xbLJoystickTrigger.whileTrue(new WristManualControl(xboxController, wrist, false));
@@ -337,15 +337,11 @@ public class RobotContainer {
     coP[9].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber, coralEffector));
     coP[10].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, coralEffector));
 
-    // Elevator Commands
-    coP[3].whileTrue(new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
-    coP[3].onFalse(new ElevatorStop(elevator));
-    coP[4].onTrue(new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
-    coP[4].onFalse(new ElevatorStop(elevator));
-
     // Wrist Commands
-    coP[11].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
-    coP[12].whileTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
+    coP[3].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
+    coP[3].onFalse(new WristStop(wrist));
+    coP[4].whileTrue(new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
+    coP[4].onFalse(new WristStop(wrist));
 
     // Hopper Commands
     coP[5].onTrue(new HopperSetPercent(-HopperConstants.reverseIntakePercent, hopper));
@@ -359,19 +355,22 @@ public class RobotContainer {
     coP[14].onTrue(new CoralEffectorSetPercent(-CoralEffectorConstants.intakePercent, coralEffector));
     coP[14].onFalse(new CoralEffectorStop(coralEffector));
 
+    // Climber Commands
+    coP[15].onTrue(new ClimberPrepSequence(elevator, wrist, climber));
+    coP[16].onTrue(new ClimberSetAngleToLift(climber));
+    coP[17].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.DEFAULT, climber));
+    coP[18].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.START_CONFIG, climber));
+
     // Reset Pose
     coP[7].onTrue(either(
       new DriveResetPose(180, false, driveTrain), 
       new DriveResetPose(0, false, driveTrain), 
       () -> allianceSelection.getAlliance() == Alliance.Red));
 
-    // Release Game Piece Commands
-    coP[15].onTrue(new CoralEffectorOuttake(coralEffector));
-    coP[16].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
-
     // Manual Calibration Commands
-    coP[17].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator));
-    coP[18].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
+    coP[11].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator));
+    coP[12].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
+    coP[8].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.DEFAULT.value, climber));
 
     // Algae Grabber Commands
     coP[19].onTrue(new AlgaeGrabberSetPercent(AlgaeGrabberConstants.intakePercent, algaeGrabber));

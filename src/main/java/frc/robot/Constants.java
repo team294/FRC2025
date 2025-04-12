@@ -483,8 +483,8 @@ public final class Constants {
       CALIBRATE_MANUAL(80.0),
 
       DEFAULT(80.0),
+      START_CONFIG(90.0),
       CLIMB_START(45.0),
-      CLIMB_MIDDLE(100.0),
       CLIMB_END(133.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
