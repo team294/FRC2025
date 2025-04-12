@@ -10,9 +10,14 @@ import frc.robot.subsystems.LED;
 
 public class LEDSendNeutral extends InstantCommand {
   private final LED led;
+
+  /**
+   * Sends NEUTRAL Strip Event to LEDs 
+   * @param led LED subsystem
+   */
   public LEDSendNeutral(LED led) {
     this.led = led;
-    
+
     addRequirements(led);
   }
 

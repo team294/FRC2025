@@ -9,8 +9,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import java.util.EnumMap;
 import java.util.Map;
 
-import static edu.wpi.first.wpilibj2.command.Commands.*;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;

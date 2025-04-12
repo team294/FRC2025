@@ -17,10 +17,10 @@ public class DriveToBargeWithOdometry extends SequentialCommandGroup {
   /** 
    * Drives to the nearest barge scoring location.
    * 
-   * <h1>If the robot is aligned with the correct alliance barge, the robot will drive foward towards the barge while maintaining its current y value.
+   * If the robot is aligned with the correct alliance barge, the robot will drive foward towards the barge while maintaining its current y value.
    * If the robot is not aligned with the correct alliance barge, the robot will drive foward while driving to the y value of the edge of the barge.
    * 
-   * The sequence ends when robot reaches final position. If the driver continues to hold the button, the robot can only move left to right.</h1>
+   * The sequence ends when robot reaches final position. If the driver continues to hold the button, the robot can only move left to right.
    * @param driveTrain DriveTrain subsystem
    * @param field Field utility
    */
