@@ -204,7 +204,7 @@ public final class Constants {
     // along with is how far the robot should be located to score on L4.
     public static final double distanceFromReefToScore = Units.inchesToMeters(6.25);  // was 0.25 meters, changed to be scoring location for L4
 
-    public static final double distanceFromReefToElevate = 0.2; // TODO: Calibrate or otherwise determine proper value
+    public static final double distanceFromReefToElevate = 0.5; // TODO: Calibrate or otherwise determine proper value
 
     // Distance bumpers should be away from the reef
     // This distance is where the algae intake prep will take place for both levels
