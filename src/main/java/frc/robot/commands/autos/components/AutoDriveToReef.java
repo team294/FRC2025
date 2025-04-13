@@ -70,16 +70,10 @@ public class AutoDriveToReef extends SequentialCommandGroup {
         // Drives the trajectory while intaking coral to make sure coral is being intaked. Timeout in case coral doesn't make it into hopper.
         new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectory, driveTrain, alliance).withTimeout(trajectory.getTotalTime() - 0.5),
         sequence(
-          new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(3),
+          new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
           new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
         )
       ),
-
-      // If the endeffector is not in hold mode(Coral is not safely in intake) then do nothing, otherwise intake the coral until the piece is present
-      either(
-        none(), 
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector), 
-        () -> (coralEffector.getHoldMode())),
       
       new DataLogMessage(false, "AutoDriveToReef: End, trajectory =", trajectory.name())
 
