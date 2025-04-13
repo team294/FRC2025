@@ -243,6 +243,53 @@ public class RobotContainer {
     xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector));
 
     // xbX, A, B, and Y will automatically drive to the reef and score coral, see right[1] in configureJoystickButtons()
+    xboxController.x().onFalse(
+      either(
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+        either(
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+          () -> coralEffector.getHoldMode()
+        ),
+        () -> algaeGrabber.isAlgaePresent()
+      )
+    );
+
+    xboxController.a().onFalse(
+      either(
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+        either(
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+          () -> coralEffector.getHoldMode()
+        ),
+        () -> algaeGrabber.isAlgaePresent()
+      )
+    );
+
+    xboxController.b().onFalse(
+      either(
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+        either(
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+          () -> coralEffector.getHoldMode()
+        ),
+        () -> algaeGrabber.isAlgaePresent()
+      )
+    );
+
+    xboxController.y().onFalse(
+      either(
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+        either(
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+          () -> coralEffector.getHoldMode()
+        ),
+        () -> algaeGrabber.isAlgaePresent()
+      )
+    );
 
     // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
     xbLT.onTrue(either(
@@ -251,8 +298,30 @@ public class RobotContainer {
         () -> !coralEffector.isCoralPresent()
       )
     );
-    //xbPOVDown.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, led));  //Replaced with AutomatedDriveToReefAndIntakeAlgae in conjuction with rigth joystick button
-    //xbPOVLeft.onTrue(new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, led));
+
+    xbPOVDown.onFalse(
+      either(
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+        either(
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+          () -> coralEffector.getHoldMode()
+        ),
+        () -> algaeGrabber.isAlgaePresent()
+      )
+    );
+
+    xbPOVLeft.onFalse(
+      either(
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+        either(
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+          () -> coralEffector.getHoldMode()
+        ),
+        () -> algaeGrabber.isAlgaePresent()
+      )
+    );
 
     // Prep and intake algae from Lollipop with Back
     xbBack.onTrue(either(
@@ -306,6 +375,18 @@ public class RobotContainer {
     right[1].and(xboxController.a()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
     right[1].and(xboxController.b()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
     right[1].and(xboxController.y()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field));
+
+    right[1].onFalse(
+      either(
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+        either(
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+          () -> coralEffector.getHoldMode()
+        ),
+        () -> algaeGrabber.isAlgaePresent()
+      )
+    );
 
     right[1].and(xboxController.povLeft()).whileTrue(new AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, field));
     right[1].and(xboxController.povDown()).whileTrue(new AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, field));

@@ -31,8 +31,8 @@ public class LEDEventUtil {
     CORAL_INTAKING,
     ALGAE_MODE,
     ALGAE_INTAKING,
-    AUTO_DRIVE_IN_PROGRESS_REEF,
-    AUTO_DRIVE_IN_PROGRESS_BARGE,
+    AUTOMATED_DRIVING_REEF,
+    AUTOMATED_DRIVING_BARGE,
     CLIMBER_PREPPING,
     CLIMBER_PREPPED,
     CLIMBER_LIFTING,
@@ -47,8 +47,8 @@ public class LEDEventUtil {
     prioritiesStripEvents.put(StripEvents.CORAL_MODE, 2);
     prioritiesStripEvents.put(StripEvents.ALGAE_INTAKING, 3);
     prioritiesStripEvents.put(StripEvents.ALGAE_MODE, 4);
-    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF, 5);
-    prioritiesStripEvents.put(StripEvents.AUTO_DRIVE_IN_PROGRESS_BARGE, 5);
+    prioritiesStripEvents.put(StripEvents.AUTOMATED_DRIVING_REEF, 5);
+    prioritiesStripEvents.put(StripEvents.AUTOMATED_DRIVING_BARGE, 5);
     prioritiesStripEvents.put(StripEvents.CLIMBER_PREPPING, 6);
     prioritiesStripEvents.put(StripEvents.CLIMBER_PREPPED, 7);
     prioritiesStripEvents.put(StripEvents.CLIMBER_LIFTING, 8);
@@ -64,12 +64,13 @@ public class LEDEventUtil {
     // Always update state if previous event was neutral or disabled.
     // Do not update if last event was not neutral or disabled and the new event priority is less than the previous.
     // If previous event was algae mode and new event is coral intaking or coral mode, override priorities and update state.
-    // If previous event was auto drive complete and new event is coral intaking or algae intaking, override priorities and update state.
+    // If previous event was automated drive (either type) and new event is coral or algae mode, override priorities and update state.
 
     if (
       previousEventStrip != StripEvents.NEUTRAL && previousEventStrip != StripEvents.ROBOT_DISABLED
       && (
         !((previousEventStrip == StripEvents.ALGAE_INTAKING || previousEventStrip == StripEvents.ALGAE_MODE) && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
+        && !((previousEventStrip == StripEvents.AUTOMATED_DRIVING_REEF) || (previousEventStrip == StripEvents.AUTOMATED_DRIVING_BARGE) && (event == StripEvents.CORAL_MODE || event == StripEvents.ALGAE_MODE))
         && getPriority(event) < getPriority(previousEventStrip)
       )
     ) {
@@ -82,31 +83,37 @@ public class LEDEventUtil {
     switch (event) {
       case CORAL_INTAKING:
         LED.dashboardColor = BCRColor.CORAL_MODE;
+        led.clearAnimation();
         led.animate(ledAnimationStrobeCoral);
         DataLogUtil.writeMessage("LED Strips Coral Intaking");
         break;
       case CORAL_MODE:
         LED.dashboardColor = BCRColor.CORAL_MODE;
+        led.clearAnimation();
         led.updateLEDs(BCRColor.CORAL_MODE, true);
         DataLogUtil.writeMessage("LED Strips Coral Mode");
         break;
       case ALGAE_INTAKING:
         LED.dashboardColor = BCRColor.ALGAE_MODE;
+        led.clearAnimation();
         led.animate(ledAnimationStrobeAlgae);
         DataLogUtil.writeMessage("LED Strips Algae Intaking");
         break;
       case ALGAE_MODE:
         LED.dashboardColor = BCRColor.ALGAE_MODE;
+        led.clearAnimation();
         led.updateLEDs(BCRColor.ALGAE_MODE, true);
         DataLogUtil.writeMessage("LED Strips Algae Mode");
         break;
-      case AUTO_DRIVE_IN_PROGRESS_REEF:
+      case AUTOMATED_DRIVING_REEF:
         LED.dashboardColor = BCRColor.ORANGE;
+        led.clearAnimation();
         led.animate(ledAnimationRainbowReef);
         DataLogUtil.writeMessage("LED Strips Reef Auto Drive in Progress");
         break;
-      case AUTO_DRIVE_IN_PROGRESS_BARGE:
+      case AUTOMATED_DRIVING_BARGE:
         LED.dashboardColor = BCRColor.ORANGE;
+        led.clearAnimation();
         led.animate(ledAnimationRainbowBarge);
         DataLogUtil.writeMessage("LED Strips Barge Auto Drive in Progress");
         break;
@@ -127,6 +134,7 @@ public class LEDEventUtil {
         break;
       case ROBOT_DISABLED:
         LED.dashboardColor = BCRColor.NEUTRAL;
+        led.clearAnimation();
         ledAnimationBCR.schedule();
         DataLogUtil.writeMessage("LED Strips Robot Disabled");
         break;
