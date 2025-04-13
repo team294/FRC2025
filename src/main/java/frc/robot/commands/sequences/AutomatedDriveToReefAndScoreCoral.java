@@ -11,9 +11,11 @@ import java.util.Map;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.ReefLevel;
 import frc.robot.Constants.FieldConstants.ReefLocation;
@@ -33,7 +35,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
     reefToElevatorMap.put(ReefLevel.L4, ElevatorWristPosition.CORAL_L4);
   }
   /**
-   * Drives to nearest reef position and scores coral in given level.
+   * Drives to nearest reef position, preemptively moving the elevator to L2 if a piece is held, and scores coral in given level.
    * If not scoring on L4, the robot will drive fully up against the reef, and then back up after scoring.
    * If scoring on L4, the robot will score while not fully up against the reef, and the routine ends when the piece is scored.
    * @param level ReefLevel (L1, L2, L3, L4) to score on
@@ -69,8 +71,26 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
               )
             ),
             sequence(
-              new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
-              new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
+              // Drive to nearest reef position
+              deadline(
+                new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+                sequence(
+                  waitUntil(() -> coralEffector.getHoldMode()),
+                  deadline(
+                    new WaitUntilCommand( () -> (driveTrain.getPose().minus(field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
+                                                  new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, 
+                                                  new Rotation2d(0)))).getTranslation().getNorm() <= DriveConstants.distanceFromReefToElevate)),
+
+                    new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L2, RegionType.CORAL_ONLY, elevator, wrist)
+                  ),
+                  new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
+                )
+              ),
+                // Move elevator/wrist to correct position based on given level
+              sequence(
+                waitUntil(() -> coralEffector.getHoldMode()),
+                new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
+              )
             ),
             () -> DriverStation.isAutonomous()
           ),
@@ -198,7 +218,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
           )
         ),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF))
-      ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),     
+      ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)), 
       
       runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
 
