@@ -31,7 +31,6 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.utilities.AllianceSelection;
 import frc.robot.utilities.Field;
-import frc.robot.utilities.DataLogUtil;
 
 
 public class AutoCenterL4 extends SequentialCommandGroup {

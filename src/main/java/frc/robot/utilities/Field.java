@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.FieldConstants.AlgaeLocation;
 import frc.robot.Constants.FieldConstants.ReefLocation;
-import frc.robot.Constants.RobotDimensions;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 
 public class Field {

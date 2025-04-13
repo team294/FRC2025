@@ -26,8 +26,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.datalog.StructLogEntry;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -39,23 +37,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Ports.*;
 import static frc.robot.Constants.DriveConstants.*;
-import static frc.robot.Constants.VisionConstants.PhotonVisionConstants;
 
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.VisionConstants.PhotonVisionConstants;
 import frc.robot.commands.DriveStop;
 import frc.robot.utilities.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-// Vision imports
-// import org.photonvision.EstimatedRobotPose;
-// import org.photonvision.targeting.PhotonPipelineResult;
-// import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.Optional;
 
