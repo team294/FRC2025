@@ -92,10 +92,6 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
                 new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
               )
             ),
-            // sequence(
-            //   new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
-            //   new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
-            // ),
             () -> DriverStation.isAutonomous()
           ),
 
