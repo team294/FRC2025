@@ -51,7 +51,6 @@ public class ClimberSetAngle extends Command {
    * Sets the target angle for the climber from Shuffleboard and moves it to that angle. Ends when the climber is 
    * within 3 degrees of the target. If the climber is uncalibrated, this does nothing and ends immediately.
    * @param climber Climber subsystem
-   * @param log FileLog utility
    */
   public ClimberSetAngle(Climber climber) {
     this.climber = climber;

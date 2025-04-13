@@ -321,7 +321,7 @@ public class Climber extends SubsystemBase implements Loggable {
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    */
   public void setClimberAngle(double angle) {
-    if (climberCalibrated) {
+    if (climberCalibrated && !getRatchetEngaged()) {
       // Keep the climber in usable range
       safeAngle = MathUtil.clamp(angle, ClimberConstants.ClimberAngle.LOWER_LIMIT.value, ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
       
@@ -495,19 +495,19 @@ public class Climber extends SubsystemBase implements Loggable {
   //****** Servo methods
 
   /**
-   * Sets whether the servo is engaged.
+   * Sets whether the servo is engaged. Engaged means we are not to move the climber down.
    * @param engaged true = engaged, false = disengaged
    */
-  public void setServoEngaged(boolean engaged) {
-    climberServo.set(engaged ? 1 : 0); // TODO determine which way is engaged
+  public void setRatchetEngaged(boolean engaged) {
+    climberServo.set(engaged ? 0 : 1);
   }
 
   /**
-   * Gets whether the servo is engaged.
-   * 
+   * Gets whether the ratchet is engaged. Engaged means we are not to move the climber down.
+   * @return true = engaged, false = disengaged
    */
-  public boolean getServoEngaged() {
-    return climberServo.get() > 0.5 ? true : false; // TODO determine which way is engaged
+  public boolean getRatchetEngaged() {
+    return climberServo.get() < 0.5 ? true : false;
   }
 
   //****** Information methods
@@ -550,6 +550,7 @@ public class Climber extends SubsystemBase implements Loggable {
       SmartDashboard.putBoolean("Climber CANcoder connected", isCANcoderConnected());
       SmartDashboard.putBoolean("Climber calibrated", climberCalibrated);
       SmartDashboard.putBoolean("Climber Using CANcoder", usingCANcoder);
+      SmartDashboard.putBoolean("Climber Servo Engaged", getRatchetEngaged());
       SmartDashboard.putNumber("Climber CANcoder raw", getCANcoderRotationsRaw());
       SmartDashboard.putNumber("Climber encoder raw", getClimberEncoderRotationsRaw());
       SmartDashboard.putNumber("Climber angle", getClimberEncoderDegrees());

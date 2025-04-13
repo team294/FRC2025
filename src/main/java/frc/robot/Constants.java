@@ -464,11 +464,11 @@ public final class Constants {
     public static final double maxPercentOutput = 0.2;              // CALIBRATED 4/12
 
     // Should be updated in RobotPreferences, so it cannot be final
-    public static double offsetAngleCANcoder = -232.383;            // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED 4/12
+    public static double offsetAngleCANcoder = -232.734;            // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED 4/12
 
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
     // This value is the center of the region of *unallowed* motion
-    public static double cancoderDiscontinuityPoint = 0.578;        // CALIBRATED 4/12
+    public static double cancoderDiscontinuityPoint = 0.071;        // CALIBRATED 4/13 - minimum raw cc is 0.308, maximum raw cc is 0.834
 
 
     public static final double kP = (compensationVoltage * maxPercentOutput) / 0.01;    // CALIBRATED 4/11. kP = (desired-output-volts) / (error-in-wrist-rotations)
@@ -486,7 +486,7 @@ public final class Constants {
     public enum ClimberAngle {
       LOWER_LIMIT(-2.0),
       UPPER_LIMIT(155.0),
-      CALIBRATE_MANUAL(68.0),
+      CALIBRATE_MANUAL(90.0),
 
       DEFAULT(68.0),
       START_CONFIG(90.0),

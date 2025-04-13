@@ -196,6 +196,7 @@ public class RobotContainer {
     SmartDashboard.putData("AutomatedDriveToReefAndIntakeAlgae", new AutomatedDriveToReefAndIntakeAlgae(driveTrain, elevator, wrist, algaeGrabber, field));
     SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
     SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
+    SmartDashboard.putData("Toggle Climber Ratchet Engaged", new ClimberToggleRatchetEngaged(climber));
 
     // Stop All Motors
     SmartDashboard.putData("Stop All Motors", parallel(
@@ -560,7 +561,6 @@ public class RobotContainer {
     driveTrain.setVisionForOdometryState(true);
 
     coralEffector.stopCoralEffectorMotor();
-    if (!coralEffector.getHoldMode()) coralIntakeSequence.schedule();
 
     if (elevator.isElevatorCalibrated()) {
       elevator.setElevatorProfileTarget(elevator.getElevatorPosition());
@@ -574,6 +574,8 @@ public class RobotContainer {
     }
 
     LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
+
+    if (!coralEffector.getHoldMode() && elevator.getElevatorPosition() < 3.0) coralIntakeSequence.schedule();
     
     matchTimer.reset();
     matchTimer.start();
