@@ -24,7 +24,6 @@ public class LEDSendNeutral extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    led.clearAnimation();
     led.updateLEDs(BCRColor.NEUTRAL, true);
   }
 }
