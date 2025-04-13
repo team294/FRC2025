@@ -17,9 +17,8 @@ import frc.robot.utilities.LEDEventUtil;
 
 /**
  * Intakes algae by moving the wrist and elevator to the indicated intake position, and then 
- * running the algaeGrabber until the algae is in the mechanism. Then backs up the robot.
+ * running the algaeGrabber until the algae is in the mechanism.
  * @param position position to move elevator to (use ElevatorWristConstants.ElevatorWristPosition.ALGAE_...)
- * @param driveTrain DriveTrain subsystem
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
  * @param algaeGrabber AlgaeGrabber subsystem
