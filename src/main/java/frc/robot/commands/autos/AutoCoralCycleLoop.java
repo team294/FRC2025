@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
 import frc.robot.commands.autos.components.*;
@@ -33,14 +34,18 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
+   * @param climber Climber subsystem
    * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection utility
    * @param field Field utility
    */
   public AutoCoralCycleLoop(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreLastCoral, boolean endAtHP, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Climber climber, Joystick rightJoystick, AllianceSelection alliance, Field field) {
 
-    addCommands(new DataLogMessage(false, "AutoCoralCycleLoop: Start"));
+    addCommands(
+      new DataLogMessage(false, "AutoCoralCycleLoop: Start"),
+      new ClimberSetRatchet(false, climber)
+    );
 
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
@@ -60,7 +65,10 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
       // Score the pre-loaded coral with the first reef location
       if (reefLocations.size() >= 1 && reefLevels.size() >= 1) {
         addCommands(
-          new AutoCoralDriveAndScoreSequence(false, false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
+          parallel(
+            new AutoCoralDriveAndScoreSequence(false, false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
+            new ClimberSetAngle(ClimberConstants.ClimberAngle.DEFAULT, climber)
+          )
         );
       }
 

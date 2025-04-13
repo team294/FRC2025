@@ -78,7 +78,7 @@ public class Climber extends SubsystemBase implements Loggable {
 
   private boolean isInCoastMode = false;
 
-  private ServoPosition servoPosition;  // 0.0 -> 1.0
+  private ServoPosition servoPosition = ServoPosition.UNKNOWN;  // 0.0 -> 1.0
 
   public Climber(String subsystemName) {
     
@@ -324,7 +324,7 @@ public class Climber extends SubsystemBase implements Loggable {
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    */
   public void setClimberAngle(double angle) {
-    if (climberCalibrated && !getRatchetEngaged()) {
+    if (climberCalibrated && servoPosition != ServoPosition.UNKNOWN && (!getRatchetEngaged() || angle > getClimberAngle())) {
       // Keep the climber in usable range
       safeAngle = MathUtil.clamp(angle, ClimberConstants.ClimberAngle.LOWER_LIMIT.value, ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
       
@@ -510,7 +510,11 @@ public class Climber extends SubsystemBase implements Loggable {
    * @return true = engaged, false = disengaged
    */
   public boolean getRatchetEngaged() {
-    return servoPosition.value == 0.0;
+    return servoPosition == ServoPosition.ENGAGED;
+  }
+
+  public ServoPosition getServoPosition() {
+    return servoPosition;
   }
 
   /**
@@ -569,7 +573,7 @@ public class Climber extends SubsystemBase implements Loggable {
       SmartDashboard.putBoolean("Climber CANcoder connected", isCANcoderConnected());
       SmartDashboard.putBoolean("Climber calibrated", climberCalibrated);
       SmartDashboard.putBoolean("Climber Using CANcoder", usingCANcoder);
-      SmartDashboard.putBoolean("Climber Servo Engaged", getRatchetEngaged());
+      SmartDashboard.putBoolean("Climber Ratchet Disengaged", !getRatchetEngaged()); // Disengaged so red on dashboard = don't move climber down
       SmartDashboard.putNumber("Climber CANcoder raw", getCANcoderRotationsRaw());
       SmartDashboard.putNumber("Climber encoder raw", getClimberEncoderRotationsRaw());
       SmartDashboard.putNumber("Climber angle", getClimberEncoderDegrees());

@@ -38,13 +38,19 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param hopper Hopper subsystem
+   * @param climber Climber subsystem
    * @param rightJoystick Joystick joystick
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
   public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreFirstAlgae, boolean grabSecondAlgae, DriveTrain driveTrain, Elevator elevator, 
-      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field, TrajectoryCache cache) {
+      Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Climber climber, Joystick rightJoystick, AllianceSelection alliance, Field field, TrajectoryCache cache) {
     
+    addCommands(
+      new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae: Start"),
+      new ClimberSetRatchet(false, climber)
+    );
+
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
       addCommands(none());
@@ -56,10 +62,8 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
       //ElevatorWristPosition position = lastCoralLocation.isAlgaeLower ? ElevatorWristPosition.ALGAE_LOWER : ElevatorWristPosition.ALGAE_UPPER;
 
       addCommands(
-        new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae: Start"),
-
         // First, do the loop for the coral cycles (ends at reef, bumpers distanceFromReefToScore away from reef aka 6.25 inches)
-        new AutoCoralCycleLoop(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
+        new AutoCoralCycleLoop(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, alliance, field),
         
         // Drive and intake algae from the reef (from GH only)
         new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.GH, driveTrain, elevator, wrist, algaeGrabber, field).until(() -> algaeGrabber.isAlgaePresent()),

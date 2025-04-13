@@ -63,10 +63,11 @@ public class RobotContainer {
   private final TrajectoryCache trajectoryCache = new TrajectoryCache();
   // private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field);
   private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, 
-      field, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper);
+      field, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber);
 
   // Define commands
   private final CoralIntakeSequence coralIntakeSequence = new CoralIntakeSequence(elevator, wrist, hopper, coralEffector);
+  private final ClimberSetRatchet climberDisengageRatchet = new ClimberSetRatchet(false, climber);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -443,7 +444,7 @@ public class RobotContainer {
     coP[14].onFalse(new CoralEffectorStop(coralEffector));
 
     // Climber Commands
-    coP[15].onTrue(new ClimberSetAngleToLift(climber));
+    coP[15].onTrue(new ClimberLiftSequence(climber));
     coP[16].onTrue(new ClimberPrepSequence(elevator, wrist, climber));
     coP[17].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.DEFAULT, climber));
     coP[18].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.START_CONFIG, climber));
@@ -577,6 +578,7 @@ public class RobotContainer {
 
     LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
 
+    climberDisengageRatchet.schedule();
     if (!coralEffector.getHoldMode() && elevator.getElevatorPosition() < 3.0) coralIntakeSequence.schedule();
     
     matchTimer.reset();

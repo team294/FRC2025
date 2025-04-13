@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ClimberConstants.ServoPosition;
 import frc.robot.subsystems.Climber;
 
@@ -65,6 +64,6 @@ public class ClimberSetServoPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timer.get() >= 1.0);
+    return (timer.get() >= 0.5);
   }
 }

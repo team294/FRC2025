@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ClimberConstants.ServoPosition;
 import frc.robot.subsystems.Climber;
 import frc.robot.utilities.DataLogUtil;
 
@@ -50,7 +51,7 @@ public class ClimberSetPercentOutput extends Command {
   @Override
   public void initialize() {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Goal Percent", 0);
-    climber.setClimberPercentOutput(percent);
+    if (climber.getServoPosition() != ServoPosition.UNKNOWN && (!climber.getRatchetEngaged() || percent > 0)) climber.setClimberPercentOutput(percent);
     DataLogUtil.writeLog(false, "ClimberSetPercentOutput", "Init", "Percent", percent);
   }
 
@@ -68,6 +69,6 @@ public class ClimberSetPercentOutput extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return false; // will be interrupted in the climbing lift sequence
   }
 }
