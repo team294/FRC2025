@@ -196,7 +196,9 @@ public class RobotContainer {
     SmartDashboard.putData("AutomatedDriveToReefAndIntakeAlgae", new AutomatedDriveToReefAndIntakeAlgae(driveTrain, elevator, wrist, algaeGrabber, field));
     SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
     SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
-    SmartDashboard.putData("Toggle Climber Ratchet Engaged", new ClimberToggleRatchetEngaged(climber));
+    SmartDashboard.putData("Climber Ratchet Engage", new ClimberSetRatchet(true, climber));
+    SmartDashboard.putData("Climber Ratchet Disengage", new ClimberSetRatchet(false, climber));
+    SmartDashboard.putData("Climber Set Servo Position", new ClimberSetServoPosition(climber));
 
     // Stop All Motors
     SmartDashboard.putData("Stop All Motors", parallel(

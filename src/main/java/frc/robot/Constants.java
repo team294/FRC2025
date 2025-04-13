@@ -470,6 +470,8 @@ public final class Constants {
     // This value is the center of the region of *unallowed* motion
     public static double cancoderDiscontinuityPoint = 0.071;        // CALIBRATED 4/13 - minimum raw cc is 0.308, maximum raw cc is 0.834
 
+    public static double ratchetEngaged = 0.0;    // TODO UNCALIBRATED
+    public static double ratchetDisengaged = 1.0; // TODO UNCALIBRATED
 
     public static final double kP = (compensationVoltage * maxPercentOutput) / 0.01;    // CALIBRATED 4/11. kP = (desired-output-volts) / (error-in-wrist-rotations)
     public static final double kI = 0.0;    // CALIBRATED
@@ -496,6 +498,15 @@ public final class Constants {
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
       ClimberAngle(double value) { this.value = value; }
+    }
+
+    public enum ServoPosition {
+      ENGAGED(0.0),
+      DISENGAGED(1.0),
+      UNKNOWN(-9999.9);
+
+      public final double value;
+      ServoPosition(double value) { this.value = value; }
     }
   }
 

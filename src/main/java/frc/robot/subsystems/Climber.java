@@ -24,6 +24,7 @@ import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.Wait;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
+import frc.robot.Constants.ClimberConstants.ServoPosition;
 
 public class Climber extends SubsystemBase implements Loggable {
   
@@ -76,6 +77,8 @@ public class Climber extends SubsystemBase implements Loggable {
   private double safeAngle; // Current climber target on position control on the motor (if in position mode)
 
   private boolean isInCoastMode = false;
+
+  private ServoPosition servoPosition;  // 0.0 -> 1.0
 
   public Climber(String subsystemName) {
     
@@ -507,7 +510,23 @@ public class Climber extends SubsystemBase implements Loggable {
    * @return true = engaged, false = disengaged
    */
   public boolean getRatchetEngaged() {
-    return climberServo.get() < 0.5 ? true : false;
+    return servoPosition.value == 0.0;
+  }
+
+  /**
+   * Set tracking variable for servo position
+   * @param position [0.0, 1.0]
+   */
+  public void setServoPositionVariable(ServoPosition position) {
+    servoPosition = position;
+  }
+
+  /**
+   * Set servo position
+   * @param position [0.0, 1.0]
+   */
+  public void setRatchetPosition(double position) {
+    climberServo.set(position);
   }
 
   //****** Information methods
