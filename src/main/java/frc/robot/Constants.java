@@ -457,18 +457,18 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // CALIBRATED
-    public static final double maxManualPercentOutput = 0.2;        // CALIBRATED
-    public static final double maxPercentOutput = 0.6;              // TODO UNCALIBRATED
+    public static final double maxManualPercentOutput = 0.2;        // CALIBRATED 
+    public static final double maxPercentOutput = 0.2;              // CALIBRATED 4/12
 
     // Should be updated in RobotPreferences, so it cannot be final
-    public static double offsetAngleCANcoder = -52.9;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED
+    public static double offsetAngleCANcoder = -232.383;            // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED 4/12
 
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
     // This value is the center of the region of *unallowed* motion
-    public static double cancoderDiscontinuityPoint = 0.578;          // TODO UNCALIBRATED
+    public static double cancoderDiscontinuityPoint = 0.578;        // CALIBRATED 4/12
 
 
-    public static final double kP = (compensationVoltage * maxPercentOutput) / 0.01;    // TODO CALIBRATE FOR 2025 kP = (desired-output-volts) / (error-in-wrist-rotations)
+    public static final double kP = (compensationVoltage * maxPercentOutput) / 0.01;    // CALIBRATED 4/11. kP = (desired-output-volts) / (error-in-wrist-rotations)
     public static final double kI = 0.0;    // CALIBRATED
     public static final double kD = 0.0;    // CALIBRATED
     public static final double kG = 0.0;    // CALIBRATED   kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
@@ -479,7 +479,7 @@ public final class Constants {
     public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in climber rotations / second^2. MMVel / MMAccel = seconds to full velocity.
     public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in climber rotations / second^3. MMAccel / MMJerk = seconds to full acceleration.
 
-    // TODO UNCALIBRATED
+    // CALIBRATED 4/12
     public enum ClimberAngle {
       LOWER_LIMIT(-2.0),
       UPPER_LIMIT(155.0),

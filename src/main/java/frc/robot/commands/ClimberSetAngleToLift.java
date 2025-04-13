@@ -13,7 +13,8 @@ import frc.robot.utilities.LEDEventUtil;
 
 public class ClimberSetAngleToLift extends SequentialCommandGroup {
 
-  /** Sets Climber Motor percent output until Climber is at the correct angle to climb, then cuts power.
+  /** 
+   * Sets Climber Motor percent output until Climber is at the correct angle to climb, then cuts power.
    * Not using position control to avoid robot bouncing during climb.
    * @param climber Climber subsystem
     */

@@ -37,7 +37,6 @@ public class ClimberSetPercentOutput extends Command {
    * <b>NOTE: This command does not end. When interrupted, it turns off the climber motor.
    * @param percent -1.0 to 1.0 (positive = up, negative = down)
    * @param climber Climber subsystem
-   * @param log FileLog utility
    */
   public ClimberSetPercentOutput(double percent, Climber climber) {
     
