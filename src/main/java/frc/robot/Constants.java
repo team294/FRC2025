@@ -264,8 +264,8 @@ public final class Constants {
     // Calculated by measuring y distance between center of reef wall and reef pole (6.469731 in), converted to meters
     public static final double ReefScoringPositionAprilTagOffset = 0.164331496063;
 
-    public static final double bargeScorableWidth = 3.5;  // Width of alliance barge structure (not net) is 3.72 meters, reduced for consistency
-    public static final double bargeScoringOffset = 1.32; // CALIBRATED 3/29/2025, was 1.07 in lab, changed at AVR
+    public static final double bargeScorableWidth = 3.3;  // Width of alliance barge structure (not net) is 3.72 meters, reduced for consistency CALIBRATED 4/12/2025
+    public static final double bargeScoringOffset = 1.08; // CALIBRATED 4/12/2025
   }
 
   public static class VisionConstants {
@@ -324,7 +324,7 @@ public final class Constants {
 
   public static final class HopperConstants {
     public static final double compensationVoltage = 12.0;
-    public static final double intakePercent = 0.45;
+    public static final double intakePercent = 0.65; // Calibrated 4/9, was 0.45
     public static final double reverseIntakePercent = -0.2;
   }
 
@@ -349,7 +349,7 @@ public final class Constants {
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.4;             // CALIBRATED 3/29
-    public static final double netOuttakePercent = -0.50;       // CALIBRATED 3/29
+    public static final double netOuttakePercent = -0.35;       // CALIBRATED 4/12
     public static final double processorOuttakePercent = -0.15; // CALIBRATED 3/29
   }
 
@@ -435,7 +435,7 @@ public final class Constants {
       ALGAE_LOLLIPOP(12.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
-      ALGAE_NET(63.0, 70.0);
+      ALGAE_NET(73.0, 65.0); // CALIBRATED 4/12 - was 63.0, 70.0
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double elevatorPosition;

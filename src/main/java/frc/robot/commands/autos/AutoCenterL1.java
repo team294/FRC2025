@@ -28,7 +28,6 @@ public class AutoCenterL1 extends SequentialCommandGroup {
    * @param coralEffector CoralEffector subsystem
    * @param algaeGrabber AlgaeGrabber subsystem
    * @param allianceSelection AllianceSelection utility
-   * @param log FileLog utility
    */
   public AutoCenterL1(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, AllianceSelection allianceSelection) {
     addCommands(

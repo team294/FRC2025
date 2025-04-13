@@ -22,7 +22,8 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
   /**
    * Drive from barge to end (reef location) and score a coral.
    * @param fromHP true = starting at HP, false = starting at barge
-   * @param end ReefLocation (A-L) to end at
+   * @param score true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
+   * @param location ReefLocation (A-L) to end at
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
@@ -35,36 +36,23 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
-  public AutoCoralDriveAndScoreSequence(boolean fromHP, ReefLocation end, ReefLevel level, DriveTrain driveTrain,
+  public AutoCoralDriveAndScoreSequence(boolean fromHP, boolean score, ReefLocation location, ReefLevel level, DriveTrain driveTrain,
       Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
       Field field) {
     addCommands(
-      new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: Start, goal reef location =", end.toString()),
+      new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: Start, goal reef location =", location.toString()),
       // Drive to reef while intaking to ensure coral is intaked (timeout on the intake command for 4 seconds)
-      new AutoDriveToReef(fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
+      new AutoDriveToReef(fromHP, location, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
       
-      // If coral is detected, score. If not, end the score sequence and skip to the next part of the auto
+      // If coral is detected, score (dependent on if isLastCoral is false). If not, wait 0.5 seconds and try again, then end the score sequence and skip to the next part of the auto
       either(
-        new AutomatedDriveToReefAndScoreCoral(level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, rightJoystick, field),
+        new AutomatedDriveToReefAndScoreCoral(location, score, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field),
         none(),
         () -> coralEffector.isCoralPresent()
       ),
-        new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: End")
-      
-      // // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain, log),
-      // new CoralEffectorOuttake(coralEffector, log),
-      // // Back up from reef by driveBackFromReefDistance
-      // new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.driveBackFromReefDistance, 0, Rotation2d.kZero), 
-      //     0.5, 1.0, 
-      //     TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-      //     true, true, driveTrain, log)
-      /*new AutoDriveToReefAndPrep(level, fromHP, end, driveTrain, elevator, wrist, coralEffector, hopper, alliance, cache),
-      // new ScorePieceSequence(coralEffector, algaeGrabber, driveTrain),
-      new CoralEffectorOuttake(coralEffector),
-      new DriveToPose(CoordType.kRelative, () -> new Pose2d(-DriveConstants.distanceFromReefToScore, 0, Rotation2d.kZero), 
-          0.5, 1.0, 
-          TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-          true, true, driveTrain)*/
+
+
+      new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: End")
     );
   }
 }
