@@ -101,7 +101,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
             () -> level == ReefLevel.L1 
           )
         ),
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF))
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTOMATED_DRIVING_REEF))
       ).handleInterrupt(
         () -> either(
           runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
@@ -197,7 +197,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
             () -> !score  
           )
         ),
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF))
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTOMATED_DRIVING_REEF))
       ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),     
       
       runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
