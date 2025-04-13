@@ -26,12 +26,12 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
 
   final static Map<AlgaeLocation, ElevatorWristPosition> algaeToElevatorMap = new EnumMap<>(AlgaeLocation.class);
   static {
-    algaeToElevatorMap.put(AlgaeLocation.AB, ElevatorWristPosition.ALGAE_LOWER);
-    algaeToElevatorMap.put(AlgaeLocation.CD, ElevatorWristPosition.ALGAE_UPPER);
-    algaeToElevatorMap.put(AlgaeLocation.EF, ElevatorWristPosition.ALGAE_LOWER);
-    algaeToElevatorMap.put(AlgaeLocation.GH, ElevatorWristPosition.ALGAE_UPPER);
-    algaeToElevatorMap.put(AlgaeLocation.IJ, ElevatorWristPosition.ALGAE_LOWER);
-    algaeToElevatorMap.put(AlgaeLocation.KL, ElevatorWristPosition.ALGAE_UPPER);
+    algaeToElevatorMap.put(AlgaeLocation.AB, ElevatorWristPosition.ALGAE_UPPER);
+    algaeToElevatorMap.put(AlgaeLocation.CD, ElevatorWristPosition.ALGAE_LOWER);
+    algaeToElevatorMap.put(AlgaeLocation.EF, ElevatorWristPosition.ALGAE_UPPER);
+    algaeToElevatorMap.put(AlgaeLocation.GH, ElevatorWristPosition.ALGAE_LOWER);
+    algaeToElevatorMap.put(AlgaeLocation.IJ, ElevatorWristPosition.ALGAE_UPPER);
+    algaeToElevatorMap.put(AlgaeLocation.KL, ElevatorWristPosition.ALGAE_LOWER);
   }
   /**
    * Drives to nearest reef position and picks up algae (Algae level is manually input).

@@ -62,13 +62,17 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
         new AutoCoralCycleLoop(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
         
         // Drive and intake algae from the reef (from GH only)
-        new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.GH, driveTrain, elevator, wrist, algaeGrabber, field),
+        new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.GH, driveTrain, elevator, wrist, algaeGrabber, field).until(() -> algaeGrabber.isAlgaePresent()),
+        
       
         // If we want to score algae, then score it. If not, just back up and end auto
         either(
           sequence(
             // Drive to barge, move elevator up, score, move elevator down.
-            new DriveToBargeWithOdometry(driveTrain, field),
+            deadline(
+              new DriveToBargeWithOdometry(driveTrain, field),
+              new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist)
+            ),
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
             new AlgaeGrabberOuttake(algaeGrabber),
             new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
@@ -91,7 +95,6 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
             )
           ),
 
-          
           new DriveToPose(CoordType.kRelative, new Pose2d(-0.3, 0, Rotation2d.kZero), driveTrain),
           () -> scoreFirstAlgae
         ),
