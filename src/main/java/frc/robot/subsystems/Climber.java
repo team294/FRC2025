@@ -14,6 +14,7 @@ import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -33,6 +34,9 @@ public class Climber extends SubsystemBase implements Loggable {
   // Create climber motor
   private final TalonFX climberMotor = new TalonFX(Ports.CANClimber);
   private final TalonFXConfigurator climberMotorConfigurator = climberMotor.getConfigurator();
+
+  // Create climber servo
+  private final Servo climberServo = new Servo(Ports.PWMCLimberServo);
 
   // We create two configs for the climber motor -- one with RemoteCANcoder and one with RotorEncoder.
   // The default config is RemoteCANcoder. If the CANcoder fails, the climber will the
@@ -486,6 +490,24 @@ public class Climber extends SubsystemBase implements Loggable {
 
   public boolean getCoastMode() {
     return isInCoastMode;
+  }
+
+  //****** Servo methods
+
+  /**
+   * Sets whether the servo is engaged.
+   * @param engaged true = engaged, false = disengaged
+   */
+  public void setServoEngaged(boolean engaged) {
+    climberServo.set(engaged ? 1 : 0); // TODO determine which way is engaged
+  }
+
+  /**
+   * Gets whether the servo is engaged.
+   * 
+   */
+  public boolean getServoEngaged() {
+    return climberServo.get() > 0.5 ? true : false; // TODO determine which way is engaged
   }
 
   //****** Information methods

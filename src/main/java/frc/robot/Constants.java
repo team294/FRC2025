@@ -82,6 +82,9 @@ public final class Constants {
     public static final int DIOElevatorLowerLimitSensor2 = 0; // Left
     public static final int DIOAlgaeGrabberBumpSwitch = 2;
     public static final int DIOCoralEffectorExitSensor = 3;
+
+    // PWM Ports
+    public static final int PWMCLimberServo = 0;
   }
 
   public static final class OIConstants {
