@@ -56,6 +56,21 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
           either(
             parallel(
               // Drive to nearest reef position
+              new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+              sequence(
+                deadline(
+                  waitSeconds(0.4),
+                  sequence(
+                    waitUntil(() -> coralEffector.getHoldMode()),
+                    new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
+                  )
+                ),
+                // Move elevator/wrist to correct position based on given level
+                new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
+              )
+            ),
+            sequence(
+              // Drive to nearest reef position
               deadline(
                 new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
                 sequence(
@@ -67,16 +82,16 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
 
                     new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
                   ),
-                  new WristElevatorSafeMove(reefToElevatorMap.get(level), RegionType.CORAL_ONLY, elevator, wrist)
+                  new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
                 )
               ),
                 // Move elevator/wrist to correct position based on given level
-                new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
-              ),
-            sequence(
-              new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
               new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
             ),
+            // sequence(
+            //   new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+            //   new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
+            // ),
             () -> DriverStation.isAutonomous()
           ),
 
