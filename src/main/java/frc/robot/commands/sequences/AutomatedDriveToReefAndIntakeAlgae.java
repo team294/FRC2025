@@ -81,7 +81,7 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
             new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist)
           )
         ),
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF))
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTOMATED_DRIVING_REEF))
       ).handleInterrupt(
         () -> either(
           runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
@@ -165,13 +165,7 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
             new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist)
           )
         ),
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTO_DRIVE_IN_PROGRESS_REEF))
-      ).handleInterrupt(
-        () -> either(
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-          () -> algaeGrabber.isAlgaePresent()
-        )
+        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTOMATED_DRIVING_BARGE))
       ),
       
       either(
