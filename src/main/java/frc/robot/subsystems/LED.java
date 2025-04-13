@@ -138,7 +138,7 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
    * @param color BCRColor color
    */ 
   public void setLEDs(BCRColor color) {
-    candle.setLEDs(color.r, color.g, color.g);
+    candle.setLEDs(color.r, color.g, color.b);
   }
 
   /**
