@@ -42,6 +42,7 @@ public class RobotContainer {
   private final AllianceSelection allianceSelection = new AllianceSelection();
   private final Field field = new Field(allianceSelection);
   private final Timer matchTimer = new Timer();
+  private boolean lastEnabledModeWasAuto = false;
 
   // Define robot subsystems
   private final LED led = new LED(Ports.CANdle, "LED", matchTimer);
@@ -339,7 +340,10 @@ public class RobotContainer {
     xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber));
 
     // Manually control elevator with right joystick
-    xbLJoystickTrigger.whileTrue(new ClimberManualControl(xboxController, climber, false));
+    xbLJoystickTrigger.whileTrue(sequence(
+      new ClimberSetRatchet(false, climber),
+      new ClimberManualControl(xboxController, climber, false)
+    ));
 
     // Manually control wrist with the left joystick
     xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, true));
@@ -446,8 +450,14 @@ public class RobotContainer {
     // Climber Commands
     coP[15].onTrue(new ClimberLiftSequence(climber));
     coP[16].onTrue(new ClimberPrepSequence(elevator, wrist, climber));
-    coP[17].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.DEFAULT, climber));
-    coP[18].onTrue(new ClimberSetAngle(ClimberConstants.ClimberAngle.START_CONFIG, climber));
+    coP[17].onTrue(sequence(
+      new ClimberSetRatchet(false, climber),
+      new ClimberSetAngle(ClimberConstants.ClimberAngle.DEFAULT, climber)
+      ));
+    coP[18].onTrue(sequence(
+      new ClimberSetRatchet(false, climber),
+      new ClimberSetAngle(ClimberConstants.ClimberAngle.START_CONFIG, climber)
+    ));
 
     // Reset Pose
     coP[7].onTrue(either(
@@ -545,6 +555,8 @@ public class RobotContainer {
     } else {
       wrist.stopWrist();
     }
+
+    lastEnabledModeWasAuto = true;
   }
 
   /**
@@ -579,10 +591,12 @@ public class RobotContainer {
     LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
 
     climberDisengageRatchet.schedule();
-    if (!coralEffector.getHoldMode() && elevator.getElevatorPosition() < 3.0) coralIntakeSequence.schedule();
+    if (lastEnabledModeWasAuto && !coralEffector.getHoldMode() && elevator.getElevatorPosition() < 3.0) coralIntakeSequence.schedule();
     
     matchTimer.reset();
     matchTimer.start();
+
+    lastEnabledModeWasAuto = false;
   }
 
   /**

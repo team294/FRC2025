@@ -9,11 +9,9 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
-import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.LEDEventUtil;
-import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
 public class ClimberPrepSequence extends SequentialCommandGroup {
@@ -30,7 +28,7 @@ public class ClimberPrepSequence extends SequentialCommandGroup {
         parallel(
           new DataLogMessage(false, "ClimberPrepSequence Start"),
           runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_PREPPING)),
-          new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist),
+          // new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist),   // Do not move elevator/wrist, in case co-driver preps while scoring.  Co-driver is responsible for elevator/wrist.
           new ClimberSetRatchet(false, climber)
         ),
         new ClimberSetAngle(ClimberAngle.CLIMB_START, climber)
