@@ -23,7 +23,7 @@ import frc.robot.utilities.TrapezoidProfileBCR;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final String bcrRobotCodeVersion = "B1";
+  public static final String bcrRobotCodeVersion = "C1";
 
   public enum CoordType {
     kRelative,              // Relative to current robot location/facing
@@ -354,7 +354,7 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.4;             // CALIBRATED 3/29
     public static final double netOuttakePercent = -0.35;       // CALIBRATED 4/12
-    public static final double processorOuttakePercent = -0.15; // CALIBRATED 3/29
+    public static final double processorOuttakePercent = -0.18; // CALIBRATED 3/29.  Updated 4/16 from -0.15 to -0.18
   }
 
   public static final class ElevatorConstants {
@@ -498,8 +498,8 @@ public final class Constants {
     }
 
     public enum ServoPosition {
-      ENGAGED(0.0),
-      DISENGAGED(1.0),
+      ENGAGED(0.58),      // CALIBRATED 4/16/25
+      DISENGAGED(0.74),   // CALIBRATED 4/16/25
       UNKNOWN(-9999.9);
 
       public final double value;
