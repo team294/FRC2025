@@ -19,7 +19,7 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    *   - Drives to reef and scores the coral
    * @param start ReefLocation (A-L) to start at
    * @param end ReefLocation (A-L) to end at
-   * @param score true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
+   * @param dontScore false = we want to move the elevator to score the coral; true = stop at reef DOESN'T WORK
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
@@ -31,7 +31,7 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
-  public AutoCoralCycle(ReefLocation start, ReefLocation end, boolean score, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
+  public AutoCoralCycle(ReefLocation start, ReefLocation end, boolean dontScore, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
           CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
     addCommands(
       new DataLogMessage(false, "AutoCoralCycle: Start"),
@@ -40,7 +40,7 @@ public class AutoCoralCycle extends SequentialCommandGroup {
 
       // If not the last coral, then drives from HP to reef location and scores coral
       // Otherwise, if it is the last coral, then drives from HP to end reef location and stops there
-      new AutoCoralDriveAndScoreSequence(true, score, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
+      new AutoCoralDriveAndScoreSequence(true, dontScore, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
       
       new DataLogMessage(false, "AutoCoralCycle: End")
     );

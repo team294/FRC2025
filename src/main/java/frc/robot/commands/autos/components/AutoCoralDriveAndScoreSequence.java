@@ -22,7 +22,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
   /**
    * Drive from barge to end (reef location) and score a coral.
    * @param fromHP true = starting at HP, false = starting at barge
-   * @param score true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
+   * @param dontScore false = we want to move the elevator to score the coral; true = stop at reef DOESN'T WORK
    * @param location ReefLocation (A-L) to end at
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsystem
@@ -36,7 +36,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
-  public AutoCoralDriveAndScoreSequence(boolean fromHP, boolean score, ReefLocation location, ReefLevel level, DriveTrain driveTrain,
+  public AutoCoralDriveAndScoreSequence(boolean fromHP, boolean dontScore, ReefLocation location, ReefLevel level, DriveTrain driveTrain,
       Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
       Field field) {
     addCommands(
@@ -46,7 +46,7 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
       
       // If coral is detected, score (dependent on if isLastCoral is false). If not, wait 0.5 seconds and try again, then end the score sequence and skip to the next part of the auto
       either(
-        new AutomatedDriveToReefAndScoreCoral(location, score, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field),
+        new AutomatedDriveToReefAndScoreCoral(location, dontScore, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field),
         none(),
         () -> coralEffector.isCoralPresent()
       ),

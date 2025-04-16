@@ -141,7 +141,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * If not scoring on L4, the robot will drive fully up against the reef, and then back up after scoring.
    * If scoring on L4, the robot will score while not fully up against the reef, and the routine ends when the piece is scored.
    * @param location Reef location to score on
-   * @param score true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
+   * @param dontScore false = we want to move the elevator to score the coral; true = stop at reef DOESN'T WORK
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
@@ -152,7 +152,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param rightJoystick Right joystick
    * @param field Field field
    */
-  public AutomatedDriveToReefAndScoreCoral(ReefLocation location, boolean score, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
+  public AutomatedDriveToReefAndScoreCoral(ReefLocation location, boolean dontScore, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
       AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, Field field) {
     addCommands(
       new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: Start"),
@@ -179,7 +179,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
               either(
                 new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector),
                 none(),
-                () -> !score
+                () -> !dontScore
               )
             )
           ),
@@ -214,7 +214,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
               )
             ),
             none(),
-            () -> !score  
+            () -> !dontScore  
           )
         ),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTOMATED_DRIVING_REEF))

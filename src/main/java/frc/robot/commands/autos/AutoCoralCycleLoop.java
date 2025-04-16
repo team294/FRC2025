@@ -21,6 +21,7 @@ import frc.robot.utilities.*;
 public class AutoCoralCycleLoop extends SequentialCommandGroup {
   /**
    * First, score the pre-loaded coral. Then, do cycles of (1) drive to HP, (2) intake, (3) drive to reef, and (4) score.
+   * 
    * TODO Assumes each adjacent reef location in the list have a valid trajectory between them and HP
    * TODO Figure out proper exit conditions and timeouts
    * @param reefLocations list of ReefLocation to visit, in order
@@ -73,10 +74,11 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
 
           ReefLocation start = reefLocations.get(i);
           ReefLocation end = reefLocations.get(i + 1);
-          boolean isLastCoral = !scoreLastCoral && reefLocations.get(i) == reefLocations.get(reefLocations.size() - 1); // TODO this boolean does not work
+          // If end reef location is the last location in the list, then don't score on it
+          boolean isLastCoral = !scoreLastCoral && end == reefLocations.get(reefLocations.size() - 1); // TODO this boolean does not work
 
           addCommands(
-            // If it is the final coral location, then isFinalCoral = true and the elevator does not move up. If not, then the elevator moves up to score
+            // If end is the final coral location, then isFinalCoral = true and the elevator does not move up. If not, then the elevator moves up to score
             new AutoCoralCycle(start, end, isLastCoral, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
           );
         }
