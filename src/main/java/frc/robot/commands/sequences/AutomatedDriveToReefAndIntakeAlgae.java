@@ -118,6 +118,7 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
 
     /**
      * Drives to specific reef position and picks up algae (for auto)
+     * Does not fully stow the wrist; instead, goes to ALGAE_LOWER position
      * The robot will drive fully up against the reef, and then back up after picking up the algae.
      * @param algaeLevel the height of the algae, upper or lower
      * @param driveTrain DriveTrain subsystem
@@ -161,8 +162,8 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
       
             parallel(
               new AlgaeGrabberStop(algaeGrabber),
-              // Stow wrist
-              new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist)
+              // Move elevator/wrist to position for grabbing lower algae for optimization
+              new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.CORAL_ONLY, elevator, wrist)
             )
           ).handleInterrupt(
             () -> either(

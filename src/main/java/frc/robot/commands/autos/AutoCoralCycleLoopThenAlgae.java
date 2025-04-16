@@ -68,13 +68,13 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
         // If we want to score algae, then score it. If not, just back up and end auto
         either(
           sequence(
-            // Drive to barge, move elevator up, score, move elevator down.
             deadline(
+              // Drive to barge while moving elevator up until reached barge position
               new DriveToBargeWithOdometry(driveTrain, field),
-              new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist)
+              new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_UPPER, RegionType.STANDARD, elevator, wrist)
             ),
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
-            new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.7), 
+            new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.3), 
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist),
           
             // Now, we go to grab a second algae, IJ, if the boolean to do so is true
@@ -84,11 +84,15 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
                 new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.BargeScoringToIJ), driveTrain, alliance),
                 new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.IJ, driveTrain, elevator, wrist, algaeGrabber, field),
                 
-                // Drive to barge, move elevator up, score, move elevator down.
-                new DriveToBargeWithOdometry(driveTrain, field),
-                new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
-                new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.7), 
-                new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
+                // Drive towards barge from IJ position and stop before start line
+                new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.EndCenterAuto), driveTrain, alliance)
+                
+
+                // // Drive to barge, move elevator up, score, move elevator down.
+                // new DriveToBargeWithOdometry(driveTrain, field),
+                // new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
+                // new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.3), 
+                // new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
               ), 
               none(), 
               () -> grabSecondAlgae

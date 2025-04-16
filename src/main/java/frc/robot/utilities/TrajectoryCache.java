@@ -40,7 +40,8 @@ import frc.robot.Constants.FieldConstants;
         BargeCenterToG("BargeCenterToG"),
         EToHP("EToHP"),
         HPToE("HPToE"),
-        BargeScoringToIJ("BargeScoringToIJ");
+        BargeScoringToIJ("BargeScoringToIJ"),
+        EndCenterAuto("EndCenterAuto");
 
         @SuppressWarnings({"MemberName", "PMD.SingularField"})
         public final String trajFileName;

@@ -52,12 +52,13 @@ public class AutoSelection {
 		BargeLeft_JKL("BargeLeft_JKL", 3),
 
 		CenterOneCoralTwoAlgae("CenterOneCoralTwoAlgae", 4),
+		CenterOneCoralOneAlgae("CenterOneCoralOneAlgae", 5), 
 
 		// BargeRight_ED_AlgaeCD("BargeRight_ED_AlgaeCD", 4),
 		// BargeLeft_JK_AlgaeKL("BargeLeft_JK_AlgaeKL", 5),
 		
-		PushFriend_JK("PushFriend_JK", 5),
-		PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 6),
+		// PushFriend_JK("PushFriend_JK", 5),
+		// PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 6),
 		
 		AutoCenterL1("AutoCenterL1", 7),
 		AutoCenterL4("AutoCenterL4", 8);
@@ -284,6 +285,13 @@ public class AutoSelection {
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.H));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4));
 			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, trajectoryCache);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.CenterOneCoralOneAlgae.value) {
+			autoSelectionOption = RoutineSelectionOption.CenterOneCoralOneAlgae;
+			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.H));
+			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4));
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
