@@ -21,7 +21,7 @@ public class ClimberManualControl extends Command {
    * Controls the climber using the Xbox controller joysticks.
    * @param xboxController Xbox controller
    * @param climber Climber subsystem
-   * @param leftJoystick true = use left joystick, false = use right joystick
+   * @param rightJoystick true = use right joystick, false = use left joystick
    */
   public ClimberManualControl(CommandXboxController xboxController, Climber climber, boolean rightJoystick) {
     this.climber = climber;
@@ -40,7 +40,7 @@ public class ClimberManualControl extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double climberPercent = rightJoystick ? -xboxController.getLeftY() : -xboxController.getRightY();
+    double climberPercent = rightJoystick ? -xboxController.getRightY() : -xboxController.getLeftY();
     if ((Math.abs(climberPercent) < OIConstants.joystickDeadband)) climberPercent = 0;
 
     // Slow the control down

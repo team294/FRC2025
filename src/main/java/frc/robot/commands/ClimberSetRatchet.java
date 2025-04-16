@@ -67,7 +67,7 @@ public class ClimberSetRatchet extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!moveNeeded || timer.get() >= 0.5);  // TODO calibrate this delay
+    return (!moveNeeded || timer.get() >= 0.25);  // Measured in pit ~0.15 sec, using 0.25 sec as safe value
   }
 
   public boolean runsWhenDisabled() {
