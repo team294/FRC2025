@@ -212,8 +212,8 @@ public final class Constants {
 
     // Distance bumpers should be away from the reef
     // This distance is where the algae intake prep will take place for both levels
-    public static final double distanceFromReefToPickupAlgaeUpper = Units.inchesToMeters(7.25);
-    public static final double distanceFromReefToPickupAlgaeLower = Units.inchesToMeters(7.25);
+    public static final double distanceFromReefToPickupAlgaeUpper = Units.inchesToMeters(8.25);    // Discussed 7.25 instead...
+    public static final double distanceFromReefToPickupAlgaeLower = Units.inchesToMeters(10.75);   // Discussed 7.25 instead...
 
     // Back offset for robot to pick up algae, in meters
     public static final double ReefAlgaePickupPositionOffset = 0.45;

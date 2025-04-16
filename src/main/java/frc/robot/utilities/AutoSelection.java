@@ -294,7 +294,7 @@ public class AutoSelection {
 			autoSelectionOption = RoutineSelectionOption.CenterOneCoralOneAlgae;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.H));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, trajectoryCache);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {

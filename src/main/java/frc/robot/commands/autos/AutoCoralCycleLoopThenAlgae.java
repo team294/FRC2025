@@ -79,7 +79,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
               new DriveToBargeWithOdometry(driveTrain, field),
               sequence(
                 new WaitCommand(1),
-                new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_UPPER, RegionType.STANDARD, elevator, wrist)
+                new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist)
               )
             ),
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
