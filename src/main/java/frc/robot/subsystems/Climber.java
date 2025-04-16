@@ -14,6 +14,7 @@ import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -23,6 +24,7 @@ import frc.robot.utilities.RobotPreferences;
 import frc.robot.utilities.Wait;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
+import frc.robot.Constants.ClimberConstants.ServoPosition;
 
 public class Climber extends SubsystemBase implements Loggable {
   
@@ -33,6 +35,9 @@ public class Climber extends SubsystemBase implements Loggable {
   // Create climber motor
   private final TalonFX climberMotor = new TalonFX(Ports.CANClimber);
   private final TalonFXConfigurator climberMotorConfigurator = climberMotor.getConfigurator();
+
+  // Create climber servo
+  private final Servo climberServo = new Servo(Ports.PWMCLimberServo);
 
   // We create two configs for the climber motor -- one with RemoteCANcoder and one with RotorEncoder.
   // The default config is RemoteCANcoder. If the CANcoder fails, the climber will the
@@ -70,6 +75,10 @@ public class Climber extends SubsystemBase implements Loggable {
   private boolean climberCalibrated = false;                // Default to climber being uncalibrated. Calibrate from robot preferences or "Calibrate Climber Zero" button on dashboard.
 
   private double safeAngle; // Current climber target on position control on the motor (if in position mode)
+
+  private boolean isInCoastMode = false;
+
+  private ServoPosition servoPosition = ServoPosition.UNKNOWN;
 
   public Climber(String subsystemName) {
     
@@ -279,6 +288,11 @@ public class Climber extends SubsystemBase implements Loggable {
       percent = MathUtil.clamp(percent, -ClimberConstants.maxUncalibratedPercentOutput, ClimberConstants.maxUncalibratedPercentOutput);
     }
 
+    // Don't move down unless the ratchet is Disengaged
+    if (getRatchetPosition() != ServoPosition.DISENGAGED && percent < 0) {
+      percent = 0.0;
+    }
+
     climberMotor.setControl(climberVoltageControl.withOutput(percent * ClimberConstants.compensationVoltage));
   }
 
@@ -315,7 +329,7 @@ public class Climber extends SubsystemBase implements Loggable {
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    */
   public void setClimberAngle(double angle) {
-    if (climberCalibrated) {
+    if (climberCalibrated && getRatchetPosition() == ServoPosition.DISENGAGED) {
       // Keep the climber in usable range
       safeAngle = MathUtil.clamp(angle, ClimberConstants.ClimberAngle.LOWER_LIMIT.value, ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
       
@@ -473,6 +487,60 @@ public class Climber extends SubsystemBase implements Loggable {
     }
   }
 
+  /**
+   * Set Coast Mode of Climber Motor
+   * @param coastMode true = coast, false = brake
+   */
+  public void setCoastMode(boolean coastMode) {
+    if (isInCoastMode != coastMode) {
+      climberMotor.setNeutralMode(coastMode ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+      isInCoastMode = coastMode;
+    }
+  }
+
+  /**
+   * Returns status of coast mode for climber motor
+   * @return true = coast mode, false = brake mode
+   */
+  public boolean getCoastMode() {
+    return isInCoastMode;
+  }
+
+  //****** Servo methods
+
+  /**
+   * Sets whether the servo is engaged. Engaged means we are not to move the climber down.
+   * @param engaged true = engaged, false = disengaged
+   */
+  public void setRatchetEngaged(boolean engaged) {
+    climberServo.set(engaged ? ServoPosition.ENGAGED.value : ServoPosition.DISENGAGED.value);
+  }
+
+  /**
+   * Current status of the ratchet
+   * @return UNKNOWN (unknown or moving), ENGAGED, or DISENGAGED
+   */
+  public ServoPosition getRatchetPosition() {
+    return servoPosition;
+  }
+
+  /**
+   * Set tracking variable for servo position
+   * @param position UNKNOWN (unknown or moving), ENGAGED, or DISENGAGED
+   */
+  public void setRatchetPositionVariable(ServoPosition position) {
+    servoPosition = position;
+  }
+
+  /**
+   * Set servo position
+   * @param position [0.0, 1.0]
+   */
+  public void setRatchetPosition(double position) {
+    position = MathUtil.clamp(position, 0.0, 1.0);
+    climberServo.set(position);
+  }
+
   //****** Information methods
   
   /**
@@ -513,6 +581,8 @@ public class Climber extends SubsystemBase implements Loggable {
       SmartDashboard.putBoolean("Climber CANcoder connected", isCANcoderConnected());
       SmartDashboard.putBoolean("Climber calibrated", climberCalibrated);
       SmartDashboard.putBoolean("Climber Using CANcoder", usingCANcoder);
+      SmartDashboard.putBoolean("Climber Ratchet Disengaged", getRatchetPosition() == ServoPosition.DISENGAGED); // Disengaged so red on dashboard = don't move climber down
+      SmartDashboard.putString("Climber Ratchet Position", getRatchetPosition().toString());
       SmartDashboard.putNumber("Climber CANcoder raw", getCANcoderRotationsRaw());
       SmartDashboard.putNumber("Climber encoder raw", getClimberEncoderRotationsRaw());
       SmartDashboard.putNumber("Climber angle", getClimberEncoderDegrees());
