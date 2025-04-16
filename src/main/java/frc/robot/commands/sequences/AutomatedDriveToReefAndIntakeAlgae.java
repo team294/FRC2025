@@ -163,7 +163,7 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
             parallel(
               new AlgaeGrabberStop(algaeGrabber),
               // Move elevator/wrist to position for grabbing lower algae for optimization
-              new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.CORAL_ONLY, elevator, wrist)
+              new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist)
             )
           ).handleInterrupt(
             () -> either(

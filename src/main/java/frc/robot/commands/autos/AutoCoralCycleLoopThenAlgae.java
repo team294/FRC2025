@@ -78,7 +78,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
               )
             ),
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
-            new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.3), 
+            new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.5), 
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist),
           
             // Now, we go to grab a second algae, IJ, if the boolean to do so is true
@@ -95,7 +95,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
                 // // Drive to barge, move elevator up, score, move elevator down.
                 // new DriveToBargeWithOdometry(driveTrain, field),
                 // new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
-                // new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.3), 
+                // new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.5), 
                 // new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
               ), 
               none(), 
