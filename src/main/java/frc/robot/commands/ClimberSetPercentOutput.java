@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ClimberConstants.ServoPosition;
 import frc.robot.subsystems.Climber;
 import frc.robot.utilities.DataLogUtil;
 
@@ -27,8 +28,8 @@ public class ClimberSetPercentOutput extends Command {
     this.fromShuffleboard = true;
     addRequirements(climber);
 
-    if (SmartDashboard.getNumber("Climber Set Percent", -9999) == -9999) {
-      SmartDashboard.putNumber("Climber Set Percent", 0);
+    if (SmartDashboard.getNumber("Climber Goal Percent", -9999) == -9999) {
+      SmartDashboard.putNumber("Climber Goal Percent", 0);
     }
   }
 
@@ -37,7 +38,6 @@ public class ClimberSetPercentOutput extends Command {
    * <b>NOTE: This command does not end. When interrupted, it turns off the climber motor.
    * @param percent -1.0 to 1.0 (positive = up, negative = down)
    * @param climber Climber subsystem
-   * @param log FileLog utility
    */
   public ClimberSetPercentOutput(double percent, Climber climber) {
     
@@ -50,8 +50,8 @@ public class ClimberSetPercentOutput extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Set Percent", 0);
-    climber.setClimberPercentOutput(percent);
+    if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Goal Percent", 0);
+    if (climber.getRatchetPosition() == ServoPosition.DISENGAGED || percent >= 0) climber.setClimberPercentOutput(percent);
     DataLogUtil.writeLog(false, "ClimberSetPercentOutput", "Init", "Percent", percent);
   }
 
@@ -69,6 +69,6 @@ public class ClimberSetPercentOutput extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return false; // will be interrupted in the climbing lift sequence
   }
 }

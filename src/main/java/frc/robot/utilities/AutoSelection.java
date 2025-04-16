@@ -98,6 +98,7 @@ public class AutoSelection {
 	private final CoralEffector coralEffector;
 	private final AlgaeGrabber algaeGrabber;
 	private final Hopper hopper;
+	private final Climber climber;
 	
 	private Command cachedAutonomousCommand;
 	private int logRotationKey;
@@ -117,16 +118,17 @@ public class AutoSelection {
 	 * @param rightJoystick
 	 * @param trajectoryCache TrajectoryCache cache
 	 * @param allianceSelection AllianceSelection alliance
-	 * @param field
-	 * @param driveTrain
-	 * @param elevator
-	 * @param wrist
-	 * @param coralEffector
-	 * @param algaeGrabber
-	 * @param hopper
+	 * @param field Field utility
+	 * @param driveTrain DriveTrain subsystem
+	 * @param elevator Elevator subsystem
+	 * @param wrist Wrist subsystem
+	 * @param coralEffector Coral Effector subsystem
+	 * @param algaeGrabber Algae Grabber subsystem
+	 * @param hopper Hopper subsystem
+	 * @param climber Climber subsystem
 	 */
 	public AutoSelection(Joystick rightJoystick, TrajectoryCache trajectoryCache, AllianceSelection allianceSelection, Field field,
-						 DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper) {
+						 DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Climber climber) {
 		this.rightJoystick = rightJoystick;
 		this.trajectoryCache = trajectoryCache;
 		this.allianceSelection = allianceSelection;
@@ -137,6 +139,7 @@ public class AutoSelection {
 		this.coralEffector = coralEffector;
 		this.algaeGrabber = algaeGrabber;
 		this.hopper = hopper;
+		this.climber = climber;
 
 		logRotationKey = DataLogUtil.allocateLogRotation();
 
@@ -256,14 +259,14 @@ public class AutoSelection {
 			autoSelectionOption = RoutineSelectionOption.BargeRight_EDC;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4, ReefLevel.L4, ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.BargeLeft_JKL.value) {
 			autoSelectionOption = RoutineSelectionOption.BargeLeft_JKL;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K, ReefLocation.L));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4, ReefLevel.L4, ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field);
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
 		}
 
 		// else if (autoPlan == RoutineSelectionOption.BargeRight_ED_AlgaeCD.value) {
@@ -284,7 +287,7 @@ public class AutoSelection {
 			autoSelectionOption = RoutineSelectionOption.CenterOneCoralTwoAlgae;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.H));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field, trajectoryCache);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.CenterOneCoralOneAlgae.value) {
