@@ -333,8 +333,8 @@ public class DriveToPose extends Command {
     dLogTrajVelkA.append(-1, timeNow);
     dLogTrajVelAng.append(-1, timeNow);
     dLogTrajRot.append(-1, timeNow);
-    dLogRobotPosErr.append(driveTrain.getPose().getTranslation().minus(goalPose.getTranslation()).getNorm(), timeNow);
-    dLogRobotThErr.append(MathBCR.angleMinus(driveTrain.getPoseAngle(), goalPose.getRotation().getDegrees()), timeNow);
+    dLogRobotPosErr.append(-1, timeNow);
+    dLogRobotThErr.append(-1, timeNow);
     dLogRobotX.append(curRobotTranslation.getX(), timeNow);
     dLogRobotY.append(curRobotTranslation.getY(), timeNow);
     dLogRobotVel.append(Math.hypot(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond), timeNow);
