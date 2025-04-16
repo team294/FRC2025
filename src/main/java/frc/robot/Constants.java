@@ -205,15 +205,15 @@ public final class Constants {
     // Distance bumpers should be away from the reef
     // This distance is the where the scoring prep sequence will take place for L1-L3,
     // along with is how far the robot should be located to score on L4.
-    public static final double distanceFromReefToScore = Units.inchesToMeters(6.25);  // was 0.25 meters, changed to be scoring location for L4
+    public static final double distanceFromReefToScore = Units.inchesToMeters(7.25);  // was 0.25 meters, changed to be scoring location for L4. 7.25 at AVR, 6.25 at LAR
 
     // How far away from the scoring prep position we start to move the elevator to the set position
     public static final double distanceFromReefToElevate = 0.05; // Value very close to zero so it doesn't evelevate until the robot is stopped
 
     // Distance bumpers should be away from the reef
     // This distance is where the algae intake prep will take place for both levels
-    public static final double distanceFromReefToPickupAlgaeUpper = Units.inchesToMeters(8.25);
-    public static final double distanceFromReefToPickupAlgaeLower = Units.inchesToMeters(10.75);
+    public static final double distanceFromReefToPickupAlgaeUpper = Units.inchesToMeters(8.25);    // Discussed 7.25 instead...
+    public static final double distanceFromReefToPickupAlgaeLower = Units.inchesToMeters(10.75);   // Discussed 7.25 instead...
 
     // Back offset for robot to pick up algae, in meters
     public static final double ReefAlgaePickupPositionOffset = 0.45;
@@ -275,10 +275,10 @@ public final class Constants {
   public static class VisionConstants {
     public static class PhotonVisionConstants {        
       public static final Transform3d robotToCamLeft = new Transform3d(
-        new Translation3d(Units.inchesToMeters(9.72 - 0.8 + 0.6), Units.inchesToMeters(12.02 + 0.4 - 0.5), Units.inchesToMeters(12.7204)),
+        new Translation3d(Units.inchesToMeters(9.72 - 0.8 + 0.6), Units.inchesToMeters(12.02 + 0.4), Units.inchesToMeters(12.7204)), // had -0.5 to Y at AVR
         new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-34.5))); // Cam mounted facing forward-right on the left side of the robot
       public static final Transform3d robotToCamRight = new Transform3d(
-        new Translation3d(Units.inchesToMeters(9.72 + 0.8 - 0.6), Units.inchesToMeters(-12.02 - 0.4 - 0.5), Units.inchesToMeters(12.7204)),
+        new Translation3d(Units.inchesToMeters(9.72 + 0.8 - 0.6), Units.inchesToMeters(-12.02 - 0.4), Units.inchesToMeters(12.7204)), // had -0.5 to Y at AVR
         new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(30.5 + 1.0))); // Cam mounted facing forward-left on the right side of the robot
 
       public static final String leftAprilTagCameraName = "LeftCamera";
@@ -428,8 +428,8 @@ public final class Constants {
       CORAL_HP(0.0, 82.0),
 
       CORAL_L1(13.0, 95.0),
-      CORAL_L2(22.06, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef
-      CORAL_L3(37.28, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef
+      CORAL_L2(22.56, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 22.06 to 22.56
+      CORAL_L3(37.78, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 37.28 to 37.78
       CORAL_L4(71.0, 57.0),
       CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
@@ -461,7 +461,7 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // CALIBRATED
     public static final double maxManualPercentOutput = 0.2;        // CALIBRATED 
-    public static final double maxPercentOutput = 0.2;              // CALIBRATED 4/12
+    public static final double maxPercentOutput = 0.22;              // CALIBRATED 4/12.  4/16 increased from 0.20 to 0.22.  
 
     // Should be updated in RobotPreferences, so it cannot be final
     public static double offsetAngleCANcoder = -232.734;            // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED 4/12
@@ -484,13 +484,13 @@ public final class Constants {
     // CALIBRATED 4/12
     public enum ClimberAngle {
       LOWER_LIMIT(-2.0),
-      UPPER_LIMIT(155.0),
+      UPPER_LIMIT(157.0),
       CALIBRATE_MANUAL(90.0),
 
       DEFAULT(68.0),
       START_CONFIG(90.0),
       CLIMB_START(0.0),
-      CLIMB_END(150.0);
+      CLIMB_END(155.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
@@ -498,7 +498,7 @@ public final class Constants {
     }
 
     public enum ServoPosition {
-      ENGAGED(0.58),      // CALIBRATED 4/16/25
+      ENGAGED(0.40),      // CALIBRATED 4/16/25  was 0.0, then 0.58, now 0.40
       DISENGAGED(0.74),   // CALIBRATED 4/16/25
       UNKNOWN(-9999.9);
 

@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.*;
@@ -73,14 +74,17 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
         // If we want to score algae, then score it. If not, just back up and end auto
         either(
           sequence(
-            // Drive to barge, move elevator up, score, move elevator down.
             deadline(
+              // Drive to barge while moving elevator up until reached barge position
               new DriveToBargeWithOdometry(driveTrain, field),
-              new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist)
+              sequence(
+                new WaitCommand(1),
+                new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist)
+              )
             ),
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
-            new AlgaeGrabberOuttake(algaeGrabber),
-            new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
+            new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.5), 
+            new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist),
           
             // Now, we go to grab a second algae, IJ, if the boolean to do so is true
             either(
@@ -89,10 +93,21 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
                 new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.BargeScoringToIJ), driveTrain, alliance),
                 new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.IJ, driveTrain, elevator, wrist, algaeGrabber, field),
                 
+                // Drive towards barge from IJ position and stop before start line
+                // new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.EndCenterAuto), driveTrain, alliance)
+                
+
                 // Drive to barge, move elevator up, score, move elevator down.
-                new DriveToBargeWithOdometry(driveTrain, field),
+                deadline(
+                  // Drive to barge while moving elevator up until reached barge position
+                  new DriveToBargeWithOdometry(driveTrain, field),
+                  sequence(
+                    new WaitCommand(1),
+                    new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist)
+                  )
+                ),    
                 new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
-                new AlgaeGrabberOuttake(algaeGrabber),
+                new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.5), 
                 new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
               ), 
               none(), 
@@ -103,8 +118,6 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
           new DriveToPose(CoordType.kRelative, new Pose2d(-0.3, 0, Rotation2d.kZero), driveTrain),
           () -> scoreFirstAlgae
         ),
-
-        
   
         new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae", "End")
       );
