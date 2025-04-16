@@ -78,7 +78,7 @@ public class Climber extends SubsystemBase implements Loggable {
 
   private boolean isInCoastMode = false;
 
-  private ServoPosition servoPosition = ServoPosition.UNKNOWN;  // 0.0 -> 1.0
+  private ServoPosition servoPosition = ServoPosition.UNKNOWN;
 
   public Climber(String subsystemName) {
     
@@ -288,6 +288,11 @@ public class Climber extends SubsystemBase implements Loggable {
       percent = MathUtil.clamp(percent, -ClimberConstants.maxUncalibratedPercentOutput, ClimberConstants.maxUncalibratedPercentOutput);
     }
 
+    // Don't move down unless the ratchet is Disengaged
+    if (getServoPosition() != ServoPosition.DISENGAGED && percent < 0) {
+      percent = 0.0;
+    }
+
     climberMotor.setControl(climberVoltageControl.withOutput(percent * ClimberConstants.compensationVoltage));
   }
 
@@ -324,7 +329,7 @@ public class Climber extends SubsystemBase implements Loggable {
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    */
   public void setClimberAngle(double angle) {
-    if (climberCalibrated && servoPosition != ServoPosition.UNKNOWN && (!getRatchetEngaged() || angle > getClimberAngle())) {
+    if (climberCalibrated && (getServoPosition() == ServoPosition.DISENGAGED || angle > getClimberAngle())) {
       // Keep the climber in usable range
       safeAngle = MathUtil.clamp(angle, ClimberConstants.ClimberAngle.LOWER_LIMIT.value, ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
       
@@ -502,7 +507,7 @@ public class Climber extends SubsystemBase implements Loggable {
    * @param engaged true = engaged, false = disengaged
    */
   public void setRatchetEngaged(boolean engaged) {
-    climberServo.set(engaged ? 0 : 1);
+    climberServo.set(engaged ? ServoPosition.ENGAGED.value : ServoPosition.DISENGAGED.value);
   }
 
   /**
@@ -513,13 +518,17 @@ public class Climber extends SubsystemBase implements Loggable {
     return servoPosition == ServoPosition.ENGAGED;
   }
 
+  /**
+   * Current status of the ratchet
+   * @return UNKNOWN (unknown or moving), ENGAGED, or DISENGAGED
+   */
   public ServoPosition getServoPosition() {
     return servoPosition;
   }
 
   /**
    * Set tracking variable for servo position
-   * @param position [0.0, 1.0]
+   * @param position UNKNOWN (unknown or moving), ENGAGED, or DISENGAGED
    */
   public void setServoPositionVariable(ServoPosition position) {
     servoPosition = position;
@@ -530,6 +539,7 @@ public class Climber extends SubsystemBase implements Loggable {
    * @param position [0.0, 1.0]
    */
   public void setRatchetPosition(double position) {
+    position = MathUtil.clamp(position, 0.0, 1.0);
     climberServo.set(position);
   }
 
