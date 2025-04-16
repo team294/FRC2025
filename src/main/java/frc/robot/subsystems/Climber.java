@@ -329,7 +329,7 @@ public class Climber extends SubsystemBase implements Loggable {
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    */
   public void setClimberAngle(double angle) {
-    if (climberCalibrated && (getServoPosition() == ServoPosition.DISENGAGED || angle > getClimberAngle())) {
+    if (climberCalibrated && getServoPosition() == ServoPosition.DISENGAGED) {
       // Keep the climber in usable range
       safeAngle = MathUtil.clamp(angle, ClimberConstants.ClimberAngle.LOWER_LIMIT.value, ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
       
@@ -583,7 +583,8 @@ public class Climber extends SubsystemBase implements Loggable {
       SmartDashboard.putBoolean("Climber CANcoder connected", isCANcoderConnected());
       SmartDashboard.putBoolean("Climber calibrated", climberCalibrated);
       SmartDashboard.putBoolean("Climber Using CANcoder", usingCANcoder);
-      SmartDashboard.putBoolean("Climber Ratchet Disengaged", !getRatchetEngaged()); // Disengaged so red on dashboard = don't move climber down
+      SmartDashboard.putBoolean("Climber Ratchet Disengaged", getServoPosition() == ServoPosition.DISENGAGED); // Disengaged so red on dashboard = don't move climber down
+      SmartDashboard.putString("Climber Ratchet Position", getServoPosition().toString());
       SmartDashboard.putNumber("Climber CANcoder raw", getCANcoderRotationsRaw());
       SmartDashboard.putNumber("Climber encoder raw", getClimberEncoderRotationsRaw());
       SmartDashboard.putNumber("Climber angle", getClimberEncoderDegrees());
