@@ -428,7 +428,7 @@ public final class Constants {
       CORAL_HP(0.0, 82.0),
 
       CORAL_L1(13.0, 95.0),
-      CORAL_L2(22.06, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef
+      CORAL_L2(22.56, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 22.06 to 22.56
       CORAL_L3(37.28, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef
       CORAL_L4(71.0, 57.0),
       CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
@@ -498,7 +498,7 @@ public final class Constants {
     }
 
     public enum ServoPosition {
-      ENGAGED(0.58),      // CALIBRATED 4/16/25
+      ENGAGED(0.40),      // CALIBRATED 4/16/25  was 0.0, then 0.58, now 0.40
       DISENGAGED(0.74),   // CALIBRATED 4/16/25
       UNKNOWN(-9999.9);
 
