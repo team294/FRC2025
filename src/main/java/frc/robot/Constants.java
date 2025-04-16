@@ -429,7 +429,7 @@ public final class Constants {
 
       CORAL_L1(13.0, 95.0),
       CORAL_L2(22.56, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 22.06 to 22.56
-      CORAL_L3(37.28, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef
+      CORAL_L3(37.78, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 37.28 to 37.78
       CORAL_L4(71.0, 57.0),
       CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
@@ -461,7 +461,7 @@ public final class Constants {
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // CALIBRATED
     public static final double maxManualPercentOutput = 0.2;        // CALIBRATED 
-    public static final double maxPercentOutput = 0.2;              // CALIBRATED 4/12
+    public static final double maxPercentOutput = 0.22;              // CALIBRATED 4/12.  4/16 increased from 0.20 to 0.22.  
 
     // Should be updated in RobotPreferences, so it cannot be final
     public static double offsetAngleCANcoder = -232.734;            // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED 4/12
@@ -484,13 +484,13 @@ public final class Constants {
     // CALIBRATED 4/12
     public enum ClimberAngle {
       LOWER_LIMIT(-2.0),
-      UPPER_LIMIT(155.0),
+      UPPER_LIMIT(157.0),
       CALIBRATE_MANUAL(90.0),
 
       DEFAULT(68.0),
       START_CONFIG(90.0),
       CLIMB_START(0.0),
-      CLIMB_END(150.0);
+      CLIMB_END(155.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
