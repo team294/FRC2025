@@ -82,6 +82,9 @@ public final class Constants {
     public static final int DIOElevatorLowerLimitSensor2 = 0; // Left
     public static final int DIOAlgaeGrabberBumpSwitch = 2;
     public static final int DIOCoralEffectorExitSensor = 3;
+
+    // PWM Ports
+    public static final int PWMCLimberServo = 0;
   }
 
   public static final class OIConstants {
@@ -452,44 +455,55 @@ public final class Constants {
   public static final class ClimberConstants {
     // Gear Ratio (convention from CTRE library) = the ratio of motor rotor rotations to wrist rotations,
     // where a ratio greater than 1 is a reduction.
-    public static final double kClimberGearRatio = (263.0/1.0);          // CALIBRATED FOR 2025  A4:  Was 135:1, now 263:1
-    public static final double kClimberDegreesPerRotation = 360.0;                          // Wrist degrees per rotation of the cancoder
+    public static final double kClimberGearRatio = (192.0/1.0);     // CALIBRATED TO 192:1
+    public static final double kClimberDegreesPerRotation = 360.0;  // Wrist degrees per rotation of the CANcoder
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // CALIBRATED
-    public static final double maxManualPercentOutput = 0.2;        // CALIBRATED
-    public static final double maxPercentOutput = 0.2;              // CALIBRATED
+    public static final double maxManualPercentOutput = 0.2;        // CALIBRATED 
+    public static final double maxPercentOutput = 0.2;              // CALIBRATED 4/12
 
     // Should be updated in RobotPreferences, so it cannot be final
-    public static double offsetAngleCANcoder = 37.7;                 // CANCoder raw angle (in degrees) when arm is at 0 degrees.  CALIBRATED
+    public static double offsetAngleCANcoder = -232.734;            // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED 4/12
+
     // 1 makes absolute position unsigned [0, 1); 0.5 makes it signed [-0.5, 0.5), 0 makes it always negative
     // This value is the center of the region of *unallowed* motion
-    public static double cancoderDiscontinuityPoint = 0.74;          // CALIBRATED FOR 2025
+    public static double cancoderDiscontinuityPoint = 0.071;        // CALIBRATED 4/13 - minimum raw cc is 0.308, maximum raw cc is 0.834
 
-
-    public static final double kP = 0.0;    // TODO CALIBRATE FOR 2025      kP = (desired-output-volts) / (error-in-wrist-rotations)
+    public static final double kP = (compensationVoltage * maxPercentOutput) / 0.01;    // CALIBRATED 4/11. kP = (desired-output-volts) / (error-in-wrist-rotations)
     public static final double kI = 0.0;    // CALIBRATED
     public static final double kD = 0.0;    // CALIBRATED
-    public static final double kG = 0.0;    // CALIBRATED      kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
-    public static final double kS = 0.096;   // CALIBRATED   kS = (volts)
-    public static final double kV = 15.2 * 263.0/135.0;    // CALIBRATED   kV = (volts)/(wrist-rotations/sec)
+    public static final double kG = 0.0;    // CALIBRATED   kG = Feed foward voltage to add to hold wrist horizontal (0 deg)
+    public static final double kS = 0.096;  // CALIBRATED   kS = (volts)
+    public static final double kV = 15.2 * 192.0/135.0; // CALIBRATED   kV = (volts)/(wrist-rotations/sec)
 
     public static final double MMCruiseVelocity = 50.0/360.0;             // Max velocity in climber rotations / second
     public static final double MMAcceleration = MMCruiseVelocity / 0.35;  // Max acceleration in climber rotations / second^2. MMVel / MMAccel = seconds to full velocity.
     public static final double MMJerk = MMAcceleration / 0.05;            // Max jerk in climber rotations / second^3. MMAccel / MMJerk = seconds to full acceleration.
 
-    // CALIBRATED
+    // CALIBRATED 4/12
     public enum ClimberAngle {
-      LOWER_LIMIT(-82.0),
-      UPPER_LIMIT(176.0),
-      CALIBRATE_MANUAL(-84.0),
+      LOWER_LIMIT(-2.0),
+      UPPER_LIMIT(155.0),
+      CALIBRATE_MANUAL(90.0),
 
-      CLIMB_START(77.0),
-      CLIMB_END(176.0);
+      DEFAULT(68.0),
+      START_CONFIG(90.0),
+      CLIMB_START(0.0),
+      CLIMB_END(150.0);
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
       ClimberAngle(double value) { this.value = value; }
+    }
+
+    public enum ServoPosition {
+      ENGAGED(0.0),
+      DISENGAGED(1.0),
+      UNKNOWN(-9999.9);
+
+      public final double value;
+      ServoPosition(double value) { this.value = value; }
     }
   }
 

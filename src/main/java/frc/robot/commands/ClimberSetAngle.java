@@ -6,8 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
+import frc.robot.Constants.ClimberConstants.ServoPosition;
 import frc.robot.subsystems.Climber;
 import frc.robot.utilities.DataLogUtil;
 
@@ -17,6 +17,7 @@ public class ClimberSetAngle extends Command {
   private double angle;
   private final double tolerance = 3.0; // tolerance of 3 degrees
   private boolean fromShuffleboard;
+  private boolean moveAllowed;
 
   /**
    * Sets the target angle for the climber and moves it to that angle. Ends when the climber is within 3 degrees 
@@ -52,7 +53,6 @@ public class ClimberSetAngle extends Command {
    * Sets the target angle for the climber from Shuffleboard and moves it to that angle. Ends when the climber is 
    * within 3 degrees of the target. If the climber is uncalibrated, this does nothing and ends immediately.
    * @param climber Climber subsystem
-   * @param log FileLog utility
    */
   public ClimberSetAngle(Climber climber) {
     this.climber = climber;
@@ -60,7 +60,7 @@ public class ClimberSetAngle extends Command {
     fromShuffleboard = true;
 
     if (SmartDashboard.getNumber("Climber Goal Angle", -9999) == -9999) {
-      SmartDashboard.putNumber("Climber Goal Angle", ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
+      SmartDashboard.putNumber("Climber Goal Angle", climber.getClimberAngle());
     }
 
     addRequirements(climber);
@@ -69,10 +69,12 @@ public class ClimberSetAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Goal Angle", ClimberConstants.ClimberAngle.UPPER_LIMIT.value);
-    climber.setClimberAngle(angle);
-    DataLogUtil.writeLog(false, "ClimberSetAngle", "Init", "Target", angle);
+    if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Goal Angle", climber.getClimberAngle());
 
+    moveAllowed = climber.isEncoderCalibrated() && climber.getRatchetPosition() == ServoPosition.DISENGAGED;
+    if (moveAllowed)  climber.setClimberAngle(angle);
+
+    DataLogUtil.writeMessage("ClimberSetAngle Init, Allowed =", moveAllowed, ", Target =", angle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -83,13 +85,13 @@ public class ClimberSetAngle extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (interrupted) DataLogUtil.writeLog(false, "ClimberSetAngle", "Interrupted", "Target", angle, "Current Angle", climber.getClimberAngle());
-    else DataLogUtil.writeLog(false, "ClimberSetAngle", "End", "Target", angle, "Current Angle", climber.getClimberAngle());
+    if (interrupted) DataLogUtil.writeMessage("ClimberSetAngle Interrupted, Target =", angle, ", Current Angle =", climber.getClimberAngle());
+    else DataLogUtil.writeMessage("ClimberSetAngle", "End", "Target", angle, "Current Angle", climber.getClimberAngle());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !climber.isEncoderCalibrated() || Math.abs(climber.getClimberAngle() - climber.getCurrentClimberTarget()) < tolerance;
+    return !moveAllowed || Math.abs(climber.getClimberAngle() - climber.getCurrentClimberTarget()) < tolerance;
   }
 }

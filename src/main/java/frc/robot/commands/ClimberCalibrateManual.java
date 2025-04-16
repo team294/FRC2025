@@ -53,4 +53,8 @@ public class ClimberCalibrateManual extends InstantCommand {
 
     DataLogUtil.writeLog(true, "ClimberCalibrateManual", "Init", "Angle", angle);
   }
+
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }
