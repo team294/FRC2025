@@ -43,13 +43,14 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
       Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Climber climber, Joystick rightJoystick, AllianceSelection alliance, Field field) {
 
     addCommands(
-      new DataLogMessage(false, "AutoCoralCycleLoop: Start"),
-      new ClimberSetRatchet(false, climber)
+      new DataLogMessage(false, "AutoCoralCycleLoop: Start")
     );
 
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
-      addCommands(none());
+      addCommands(
+        new ClimberSetRatchet(false, climber)
+      );
     }
 
     else {
@@ -67,7 +68,10 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
         addCommands(
           parallel(
             new AutoCoralDriveAndScoreSequence(false, false, reefLocations.get(0), reefLevels.get(0), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
-            new ClimberSetAngle(ClimberConstants.ClimberAngle.DEFAULT, climber)
+            sequence(
+              new ClimberSetRatchet(false, climber),
+              new ClimberSetAngle(ClimberConstants.ClimberAngle.DEFAULT, climber)
+            )
           )
         );
       }

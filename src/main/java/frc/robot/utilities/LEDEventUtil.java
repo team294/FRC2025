@@ -119,16 +119,19 @@ public class LEDEventUtil {
         break;
       case CLIMBER_PREPPING:
         LED.dashboardColor = BCRColor.BLUE;
+        led.clearAnimation();
         led.animate(ledAnimationStrobeClimber);
         DataLogUtil.writeMessage("LED Strips Climber Prepping");
         break;
       case CLIMBER_PREPPED:
         LED.dashboardColor = BCRColor.BLUE;
+        led.clearAnimation();
         led.updateLEDs(BCRColor.BLUE, true);
         DataLogUtil.writeMessage("LED Strips Climber Prepped");
         break;
       case CLIMBER_LIFTING:
         LED.dashboardColor = BCRColor.BLUE;
+        led.clearAnimation();
         led.animate(ledAnimationRainbowBarge);
         DataLogUtil.writeMessage("LED Strips Climber Lifting");
         break;

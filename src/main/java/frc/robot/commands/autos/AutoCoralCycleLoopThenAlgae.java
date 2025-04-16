@@ -47,13 +47,14 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
       Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Climber climber, Joystick rightJoystick, AllianceSelection alliance, Field field, TrajectoryCache cache) {
     
     addCommands(
-      new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae: Start"),
-      new ClimberSetRatchet(false, climber)
+      new DataLogMessage(false, "AutoCoralCycleLoopThenAlgae: Start")
     );
 
     // No reef locations provided, so do nothing
     if (reefLocations == null || reefLocations.size() == 0) {
-      addCommands(none());
+      addCommands(
+        new ClimberSetRatchet(false, climber)
+      );
     }
 
     else {

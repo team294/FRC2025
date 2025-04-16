@@ -289,7 +289,7 @@
             "x": 1536.0,
             "y": 384.0,
             "width": 256.0,
-            "height": 384.0,
+            "height": 512.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -321,6 +321,23 @@
                 "type": "Boolean Box",
                 "properties": {
                   "topic": "/SmartDashboard/Climber Using CANcoder",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Climber Ratchet Disengaged",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber Ratchet Disengaged",
                   "period": 0.06,
                   "data_type": "boolean",
                   "true_color": 4283215696,
@@ -478,7 +495,7 @@
             "title": "LED State",
             "x": 0.0,
             "y": 640.0,
-            "width": 768.0,
+            "width": 512.0,
             "height": 128.0,
             "type": "Single Color View",
             "properties": {

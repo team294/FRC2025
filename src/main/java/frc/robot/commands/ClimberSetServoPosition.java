@@ -59,7 +59,7 @@ public class ClimberSetServoPosition extends Command {
     climber.setRatchetPosition(position);
 
     // Set servo position to UNKNOWN while moving
-    climber.setServoPositionVariable(ClimberConstants.ServoPosition.UNKNOWN);
+    climber.setRatchetPositionVariable(ClimberConstants.ServoPosition.UNKNOWN);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -70,8 +70,8 @@ public class ClimberSetServoPosition extends Command {
   @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
-      if (position == ServoPosition.DISENGAGED.value) climber.setServoPositionVariable(ServoPosition.DISENGAGED);
-      else if (position == ServoPosition.ENGAGED.value) climber.setServoPositionVariable(ServoPosition.ENGAGED);
+      if (position == ServoPosition.DISENGAGED.value) climber.setRatchetPositionVariable(ServoPosition.DISENGAGED);
+      else if (position == ServoPosition.ENGAGED.value) climber.setRatchetPositionVariable(ServoPosition.ENGAGED);
     }
     timer.stop();
     timer.reset();

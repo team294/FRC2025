@@ -17,6 +17,7 @@ public class ClimberSetAngle extends Command {
   private double angle;
   private final double tolerance = 3.0; // tolerance of 3 degrees
   private boolean fromShuffleboard;
+  private boolean moveAllowed;
 
   /**
    * Sets the target angle for the climber and moves it to that angle. Ends when the climber is within 3 degrees 
@@ -69,9 +70,11 @@ public class ClimberSetAngle extends Command {
   @Override
   public void initialize() {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Goal Angle", climber.getClimberAngle());
-    climber.setClimberAngle(angle);
-    DataLogUtil.writeLog(false, "ClimberSetAngle", "Init", "Target", angle);
 
+    moveAllowed = climber.isEncoderCalibrated() && climber.getRatchetPosition() == ServoPosition.DISENGAGED;
+    if (moveAllowed)  climber.setClimberAngle(angle);
+
+    DataLogUtil.writeMessage("ClimberSetAngle Init, Allowed =", moveAllowed, ", Target =", angle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -82,13 +85,13 @@ public class ClimberSetAngle extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (interrupted) DataLogUtil.writeLog(false, "ClimberSetAngle", "Interrupted", "Target", angle, "Current Angle", climber.getClimberAngle());
-    else DataLogUtil.writeLog(false, "ClimberSetAngle", "End", "Target", angle, "Current Angle", climber.getClimberAngle());
+    if (interrupted) DataLogUtil.writeMessage("ClimberSetAngle Interrupted, Target =", angle, ", Current Angle =", climber.getClimberAngle());
+    else DataLogUtil.writeMessage("ClimberSetAngle", "End", "Target", angle, "Current Angle", climber.getClimberAngle());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !climber.isEncoderCalibrated() || climber.getServoPosition() == ServoPosition.UNKNOWN || (climber.getRatchetEngaged() && angle <= climber.getClimberAngle()) || Math.abs(climber.getClimberAngle() - climber.getCurrentClimberTarget()) < tolerance;
+    return !moveAllowed || Math.abs(climber.getClimberAngle() - climber.getCurrentClimberTarget()) < tolerance;
   }
 }

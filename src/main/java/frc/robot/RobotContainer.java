@@ -167,6 +167,10 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber));
     SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber));
     SmartDashboard.putData("Climber Toggle Coast", new ClimberToggleCoastMode(climber));
+    SmartDashboard.putData("Climber Ratchet Engage", new ClimberSetRatchet(true, climber));
+    SmartDashboard.putData("Climber Ratchet Disengage", new ClimberSetRatchet(false, climber));
+    SmartDashboard.putData("Climber Set Servo Position", new ClimberSetServoPosition(climber));
+    SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
     
     // Autos
     SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand());
@@ -196,10 +200,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("AutomatedDriveToReefAndIntakeAlgae", new AutomatedDriveToReefAndIntakeAlgae(driveTrain, elevator, wrist, algaeGrabber, field));
     SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
-    SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
-    SmartDashboard.putData("Climber Ratchet Engage", new ClimberSetRatchet(true, climber));
-    SmartDashboard.putData("Climber Ratchet Disengage", new ClimberSetRatchet(false, climber));
-    SmartDashboard.putData("Climber Set Servo Position", new ClimberSetServoPosition(climber));
 
     // Stop All Motors
     SmartDashboard.putData("Stop All Motors", parallel(

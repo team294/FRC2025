@@ -9,9 +9,11 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.Constants.ClimberConstants.ClimberAngle;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.LEDEventUtil;
+import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
 
 public class ClimberPrepSequence extends SequentialCommandGroup {
@@ -21,17 +23,20 @@ public class ClimberPrepSequence extends SequentialCommandGroup {
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
    * @param climber Climber subsystem
-   * @param log FileLog utility
    */
   public ClimberPrepSequence(Elevator elevator, Wrist wrist, Climber climber) {
     addCommands(
-      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-      parallel(
-        new ClimberSetAngle(ClimberAngle.CLIMB_START, climber),
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_PREPPING))
+      sequence(
+        parallel(
+          new DataLogMessage(false, "ClimberPrepSequence Start"),
+          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_PREPPING)),
+          new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist),
+          new ClimberSetRatchet(false, climber)
+        ),
+        new ClimberSetAngle(ClimberAngle.CLIMB_START, climber)
       ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_PREPPED))
-    );
+      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_PREPPED)),
+      new DataLogMessage(false, "ClimberPrepSequence End")
+      );
   }
 }

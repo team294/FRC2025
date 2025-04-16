@@ -51,7 +51,7 @@ public class ClimberSetPercentOutput extends Command {
   @Override
   public void initialize() {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Goal Percent", 0);
-    if (climber.getServoPosition() != ServoPosition.UNKNOWN && (!climber.getRatchetEngaged() || percent > 0)) climber.setClimberPercentOutput(percent);
+    if (climber.getRatchetPosition() == ServoPosition.DISENGAGED || percent >= 0) climber.setClimberPercentOutput(percent);
     DataLogUtil.writeLog(false, "ClimberSetPercentOutput", "Init", "Percent", percent);
   }
 

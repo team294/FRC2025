@@ -35,19 +35,19 @@ public class ClimberSetRatchet extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    moveNeeded = (engaged && climber.getServoPosition()!=ServoPosition.ENGAGED ||
-      !engaged && climber.getServoPosition()!=ServoPosition.DISENGAGED);
+    moveNeeded = (engaged && climber.getRatchetPosition()!=ServoPosition.ENGAGED ||
+      !engaged && climber.getRatchetPosition()!=ServoPosition.DISENGAGED);
 
     if (moveNeeded) {
       climber.setRatchetEngaged(engaged);
 
       // Set servo position to UNKNOWN while moving
-      climber.setServoPositionVariable(ClimberConstants.ServoPosition.UNKNOWN);
+      climber.setRatchetPositionVariable(ClimberConstants.ServoPosition.UNKNOWN);
     }
 
     timer.start();
 
-    DataLogUtil.writeMessage("ClimberSetRatchet Init, set =", engaged, ", current =", climber.getServoPosition(), ", move needed =", moveNeeded);
+    DataLogUtil.writeMessage("ClimberSetRatchet Init, set =", engaged, ", current =", climber.getRatchetPosition(), ", move needed =", moveNeeded);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,7 +57,7 @@ public class ClimberSetRatchet extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (!interrupted) climber.setServoPositionVariable(engaged ? ClimberConstants.ServoPosition.ENGAGED : ClimberConstants.ServoPosition.DISENGAGED);
+    if (!interrupted) climber.setRatchetPositionVariable(engaged ? ClimberConstants.ServoPosition.ENGAGED : ClimberConstants.ServoPosition.DISENGAGED);
     timer.stop();
     timer.reset();
 

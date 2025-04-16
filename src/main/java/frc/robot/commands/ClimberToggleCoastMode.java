@@ -23,8 +23,7 @@ public class ClimberToggleCoastMode extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (climber.getCoastMode()) climber.setCoastMode(false);
-    else climber.setCoastMode(true);
+    climber.setCoastMode( !climber.getCoastMode());
   }
 
   public boolean runsWhenDisabled() {
