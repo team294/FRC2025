@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.*;
@@ -71,7 +72,10 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
             deadline(
               // Drive to barge while moving elevator up until reached barge position
               new DriveToBargeWithOdometry(driveTrain, field),
-              new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_UPPER, RegionType.STANDARD, elevator, wrist)
+              sequence(
+                new WaitCommand(1),
+                new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_UPPER, RegionType.STANDARD, elevator, wrist)
+              )
             ),
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
             new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.3), 
