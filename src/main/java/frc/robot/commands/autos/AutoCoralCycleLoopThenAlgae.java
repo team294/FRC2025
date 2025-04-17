@@ -100,21 +100,21 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
                 new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.IJ, driveTrain, elevator, wrist, algaeGrabber, field).until(() -> algaeGrabber.isAlgaePresent()),
                 
                 // Drive towards barge from IJ position and stop before start line
-                // new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.EndCenterAuto), driveTrain, alliance)
+                new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.EndCenterAuto), driveTrain, alliance)
                 
 
                 // Drive to barge, move elevator up, score, move elevator down.
-                deadline(
-                  // Drive to barge while moving elevator up until reached barge position
-                  new DriveToBargeWithOdometry(driveTrain, field),
-                  sequence(
-                    new WaitCommand(1),
-                    new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist)
-                  )
-                ),    
-                new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
-                new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.5), 
-                new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
+                // deadline(
+                //   // Drive to barge while moving elevator up until reached barge position
+                //   new DriveToBargeWithOdometry(driveTrain, field),
+                //   sequence(
+                //     new WaitCommand(1),
+                //     new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist)
+                //   )
+                // ),    
+                // new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
+                // new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.5), 
+                // new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
               ), 
               none(), 
               () -> grabSecondAlgae
