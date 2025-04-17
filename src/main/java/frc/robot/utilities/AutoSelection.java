@@ -258,7 +258,7 @@ public class AutoSelection {
 		else if (autoPlan == RoutineSelectionOption.BargeRight_EDC.value) {
 			autoSelectionOption = RoutineSelectionOption.BargeRight_EDC;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
-			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4, ReefLevel.L4, ReefLevel.L4));
+			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L2, ReefLevel.L4, ReefLevel.L4));
 			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
 		}
 
