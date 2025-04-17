@@ -81,7 +81,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
         // Generate AutoIntakeAndScoreCoralCycle for each pair of adjacent ReefLocations,
         // looping until the second-to-last element to ensure we do not go out of bounds
         for (int i = 0; i < reefLocations.size() - 1; i++) {
-          if (i >= reefLevels.size()) break;
+          if ((i + 1) >= reefLevels.size()) break;
 
           ReefLocation start = reefLocations.get(i);
           ReefLocation end = reefLocations.get(i + 1);
