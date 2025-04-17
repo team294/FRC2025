@@ -81,7 +81,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
         // Generate AutoIntakeAndScoreCoralCycle for each pair of adjacent ReefLocations,
         // looping until the second-to-last element to ensure we do not go out of bounds
         for (int i = 0; i < reefLocations.size() - 1; i++) {
-          if (i >= reefLevels.size()) break;
+          if ((i + 1) >= reefLevels.size()) break;
 
           ReefLocation start = reefLocations.get(i);
           ReefLocation end = reefLocations.get(i + 1);
@@ -89,7 +89,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
 
           addCommands(
             // If it is the final coral location, then isFinalCoral = true and the elevator does not move up. If not, then the elevator moves up to score
-            new AutoCoralCycle(start, end, isLastCoral, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
+            new AutoCoralCycle(start, end, isLastCoral, reefLevels.get(i + 1), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
           );
         }
       }
