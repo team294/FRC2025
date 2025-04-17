@@ -245,7 +245,7 @@ public class DriveToPose extends Command {
    * the 0 degrees is facing away from the Blue driver station.
    * @param driveTrain DriveTrain subsytem
    */
-  public DriveToPose(CoordType type, double rotation, DriveTrain driveTrain, DataLogUtil log ){
+  public DriveToPose(CoordType type, double rotation, DriveTrain driveTrain){
     this.driveTrain = driveTrain;
     
     this.rotation = Rotation2d.fromDegrees(rotation);
@@ -320,7 +320,7 @@ public class DriveToPose extends Command {
 
     // Prime logging
     long timeNow = RobotController.getFPGATime();
-    Pose2d robotPose = new Pose2d(curRobotTranslation, Rotation2d.fromDegrees(driveTrain.getPoseAngle()));
+    Pose2d robotPose = driveTrain.getPose();
     ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
 
     dLogTime.append(-1, timeNow);
@@ -335,8 +335,8 @@ public class DriveToPose extends Command {
     dLogTrajRot.append(-1, timeNow);
     dLogRobotPosErr.append(-1, timeNow);
     dLogRobotThErr.append(-1, timeNow);
-    dLogRobotX.append(curRobotTranslation.getX(), timeNow);
-    dLogRobotY.append(curRobotTranslation.getY(), timeNow);
+    dLogRobotX.append(robotPose.getX(), timeNow);
+    dLogRobotY.append(robotPose.getY(), timeNow);
     dLogRobotVel.append(Math.hypot(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond), timeNow);
     dLogRobotXVel.append(robotSpeeds.vxMetersPerSecond, timeNow);
     dLogRobotYVel.append(robotSpeeds.vyMetersPerSecond, timeNow);
