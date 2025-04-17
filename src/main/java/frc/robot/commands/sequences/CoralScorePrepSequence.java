@@ -26,16 +26,17 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
 public class CoralScorePrepSequence extends SequentialCommandGroup {
   public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, CoralEffector coralEffector) {
     addCommands(
-      either(
-        sequence(
+      // 4/17:  Disabled interlock that prevents Coral scoring while holding algae.
+      // either(
+      //   sequence(
           waitUntil(() -> coralEffector.getHoldMode()),
           new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist),
           new WristSetAngle(position, wrist),
           runOnce(() -> coralEffector.setL1or4ScoreMode(position == ElevatorWristPosition.CORAL_L1 || position == ElevatorWristPosition.CORAL_L4))
-        ),
-        none(),
-        () -> !algaeGrabber.isAlgaePresent()
-      )
+      //   ),
+      //   none(),
+      //   () -> !algaeGrabber.isAlgaePresent()
+      // )
     );
   }
 }
