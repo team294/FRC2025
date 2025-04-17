@@ -165,32 +165,28 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: Start"),
       parallel(
         sequence(
+          // Drive to specific reef location position
           parallel(
-            // Drive to specific reef location position
             new DriveToReefWithOdometryForCoral(location, driveTrain, field), 
-            
+            // If the endeffector is in hold mode (Coral is safely in intake) then do nothing, otherwise intake the coral until the piece is present
             sequence(
-              // If the endeffector is in hold mode (Coral is safely in intake) then do nothing, otherwise intake the coral until the piece is present
               either(
                 none(), 
                 new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
-                () -> (coralEffector.getHoldMode())),
-    
-              deadline(
-                // Move elevator for 0.6 seconds after driving + coral is fully intaked
-                waitSeconds(0.6),
-                new WristElevatorSafeMove(ElevatorWristPosition.CORAL_L1, RegionType.CORAL_ONLY, elevator, wrist)
+                () -> (coralEffector.getHoldMode())
               ),
-
-              // Move elevator/wrist to correct position based on given level, only if isLastCoral is not true (meaning we are not at the last coral so we still want to move elevator)
-              either(
-                new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector),
-                none(),
-                () -> !score
+              sequence(
+                waitUntil(() -> coralEffector.getHoldMode()),
+                new WristElevatorSafeMove(level == ReefLevel.L1 ? ElevatorWristPosition.CORAL_L1 : ElevatorWristPosition.CORAL_L2, RegionType.CORAL_ONLY, elevator, wrist)
               )
             )
           ),
-
+          // Move elevator/wrist to correct position based on given level, only if isLastCoral is not true (meaning we are not at the last coral so we still want to move elevator)
+          either(
+            new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector),
+            none(),
+            () -> !score
+          ),
           either( // Runs this whole code section if isLastCoral is not true and we actually want to move elevator and score
             // If scoring on L1, drive forward to get to the reef
             sequence(
