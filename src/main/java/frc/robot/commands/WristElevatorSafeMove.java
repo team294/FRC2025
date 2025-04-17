@@ -47,7 +47,6 @@ public class WristElevatorSafeMove extends Command {
    * @param type  Region type = CORAL_ONLY or STANDARD
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristElevatorSafeMove(ElevatorWristPosition position, ElevatorWristRegions.RegionType type,
             Elevator elevator, Wrist wrist) {

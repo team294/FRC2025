@@ -82,16 +82,22 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
                 new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist)
               )
             ),
+            // Scoring
             new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
             new AlgaeGrabberOuttake(algaeGrabber).withTimeout(0.5), 
-            new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist),
+            // Start lowering elevator, then start moving
+            new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist).until(
+              () -> elevator.getElevatorPosition() < ElevatorWristPosition.CORAL_L3.elevatorPosition),
           
             // Now, we go to grab a second algae, IJ, if the boolean to do so is true
             either(
               sequence(
                 // Drive partially to IJ with trajectory, then finish driving and grab algae (we can figure out avoiding a stop if necessary after verifying that this works)
-                new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.BargeScoringToIJ), driveTrain, alliance),
-                new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.IJ, driveTrain, elevator, wrist, algaeGrabber, field),
+                deadline(
+                  new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.BargeScoringToIJ), driveTrain, alliance),
+                  new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_LOWER, RegionType.STANDARD, elevator, wrist)
+                ),
+                new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.IJ, driveTrain, elevator, wrist, algaeGrabber, field).until(() -> algaeGrabber.isAlgaePresent()),
                 
                 // Drive towards barge from IJ position and stop before start line
                 // new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.EndCenterAuto), driveTrain, alliance)
