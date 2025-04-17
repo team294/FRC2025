@@ -61,7 +61,10 @@ public class AutoSelection {
 		// PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 6),
 		
 		AutoCenterL1("AutoCenterL1", 7),
-		AutoCenterL4("AutoCenterL4", 8);
+		AutoCenterL4("AutoCenterL4", 8),
+		
+		BargeRight_EDC_L2("BargeRight_EDC_L2", 9),
+		BargeLeft_JKL_L2("BargeLeft_JKL_L2", 11);
 
 
 		@SuppressWarnings({ "MemberName", "PMD.SingularField" })
@@ -266,6 +269,20 @@ public class AutoSelection {
 			autoSelectionOption = RoutineSelectionOption.BargeLeft_JKL;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K, ReefLocation.L));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4, ReefLevel.L4, ReefLevel.L4));
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.BargeRight_EDC_L2.value) {
+			autoSelectionOption = RoutineSelectionOption.BargeRight_EDC_L2;
+			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
+			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L2, ReefLevel.L4, ReefLevel.L4));
+			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.BargeLeft_JKL_L2.value) {
+			autoSelectionOption = RoutineSelectionOption.BargeLeft_JKL_L2;
+			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K, ReefLocation.L));
+			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L2, ReefLevel.L4, ReefLevel.L4));
 			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
 		}
 
