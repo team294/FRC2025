@@ -100,7 +100,13 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
                 new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.IJ, driveTrain, elevator, wrist, algaeGrabber, field).until(() -> algaeGrabber.isAlgaePresent()),
                 
                 // Drive towards barge from IJ position and stop before start line
-                new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.EndCenterAuto), driveTrain, alliance)
+                new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.EndCenterAuto), driveTrain, alliance),
+
+                // Scoring
+                new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
+                new AlgaeGrabberSetPercent(-0.6, algaeGrabber), // TODO verify that this outtake speed is ok
+                waitSeconds(0.5),
+                new AlgaeGrabberStop(algaeGrabber)
                 
 
                 // Drive to barge, move elevator up, score, move elevator down.
