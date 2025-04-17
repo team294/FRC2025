@@ -89,7 +89,7 @@ public class AutoCoralCycleLoop extends SequentialCommandGroup {
 
           addCommands(
             // If it is the final coral location, then isFinalCoral = true and the elevator does not move up. If not, then the elevator moves up to score
-            new AutoCoralCycle(start, end, isLastCoral, reefLevels.get(i), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
+            new AutoCoralCycle(start, end, isLastCoral, reefLevels.get(i + 1), driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field)
           );
         }
       }
