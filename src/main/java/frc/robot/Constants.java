@@ -335,7 +335,7 @@ public final class Constants {
   public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;       // CALIBRATED
-    public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
+    public static final double fastIntakePercent = 0.22;  // CALIBRATED for LAR (however, due to max voltage on motor, was really capped at 0.167).  4/18 reduced from 0.25 to 0.22 to reduce "coral pass-through" on coral loading.
     public static final double outtakePercent = 0.4;      // CALIBRATED 4/7. Used for L1 and L4
     public static final double fastOuttakePercent = 1.0;  // CALIBRATED 4/7. Used for L2 and L3
 
@@ -460,8 +460,8 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // CALIBRATED
-    public static final double maxManualPercentOutput = 0.2;        // CALIBRATED 
-    public static final double maxPercentOutput = 0.22;              // CALIBRATED 4/12.  4/16 increased from 0.20 to 0.22.  
+    public static final double maxManualPercentOutput = 0.30;        // CALIBRATED.  4/17 increased from 0.22 to 0.30.
+    public static final double maxPercentOutput = 0.30;              // CALIBRATED 4/12.  4/16 increased from 0.20 to 0.22.  4/17 increased from 0.22 to 0.30.
 
     // Should be updated in RobotPreferences, so it cannot be final
     public static double offsetAngleCANcoder = -232.734;            // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED 4/12
