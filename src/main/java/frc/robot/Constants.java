@@ -353,7 +353,7 @@ public final class Constants {
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.4;             // CALIBRATED 3/29
-    public static final double netOuttakePercent = -0.20;       // CALIBRATED 4/12.  4/18:  Was -0.35, now -0.25
+    public static final double netOuttakePercent = -0.23;       // CALIBRATED 4/12.  4/18:  Was -0.35, now -0.20.  C2 increased to 0.23
     public static final double processorOuttakePercent = -0.18; // CALIBRATED 3/29.  Updated 4/16 from -0.15 to -0.18
   }
 
