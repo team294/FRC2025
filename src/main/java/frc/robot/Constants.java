@@ -23,7 +23,7 @@ import frc.robot.utilities.TrapezoidProfileBCR;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final String bcrRobotCodeVersion = "C1";
+  public static final String bcrRobotCodeVersion = "C2";
 
   public enum CoordType {
     kRelative,              // Relative to current robot location/facing
@@ -460,8 +460,8 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // CALIBRATED
-    public static final double maxManualPercentOutput = 0.30;        // CALIBRATED.  4/17 increased from 0.22 to 0.30.
-    public static final double maxPercentOutput = 0.30;              // CALIBRATED 4/12.  4/16 increased from 0.20 to 0.22.  4/17 increased from 0.22 to 0.30.
+    public static final double maxManualPercentOutput = 0.22;        // CALIBRATED.  4/17 increased from 0.22 to 0.30.  4/18:  moved back to 0.22
+    public static final double maxPercentOutput = 0.22;              // CALIBRATED 4/12.  4/16 increased from 0.20 to 0.22.  4/17 increased from 0.22 to 0.30.  4/18: moved back to 0.22
 
     // Should be updated in RobotPreferences, so it cannot be final
     public static double offsetAngleCANcoder = -232.734;            // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED 4/12
