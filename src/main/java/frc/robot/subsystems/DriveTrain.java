@@ -89,7 +89,7 @@ public class DriveTrain extends SubsystemBase implements Loggable {
   private final Matrix<N3, N1> farMatrix = new Matrix<>(Nat.N3(), Nat.N1(), new double[] {2,2,2*Math.PI});
 
   private final DataLog log = DataLogManager.getLog();
-  private final StructLogEntry<Pose2d> dLogOdometryPose2D = StructLogEntry.create(log, "/DriveTrain/OdometryPose2d", Pose2d.struct);
+  private final StructLogEntry<Pose2d> dLogOdometryPose2D = StructLogEntry.create(log, "/DrivePathFollower/curPose2d", Pose2d.struct);
   private final DoubleLogEntry dLogGyroAngle = new DoubleLogEntry(log, "/DriveTrain/GyroAngle");
   private final DoubleLogEntry dLogGyroRaw = new DoubleLogEntry(log, "/DriveTrain/GyroRaw");
   private final DoubleLogEntry dLogGyroVelocity = new DoubleLogEntry(log, "/DriveTrain/GyroVelocity");
