@@ -15,6 +15,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.*;
@@ -105,8 +106,9 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
                 // Scoring
                 new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
                 new AlgaeGrabberSetPercent(-0.6, algaeGrabber), // TODO verify that this outtake speed is ok
-                waitSeconds(0.5),
-                new AlgaeGrabberStop(algaeGrabber)
+                new WaitUntilCommand(() -> !algaeGrabber.isAlgaePresent()),
+                new AlgaeGrabberStop(algaeGrabber),
+                new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist)
                 
 
                 // Drive to barge, move elevator up, score, move elevator down.
