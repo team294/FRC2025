@@ -40,22 +40,22 @@ public class ChoreoFollower extends Command {
   private DriveTrain driveTrain;
   
   private final DataLog log = DataLogManager.getLog();
-  private final StructLogEntry<Pose2d> dLogCurPose2D = StructLogEntry.create(log, "/ChoreoFollower/curPose2d", Pose2d.struct);
-  private final StructLogEntry<Pose2d> dLogTrajPose2D = StructLogEntry.create(log, "/ChoreoFollower/trajPose2d", Pose2d.struct);
-  private final StringLogEntry dLogTrajType = new StringLogEntry(log, "/ChoreoFollower/trajType");
-  private final DoubleLogEntry dLogTime = new DoubleLogEntry(log, "/ChoreoFollower/time");
-  private final DoubleLogEntry dLogTrajX = new DoubleLogEntry(log, "/ChoreoFollower/trajX");
-  private final DoubleLogEntry dLogTrajY = new DoubleLogEntry(log, "/ChoreoFollower/trajY");
-  private final DoubleLogEntry dLogTrajVel = new DoubleLogEntry(log, "/ChoreoFollower/trajVel");
-  private final DoubleLogEntry dLogTrajVelAng = new DoubleLogEntry(log, "/ChoreoFollower/trajVelAng");
-  private final DoubleLogEntry dLogTrajRot = new DoubleLogEntry(log, "/ChoreoFollower/trajRot");
-  private final DoubleLogEntry dLogTrajRotVel = new DoubleLogEntry(log, "/ChoreoFollower/trajRotVel");
-  private final DoubleLogEntry dLogRobotX = new DoubleLogEntry(log, "/ChoreoFollower/robotX");
-  private final DoubleLogEntry dLogRobotY = new DoubleLogEntry(log, "/ChoreoFollower/robotY");
-  private final DoubleLogEntry dLogRobotVel = new DoubleLogEntry(log, "/ChoreoFollower/robotVel");
-  private final DoubleLogEntry dLogRobotVelAng = new DoubleLogEntry(log, "/ChoreoFollower/robotVelAng");
-  private final DoubleLogEntry dLogRobotRot = new DoubleLogEntry(log, "/ChoreoFollower/robotRot");
-  private final DoubleLogEntry dLogRobotRotVel = new DoubleLogEntry(log, "/ChoreoFollower/robotRotVel");
+  private final StructLogEntry<Pose2d> dLogCurPose2D = StructLogEntry.create(log, "/DrivePathFollower/curPose2d", Pose2d.struct);
+  private final StructLogEntry<Pose2d> dLogTrajPose2D = StructLogEntry.create(log, "/DrivePathFollower/trajPose2d", Pose2d.struct);
+  private final StringLogEntry dLogTrajType = new StringLogEntry(log, "/DrivePathFollower/trajType");
+  private final DoubleLogEntry dLogTime = new DoubleLogEntry(log, "/DrivePathFollower/time");
+  private final DoubleLogEntry dLogTrajX = new DoubleLogEntry(log, "/DrivePathFollower/trajX");
+  private final DoubleLogEntry dLogTrajY = new DoubleLogEntry(log, "/DrivePathFollower/trajY");
+  private final DoubleLogEntry dLogTrajVel = new DoubleLogEntry(log, "/DrivePathFollower/trajVel");
+  private final DoubleLogEntry dLogTrajVelAng = new DoubleLogEntry(log, "/DrivePathFollower/trajVelAng");
+  private final DoubleLogEntry dLogTrajRot = new DoubleLogEntry(log, "/DrivePathFollower/trajRot");
+  private final DoubleLogEntry dLogTrajRotVel = new DoubleLogEntry(log, "/DrivePathFollower/trajRotVel");
+  private final DoubleLogEntry dLogRobotX = new DoubleLogEntry(log, "/DrivePathFollower/robotX");
+  private final DoubleLogEntry dLogRobotY = new DoubleLogEntry(log, "/DrivePathFollower/robotY");
+  private final DoubleLogEntry dLogRobotVel = new DoubleLogEntry(log, "/DrivePathFollower/robotVel");
+  private final DoubleLogEntry dLogRobotVelAng = new DoubleLogEntry(log, "/DrivePathFollower/robotVelAng");
+  private final DoubleLogEntry dLogRobotRot = new DoubleLogEntry(log, "/DrivePathFollower/robotRot");
+  private final DoubleLogEntry dLogRobotRotVel = new DoubleLogEntry(log, "/DrivePathFollower/robotRotVel");
 
   /**
    * Choreo follower used to follow Choreo trajectories. 
@@ -71,7 +71,6 @@ public class ChoreoFollower extends Command {
    * @param mirrorTrajectory determines if the trajectory will be mirrored: when true the trajectory will mirror while 
    * internal robot odometry will remain the same, when false the trajectory will not be changed
    * @param driveTrain DriveTrain subsystem
-   * @param log LogFile utility
    */
   public ChoreoFollower(Trajectory<SwerveSample> trajectory, PIDController xController, PIDController yController,
       PIDController rotationController, Consumer<ChassisSpeeds> outputChassisSpeeds,
