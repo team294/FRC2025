@@ -335,7 +335,7 @@ public final class Constants {
   public static final class CoralEffectorConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.1;       // CALIBRATED
-    public static final double fastIntakePercent = 0.25;  // CALIBRATED for LAR
+    public static final double fastIntakePercent = 0.22;  // CALIBRATED for LAR (however, due to max voltage on motor, was really capped at 0.167).  4/18 reduced from 0.25 to 0.22 to reduce "coral pass-through" on coral loading.
     public static final double outtakePercent = 0.4;      // CALIBRATED 4/7. Used for L1 and L4
     public static final double fastOuttakePercent = 1.0;  // CALIBRATED 4/7. Used for L2 and L3
 
