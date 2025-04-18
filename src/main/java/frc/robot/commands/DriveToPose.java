@@ -14,6 +14,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.util.datalog.StructLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -64,6 +70,32 @@ public class DriveToPose extends Command {
 	private static final int FEEDBACK_VELOCITY_ONLY = 1;  // Use velocity feedback only, do not use position feedback
 	private static final int FEEDBACK_NONE = 2;           // Turn off velocity and position feedback
 
+  private final DataLog log = DataLogManager.getLog();
+  private final StringLogEntry dLogTrajType = new StringLogEntry(log, "/DrivePathFollower/trajType");
+  private final StructLogEntry<Pose2d> dLogCurPose2D = StructLogEntry.create(log, "/DrivePathFollower/curPose2d", Pose2d.struct);
+  private final StructLogEntry<Pose2d> dLogTrajPose2D = StructLogEntry.create(log, "/DrivePathFollower/trajPose2d", Pose2d.struct);
+  private final DoubleLogEntry dLogTime = new DoubleLogEntry(log, "/DrivePathFollower/time");
+  private final DoubleLogEntry dLogTrajX = new DoubleLogEntry(log, "/DrivePathFollower/trajX");
+  private final DoubleLogEntry dLogTrajY = new DoubleLogEntry(log, "/DrivePathFollower/trajY");
+  private final DoubleLogEntry dLogTrajAccel = new DoubleLogEntry(log, "/DrivePathFollower/trajAccel");
+  private final DoubleLogEntry dLogTrajVel = new DoubleLogEntry(log, "/DrivePathFollower/trajVel");
+  private final DoubleLogEntry dLogTrajVelkA = new DoubleLogEntry(log, "/DrivePathFollower/trajVelkA");
+  private final DoubleLogEntry dLogTrajVelAng = new DoubleLogEntry(log, "/DrivePathFollower/trajVelAng");
+  private final DoubleLogEntry dLogTrajRot = new DoubleLogEntry(log, "/DrivePathFollower/trajRot");
+  private final DoubleLogEntry dLogRobotPosErr = new DoubleLogEntry(log, "/DrivePathFollower/robotPosErr");
+  private final DoubleLogEntry dLogRobotThErr = new DoubleLogEntry(log, "/DrivePathFollower/robotThErr");
+  private final DoubleLogEntry dLogRobotX = new DoubleLogEntry(log, "/DrivePathFollower/robotX");
+  private final DoubleLogEntry dLogRobotY = new DoubleLogEntry(log, "/DrivePathFollower/robotY");
+  private final DoubleLogEntry dLogRobotVel = new DoubleLogEntry(log, "/DrivePathFollower/robotVel");
+  private final DoubleLogEntry dLogRobotXVel = new DoubleLogEntry(log, "/DrivePathFollower/robotXVel");
+  private final DoubleLogEntry dLogRobotYVel = new DoubleLogEntry(log, "/DrivePathFollower/robotYVel");
+  private final DoubleLogEntry dLogRobotVelAng = new DoubleLogEntry(log, "/DrivePathFollower/robotVelAng");
+  private final DoubleLogEntry dLogRobotRot = new DoubleLogEntry(log, "/DrivePathFollower/robotRot");
+  private final DoubleLogEntry dLogRobotPitch = new DoubleLogEntry(log, "/DrivePathFollower/robotPitch");
+
+  
+
+
   /**
    * Drives the robot to the desired pose in field-relative or robot-relative coordinates.
    * Stops the robot at the end of the command, unless the command is interrupted.
@@ -81,7 +113,6 @@ public class DriveToPose extends Command {
    *  <p> Desired Y location in the field, in meters (0 = right edge of field when standing in the Blue driver station, + = left when looking from the Blue drivestation)
    *  <p> Desired angle on the field, in degrees (0 = facing away from the Blue drivestation, + to the left, - to the right)
    * @param driveTrain DriveTrain subsystem
-   * @param log file for logging
    */
    public DriveToPose(CoordType poseType, Pose2d goalPose, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -117,7 +148,6 @@ public class DriveToPose extends Command {
    * @param closedLoopSwerve true = use velocity control feedback+feedforward on swerve motors (normal), false = use feed-forward only on swerve motors (test mode)
    * @param usePositionFeedback true = use position feedback to keep robot movement accuracy (normal), false = turn off postion feedback (test mode)
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, double maxVelMetersPerSecond, double maxAccelMetersPerSecondSquare, 
       double maxPositionErrorMeters, double maxThetaErrorDegrees, 
@@ -160,7 +190,6 @@ public class DriveToPose extends Command {
    *  <p> Desired Y location in the field, in meters (0 = right edge of field when standing in the Blue driver station, + = left when looking from the Blue drivestation)
    *  <p> Desired angle on the field, in degrees (0 = facing away from the Blue drivestation, + to the left, - to the right)
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -193,7 +222,6 @@ public class DriveToPose extends Command {
    * @param maxPositionErrorMeters tolerance for end position in meters
    * @param maxThetaErrorDegrees tolerance for end theta in degrees
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveToPose(CoordType poseType, Supplier<Pose2d> goalPoseSupplier, double maxPositionErrorMeters, double maxThetaErrorDegrees, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -216,9 +244,8 @@ public class DriveToPose extends Command {
    * @param rotation rotation to turn to, in degrees (+=turn left, -=turn right). For absolute rotation,
    * the 0 degrees is facing away from the Blue driver station.
    * @param driveTrain DriveTrain subsytem
-   * @param log FileLog utility
    */
-  public DriveToPose(CoordType type, double rotation, DriveTrain driveTrain, DataLogUtil log ){
+  public DriveToPose(CoordType type, double rotation, DriveTrain driveTrain){
     this.driveTrain = driveTrain;
     
     this.rotation = Rotation2d.fromDegrees(rotation);
@@ -243,7 +270,6 @@ public class DriveToPose extends Command {
    *  <p> kAbsolute = goalPose is in the Blue field coordinate system, based on the Blue alliance. The goal pose is unaffected by the currently selected alliance (red or blue).
    *  <p> kAbsoluteResetPose, kAbsoluteResetPoseTol = Don't use. Behaves same as kAbsolute.
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveToPose(CoordType poseType, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -291,6 +317,32 @@ public class DriveToPose extends Command {
       new PIDController(TrajectoryConstants.kPXController, 0, 0),
       new PIDController(TrajectoryConstants.kPYController, 0, 0),
       thetaController );
+
+    // Prime logging
+    long timeNow = RobotController.getFPGATime();
+    Pose2d robotPose = driveTrain.getPose();
+    ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
+
+    dLogTime.append(-1, timeNow);
+    dLogCurPose2D.append(robotPose, timeNow);
+    dLogTrajPose2D.append(robotPose, timeNow);
+    dLogTrajX.append(-1, timeNow);
+    dLogTrajY.append(-1, timeNow);
+    dLogTrajAccel.append(-1, timeNow);
+    dLogTrajVel.append(-1, timeNow);
+    dLogTrajVelkA.append(-1, timeNow);
+    dLogTrajVelAng.append(-1, timeNow);
+    dLogTrajRot.append(-1, timeNow);
+    dLogRobotPosErr.append(-1, timeNow);
+    dLogRobotThErr.append(-1, timeNow);
+    dLogRobotX.append(robotPose.getX(), timeNow);
+    dLogRobotY.append(robotPose.getY(), timeNow);
+    dLogRobotVel.append(Math.hypot(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond), timeNow);
+    dLogRobotXVel.append(robotSpeeds.vxMetersPerSecond, timeNow);
+    dLogRobotYVel.append(robotSpeeds.vyMetersPerSecond, timeNow);
+    dLogRobotVelAng.append(Math.toDegrees(Math.atan2(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond)), timeNow);
+    dLogRobotRot.append(robotPose.getRotation().getDegrees(), timeNow);
+    dLogRobotPitch.append(driveTrain.getGyroPitch(), timeNow);
   }
 
   // Called when the command is initially scheduled.
@@ -359,6 +411,10 @@ public class DriveToPose extends Command {
       } else {
         goalPose = inputPose;
       }
+
+      DataLogUtil.writeMessage("DriveToPose: Start");
+      dLogTrajType.append("DriveToPose");
+
     }
 
     // Calculate the direction and distance of travel
@@ -374,17 +430,6 @@ public class DriveToPose extends Command {
     TrapezoidProfileBCR.State initialState = new TrapezoidProfileBCR.State(0, initialVelocity);
     TrapezoidProfileBCR.State goalState = new TrapezoidProfileBCR.State(goalDistance, 0);
     profile = new TrapezoidProfileBCR(trapProfileConstraints, goalState, initialState);
-
-    DataLogUtil.writeLog(false, "DriveToPose", "Initialize", 
-      "Time", timer.get(), 
-      "Goal X", goalPose.getTranslation().getX(),
-      "Goal Y", goalPose.getTranslation().getY(),
-      "Goal rot", goalPose.getRotation().getDegrees(), 
-      "Robot X", initialTranslation.getX(),
-      "Robot Y", initialTranslation.getY(),
-      "Robot rot", initialPose.getRotation().getDegrees(),
-      "Profile time",profile.totalTime()
-    );
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -411,26 +456,29 @@ public class DriveToPose extends Command {
     driveTrain.drive(targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond,
         targetChassisSpeeds.omegaRadiansPerSecond, true, openLoopSwerve);
 
+    // Log data for path following
+    long timeNow = RobotController.getFPGATime();
     ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
-    DataLogUtil.writeLog(false, "DriveToPose", "Execute", 
-        "Time", timer.get(), 
-        "Trap X", desiredPose.getTranslation().getX(),
-        "Trap Y", desiredPose.getTranslation().getY(),
-        "Trap Accel", desiredState.acceleration,
-        "Trap Vel", desiredState.velocity,
-        "Trap Vel w/kA", desiredVelocityMetersPerSecond,
-        "Robot XVel", robotSpeeds.vxMetersPerSecond,
-        "Robot Pos Err", driveTrain.getPose().getTranslation().minus(goalPose.getTranslation()).getNorm(),
-        "Robot Th Err", MathBCR.angleMinus(driveTrain.getPoseAngle(), goalPose.getRotation().getDegrees()),
-        "Trap VelAng", desiredPose.getRotation().getDegrees(),
-        "Target rot", desiredRotation.getDegrees(), 
-        "Robot X", curRobotTranslation.getX(),
-        "Robot Y", curRobotTranslation.getY(),
-        "Robot Vel", Math.hypot(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond),
-        "Robot VelAng", Math.toDegrees(Math.atan2(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond)),
-        "Robot rot", robotPose.getRotation().getDegrees(),
-        "Pitch", driveTrain.getGyroPitch()
-    );
+    dLogTime.append(curTime, timeNow);
+    dLogCurPose2D.append(robotPose, timeNow);
+    dLogTrajPose2D.append(desiredPose, timeNow);
+    dLogTrajX.append(desiredPose.getTranslation().getX(), timeNow);
+    dLogTrajY.append(desiredPose.getTranslation().getY(), timeNow);
+    dLogTrajAccel.append(desiredState.acceleration, timeNow);
+    dLogTrajVel.append(desiredState.velocity, timeNow);
+    dLogTrajVelkA.append(desiredVelocityMetersPerSecond, timeNow);
+    dLogTrajVelAng.append(desiredPose.getRotation().getDegrees(), timeNow);
+    dLogTrajRot.append(desiredRotation.getDegrees(), timeNow);
+    dLogRobotPosErr.append(driveTrain.getPose().getTranslation().minus(goalPose.getTranslation()).getNorm(), timeNow);
+    dLogRobotThErr.append(MathBCR.angleMinus(driveTrain.getPoseAngle(), goalPose.getRotation().getDegrees()), timeNow);
+    dLogRobotX.append(curRobotTranslation.getX(), timeNow);
+    dLogRobotY.append(curRobotTranslation.getY(), timeNow);
+    dLogRobotVel.append(Math.hypot(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond), timeNow);
+    dLogRobotXVel.append(robotSpeeds.vxMetersPerSecond, timeNow);
+    dLogRobotYVel.append(robotSpeeds.vyMetersPerSecond, timeNow);
+    dLogRobotVelAng.append(Math.toDegrees(Math.atan2(robotSpeeds.vyMetersPerSecond, robotSpeeds.vxMetersPerSecond)), timeNow);
+    dLogRobotRot.append(robotPose.getRotation().getDegrees(), timeNow);
+    dLogRobotPitch.append(driveTrain.getGyroPitch(), timeNow);
   }
 
   // Called once the command ends or is interrupted.
@@ -438,14 +486,15 @@ public class DriveToPose extends Command {
   public void end(boolean interrupted) {
     timer.stop();
     if (!interrupted) driveTrain.stopMotors();
-    DataLogUtil.writeLog(false, "DriveToPose", "End", "Interrupted", interrupted); 
+    dLogTrajType.append("None");
+    DataLogUtil.writeMessage(false, "DriveToPose: End, interrupted = ", interrupted); 
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     var timeout = timer.hasElapsed(profile.totalTime() + 3.0);
-    if (timeout) DataLogUtil.writeLog(false, "DriveToPose", "timeout"); 
+    if (timeout) DataLogUtil.writeMessage( "DriveToPose timed out"); 
 
     var angleError = MathBCR.angleMinus(driveTrain.getPoseAngle(), goalPose.getRotation().getDegrees());
     var posError = driveTrain.getPose().getTranslation().minus(goalPose.getTranslation()).getNorm();
@@ -457,8 +506,8 @@ public class DriveToPose extends Command {
             (posError <= maxPositionErrorMeters));
 
     if (finished) {
-      DataLogUtil.writeLog(false, "DriveToPose", "finished", "angleError", angleError, "posError", posError, "maxTheta",
-          maxThetaErrorDegrees, "maxMeters", maxPositionErrorMeters, "timer", timer.get());
+      DataLogUtil.writeMessage("DriveToPose: Finished, angleError = ", angleError, "posError", posError, 
+                "maxTheta = ", maxThetaErrorDegrees, "maxMeters = ", maxPositionErrorMeters, "timer = ", timer.get());
     }
 
     return finished;
