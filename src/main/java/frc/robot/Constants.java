@@ -372,7 +372,7 @@ public final class Constants {
     // CALIBRATED
     public enum ElevatorPosition {
       LOWER_LIMIT(0.0),
-      UPPER_LIMIT(75.0);
+      UPPER_LIMIT(76.5);   // Mechanichal max is 77.5.   4/18 increaed from 75.0 to 76.5
  
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
@@ -439,7 +439,7 @@ public final class Constants {
       ALGAE_LOLLIPOP(12.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
-      ALGAE_NET(73.0, 65.0); // CALIBRATED 4/12 - was 63.0, 70.0
+      ALGAE_NET(73.0, 65.0); // CALIBRATED 4/12 - was 63.0, 70.0.  4/18 plan to increase from 73.0 to 75.0 TODO not yet implemented
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double elevatorPosition;
@@ -490,7 +490,7 @@ public final class Constants {
       DEFAULT(68.0),
       START_CONFIG(90.0),
       CLIMB_START(0.0),
-      CLIMB_END(155.0);
+      CLIMB_END(152.0);   // 4/18 Changed climb angle from 155 to 152
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
