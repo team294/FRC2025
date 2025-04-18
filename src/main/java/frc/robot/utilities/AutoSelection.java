@@ -36,7 +36,7 @@ public class AutoSelection {
 	public enum RoutineSelectionOption {
 		NONE("None", -1),
 
-		// DriveForwardOneMeter("DriveForwardOneMeter", 10),
+		DriveForwardOneMeter("DriveForwardOneMeter", 0),
 		// BargeToE("BargeToE", 107), // TODO remove test autos
 
 		// Rel4mRotate180("Relative4m-180", 101),
@@ -245,12 +245,12 @@ public class AutoSelection {
 			autonomousCommandMain = new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain);
 		}
 
-		// else if (autoPlan == RoutineSelectionOption.DriveForwardOneMeter.value) {
-		// 	autoSelectionOption = RoutineSelectionOption.DriveForwardOneMeter;
-		// 	autonomousCommandMain = new SequentialCommandGroup(
-		// 								new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain),
-		// 								new DriveToPose(CoordType.kRelative, new Pose2d(1, 0, new Rotation2d(0)), driveTrain));
-		// }
+		else if (autoPlan == RoutineSelectionOption.DriveForwardOneMeter.value) {
+			autoSelectionOption = RoutineSelectionOption.DriveForwardOneMeter;
+			autonomousCommandMain = new SequentialCommandGroup(
+										new DriveResetPose(allianceSelection.getAlliance() == Alliance.Red ? 0 : 180, false, driveTrain),
+										new DriveToPose(CoordType.kRelative, new Pose2d(1, 0, new Rotation2d(0)), driveTrain));
+		}
 
 		else if (autoPlan == RoutineSelectionOption.DriveForwardTwoMeters.value) {
 			autoSelectionOption = RoutineSelectionOption.DriveForwardTwoMeters;
