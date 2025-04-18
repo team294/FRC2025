@@ -510,7 +510,6 @@ public class RobotContainer {
 
     elevator.stopElevatorMotors();
     wrist.stopWrist();
-    coralEffector.stopCoralEffectorMotor();
 
     LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
     LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ROBOT_DISABLED);
@@ -575,8 +574,6 @@ public class RobotContainer {
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
     driveTrain.setVisionForOdometryState(true);
 
-    coralEffector.stopCoralEffectorMotor();
-
     if (elevator.isElevatorCalibrated()) {
       elevator.setElevatorProfileTarget(elevator.getElevatorPosition());
     } else {
@@ -591,7 +588,12 @@ public class RobotContainer {
     LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL);
 
     climberDisengageRatchet.schedule();
-    if (lastEnabledModeWasAuto && !coralEffector.getHoldMode() && elevator.getElevatorPosition() < 3.0) coralIntakeSequence.schedule();
+
+    if (lastEnabledModeWasAuto && !coralEffector.getHoldMode() && elevator.getElevatorPosition() < 3.0) {
+      coralIntakeSequence.schedule();
+    } else if (!coralEffector.getHoldMode()) {
+      coralEffector.stopCoralEffectorMotor();
+    }
     
     matchTimer.reset();
     matchTimer.start();
