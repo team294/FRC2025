@@ -353,7 +353,7 @@ public final class Constants {
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.4;             // CALIBRATED 3/29
-    public static final double netOuttakePercent = -0.25;       // CALIBRATED 4/12.  4/18:  Was -0.35, now -0.25
+    public static final double netOuttakePercent = -0.20;       // CALIBRATED 4/12.  4/18:  Was -0.35, now -0.25
     public static final double processorOuttakePercent = -0.18; // CALIBRATED 3/29.  Updated 4/16 from -0.15 to -0.18
   }
 
@@ -428,8 +428,8 @@ public final class Constants {
       CORAL_HP(0.0, 82.0),
 
       CORAL_L1(13.0, 95.0),
-      CORAL_L2(23.31, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 22.06 to 22.56. 4/18 elevator increased from 22.56 to 23.31
-      CORAL_L3(38.03, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 37.28 to 37.78. 4/18 elevator increased from 37.78 to 38.03
+      CORAL_L2(23.56, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 22.06 to 22.56. 4/18 elevator increased from 22.56 to 23.31 to 23.56
+      CORAL_L3(38.53, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 37.28 to 37.78. 4/18 elevator increased from 37.78 to 38.03 to 38.53
       CORAL_L4(71.0, 57.0),
       CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
