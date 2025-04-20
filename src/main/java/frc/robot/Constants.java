@@ -23,7 +23,7 @@ import frc.robot.utilities.TrapezoidProfileBCR;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final String bcrRobotCodeVersion = "C1";
+  public static final String bcrRobotCodeVersion = "C3";
 
   public enum CoordType {
     kRelative,              // Relative to current robot location/facing
@@ -353,7 +353,7 @@ public final class Constants {
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.4;             // CALIBRATED 3/29
-    public static final double netOuttakePercent = -0.35;       // CALIBRATED 4/12
+    public static final double netOuttakePercent = -0.23;       // CALIBRATED 4/12.  4/18:  Was -0.35, now -0.20.  C2 increased to 0.23
     public static final double processorOuttakePercent = -0.18; // CALIBRATED 3/29.  Updated 4/16 from -0.15 to -0.18
   }
 
@@ -428,8 +428,8 @@ public final class Constants {
       CORAL_HP(0.0, 82.0),
 
       CORAL_L1(13.0, 95.0),
-      CORAL_L2(22.56, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 22.06 to 22.56
-      CORAL_L3(37.78, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 37.28 to 37.78
+      CORAL_L2(23.56, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 22.06 to 22.56. 4/18 elevator increased from 22.56 to 23.31 to 23.56
+      CORAL_L3(38.53, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 37.28 to 37.78. 4/18 elevator increased from 37.78 to 38.03 to 38.53
       CORAL_L4(71.0, 57.0),
       CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
 
@@ -439,7 +439,7 @@ public final class Constants {
       ALGAE_LOLLIPOP(12.0, 10.0),
 
       ALGAE_PROCESSOR(9.84, 10.0),
-      ALGAE_NET(73.0, 65.0); // CALIBRATED 4/12 - was 63.0, 70.0.  4/18 plan to increase from 73.0 to 75.0 TODO not yet implemented
+      ALGAE_NET(75.0, 65.0); // CALIBRATED 4/12 - was 63.0, 70.0.  4/18 increase from 73.0 to 75.0
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double elevatorPosition;
@@ -460,8 +460,8 @@ public final class Constants {
     
     public static final double compensationVoltage = 12.0;
     public static final double maxUncalibratedPercentOutput = 0.1;  // CALIBRATED
-    public static final double maxManualPercentOutput = 0.30;        // CALIBRATED.  4/17 increased from 0.22 to 0.30.
-    public static final double maxPercentOutput = 0.30;              // CALIBRATED 4/12.  4/16 increased from 0.20 to 0.22.  4/17 increased from 0.22 to 0.30.
+    public static final double maxManualPercentOutput = 0.22;        // CALIBRATED.  4/17 increased from 0.22 to 0.30.  4/18:  moved back to 0.22
+    public static final double maxPercentOutput = 0.22;              // CALIBRATED 4/12.  4/16 increased from 0.20 to 0.22.  4/17 increased from 0.22 to 0.30.  4/18: moved back to 0.22
 
     // Should be updated in RobotPreferences, so it cannot be final
     public static double offsetAngleCANcoder = -232.734;            // CANCoder raw angle (in degrees) when arm is at 0 degrees. CALIBRATED 4/12

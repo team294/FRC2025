@@ -24,8 +24,8 @@ public class ElevatorProfileGenerator {
   private double maxVelocity = 75.0;  // Max velocity, in inches/second CALIBRATED (75.0)
   private double currentMPVelocity;   // Velocity that it should be at in the current motion profile
 
-  private double maxAcceleration = 180.0;                       // Max acceleration, in inches/second^2 CALIBRATED (180.0)
-  private double stoppingAcceleration = .75 * maxAcceleration;  // Limit the stopping acceleration to 75% of the max acceleration
+  private double maxAcceleration = 300.0;                       // Max acceleration, in inches/second^2 CALIBRATED  4/18:  Was 180.0, now 300
+  private double stoppingAcceleration = 0.60 * maxAcceleration;  // Limit the stopping acceleration to 75% of the max acceleration   4/18:  Was 0.75, dropped to 0.60 when maxAcceleration was increased from 180 to 300.
   private double currentMPAcceleration;                         // Acceleration that it should be at in the current motion profile
   private boolean approachingTarget = false;                    // true = close enough to target to be decelerating, false = not close enough
 
@@ -44,14 +44,14 @@ public class ElevatorProfileGenerator {
   private double kFF = 0.30 / ElevatorConstants.compensationVoltage;     // In pct-output.  Was 0.35
   private double kSu = 0.10 / ElevatorConstants.compensationVoltage;     // In pct-output
   private double kVu = 0.126 / ElevatorConstants.compensationVoltage;     // In (pct-output)/(in/s)
-  private double kAu = 0.000;      // In (pct-output)/(in/s^2)     2023 = 0.0006
-  private double kPu = 0.1;        // In (pct-output)/(in)
+  private double kAu = 0.008  / ElevatorConstants.compensationVoltage;      // In (pct-output)/(in/s^2)    4/18:  Was 0, now 0.008
+  private double kPu = 0.08;        // In (pct-output)/(in)  4/18: was 0.10, now 0.08 to prevent elevator overshoots on short movements (like L1 to L2)
   private double kIu = 0;    
   private double kDu = 0.0;      // 2023 = 0.02
   private double kSd = 0.10 / ElevatorConstants.compensationVoltage;     // In pct-output
   private double kVd = 0.126 / ElevatorConstants.compensationVoltage;     // In (pct-output)/(in/s)
-  private double kAd = 0.000;      // In (pct-output)/(in/s^2)     2023 = 0.0006
-  private double kPd = 0.1;       
+  private double kAd = 0.008  / ElevatorConstants.compensationVoltage;      // In (pct-output)/(in/s^2)     4/18:  Was 0, now 0.008
+  private double kPd = 0.08;       // In (pct-output)/(in)  4/18: was 0.10, now 0.08 to prevent elevator overshoots on short movements (like L1 to L2)
   private double kId = 0;    
   private double kDd = 0.0;      // 2023 = 0.02
 
@@ -194,9 +194,9 @@ public class ElevatorProfileGenerator {
       updateElevatorProfileLog(false);
     }
 
-    updateProfileCalcs();
     error = getCurrentPosition() - elevator.getElevatorPosition();
     intError = intError + error * dt;
+    updateProfileCalcs();
 
     // If the elevator is moving up, use the profile terms for moving up
     if (directionSign == 1) {

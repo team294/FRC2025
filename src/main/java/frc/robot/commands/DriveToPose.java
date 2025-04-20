@@ -438,7 +438,8 @@ public class DriveToPose extends Command {
     double curTime = timer.get();
 
     // Current robot location, translation is relative to starting position, rotation is absolute field rotation
-    curRobotTranslation = driveTrain.getPose().getTranslation().minus(initialTranslation);
+    Pose2d curRobotOdometryPose = driveTrain.getPose();
+    curRobotTranslation = curRobotOdometryPose.getTranslation().minus(initialTranslation);
     Pose2d robotPose = new Pose2d(curRobotTranslation, Rotation2d.fromDegrees(driveTrain.getPoseAngle()));
 
     // Calculate current desired pose and velocity from the Trapezoid profile, relative to starting position
@@ -460,8 +461,8 @@ public class DriveToPose extends Command {
     long timeNow = RobotController.getFPGATime();
     ChassisSpeeds robotSpeeds = driveTrain.getRobotSpeeds();
     dLogTime.append(curTime, timeNow);
-    dLogCurPose2D.append(robotPose, timeNow);
-    dLogTrajPose2D.append(desiredPose, timeNow);
+    dLogCurPose2D.append(curRobotOdometryPose, timeNow);
+    dLogTrajPose2D.append(new Pose2d(desiredPose.getTranslation().plus(initialTranslation), desiredRotation), timeNow);   // Field-relative current desired position
     dLogTrajX.append(desiredPose.getTranslation().getX(), timeNow);
     dLogTrajY.append(desiredPose.getTranslation().getY(), timeNow);
     dLogTrajAccel.append(desiredState.acceleration, timeNow);
