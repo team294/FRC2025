@@ -48,7 +48,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
    * @param field Field field
    */
   public AutomatedDriveToReefAndScoreCoral(ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
-      AlgaeGrabber algaeGrabber, Joystick rightJoystick, Field field) {
+      AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, Field field) {
     addCommands(
       parallel(
         sequence(
@@ -75,7 +75,15 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
               deadline(
                 new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
                 sequence(
-                  waitUntil(() -> coralEffector.getHoldMode()),
+                  either(
+                    sequence(
+                      new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
+                      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTOMATED_DRIVING_REEF))
+                    ),
+                    none(),
+                    () -> !coralEffector.getHoldMode()
+                  ),
+                  runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTOMATED_DRIVING_REEF)),
                   deadline(
                     new WaitUntilCommand( () -> (driveTrain.getPose().minus(field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
                                                   new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, 
@@ -88,7 +96,14 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
               ),
                 // Move elevator/wrist to correct position based on given level
               sequence(
-                waitUntil(() -> coralEffector.getHoldMode()),
+                either(
+                  sequence(
+                    new CoralIntakeSequence(elevator, wrist, hopper, coralEffector),
+                    runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTOMATED_DRIVING_REEF))
+                  ),
+                  none(),
+                  () -> !coralEffector.getHoldMode()
+                ),
                 new CoralScorePrepSequence(reefToElevatorMap.get(level), elevator, wrist, algaeGrabber, coralEffector)
               )
             ),
