@@ -15,7 +15,6 @@ public class ClimberStop extends Command {
   /**
    * Sets the percent output of the climber to 0 and ends immediately.
    * @param climber Climber subsystem
-   * @param log FileLog utility
    */
   public ClimberStop(Climber climber) {
     this.climber = climber;
@@ -27,7 +26,7 @@ public class ClimberStop extends Command {
   @Override
   public void initialize() {
     climber.stopClimber();
-    DataLogUtil.writeLog(false, "ClimberStop", "Init");
+    DataLogUtil.writeMessage("ClimberStop: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

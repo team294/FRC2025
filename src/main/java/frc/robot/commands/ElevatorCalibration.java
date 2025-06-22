@@ -31,7 +31,6 @@ public class ElevatorCalibration extends Command {
    * The data collected during this routine can be used to calculate the terms of the elevator profile.
    * @param rampRate Ramp rate in percent output/second 
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
   public ElevatorCalibration(double rampRate, Elevator elevator) {
     this.elevator = elevator;
@@ -48,7 +47,7 @@ public class ElevatorCalibration extends Command {
     state = CalibrationRoutineState.RAMP_UP;
 
     elevator.enableFastLogging(true);
-    DataLogUtil.writeLog(false, "ElevatorCalibration", "Init", "rampRate", rampRate);
+    DataLogUtil.writeMessage("ElevatorCalibration: Init, rampRate = ", rampRate);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -113,7 +112,7 @@ public class ElevatorCalibration extends Command {
   public void end(boolean interrupted) {
     elevator.stopElevatorMotors();
     elevator.enableFastLogging(false);
-    DataLogUtil.writeLog(false, "ElevatorCalibration", "End");
+    DataLogUtil.writeMessage("ElevatorCalibration: End");
   }
 
   // Returns true when the command should end.

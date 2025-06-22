@@ -20,7 +20,6 @@ public class ClimberSetPercentOutput extends Command {
    * Sets the percent output of the climber from Shuffleboard.
    * <b>NOTE: This command does not end. When interrupted, it turns off the climber motor.
    * @param climber Climber subsystem
-   * @param log FileLog utility
    */
   public ClimberSetPercentOutput(Climber climber) {
     this.climber = climber;
@@ -52,7 +51,7 @@ public class ClimberSetPercentOutput extends Command {
   public void initialize() {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Goal Percent", 0);
     if (climber.getRatchetPosition() == ServoPosition.DISENGAGED || percent >= 0) climber.setClimberPercentOutput(percent);
-    DataLogUtil.writeLog(false, "ClimberSetPercentOutput", "Init", "Percent", percent);
+    DataLogUtil.writeMessage("ClimberSetPercentOutput: Init, Percent = ", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

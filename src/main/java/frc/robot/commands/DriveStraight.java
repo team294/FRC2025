@@ -52,7 +52,6 @@ public class DriveStraight extends Command {
    * @param regenerate true = regenerate profile each cycle (to accurately reach target distance), false = do not regenerate (for debugging)
    * @param isOpenLoop true = feed-forward only for velocity control, false = PID feedback velocity control
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveStraight(double target, boolean fieldRelative, double angle, double maxVel, double maxAccel, boolean regenerate, boolean isOpenLoop, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -76,7 +75,6 @@ public class DriveStraight extends Command {
    * @param regenerate true = regenerate profile each cycle (to accurately reach target distance), false = do not regenerate (for debugging)
    * @param isOpenLoop true = feed-forward only for velocity control, false = PID feedback velocity control
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveStraight(boolean fieldRelative, boolean regenerate, boolean isOpenLoop, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -133,7 +131,7 @@ public class DriveStraight extends Command {
     tStateCurr = new TrapezoidProfileBCR.State(0.0, 0.0);     // Initialize initial state (relative turning, so assume initPos is 0 degrees)
     tConstraints = new TrapezoidProfileBCR.Constraints(maxVel, maxAccel);       // Initialize velocity and accel limits
     tProfile = new TrapezoidProfileBCR(tConstraints, tStateFinal, tStateCurr);  // Generate profile
-    DataLogUtil.writeLog(false, "DriveStraight", "init", "Target", target, "Profile total time", tProfile.totalTime());
+    DataLogUtil.writeMessage("DriveStraight: Init, Target = ", target, ", Profile total time = ", tProfile.totalTime());
     
     profileStartTime = System.currentTimeMillis();
     startLocation = driveTrain.getPose().getTranslation();
@@ -170,17 +168,9 @@ public class DriveStraight extends Command {
         + Math.abs(currentStates[1].speedMetersPerSecond) + Math.abs(currentStates[2].speedMetersPerSecond)
         + Math.abs(currentStates[3].speedMetersPerSecond)) / 4.0;
 
-    DataLogUtil.writeLog(false, "DriveStraight", "profile", 
-      "angT", angleTarget,
-      "posT", tStateNext.position, 
-      "velT", targetVel, "accT", targetAccel,
-      "posA", currDist, 
-      "velA", linearVel,
-      "velA-FL", currentStates[0].speedMetersPerSecond, 
-      "velA-FR", currentStates[1].speedMetersPerSecond, 
-      "velA-BL", currentStates[2].speedMetersPerSecond, 
-      "velA-BR", currentStates[3].speedMetersPerSecond
-    );
+    DataLogUtil.writeMessage("DriveStraight: Profile, angT = ", angleTarget, ", posT = ", tStateNext.position, "velT = ", targetVel, 
+      ", accT = ", targetAccel, ", posA = ", currDist,  ", velA = ", linearVel, ", velA-FL = ", currentStates[0].speedMetersPerSecond,
+      ", velA-FR = ", currentStates[1].speedMetersPerSecond, ", velA-BL = ", currentStates[2].speedMetersPerSecond, ", velA-BR = ", currentStates[3].speedMetersPerSecond);
 
     if (regenerate) {
       tStateCurr = new TrapezoidProfileBCR.State(currDist, linearVel);
@@ -192,7 +182,7 @@ public class DriveStraight extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DataLogUtil.writeLog(false, "DriveStraight", "End");
+    DataLogUtil.writeMessage("DriveStraight: End");
     driveTrain.stopMotors();
     driveTrain.enableFastLogging(false);
   }
@@ -202,7 +192,7 @@ public class DriveStraight extends Command {
   public boolean isFinished() {
     if(Math.abs(target - currDist) < 0.0125) {
       accuracyCounter++;
-      DataLogUtil.writeLog(false, "DriveStraight", "WithinTolerance", "Target Dist", target, "Actual Dist", currDist, "Counter", accuracyCounter);
+      DataLogUtil.writeMessage("DriveStraight: WithinTolerance, Target Dist = ", target, ", Actual Dist = ", currDist, ", Counter = ", accuracyCounter);
     } else {
       accuracyCounter = 0;
     }

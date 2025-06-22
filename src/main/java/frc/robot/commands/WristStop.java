@@ -15,7 +15,6 @@ public class WristStop extends Command {
   /**
    * Sets the percent output of the wrist to 0 and ends immediately.
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristStop(Wrist wrist) {
     this.wrist = wrist;
@@ -27,7 +26,7 @@ public class WristStop extends Command {
   @Override
   public void initialize() {
     wrist.stopWrist();
-    DataLogUtil.writeLog(false, "WristStop", "Init");
+    DataLogUtil.writeMessage("WristStop: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

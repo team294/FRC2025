@@ -19,7 +19,6 @@ public class WristSetPercent extends Command {
    * Sets the percent output of the coralEffector from Shuffleboard.
    * <b>NOTE: This command does not end. When interrupted, it turns off the wrist motor.
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristSetPercent(Wrist wrist) {
     this.wrist = wrist;
@@ -37,7 +36,6 @@ public class WristSetPercent extends Command {
    * <b>NOTE: This command does not end. When interrupted, it turns off the wrist motor.
    * @param percent -1.0 to 1.0 (positive = up, negative = down)
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristSetPercent(double percent, Wrist wrist) {
     
@@ -52,7 +50,7 @@ public class WristSetPercent extends Command {
   public void initialize() {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Wrist Goal Percent", 0);
     wrist.setWristPercentOutput(percent);
-    DataLogUtil.writeLog(false, "WristSetPercent", "Init", "Percent", percent);
+    DataLogUtil.writeMessage("WristSetPercent: Init, Percent = ", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

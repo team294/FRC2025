@@ -15,7 +15,6 @@ public class HopperStop extends Command {
   /**
    * Sets the percent output of the hopper to 0 and ends immediately.
    * @param hopper Hopper subsystem
-   * @param log FileLog utility
    */
   public HopperStop(Hopper hopper) {
     this.hopper = hopper;
@@ -27,8 +26,7 @@ public class HopperStop extends Command {
   @Override
   public void initialize() {
     hopper.setHopperPercentOutput(0);
-    DataLogUtil.writeLog(false, "HopperStop", "Init");
-    DataLogUtil.writeMessage("Hopper Stop: Init.");
+    DataLogUtil.writeMessage("Hopper Stop: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

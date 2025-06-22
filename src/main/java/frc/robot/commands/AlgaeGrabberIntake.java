@@ -16,7 +16,6 @@ public class AlgaeGrabberIntake extends Command {
   /**
    * Intake algae into the AlgaeGrabber by running the motor until an algae is detected.
    * @param algaeGrabber AlgaeGrabber subsystem
-   * @param log FileLog utility
    */
   public AlgaeGrabberIntake(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
@@ -30,8 +29,7 @@ public class AlgaeGrabberIntake extends Command {
     // If there is no algae present, run the motor
     if (!algaeGrabber.isAlgaePresent()) algaeGrabber.setAlgaeGrabberPercentOutput(AlgaeGrabberConstants.intakePercent);
 
-    DataLogUtil.writeLog(false, "AlgaeGrabberIntake", "Init",
-      "Algae Present", algaeGrabber.isAlgaePresent());
+    DataLogUtil.writeMessage(false, "AlgaeGrabberIntake: Init, Algae Present = ", algaeGrabber.isAlgaePresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

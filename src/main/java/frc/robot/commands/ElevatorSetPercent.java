@@ -20,7 +20,6 @@ public class ElevatorSetPercent extends Command {
    * Sets the percent output of the elevator and ends immediately.
    * @param percent -1.0 to 1.0 (positive = up, negative = down)
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
   public ElevatorSetPercent(double percent, boolean endImmediately, Elevator elevator) {
     this.percent = percent;
@@ -34,7 +33,6 @@ public class ElevatorSetPercent extends Command {
   /**
    * Sets the percent output of the elevator from Shuffleboard and ends immediately.
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
   public ElevatorSetPercent(boolean endImmediately, Elevator elevator) {
     this.endImmediately = endImmediately;
@@ -54,7 +52,7 @@ public class ElevatorSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Elevator Percent", 0.0);
     elevator.setElevatorPercentOutput(percent);
 
-    DataLogUtil.writeLog(false, "ElevatorSetPercent", "Init", "Percent", percent);
+    DataLogUtil.writeMessage("ElevatorSetPercent: Init, Percent = ", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

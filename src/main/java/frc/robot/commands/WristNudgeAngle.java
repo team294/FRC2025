@@ -19,7 +19,6 @@ public class WristNudgeAngle extends InstantCommand {
    * Adjusts the current calibration degrees of the wrist by a small amount.
    * @param deltaDegrees degrees to move (positive = down, negative = up)
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristNudgeAngle(double deltaDegrees, Wrist wrist) {
     this.deltaDegrees = deltaDegrees;
@@ -32,7 +31,6 @@ public class WristNudgeAngle extends InstantCommand {
   /**
    * Adjusts the current calibration degrees of the wrist by a small amount from Shuffleboard.
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristNudgeAngle(Wrist wrist) {
     this.wrist = wrist;
@@ -50,6 +48,6 @@ public class WristNudgeAngle extends InstantCommand {
   public void initialize() {
     if (fromShuffleboard) deltaDegrees = SmartDashboard.getNumber("Wrist Nudge Delta Degrees", 0);
     wrist.nudgeWristAngle(deltaDegrees);
-    DataLogUtil.writeLog(false, "WristNudgeAngle", "Init", "Delta", deltaDegrees);
+    DataLogUtil.writeMessage("WristNudgeAngle: Init, Delta = ", deltaDegrees);
   }
 }

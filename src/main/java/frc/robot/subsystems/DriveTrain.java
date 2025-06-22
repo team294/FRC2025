@@ -672,7 +672,7 @@ public class DriveTrain extends SubsystemBase implements Loggable {
       dLogBusVoltage.append(swerveFrontLeft.getDriveBusVoltage(), timeNow);
     }
 
-    DataLogUtil.writeLog(logWhenDisabled, "Drive", "Update Swerve Module Variables",
+    DataLogUtil.writeMessage("Drive: Update Swerve Module Variables",
       swerveFrontLeft.getLogString(),
       swerveFrontRight.getLogString(),
       swerveBackLeft.getLogString(),

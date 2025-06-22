@@ -18,7 +18,6 @@ public class HopperSetPercent extends Command {
   /**
    * Sets the percent output of the hopper from Shuffleboard and ends immediately.
    * @param hopper Hopper subsystem
-   * @param log FileLog utility
    */
   public HopperSetPercent(Hopper hopper) {
     this.hopper = hopper;
@@ -35,7 +34,6 @@ public class HopperSetPercent extends Command {
    * Sets the percent output of the hopper and ends immediately.
    * @param percent -1.0 to 1.0 (positive = intake, negative = reverse)
    * @param hopper Hopper subsystem
-   * @param log FileLog utility
    */  
   public HopperSetPercent(double percent, Hopper hopper) {
     this.hopper = hopper;

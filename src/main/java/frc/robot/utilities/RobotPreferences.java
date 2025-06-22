@@ -92,7 +92,7 @@ public class RobotPreferences {
   }
 
   /**
-   * Records in robotPreferences, fileLog, and Shuffleboard that a problem was found in a subsystem
+   * Records in robotPreferences, log, and Shuffleboard that a problem was found in a subsystem
    * (only records if the subsystem was not already flagged).
    * @param subsystem String name of subsystem in which a problem exists
    */
@@ -107,7 +107,7 @@ public class RobotPreferences {
       } else {
         problemSubsystem = StringUtil.buildString(problemSubsystem, ", ", subsystem);
       }
-      DataLogUtil.writeLogEcho(true, subsystem, "Sticky Faults Logged", "");
+      DataLogUtil.writeMessageEcho(subsystem, "Sticky Faults Logged", "");
     }
 
     saveStickyFaultsInPrefs(problemSubsystem, problemExists);
@@ -122,7 +122,7 @@ public class RobotPreferences {
     problemExists = false;
     saveStickyFaultsInPrefs(problemSubsystem, problemExists);
     showStickyFaultsOnShuffleboard();
-    DataLogUtil.writeLog(true, "StickyFaults", "Sticky Faults Cleared", "");
+    DataLogUtil.writeMessage("StickyFaults: Sticky Faults Cleared", "");
   }
 
   /**

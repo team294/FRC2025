@@ -17,7 +17,6 @@ public class VisionOdometryStateSet extends InstantCommand {
    * Turns on or off vision updates for odometry.
    * @param enabled true = uses vision for odometry, false = does not use vision for odometry   
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public VisionOdometryStateSet(boolean enabled, DriveTrain driveTrain) {
     this.enabled = enabled;
@@ -29,7 +28,7 @@ public class VisionOdometryStateSet extends InstantCommand {
   @Override
   public void initialize() {
     driveTrain.setVisionForOdometryState(enabled);
-    DataLogUtil.writeLog(true, "VisionOdometryStateSet", "Initialize", "Enabled", (enabled) ? "yes" : "no");
+    DataLogUtil.writeMessage("VisionOdometryStateSet: Init, Enabled = ", enabled);
   }
   
   // Returns true if the command should run when the robot is disabled.

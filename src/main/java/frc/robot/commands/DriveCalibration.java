@@ -27,7 +27,6 @@ public class DriveCalibration extends Command {
    * @param rampTime ramp up time, in seconds
    * @param rampRate ramp rate, in percent output per second 
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveCalibration(double angleFacing, double maxPercentOutput, double rampTime, double rampRate, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -51,7 +50,7 @@ public class DriveCalibration extends Command {
     driveTrain.setVisionForOdometryState(false);    // Only use wheel encoders to track the robot for this command
     driveTrain.enableFastLogging(true);
 
-    DataLogUtil.writeLog(false, "DriveCalibration", "Initialize", "maxPctOut", maxPercentOutput, "rampTime", endTime, "rampRate", rampRate);
+    DataLogUtil.writeMessage("DriveCalibration: Init, maxPctOut: ", maxPercentOutput, ", rampTime: ", endTime, ", rampRate: ", rampRate);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -78,7 +77,7 @@ public class DriveCalibration extends Command {
     timer.stop();
     SignalLogger.stop();
 
-    DataLogUtil.writeLog(false, "DriveCalibration", "End");
+    DataLogUtil.writeMessage("DriveCalibration: End");
   }
 
   // Returns true when the command should end.

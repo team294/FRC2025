@@ -24,7 +24,6 @@ public class ClimberSetAngle extends Command {
    * of the target. If the climber is uncalibrated, this does nothing and ends immediately.
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    * @param climber Climber subsystem
-   * @param log FileLog utility
    */
   public ClimberSetAngle(double angle, Climber climber) {
     this.climber = climber;
@@ -39,7 +38,6 @@ public class ClimberSetAngle extends Command {
    * of the target. If the climber is uncalibrated, this does nothing and ends immediately.
    * @param position target ClimberAngle angle, in degrees (see Constants.ClimberAngle)
    * @param climber Climber subsystem
-   * @param log FileLog utility
    */
   public ClimberSetAngle(ClimberAngle pos, Climber climber) {
     this.climber = climber;

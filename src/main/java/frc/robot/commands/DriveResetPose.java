@@ -35,7 +35,6 @@ public class DriveResetPose extends Command {
    * @param curAngleinDegrees robot angle on the field, in degrees (0 = facing away from the Blue drivestation, positive = to the left, negative = to the right)
    * @param tolerance true = do not reset if within 0.5m or 15 degrees of location, false = always reset
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
 	 */
   public DriveResetPose(double curXinMeters, double curYinMeters, double curAngleinDegrees, boolean tolerance, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -60,7 +59,6 @@ public class DriveResetPose extends Command {
    *  <p> Robot angle on the field (0 = facing away from the Blue drivestation, positive = to the left, negative = to the right)
    * @param tolerance true = do not reset if within 0.5m or 15 degrees of location, false = always reset
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
 	 */
   public DriveResetPose(Pose2d curPose, boolean tolerance, DriveTrain driveTrain) {
     this(curPose.getX(), curPose.getY(), curPose.getRotation().getDegrees(), tolerance,
@@ -74,7 +72,6 @@ public class DriveResetPose extends Command {
    * @param curAngleinDegrees robot angle on the field, in degrees (0 = facing away from the Blue drivestation)
    * @param tolerance true = do not reset if within 0.5m or 15 degrees of location, false = always reset
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
 	 */
   public DriveResetPose(double curAngleinDegrees, boolean tolerance, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -97,7 +94,6 @@ public class DriveResetPose extends Command {
    *  <p> Robot angle on the field (0 = facing away from the Blue drivestation, positive = to the left, negative = to the right)
    * @param tolerance true = do not reset if within 0.5m or 15 degrees of location, false = always reset
    * @param driveTrain DriveTrain subsytem
-   * @param log FileLog utility
 	 */
   public DriveResetPose(Supplier<Pose2d> curPose, boolean tolerance, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -115,7 +111,6 @@ public class DriveResetPose extends Command {
    * Resets the pose, gyro, and encoders on the driveRrain, gettnig values from Shuffleboard.
    * <p><b>NOTE:</b>  This command can run while the robot is disabled.
    * @param driveTrain DriveTrain subystem
-   * @param log FileLog utility
    */
   public DriveResetPose(DriveTrain driveTrain){
     this.driveTrain = driveTrain;
@@ -159,7 +154,7 @@ public class DriveResetPose extends Command {
       curY = driveTrain.getPose().getY();
     }
     
-    DataLogUtil.writeLog(true, "DriveResetPose", "Init", "X", curX, "Y", curY, "Angle", curAngle);
+    DataLogUtil.writeMessage("DriveResetPose: Init, x = ", curX, ", y = ", curY, ", angle = ", curAngle);
 
     if (!tolerance || Math.abs(curX - driveTrain.getPose().getX()) > 0.5
         || Math.abs(curY - driveTrain.getPose().getY()) > 0.5

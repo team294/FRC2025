@@ -27,10 +27,9 @@ public class AutoDriveToReef extends SequentialCommandGroup {
    * @param hopper Hopper subsystem
    * @param alliance AllianceSelection alliance 
    * @param cache TrajectoryCache cache
-   * @param log FileLog log
    */ /* 
   public AutoDriveToReef(ReefLevel level, TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
-        CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache, FileLog log) {
+        CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance, TrajectoryCache cache) {
     addCommands(
       new DataLogMessage(false, "AutoDriveToReefAndPrep", "Init", "trajectoryName", trajectoryName.toString()),
       parallel(

@@ -64,17 +64,16 @@ public class WristElevatorSafeMove extends Command {
   public void initialize() {
     if (!elevator.isElevatorCalibrated() || !wrist.isWristCalibrated()) {
       curState = MoveState.DONE_ERROR;
-      DataLogUtil.writeLog(false, "WristElevatorSafeMove", "Init", "Elev Calibrated", elevator.isElevatorCalibrated(),
-          "Wrist calibrated", wrist.isWristCalibrated(), "Position", destPosition.toString(), "Type", type.toString());
+      DataLogUtil.writeMessage("WristElevatorSafeMove: Init, Elev Calibrated = ", elevator.isElevatorCalibrated(),
+          ", Wrist Calibrated = ", wrist.isWristCalibrated(), ", Position = ", destPosition.toString(), ", Type = ", type.toString());
       return;
     }
 
     curRegion = ElevatorWristRegions.GetRegion(type, elevator.getElevatorPosition());
     destRegion = ElevatorWristRegions.GetRegion(type, destPosition.elevatorPosition);
 
-    DataLogUtil.writeLog(false, "WristElevatorSafeMove", "Init", "Calibrated", true, "Position", 
-      "Type", type, "Dest Position", destPosition, 
-      "Dest Region", destRegion, "Cur Region", (curRegion != null ? curRegion.regionIndex : ""));
+    DataLogUtil.writeMessage("WristElevatorSafeMove: Init, Calibrated = ", true, ", Type = ", type,
+    ", Dest Position = ", destPosition, ", Dest Region = ", destRegion, ", Cur Region = ", (curRegion != null ? curRegion.regionIndex : ""));
 
     double curWristAngle = wrist.getWristAngle();
     if (curWristAngle < curRegion.wristMin || curWristAngle > curRegion.wristMax) {
@@ -92,10 +91,10 @@ public class WristElevatorSafeMove extends Command {
     double curWristAngle = wrist.getWristAngle();
     double curElevPos = elevator.getElevatorPosition();
 
-    DataLogUtil.writeLog(false, "WristElevatorSafeMove", "Execute", "CurState", curState, 
-      "Wrist Target", wrist.getCurrentWristTarget(), "Wrist Angle", curWristAngle, 
-      "Elev Target", elevator.getCurrentElevatorTarget(), "Cur Elev Pos", curElevPos,
-      "Cur Region", (curRegion != null ? curRegion.regionIndex : ""));
+    DataLogUtil.writeMessage("WristElevatorSafeMove: Execute, CurState = ", curState, 
+      ", Wrist Target = ", wrist.getCurrentWristTarget(), ", Wrist Angle = ", curWristAngle, 
+      ", Elev Target = ", elevator.getCurrentElevatorTarget(), ", Cur Elev Pos = ", curElevPos,
+      ", Cur Region = ", (curRegion != null ? curRegion.regionIndex : ""));
 
     switch (curState) {
       case DONE:
@@ -138,7 +137,7 @@ public class WristElevatorSafeMove extends Command {
           // Get next region
           var optNextRegion = curRegion.getRegionBelow();
           if (optNextRegion.isEmpty()) {
-            DataLogUtil.writeLog(false, "WristElevatorSafeMove", "Execute MOVE_TO_NEXT_REGION_START", "Empty Region Below", curRegion.toString());
+            DataLogUtil.writeMessage("WristElevatorSafeMove: Execute MOVE_TO_NEXT_REGION_START, Empty Region Below", curRegion.toString());
             curState = MoveState.DONE_ERROR;
             return;
           }
@@ -152,7 +151,7 @@ public class WristElevatorSafeMove extends Command {
           // Get next region
           var optNextRegion = curRegion.getRegionAbove();
           if (optNextRegion.isEmpty()) {
-            DataLogUtil.writeLog(false, "WristElevatorSafeMove", "Execute MOVE_TO_NEXT_REGION_START", "Empty Region Above", curRegion.toString());
+            DataLogUtil.writeMessage("WristElevatorSafeMove: Execute MOVE_TO_NEXT_REGION_START, Empty Region Above", curRegion.toString());
             curState = MoveState.DONE_ERROR;
             return;
           }
@@ -261,7 +260,7 @@ public class WristElevatorSafeMove extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DataLogUtil.writeLog(false, "WristElevatorSafeMove", "End", "Interrupted", interrupted, "CurState", curState);
+    DataLogUtil.writeMessage("WristElevatorSafeMove: End, Interrupted = ", interrupted, ", CurState = ", curState);
 
     if (curState != MoveState.DONE) {
       // If there is an error (DONE_ERROR) of if this command is interrupted,

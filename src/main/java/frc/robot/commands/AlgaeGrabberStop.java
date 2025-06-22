@@ -15,7 +15,6 @@ public class AlgaeGrabberStop extends Command {
   /**
    * Sets the percent output of the algaeGrabber to 0 and ends immediately.
    * @param algaeGrabber AlgaeGrabber subsystem
-   * @param log FileLog utility
    */
   public AlgaeGrabberStop(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
@@ -27,7 +26,7 @@ public class AlgaeGrabberStop extends Command {
   @Override
   public void initialize() {
     algaeGrabber.setAlgaeGrabberPercentOutput(0);
-    DataLogUtil.writeLog(false, "AlgaeGrabberStop", "Init");
+    DataLogUtil.writeMessage("AlgaeGrabberStop: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

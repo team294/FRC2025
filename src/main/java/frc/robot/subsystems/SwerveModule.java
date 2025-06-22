@@ -96,7 +96,6 @@ public class SwerveModule {
    * @param cancoderReversed true = the CANcoder is reversed, false = not reversed
    * @param turningOffsetDegrees Offset degrees in the turning motor to point to the front of the robot. Value is the desired encoder zero point, in absolute magnet position reading.
    * @param kVm Drive motor kV multiplier to account for small differences between the 4 swerve modules on the robot. The drive motor kV = kVDriveAvg * kVm.
-   * @param log FileLog utility
    */
   public SwerveModule(String swName, int driveMotorAddress, int turningMotorAddress, int cancoderAddress,
       boolean driveMotorInverted, boolean turningMotorInverted, boolean cancoderReversed, double turningOffsetDegrees,
@@ -243,11 +242,11 @@ public class SwerveModule {
 
     // System.out.println(swName + " CanCoder " + getCanCoderDegrees() + " FX " + getTurningEncoderDegrees() + " pre-CAN");
     zeroDriveEncoder();
-    // DataLogUtil.writeLogEcho(true, "SwerveModule", swName+" pre-CAN", "Cancoder", getCanCoderDegrees(), "FX", getTurningEncoderDegrees());
+    // DataLogUtil.writeMessageEcho("SwerveModule ", swName + " pre-CAN", ", Cancoder: ", getCanCoderDegrees(), ", FX: ", getTurningEncoderDegrees());
     calibrateCanCoderDegrees(turningOffsetDegrees);
-    // DataLogUtil.writeLogEcho(true, "SwerveModule", swName+" post-CAN", "Cancoder", getCanCoderDegrees(), "FX", getTurningEncoderDegrees());
+    // DataLogUtil.writeMessageEcho(true, "SwerveModule ", swName + " post-CAN", ", Cancoder: ", getCanCoderDegrees(), ", FX: ", getTurningEncoderDegrees());
     calibrateTurningEncoderDegrees(getCanCoderDegrees());
-    // DataLogUtil.writeLogEcho(true, "SwerveModule", swName+" post-FX", "Cancoder", getCanCoderDegrees(), "FX", getTurningEncoderDegrees());
+    // DataLogUtil.writeMessageEcho(true, "SwerveModule ", swName + " post-FX", ", Cancoder: ", getCanCoderDegrees(), ", FX: ", getTurningEncoderDegrees());
   }
 
   /**
@@ -418,8 +417,8 @@ public class SwerveModule {
 	 */
   public void zeroDriveEncoder() {
     driveEncoderZero = getDriveEncoderRotations();
-    DataLogUtil.writeLogEcho(true, buildString("SwerveModule ", swName), "ZeroDriveEncoder", 
-      "driveEncoderZero", driveEncoderZero, "raw encoder", getDriveEncoderRotations(), "encoder meters", getDriveEncoderMeters());
+    DataLogUtil.writeMessageEcho(buildString("SwerveModule ", swName), ": ZeroDriveEncoder, driveEncoderZero = ", driveEncoderZero, 
+    ", raw encoder = ", getDriveEncoderRotations(), ", encoder meters =", getDriveEncoderMeters());
   }
 
   /**
@@ -465,8 +464,8 @@ public class SwerveModule {
    */
   public void calibrateTurningEncoderDegrees(double currentAngleDegrees) {
     turningEncoderZero = getTurningEncoderRaw() - (currentAngleDegrees / SwerveConstants.kTurningEncoderDegreesPerTick);
-    DataLogUtil.writeLogEcho(true, buildString("SwerveModule ", swName), "calibrateTurningEncoder", 
-      "turningEncoderZero", turningEncoderZero, "raw encoder", getTurningEncoderRaw(), "set degrees", currentAngleDegrees, "encoder degrees", getTurningEncoderDegrees());
+    DataLogUtil.writeMessageEcho(buildString("SwerveModule ", swName), ": calibrateTurningEncoder, turningEncoderZero = ", turningEncoderZero, 
+    ", raw encoder = ", getTurningEncoderRaw(), ", set degrees = ", currentAngleDegrees, ", encoder degrees = ", getTurningEncoderDegrees());
   }
 
   /**
@@ -506,8 +505,8 @@ public class SwerveModule {
     // System.out.println(swName + " " + turningOffsetDegrees);
     // turningCanCoder.configMagnetOffset(offsetDegrees, 100);
     cancoderZero = -offsetDegrees;
-    DataLogUtil.writeLogEcho(true, buildString("SwerveModule ", swName), "calibrateCanCoder", 
-      "cancoderZero", cancoderZero, "raw encoder", turningCanCoderPosition.refresh().getValueAsDouble() * 360.0, "encoder degrees", getCanCoderDegrees());
+    DataLogUtil.writeMessageEcho(buildString("SwerveModule ", swName), ": calibrateCanCoder, cancoderZero = ", cancoderZero, 
+    ", raw encoder = ", turningCanCoderPosition.refresh().getValueAsDouble() * 360.0, ", encoder degrees = ", getCanCoderDegrees());
   }
 
   /**

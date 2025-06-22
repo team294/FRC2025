@@ -22,7 +22,6 @@ public class ClimberCalibrationRamp extends Command {
    * @param rate rate to increase climber percent output, in percent (-1 down to +1 up) per second
    * @param maxPercent stop command when climber percent output (abs value) reaches this value (0 -> 1)
    * @param climber Climber subsystem
-   * @param log FileLog utility
    */
   public ClimberCalibrationRamp(double rate, double maxPercent, Climber climber) {
     this.climber = climber;
@@ -38,8 +37,7 @@ public class ClimberCalibrationRamp extends Command {
   public void initialize() {
     percent = 0.0;
     climber.enableFastLogging(true);
-    DataLogUtil.writeLog(false, "ClimberCalibrationRamp", "Init",
-      "rate", rate, "maxPercent", maxPercent);
+    DataLogUtil.writeMessage("ClimberCalibrationRamp: Init, rate = ", rate, ", max percent = ", maxPercent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,7 +53,7 @@ public class ClimberCalibrationRamp extends Command {
   public void end(boolean interrupted) {
     climber.stopClimber();
     climber.enableFastLogging(false);
-    DataLogUtil.writeLog(false, "ClimberCalibrationRamp", "End");
+    DataLogUtil.writeMessage("ClimberCalibrationRamp: End");
   }
 
   // Returns true when the command should end.

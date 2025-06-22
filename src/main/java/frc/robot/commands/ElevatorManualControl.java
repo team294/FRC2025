@@ -21,7 +21,6 @@ public class ElevatorManualControl extends Command {
    * Controls the elevator using the Xbox controller joysticks.
    * @param xboxController Xbox controller
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    * @param rightJoystick true = use right joystick, false = use left joystick
    */
   public ElevatorManualControl(CommandXboxController xboxController, Elevator elevator, boolean rightJoystick) {
@@ -35,7 +34,7 @@ public class ElevatorManualControl extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogUtil.writeLog(false, "ElevatorManualControl", "Init");
+    DataLogUtil.writeMessage("ElevatorManualControl: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,7 +47,7 @@ public class ElevatorManualControl extends Command {
     elevPercent *= ElevatorConstants.maxManualPercentOutput;
     elevator.setElevatorPercentOutput(elevPercent);
 
-    DataLogUtil.writeLog(false, "ElevatorManualControl", "Execute", "Xbox Joystick", elevPercent);
+    DataLogUtil.writeMessage("ElevatorManualControl: Execute, Xbox Joystick = ", elevPercent);
   }
 
   // Called once the command ends or is interrupted.
@@ -56,7 +55,7 @@ public class ElevatorManualControl extends Command {
   public void end(boolean interrupted) {
     elevator.stopElevatorMotors();
 
-    DataLogUtil.writeLog(false, "ElevatorManualControl", "End");
+    DataLogUtil.writeMessage("ElevatorManualControl: End");
   }
 
   // Returns true when the command should end.

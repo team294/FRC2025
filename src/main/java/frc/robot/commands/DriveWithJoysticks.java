@@ -36,7 +36,6 @@ public class DriveWithJoysticks extends Command {
    * @param rightJoystick right joystick, X-axis controls robot rotation
    * @param allianceSelection AllianceSelection utility
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveWithJoysticks(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -76,7 +75,7 @@ public class DriveWithJoysticks extends Command {
     turnRate = (Math.abs(turnRate) < OIConstants.joystickDeadband) ? 0 : scaleTurn(turnRate) * SwerveConstants.kMaxTurningRadiansPerSecond;
 
     if(DataLogUtil.isMyLogRotation(logRotationKey)) {
-      DataLogUtil.writeLog(false, "DriveWithJoysticksArcade", "Joystick", "Fwd", fwdVelocity, "Left", leftVelocity, "Turn", turnRate);
+      DataLogUtil.writeMessage("DriveWithJoysticksArcade: Joystick, Fwd = ", fwdVelocity, ", Left = ", leftVelocity, ", Turn = ", turnRate);
     }
 
     // double fwdRateChange = (fwdPercent - lastFwdPercent) / (curTime - lastTime);
