@@ -245,6 +245,7 @@ public class RobotContainer {
     // ex: xbA.onTrue(new command(param1, param2));
 
     // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
+    // ** When driving, make sure to wait for coral to be intook before starting algae pickup sequence or coral score sequence **
     xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector));
 
     // xbX, A, B, and Y will automatically drive to the reef and score coral, see right[1] in configureJoystickButtons()

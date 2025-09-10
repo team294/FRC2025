@@ -25,7 +25,6 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param hopper Hopper subsystem
    * @param coralEffector CoralEffector subsystem
-   * @param led LED subsystem
    */
   public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector) {
     addCommands(
