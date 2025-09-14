@@ -139,13 +139,14 @@ public class ElevatorProfileGenerator {
    */
 
   public void updateProfileCalcs() {
-    // The profile has not reached its target, so update the profile velocity and acceleration
+    long currentTime = System.currentTimeMillis();
+    measuredDt = ((double) (currentTime - lastTime)) / 1000.0;
+    lastTime = currentTime;
+    lastMPVelocity = currentMPVelocity;
+
     if (currentMPDistance < targetMPDistance) { 
+      // The profile has not reached its target, so update the profile velocity and acceleration
       // Do not continue calculating after the profile *should have* reached its target
-      long currentTime = System.currentTimeMillis();
-      measuredDt = ((double) (currentTime - lastTime)) / 1000.0;
-      lastTime = currentTime;
-      lastMPVelocity = currentMPVelocity;
 
       double stoppingDistance = 0.5 * currentMPVelocity * currentMPVelocity / stoppingAcceleration;
 
@@ -155,11 +156,6 @@ public class ElevatorProfileGenerator {
         // If the elevator is too close to the target, then it may need to decelerate faster than stoppingAcceleration.
         // If not, then just use stoppingAcceleration.
         currentMPAcceleration = Math.min(-stoppingAcceleration, -0.5 * currentMPVelocity * currentMPVelocity / (targetMPDistance - currentMPDistance));
-        
-        // Do not set the acceleration too negative, since that would cause velocity to switch direction later in these calculations
-        if (currentMPAcceleration < -currentMPVelocity / MPdt) {
-          currentMPAcceleration = -currentMPVelocity / MPdt;
-        }
       }
 
       // The profile has a target velocity less than the maximum, so accelerate
@@ -169,7 +165,7 @@ public class ElevatorProfileGenerator {
 
       // The profile has a target velocity at the maximum, so do not accelerate
       else {
-        currentMPAcceleration = 0;
+        currentMPAcceleration = 0.0;
       }
 
       // Calculate the target velocity, capped by the maximum
@@ -177,16 +173,22 @@ public class ElevatorProfileGenerator {
       if (currentMPVelocity > maxVelocity) {
         currentMPVelocity = maxVelocity;
       }
+      if (approachingTarget && currentMPVelocity<0.0) {
+        // Do not set the acceleration too negative, since that would cause velocity to switch direction later in these calculations
+        currentMPAcceleration = -lastMPVelocity / MPdt;
+        currentMPVelocity = 0.0;
+      }
 
-      // Calculate the distance the elevator should have traveled
+      // Calculate the distance the elevator should travel in the next interval
       currentMPDistance = currentMPDistance + (currentMPVelocity + lastMPVelocity) / 2.0 * MPdt;
-      if (currentMPDistance > targetMPDistance) {
+      if (currentMPDistance > targetMPDistance || (approachingTarget && currentMPVelocity==0.0) ) {
         currentMPDistance = targetMPDistance;
       }
 
     // The profile has reached its target, so do not change the theoretical distance and zero the profile velocity and acceleration
     } else {
       currentMPDistance = targetMPDistance;
+      lastMPVelocity = 0;
       currentMPVelocity = 0;
       currentMPAcceleration = 0;
     }
@@ -200,7 +202,7 @@ public class ElevatorProfileGenerator {
   public double trackProfilePeriodic() {
     if (!profileEnabled) return 0.0;
 
-    if (currentMPVelocity > 0 || Math.abs(percentPowerFB) > 0.08) {
+    if (currentMPVelocity > 0 || Math.abs(percentPowerFB) > 0.008) {
       updateElevatorProfileLog(false);
     }
 
