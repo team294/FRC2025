@@ -29,13 +29,14 @@ public class ElevatorProfileGenerator {
   private double currentMPAcceleration;                         // Acceleration that it should be at in the current motion profile
   private boolean approachingTarget = false;                    // true = close enough to target to be decelerating, false = not close enough
 
-  private double dt;  // delta T (time)
+  private double MPdt = 0.02;   // delta T (time) in seconds forecasted between future calls to updateProfileCalcs
+  private double measuredDt;    // delta T (time) in seconds measured between this call and the prior call to updateProfileCalcs
 
   private double directionSign; // +1 if finalPosition > initialPosition, -1 if not
 
   private long startTime, lastTime;
 
-  private double prevError, error, intError;
+  private double prevError, error, intError, prevMPVelocity;
 
   double percentPowerFF = 0;
   double percentPowerFB = 0;
@@ -54,6 +55,12 @@ public class ElevatorProfileGenerator {
   private double kPd = 0.05;       // In (pct-output)/(in)  4/18: was 0.10, now 0.08 to prevent elevator overshoots on short movements (like L1 to L2).   6/4:  Was 0.08, now 0.05 [maybe increase?] (turned off ramp rate limit)
   private double kId = 0;    
   private double kDd = 0.0;      // 2023 = 0.02
+
+  // Calcs for discrete timestep feedforward
+  private double Adu = Math.exp( -kVu/kAu * MPdt);
+  private double Bdu = kVu / (1 - Adu);
+  private double Add = Math.exp( -kVd/kAd * MPdt);
+  private double Bdd = kVd / (1 - Add);
 
   // Variables for DataLogging
   private final DataLog log = DataLogManager.getLog();
@@ -136,7 +143,7 @@ public class ElevatorProfileGenerator {
     if (currentMPDistance < targetMPDistance) { 
       // Do not continue calculating after the profile *should have* reached its target
       long currentTime = System.currentTimeMillis();
-      dt = ((double) (currentTime - lastTime)) / 1000.0;
+      measuredDt = ((double) (currentTime - lastTime)) / 1000.0;
       lastTime = currentTime;
 
       double stoppingDistance = 0.5 * currentMPVelocity * currentMPVelocity / stoppingAcceleration;
@@ -144,11 +151,14 @@ public class ElevatorProfileGenerator {
       // The profile *should be* close enough to the target to be decelerating, so update the acceleratioin
       if (currentMPVelocity >= 0 && (approachingTarget || (targetMPDistance - currentMPDistance) < stoppingDistance) ) {
         approachingTarget = true;
+        // If the elevator is too close to the target, then it may need to decelerate faster than stoppingAcceleration.
+        // If not, then just use stoppingAcceleration.
         currentMPAcceleration = -0.5 * currentMPVelocity * currentMPVelocity / (targetMPDistance - currentMPDistance);
+        currentMPAcceleration = Math.min(currentMPAcceleration, stoppingAcceleration);
         
         // Do not set the acceleration too negative, since that would cause velocity to switch direction later in these calculations
-        if (currentMPAcceleration < -currentMPVelocity / dt) {
-          currentMPAcceleration = -currentMPVelocity / dt;
+        if (currentMPAcceleration < -currentMPVelocity / MPdt) {
+          currentMPAcceleration = -currentMPVelocity / MPdt;
         }
       }
 
@@ -163,13 +173,13 @@ public class ElevatorProfileGenerator {
       }
 
       // Calculate the target velocity, capped by the maximum
-      currentMPVelocity = currentMPVelocity + currentMPAcceleration * dt;
+      currentMPVelocity = currentMPVelocity + currentMPAcceleration * MPdt;
       if (currentMPVelocity > maxVelocity) {
         currentMPVelocity = maxVelocity;
       }
 
       // Calculate the distance the elevator should have traveled
-      currentMPDistance = currentMPDistance + currentMPVelocity * dt;
+      currentMPDistance = currentMPDistance + currentMPVelocity * MPdt;
       if (currentMPDistance > targetMPDistance) {
         currentMPDistance = targetMPDistance;
       }
@@ -194,18 +204,21 @@ public class ElevatorProfileGenerator {
       updateElevatorProfileLog(false);
     }
 
+    prevMPVelocity = currentMPVelocity;
     error = getCurrentPosition() - elevator.getElevatorPosition();
-    intError = intError + error * dt;
     updateProfileCalcs();
+    intError = intError + error * measuredDt;
 
     // If the elevator is moving up, use the profile terms for moving up
     if (directionSign == 1) {
-      percentPowerFF = kFF + kSu * Math.signum(currentMPVelocity * directionSign) + kVu * currentMPVelocity * directionSign + kAu * currentMPAcceleration * directionSign;
+      // percentPowerFF = kFF + kSu * Math.signum(currentMPVelocity * directionSign) + kVu * currentMPVelocity * directionSign + kAu * currentMPAcceleration * directionSign;
+      percentPowerFF = kFF + kSu * Math.signum(currentMPVelocity * directionSign) + Bdu * directionSign * (currentMPVelocity - Adu * prevMPVelocity);
       percentPowerFB = kPu * error + ((error - prevError) * kDu) + (kIu * intError);
 
     // If the elevator is moving down, use the profile terms for moving down
     } else if (directionSign == -1) {
-      percentPowerFF = kFF + kSd * Math.signum(currentMPVelocity * directionSign) + kVd * currentMPVelocity * directionSign + kAd * currentMPAcceleration * directionSign;
+      // percentPowerFF = kFF + kSd * Math.signum(currentMPVelocity * directionSign) + kVd * currentMPVelocity * directionSign + kAd * currentMPAcceleration * directionSign;
+      percentPowerFF = kFF + kSd * Math.signum(currentMPVelocity * directionSign) + Bdd * directionSign * (currentMPVelocity - Add * prevMPVelocity);
       percentPowerFB = kPd * error + ((error - prevError) * kDd) + (kId * intError);
 
     // If the elevator target = the initial position (i.e. directionSign = 0), then just use feedback
@@ -231,7 +244,7 @@ public class ElevatorProfileGenerator {
       long timeNow = RobotController.getFPGATime();
       dLogTargetPos.append(finalPosition, timeNow);
       dLogTime.append(getTimeSinceProfileStart(), timeNow);
-      dLogDt.append(dt, timeNow);
+      dLogDt.append(measuredDt, timeNow);
       dLogMPPos.append(getCurrentPosition(), timeNow);
       dLogActualPos.append(elevator.getElevatorPosition(), timeNow);
       dLogMPVel.append(currentMPVelocity * directionSign, timeNow);
