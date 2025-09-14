@@ -213,13 +213,13 @@ public class ElevatorProfileGenerator {
     // If the elevator is moving up, use the profile terms for moving up
     if (directionSign == 1) {
       // percentPowerFF = kFF + kSu * Math.signum(currentMPVelocity * directionSign) + kVu * currentMPVelocity * directionSign + kAu * currentMPAcceleration * directionSign;
-      percentPowerFF = kFF + kSu * Math.signum(currentMPVelocity * directionSign) + Bdu * directionSign * (currentMPVelocity - Adu * lastMPVelocity);
+      percentPowerFF = kFF + kSu * Math.signum((currentMPVelocity+lastMPVelocity) * directionSign) + Bdu * directionSign * (currentMPVelocity - Adu * lastMPVelocity);
       percentPowerFB = kPu * error + ((error - prevError) * kDu) + (kIu * intError);
 
     // If the elevator is moving down, use the profile terms for moving down
     } else if (directionSign == -1) {
       // percentPowerFF = kFF + kSd * Math.signum(currentMPVelocity * directionSign) + kVd * currentMPVelocity * directionSign + kAd * currentMPAcceleration * directionSign;
-      percentPowerFF = kFF + kSd * Math.signum(currentMPVelocity * directionSign) + Bdd * directionSign * (currentMPVelocity - Add * lastMPVelocity);
+      percentPowerFF = kFF + kSd * Math.signum((currentMPVelocity+lastMPVelocity) * directionSign) + Bdd * directionSign * (currentMPVelocity - Add * lastMPVelocity);
       percentPowerFB = kPd * error + ((error - prevError) * kDd) + (kId * intError);
 
     // If the elevator target = the initial position (i.e. directionSign = 0), then just use feedback
