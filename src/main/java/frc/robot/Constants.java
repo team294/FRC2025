@@ -431,7 +431,7 @@ public final class Constants {
       CORAL_L2(22.56, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 22.06 to 22.56. 4/18 elevator increased from 22.56 to 23.31 to 23.56.  9/16 elevator decreased from 23.56 to 22.56 to account for decrease in distance from reef while scoring.
       CORAL_L3(38.03, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 37.28 to 37.78. 4/18 elevator increased from 37.78 to 38.03 to 38.53.  9/16 elevator decreased from 38.53 to 38.03 to account for decrease in distance from reef while scoring.
       CORAL_L4(71.0, 57.0),
-      CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
+      CORAL_L4_COPANEL(71.0, 57.0),  //stop  meas = 71, 28   CAD = 70.7, 30
 
       ALGAE_GROUND(5.8, -6.5),
       ALGAE_LOWER(22.55, 24.0), //elevator position was 22.3 inches, increased to 22.55 to prevent wheel rubbing against reef pole
