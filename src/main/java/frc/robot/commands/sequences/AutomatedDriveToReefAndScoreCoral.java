@@ -59,7 +59,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
               either(
                 parallel(
                   // Drive to nearest reef position
-                  new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+                  new DriveToReefWithOdometryForCoral(level, driveTrain, field, rightJoystick),
                   sequence(
                     deadline(
                       waitSeconds(0.4),
@@ -75,7 +75,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
                 sequence(
                   // Drive to nearest reef position
                   deadline(
-                    new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+                    new DriveToReefWithOdometryForCoral(level, driveTrain, field, rightJoystick),
                     sequence(
                       either(
                         sequence(
@@ -188,7 +188,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
         sequence(
           // Drive to specific reef location position
           deadline(
-            new DriveToReefWithOdometryForCoral(location, driveTrain, field), 
+            new DriveToReefWithOdometryForCoral(level, location, driveTrain, field), 
             // If the endeffector is in hold mode (Coral is safely in intake) then do nothing, otherwise intake the coral until the piece is present
             sequence(
               either(

@@ -206,6 +206,7 @@ public final class Constants {
     // This distance is the where the scoring prep sequence will take place for L1-L3,
     // along with is how far the robot should be located to score on L4.
     public static final double distanceFromReefToScore = Units.inchesToMeters(5.0); // was 0.25 meters, changed to be scoring location for L4. 7.25 at AVR, 6.25 at LAR, changed to be 5.0in on 9/16
+    public static final double distanceFromReefToScoreL4 = Units.inchesToMeters(7.25); // was 0.25 meters, changed to be scoring location for L4. 7.25 at AVR, 6.25 at LAR, changed to be 5.0in on 9/16
 
     // How far away from the scoring prep position we start to move the elevator to the set position
     public static final double distanceFromReefToElevate = 0.05; // Value very close to zero so it doesn't evelevate until the robot is stopped
