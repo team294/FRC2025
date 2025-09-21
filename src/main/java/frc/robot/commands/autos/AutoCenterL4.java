@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.CoordType;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.Constants.FieldConstants.ReefLevel;
 import frc.robot.Constants.RobotDimensions;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.CoralEffectorOuttake;
@@ -31,7 +32,6 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 import frc.robot.utilities.AllianceSelection;
 import frc.robot.utilities.Field;
-import frc.robot.utilities.DataLogUtil;
 
 
 public class AutoCenterL4 extends SequentialCommandGroup {
@@ -48,7 +48,7 @@ public class AutoCenterL4 extends SequentialCommandGroup {
       new DriveToPose(CoordType.kRelative, new Pose2d(Units.inchesToMeters(20), 0, Rotation2d.kZero), driveTrain),
 
       // Drive to reef
-      new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
+      new DriveToReefWithOdometryForCoral(ReefLevel.L4 ,driveTrain, field, rightJoystick),
       // new DriveToReefWithOdometryForCoral(driveTrain, field, rightJoystick),
 
       // Move elevator to L4
