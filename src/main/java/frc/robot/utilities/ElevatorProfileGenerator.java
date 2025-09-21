@@ -45,13 +45,13 @@ public class ElevatorProfileGenerator {
   private double kFF = 0.30 / ElevatorConstants.compensationVoltage;     // In pct-output.  Was 0.35
   private double kSu = 0.10 / ElevatorConstants.compensationVoltage;     // In pct-output
   private double kVu = 0.126 / ElevatorConstants.compensationVoltage;     // In (pct-output)/(in/s)
-  private double kAu = 0.004  / ElevatorConstants.compensationVoltage;      // In (pct-output)/(in/s^2)    4/18:  Was 0, now 0.008.   6/4:  Was 0.008, now 0.004 (turned off ramp rate limit)
+  private double kAu = 0.003  / ElevatorConstants.compensationVoltage;      // In (pct-output)/(in/s^2)    4/18:  Was 0, now 0.008.   9/21:  Was 0.008, now 0.003 (turned off ramp rate limit)
   private double kPu = 0.05;        // In (pct-output)/(in)  4/18: was 0.10, now 0.08 to prevent elevator overshoots on short movements (like L1 to L2).  6/4:  Was 0.08, now 0.05 [maybe increase?] (turned off ramp rate limit)
   private double kIu = 0;    
   private double kDu = 0.0;      // 2023 = 0.02
   private double kSd = 0.10 / ElevatorConstants.compensationVoltage;     // In pct-output
   private double kVd = 0.126 / ElevatorConstants.compensationVoltage;     // In (pct-output)/(in/s)
-  private double kAd = 0.004  / ElevatorConstants.compensationVoltage;      // In (pct-output)/(in/s^2)     4/18:  Was 0, now 0.008.  6/4:  Was 0.008, now 0.004 (turned off ramp rate limit)
+  private double kAd = 0.003  / ElevatorConstants.compensationVoltage;      // In (pct-output)/(in/s^2)     4/18:  Was 0, now 0.008.  9/21:  Was 0.008, now 0.003 (turned off ramp rate limit)
   private double kPd = 0.05;       // In (pct-output)/(in)  4/18: was 0.10, now 0.08 to prevent elevator overshoots on short movements (like L1 to L2).   6/4:  Was 0.08, now 0.05 [maybe increase?] (turned off ramp rate limit)
   private double kId = 0;    
   private double kDd = 0.0;      // 2023 = 0.02
