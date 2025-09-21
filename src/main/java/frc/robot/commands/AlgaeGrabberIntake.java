@@ -16,7 +16,6 @@ public class AlgaeGrabberIntake extends Command {
   /**
    * Intake algae into the AlgaeGrabber by running the motor until an algae is detected.
    * @param algaeGrabber AlgaeGrabber subsystem
-   * @param log FileLog utility
    */
   public AlgaeGrabberIntake(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;

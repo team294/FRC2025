@@ -36,23 +36,24 @@ public class AutoSelection {
 	public enum RoutineSelectionOption {
 		NONE("None", -1),
 
-		DriveForwardOneMeter("DriveForwardOneMeter", 10),
-		BargeToE("BargeToE", 107), // TODO remove test autos
+		DriveForwardOneMeter("DriveForwardOneMeter", 1),
+		// BargeToE("BargeToE", 107), // TODO remove test autos
 
-		Rel4mRotate180("Relative4m-180", 101),
-		RelArcLeft("RelativeArcLeft", 102),
-		RelStraight4m("RelativeStraight4m", 103),
-		RelCirclePath("RelativeCirclePath", 104),
-		RelRotate180("RelativeRotate180", 105),
-		AbsDiagonalTest("AbsoluteDiagonalTest", 106),
+		// Rel4mRotate180("Relative4m-180", 101),
+		// RelArcLeft("RelativeArcLeft", 102),
+		// RelStraight4m("RelativeStraight4m", 103),
+		// RelCirclePath("RelativeCirclePath", 104),
+		// RelRotate180("RelativeRotate180", 105),
+		// AbsDiagonalTest("AbsoluteDiagonalTest", 106),
 
-		DriveForwardTwoMeters("DriveForwardTwoMeters", 1),
+		DriveForwardTwoMeters("DriveForwardTwoMeters", 2),
 
-		BargeRight_EDC("BargeRight_EDC", 2),
-		BargeLeft_JKL("BargeLeft_JKL", 3),
+		BargeRight_EDC("BargeRight_EDC", 3),
+		BargeLeft_JKL("BargeLeft_JKL", 4),
 
-		CenterOneCoralTwoAlgae("CenterOneCoralTwoAlgae", 4),
-		CenterOneCoralOneAlgae("CenterOneCoralOneAlgae", 5), 
+		BargeCenter_H_GH_ScoreIJ("BargeCenter_H_GH_ScoreIJ", 5),
+		BargeCenter_H_GH_IntakeIJ("BargeCenter_H_GH_IntakeIJ", 6),
+		BargeCenter_H_GH("BargeCenter_H_GH", 7), 
 
 		// BargeRight_ED_AlgaeCD("BargeRight_ED_AlgaeCD", 4),
 		// BargeLeft_JK_AlgaeKL("BargeLeft_JK_AlgaeKL", 5),
@@ -60,11 +61,11 @@ public class AutoSelection {
 		// PushFriend_JK("PushFriend_JK", 5),
 		// PushFriend_JK_AlgaeKL("PushFriend_JK_AlgaeKL", 6),
 		
-		AutoCenterL1("AutoCenterL1", 7),
-		AutoCenterL4("AutoCenterL4", 8),
+		AutoCenterL1("AutoCenterL1", 8),
+		AutoCenterL4("AutoCenterL4", 9);
 		
-		BargeRight_EDC_L2("BargeRight_EDC_L2", 9),
-		BargeLeft_JKL_L2("BargeLeft_JKL_L2", 11);
+		// BargeRight_EDC_L2("BargeRight_EDC_L2", 9),
+		// BargeLeft_JKL_L2("BargeLeft_JKL_L2", 11);
 
 
 		@SuppressWarnings({ "MemberName", "PMD.SingularField" })
@@ -272,19 +273,19 @@ public class AutoSelection {
 			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
 		}
 
-		else if (autoPlan == RoutineSelectionOption.BargeRight_EDC_L2.value) {
-			autoSelectionOption = RoutineSelectionOption.BargeRight_EDC_L2;
-			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
-			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L2, ReefLevel.L4, ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
-		}
+		// else if (autoPlan == RoutineSelectionOption.BargeRight_EDC_L2.value) {
+		// 	autoSelectionOption = RoutineSelectionOption.BargeRight_EDC_L2;
+		// 	List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.E, ReefLocation.D, ReefLocation.C));
+		// 	List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L2, ReefLevel.L4, ReefLevel.L4));
+		// 	autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
+		// }
 
-		else if (autoPlan == RoutineSelectionOption.BargeLeft_JKL_L2.value) {
-			autoSelectionOption = RoutineSelectionOption.BargeLeft_JKL_L2;
-			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K, ReefLocation.L));
-			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L2, ReefLevel.L4, ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
-		}
+		// else if (autoPlan == RoutineSelectionOption.BargeLeft_JKL_L2.value) {
+		// 	autoSelectionOption = RoutineSelectionOption.BargeLeft_JKL_L2;
+		// 	List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.J, ReefLocation.K, ReefLocation.L));
+		// 	List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L2, ReefLevel.L4, ReefLevel.L4));
+		// 	autonomousCommandMain = new AutoCoralCycleLoop(reefLocations, reefLevels, false, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field);
+		// }
 
 		// else if (autoPlan == RoutineSelectionOption.BargeRight_ED_AlgaeCD.value) {
 		// 	autoSelectionOption = RoutineSelectionOption.BargeRight_ED_AlgaeCD;
@@ -300,18 +301,25 @@ public class AutoSelection {
 		// 	autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, led, rightJoystick, allianceSelection, field);
 		// }
 
-		else if (autoPlan == RoutineSelectionOption.CenterOneCoralTwoAlgae.value) {
-			autoSelectionOption = RoutineSelectionOption.CenterOneCoralTwoAlgae;
+		else if (autoPlan == RoutineSelectionOption.BargeCenter_H_GH_ScoreIJ.value) {
+			autoSelectionOption = RoutineSelectionOption.BargeCenter_H_GH_ScoreIJ;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.H));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field, trajectoryCache);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, true, true, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field, trajectoryCache);
 		}
 
-		else if (autoPlan == RoutineSelectionOption.CenterOneCoralOneAlgae.value) {
-			autoSelectionOption = RoutineSelectionOption.CenterOneCoralOneAlgae;
+		else if (autoPlan == RoutineSelectionOption.BargeCenter_H_GH_IntakeIJ.value) {
+			autoSelectionOption = RoutineSelectionOption.BargeCenter_H_GH_IntakeIJ;
 			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.H));
 			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4));
-			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field, trajectoryCache);
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, true, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field, trajectoryCache);
+		}
+
+		else if (autoPlan == RoutineSelectionOption.BargeCenter_H_GH.value) {
+			autoSelectionOption = RoutineSelectionOption.BargeCenter_H_GH;
+			List<ReefLocation> reefLocations = new ArrayList<>(Arrays.asList(ReefLocation.H));
+			List<ReefLevel> reefLevels = new ArrayList<>(Arrays.asList(ReefLevel.L4));
+			autonomousCommandMain = new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, false, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, allianceSelection, field, trajectoryCache);
 		}
 
 		else if (autoPlan == RoutineSelectionOption.AutoCenterL1.value) {
@@ -324,43 +332,43 @@ public class AutoSelection {
 			autonomousCommandMain = new AutoCenterL4(driveTrain, elevator, wrist, coralEffector, algaeGrabber, field, rightJoystick, allianceSelection);
 		}
 
-		else if (autoPlan == RoutineSelectionOption.Rel4mRotate180.value) {
-			autoSelectionOption = RoutineSelectionOption.Rel4mRotate180;
-			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.Relative4mRotate180), driveTrain, allianceSelection);
-		}
+		// else if (autoPlan == RoutineSelectionOption.Rel4mRotate180.value) {
+		// 	autoSelectionOption = RoutineSelectionOption.Rel4mRotate180;
+		// 	autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.Relative4mRotate180), driveTrain, allianceSelection);
+		// }
 
-		else if (autoPlan == RoutineSelectionOption.RelArcLeft.value) {
-			autoSelectionOption = RoutineSelectionOption.RelArcLeft;
-			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeArcLeft), driveTrain, allianceSelection);
-		}
+		// else if (autoPlan == RoutineSelectionOption.RelArcLeft.value) {
+		// 	autoSelectionOption = RoutineSelectionOption.RelArcLeft;
+		// 	autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeArcLeft), driveTrain, allianceSelection);
+		// }
 
-		else if (autoPlan == RoutineSelectionOption.RelStraight4m.value) {
-			autoSelectionOption = RoutineSelectionOption.RelStraight4m;
-			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeStraight4m), driveTrain, allianceSelection);
-		}
+		// else if (autoPlan == RoutineSelectionOption.RelStraight4m.value) {
+		// 	autoSelectionOption = RoutineSelectionOption.RelStraight4m;
+		// 	autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeStraight4m), driveTrain, allianceSelection);
+		// }
 
-		else if (autoPlan == RoutineSelectionOption.RelCirclePath.value) {
-			autoSelectionOption = RoutineSelectionOption.RelCirclePath;
-			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeCirclePath), driveTrain, allianceSelection);
-		}
+		// else if (autoPlan == RoutineSelectionOption.RelCirclePath.value) {
+		// 	autoSelectionOption = RoutineSelectionOption.RelCirclePath;
+		// 	autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeCirclePath), driveTrain, allianceSelection);
+		// }
 
-		else if (autoPlan == RoutineSelectionOption.RelRotate180.value) {
-			autoSelectionOption = RoutineSelectionOption.RelRotate180;
-			autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeRotate180), driveTrain, allianceSelection);
-		}
+		// else if (autoPlan == RoutineSelectionOption.RelRotate180.value) {
+		// 	autoSelectionOption = RoutineSelectionOption.RelRotate180;
+		// 	autonomousCommandMain = new DriveTrajectory(CoordType.kRelative, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.RelativeRotate180), driveTrain, allianceSelection);
+		// }
 
-		else if (autoPlan == RoutineSelectionOption.AbsDiagonalTest.value) {
-			autoSelectionOption = RoutineSelectionOption.AbsDiagonalTest;
-			autonomousCommandMain = new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.AbsoluteDiagonalTest), driveTrain, allianceSelection);
-		}
+		// else if (autoPlan == RoutineSelectionOption.AbsDiagonalTest.value) {
+		// 	autoSelectionOption = RoutineSelectionOption.AbsDiagonalTest;
+		// 	autonomousCommandMain = new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.AbsoluteDiagonalTest), driveTrain, allianceSelection);
+		// }
 
-		else if (autoPlan == RoutineSelectionOption.BargeToE.value) { // test trajectory
-			autoSelectionOption = RoutineSelectionOption.BargeToE;
-			autonomousCommandMain = new SequentialCommandGroup(
-										new DriveResetPose(trajectoryCache.getTrajectory(TrajectoryName.BargeRightToE).getInitialPose(allianceSelection.getAlliance() == Alliance.Red).get(), true, driveTrain),
-										new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.BargeRightToE), driveTrain, allianceSelection)
-									);
-		}
+		// else if (autoPlan == RoutineSelectionOption.BargeToE.value) { // test trajectory
+		// 	autoSelectionOption = RoutineSelectionOption.BargeToE;
+		// 	autonomousCommandMain = new SequentialCommandGroup(
+		// 								new DriveResetPose(trajectoryCache.getTrajectory(TrajectoryName.BargeRightToE).getInitialPose(allianceSelection.getAlliance() == Alliance.Red).get(), true, driveTrain),
+		// 								new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, trajectoryCache.getTrajectory(TrajectoryName.BargeRightToE), driveTrain, allianceSelection)
+		// 							);
+		// }
 
 		else {
 			autoSelectionOption = RoutineSelectionOption.NONE;

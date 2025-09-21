@@ -15,6 +15,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.*;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.*;
@@ -33,6 +34,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param reefLevels list of ReefLevel to score on, in order
    * @param scoreFirstAlgae true = score the algae picked up, false = only pick up algae
    * @param grabSecondAlgae true = drive to IJ algae and pick it up (made for only center auto), false = end after scoring one. Can only be true if scoreFirstAlgae is true
+   * @param scoreSecondAlgae true = move elevator up, score algae from behind the start line, move elevator down, false = skip the aforementioned sequence. Can only be true if scoreFirstAlgae is true
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
@@ -44,7 +46,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
-  public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreFirstAlgae, boolean grabSecondAlgae, DriveTrain driveTrain, Elevator elevator, 
+  public AutoCoralCycleLoopThenAlgae(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean scoreFirstAlgae, boolean grabSecondAlgae, boolean scoreSecondAlgae, DriveTrain driveTrain, Elevator elevator, 
       Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Climber climber, Joystick rightJoystick, AllianceSelection alliance, Field field, TrajectoryCache cache) {
     
     addCommands(
@@ -100,8 +102,21 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
                 new AutomatedDriveToReefAndIntakeAlgae(AlgaeLocation.IJ, driveTrain, elevator, wrist, algaeGrabber, field).until(() -> algaeGrabber.isAlgaePresent()),
                 
                 // Drive towards barge from IJ position and stop before start line
-                new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.EndCenterAuto), driveTrain, alliance)
-                
+                new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(TrajectoryName.EndCenterAuto), driveTrain, alliance),
+
+
+                // Scoring, if the boolean to do so is true
+                either(
+                  sequence(
+                    new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
+                    new AlgaeGrabberSetPercent(-0.6, algaeGrabber), // TODO verify that this outtake speed is ok
+                    new WaitCommand(0.4), // Changing back to wait time because the algae might not be completely out of the grabber the second the bump switch is no longer activated
+                    new AlgaeGrabberStop(algaeGrabber),
+                    new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist)
+                  ),
+                  none(),
+                  () -> scoreSecondAlgae
+                )
 
                 // Drive to barge, move elevator up, score, move elevator down.
                 // deadline(
