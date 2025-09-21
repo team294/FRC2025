@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.Constants.*;
+import frc.robot.Constants.FieldConstants.ReefLevel;
 import frc.robot.Constants.FieldConstants.ReefLocation;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -30,11 +31,14 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
    * (Robot on left position, joystick pushed right -> robot moves to the right position)
    * 
    * <p>The sequence ends when robot reaches final position (all jogs need to occur before getting to final position).
+   * @param level Reef level (1, 2, 3, 4)
    * @param driveTrain DriveTrain subsystem
    * @param field Field utility
    * @param rightJoystick Right joystick
    */
-  public DriveToReefWithOdometryForCoral(DriveTrain driveTrain, Field field, Joystick rightJoystick) {
+  public DriveToReefWithOdometryForCoral(ReefLevel level, DriveTrain driveTrain, Field field, Joystick rightJoystick) {
+    final double distance = (level == ReefLevel.L4) ? DriveConstants.distanceFromReefToScoreL4 : DriveConstants.distanceFromReefToScore;
+    
     addCommands(
       new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
       
@@ -48,8 +52,8 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
 
             //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus a constant
             new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
-                     new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)))), 
-                     0.02, 1, driveTrain)
+                new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)))), 
+                0.02, 1, driveTrain)
           )
       ),
 
@@ -58,14 +62,14 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
         sequence(
           //Drives to nearest left scoring position (offset off the wall half the robot's width plus a constant)
           new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
-                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)), true)), 
+                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)), true)), 
                         0.02, 1, driveTrain)
         ),
         either(
           sequence(
             //Drives to nearest right scoring position (offset off the wall half the robot's width a constant)
             new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
-                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)), false)), 
+                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)), false)), 
                         0.02, 1, driveTrain) 
           ),
           sequence(
@@ -88,17 +92,20 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
   /**
    * For autonomous only
    * Drives to reef with odometry to the given reef position to the reef
+   * @param level Reef level (1, 2, 3, 4)
    * @param location specific reef location to drive to 
    * @param driveTrain DriveTrain subsystem
    * @param field Field utility
    */
-  public DriveToReefWithOdometryForCoral(ReefLocation location, DriveTrain driveTrain, Field field) {
+  public DriveToReefWithOdometryForCoral(ReefLevel level, ReefLocation location, DriveTrain driveTrain, Field field) {
+    final double distance = (level == ReefLevel.L4) ? DriveConstants.distanceFromReefToScoreL4 : DriveConstants.distanceFromReefToScore;
+    
     addCommands(
       new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
 
       //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus a constant
       new DriveToPose(CoordType.kAbsolute, () -> (field.getReefScoringPositionWithOffset(location, 
-                new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)))), 
+                new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)))), 
                 0.02, 1, driveTrain),
         
       new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "End")
