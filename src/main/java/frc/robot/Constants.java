@@ -491,7 +491,7 @@ public final class Constants {
       DEFAULT(68.0),
       START_CONFIG(90.0),
       CLIMB_START(0.0),
-      CLIMB_END(157.0);   // 9/27/25 changed climb angle from 152 to 157, 4/18 Changed climb angle from 155 to 152
+      CLIMB_END(153.0);   // 9/27/25 changed climb angle from 152 to 157, 4/18 Changed climb angle from 155 to 152
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
