@@ -607,15 +607,15 @@ public class RobotContainer {
    * Method called once every scheduler cycle when teleop mode is initialized/enabled.
    */
   public void teleopPeriodic() {
-    // if between last 20 seconds and last 15 seconds (teleop is 120s),
+    // if between last 20 seconds and last 15 seconds (match is 135s),
     // and controller hasn't started rumbling, make the controller rumble
-    if ((matchTimer.get() >= 100 && matchTimer.get() < 105) && !rumbled) {
+    if ((matchTimer.get() >= 115 && matchTimer.get() < 120) && !rumbled) {
       xboxController.setRumble(RumbleType.kBothRumble, .5);
       rumbled = true;
     }
     // if after last 15 seconds (have rumbled for 5), and controller
     // hasn't stopped rumbling, make the controller stop rumbling 
-    else if (matchTimer.get() >= 105 && rumbled) {
+    else if (matchTimer.get() >= 120 && rumbled) {
       xboxController.setRumble(RumbleType.kBothRumble, 0);
       rumbled = false;
     }
