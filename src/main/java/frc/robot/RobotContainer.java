@@ -12,6 +12,7 @@ import choreo.util.ChoreoAllianceFlipUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -59,6 +60,7 @@ public class RobotContainer {
   private final Joystick rightJoystick = new Joystick(OIConstants.usbRightJoystick);
   private final Joystick coPanel = new Joystick(OIConstants.usbCoPanel);
   private final CommandXboxController xboxController = new CommandXboxController(OIConstants.usbXboxController);
+  private boolean rumbled = false;
 
   // Define other utilities
   private final TrajectoryCache trajectoryCache = new TrajectoryCache();
@@ -605,5 +607,17 @@ public class RobotContainer {
    * Method called once every scheduler cycle when teleop mode is initialized/enabled.
    */
   public void teleopPeriodic() {
+    // if between last 20 seconds and last 15 seconds (teleop is 120s),
+    // and controller hasn't started rumbling, make the controller rumble
+    if ((matchTimer.get() >= 100 && matchTimer.get() < 105) && !rumbled) {
+      xboxController.setRumble(RumbleType.kBothRumble, .5);
+      rumbled = true;
+    }
+    // if after last 15 seconds (have rumbled for 5), and controller
+    // hasn't stopped rumbling, make the controller stop rumbling 
+    else if (matchTimer.get() >= 105 && rumbled) {
+      xboxController.setRumble(RumbleType.kBothRumble, 0);
+      rumbled = false;
+    }
   }
 }
