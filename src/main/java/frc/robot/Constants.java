@@ -435,7 +435,7 @@ public final class Constants {
       CORAL_L4_COPANEL(71.0, 57.0),  //stop  meas = 71, 28   CAD = 70.7, 30
 
       ALGAE_GROUND(5.8, -6.5),
-      ALGAE_LOWER(22.55, 24.0), //elevator position was 22.3 inches, increased to 22.55 to prevent wheel rubbing against reef pole
+      ALGAE_LOWER(22.05, 24.0), //elevator position was 22.3 inches, increased to 22.55 to prevent wheel rubbing against reef pole, 9/28/25 Chezy - decreased to 22.05 (from 22.55) as it looked a little high
       ALGAE_UPPER(38.0, 24.0),
       ALGAE_LOLLIPOP(12.0, 10.0),
 
