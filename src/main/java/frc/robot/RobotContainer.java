@@ -203,6 +203,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("AutomatedDriveToReefAndIntakeAlgae", new AutomatedDriveToReefAndIntakeAlgae(driveTrain, elevator, wrist, algaeGrabber, field));
     SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
+    SmartDashboard.putData("Climber Lift Sequence", new ClimberLiftSequence(climber));
 
     // Stop All Motors
     SmartDashboard.putData("Stop All Motors", parallel(
