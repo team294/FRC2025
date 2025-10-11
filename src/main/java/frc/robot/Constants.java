@@ -354,7 +354,7 @@ public final class Constants {
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.4;             // CALIBRATED 3/29
-    public static final double netOuttakePercent = -0.23;       // CALIBRATED 4/12.  4/18:  Was -0.35, now -0.20.  C2 increased to 0.23
+    public static final double netOuttakePercent = -0.27;       // CALIBRATED 4/12.  4/18:  Was -0.35, now -0.20.  C2 increased to 0.23, 9/27/25 increased to 0.27 (chezy champs)
     public static final double processorOuttakePercent = -0.18; // CALIBRATED 3/29.  Updated 4/16 from -0.15 to -0.18
   }
 
@@ -435,7 +435,7 @@ public final class Constants {
       CORAL_L4_COPANEL(71.0, 57.0),  //stop  meas = 71, 28   CAD = 70.7, 30
 
       ALGAE_GROUND(5.8, -6.5),
-      ALGAE_LOWER(22.55, 24.0), //elevator position was 22.3 inches, increased to 22.55 to prevent wheel rubbing against reef pole
+      ALGAE_LOWER(22.05, 24.0), //elevator position was 22.3 inches, increased to 22.55 to prevent wheel rubbing against reef pole, 9/28/25 Chezy - decreased to 22.05 (from 22.55) as it looked a little high
       ALGAE_UPPER(38.0, 24.0),
       ALGAE_LOLLIPOP(12.0, 10.0),
 
@@ -491,7 +491,7 @@ public final class Constants {
       DEFAULT(68.0),
       START_CONFIG(90.0),
       CLIMB_START(0.0),
-      CLIMB_END(152.0);   // 4/18 Changed climb angle from 155 to 152
+      CLIMB_END(153.0);   // 9/27/25 changed climb angle from 152 to 157, 4/18 Changed climb angle from 155 to 152
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;
