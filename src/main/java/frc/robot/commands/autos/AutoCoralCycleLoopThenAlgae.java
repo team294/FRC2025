@@ -109,7 +109,7 @@ public class AutoCoralCycleLoopThenAlgae extends SequentialCommandGroup {
                 either(
                   sequence(
                     new WristElevatorSafeMove(ElevatorWristPosition.ALGAE_NET, RegionType.STANDARD, elevator, wrist),
-                    new AlgaeGrabberSetPercent(-0.4, algaeGrabber), // TODO verify that this outtake speed is ok, 9/26/25 Chezy updated from -.6 to -.4
+                    new AlgaeGrabberSetPercent(-0.43, algaeGrabber), // TODO verify that this outtake speed is ok, 9/26/25 Chezy updated from -.6 to -.4, socal practice 2 updated from -.4 to -.43
                     new WaitCommand(0.4), // Changing back to wait time because the algae might not be completely out of the grabber the second the bump switch is no longer activated
                     new AlgaeGrabberStop(algaeGrabber),
                     new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist)
