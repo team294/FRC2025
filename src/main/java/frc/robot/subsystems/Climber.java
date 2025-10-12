@@ -13,7 +13,12 @@ import com.ctre.phoenix6.signals.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.*;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -79,6 +84,23 @@ public class Climber extends SubsystemBase implements Loggable {
   private boolean isInCoastMode = false;
 
   private ServoPosition servoPosition = ServoPosition.UNKNOWN;
+
+  // Variables for DataLogging
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogTemp = new DoubleLogEntry(log, "/Climber/Temp");
+  private final DoubleLogEntry dLogPctOut = new DoubleLogEntry(log, "/Climber/PctOut");
+  private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/Climber/Current");
+  // private final DoubleLogEntry dLogVolt = new DoubleLogEntry(log, "/Climber/VoltOut");
+  private final DoubleLogEntry dLogBusVolt = new DoubleLogEntry(log, "/Climber/BusVolt");
+  private final DoubleLogEntry dLogCancoderRaw = new DoubleLogEntry(log, "/Climber/CancoderRaw");
+  // private final DoubleLogEntry dLogEncRaw = new DoubleLogEntry(log, "/Climber/EncRaw");
+  private final DoubleLogEntry dLogCalZero = new DoubleLogEntry(log, "/Climber/CalZero");
+  private final DoubleLogEntry dLogTargetAngle = new DoubleLogEntry(log, "/Climber/TargetAngle");
+  // private final DoubleLogEntry dLogEncAngle = new DoubleLogEntry(log, "/Climber/EngAngle");
+  private final DoubleLogEntry dLogCurAngle = new DoubleLogEntry(log, "/Climber/CurrentAngle");
+  private final DoubleLogEntry dLogVel = new DoubleLogEntry(log, "/Climber/VelocityDPS");
+  private final DoubleLogEntry dLogAccel = new DoubleLogEntry(log, "/Climber/AccelDPS2");
+  private final BooleanLogEntry dLogCancoderConnected = new BooleanLogEntry(log, "/Climber/CancoderConnected");
 
   public Climber(String subsystemName) {
     
@@ -257,7 +279,7 @@ public class Climber extends SubsystemBase implements Loggable {
     stopClimber();
 
     // Prime the DataLog to reduce delay when first enabling the robot
-    updateClimberLog();
+    updateClimberLog(true);
   }
 
   /**
@@ -554,23 +576,26 @@ public class Climber extends SubsystemBase implements Loggable {
 
   /**
    * Writes information about the climber to the file log.
+   * @param logWhenDisabled true = log when enabled or disabled, false = only log when enabled
    */
-  public void updateClimberLog() {
-    DataLogUtil.writeMessage(subsystemName, ": Update Variables, Climber Temp = ", climberTemp.refresh().getValueAsDouble(),
-      ", Climber PctOut = ", getClimberMotorPercentOutput(),
-      ", Climber Current (Amps) = ", climberStatorCurrent.refresh().getValueAsDouble(),
-      ", Climber Voltage = ", climberVoltage.refresh().getValueAsDouble(),
-      ", Battery Voltage = ", climberSupplyVoltage.refresh().getValueAsDouble(),
-      ", Cancoder Rot Raw = ", getCANcoderRotationsRaw(),
-      ", Enc Rot Raw = ", getClimberEncoderRotationsRaw(),
-      ", ClimberCalZero = ", encoderZero,
-      ", Climber target = ", getCurrentClimberTarget(),
-      ", Climber EncAngle (Deg) = ", getClimberEncoderDegrees(),
-      ", Climber Angle (Deg) = ", getClimberAngle(),
-      ", Climber Vel dps = ", climberEncoderVelocity.refresh().getValueAsDouble() * ClimberConstants.kClimberDegreesPerRotation,
-      ", Climber Accel dps2 = ", climberEncoderAcceleration.refresh().getValueAsDouble() * ClimberConstants.kClimberDegreesPerRotation,
-      ", CANcoder Connected = ", isCANcoderConnected()
-    );
+  public void updateClimberLog(boolean logWhenDisabled) {
+    if (logWhenDisabled || !DriverStation.isDisabled()) {
+      long timeNow = RobotController.getFPGATime();
+      dLogTemp.append(climberTemp.refresh().getValueAsDouble(), timeNow);
+      dLogPctOut.append(getClimberMotorPercentOutput(), timeNow);
+      dLogCurrent.append(climberStatorCurrent.refresh().getValueAsDouble(), timeNow);
+      // dLogVolt.append(climberVoltage.refresh().getValueAsDouble(), timeNow);
+      dLogBusVolt.append(climberSupplyVoltage.refresh().getValueAsDouble(), timeNow);
+      dLogCancoderRaw.append(getCANcoderRotationsRaw(), timeNow);
+      // dLogEncRaw.append(getClimberEncoderRotationsRaw(), timeNow);
+      dLogCalZero.append(encoderZero, timeNow);
+      dLogTargetAngle.append(getCurrentClimberTarget(), timeNow);
+      // dLogEncAngle.append(getClimberEncoderDegrees(), timeNow);
+      dLogCurAngle.append(getClimberAngle(), timeNow);
+      dLogVel.append(climberEncoderVelocity.refresh().getValueAsDouble() * ClimberConstants.kClimberDegreesPerRotation, timeNow);
+      dLogAccel.append(climberEncoderAcceleration.refresh().getValueAsDouble() * ClimberConstants.kClimberDegreesPerRotation, timeNow);
+      dLogCancoderConnected.append(isCANcoderConnected(), timeNow);
+    }
   }
 
   @Override
@@ -590,7 +615,7 @@ public class Climber extends SubsystemBase implements Loggable {
     }
 
     if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
-      updateClimberLog();
+      updateClimberLog(false);
     }
 
     // If the CANcoder stops reading, apply RotorEncoder configuration and stop using the CANcoder

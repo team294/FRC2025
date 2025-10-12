@@ -8,6 +8,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +34,12 @@ public class DriveWithJoysticks extends Command {
   // private final double maxFwdRateChange = 2.0;
   // private final double maxRevRateChange = -1.4;
 
+  // Variables for DataLogging
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogFwd = new DoubleLogEntry(log, "/DriveWithJoysticks/Fwd");
+  private final DoubleLogEntry dLogLeft = new DoubleLogEntry(log, "/DriveWithJoysticks/Left");
+  private final DoubleLogEntry dLogTurn = new DoubleLogEntry(log, "/DriveWithJoysticks/Turn");
+
   /**
    * Control the driveTrain with joysticks using arcade drive.
    * @param leftJoystick left joystick, X and Y axis control robot movement, relative to the field from the perspective of the current Alliance's driver station
@@ -46,6 +56,12 @@ public class DriveWithJoysticks extends Command {
     logRotationKey = DataLogUtil.allocateLogRotation();
 
     addRequirements(driveTrain);
+
+    // Prime data logging at boot time
+    long timeNow = RobotController.getFPGATime();
+    dLogFwd.append(-1, timeNow);
+    dLogLeft.append(-1, timeNow);
+    dLogTurn.append(-1, timeNow);
   }
 
   // Called when the command is initially scheduled.
@@ -75,7 +91,10 @@ public class DriveWithJoysticks extends Command {
     turnRate = (Math.abs(turnRate) < OIConstants.joystickDeadband) ? 0 : scaleTurn(turnRate) * SwerveConstants.kMaxTurningRadiansPerSecond;
 
     if(DataLogUtil.isMyLogRotation(logRotationKey)) {
-      DataLogUtil.writeMessage("DriveWithJoysticksArcade: Joystick, Fwd = ", fwdVelocity, ", Left = ", leftVelocity, ", Turn = ", turnRate);
+      long timeNow = RobotController.getFPGATime();
+      dLogFwd.append(fwdVelocity, timeNow);
+      dLogLeft.append(leftVelocity, timeNow);
+      dLogTurn.append(turnRate, timeNow);
     }
 
     // double fwdRateChange = (fwdPercent - lastFwdPercent) / (curTime - lastTime);

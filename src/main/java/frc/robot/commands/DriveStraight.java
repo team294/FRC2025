@@ -12,6 +12,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.*;
@@ -41,6 +45,19 @@ public class DriveStraight extends Command {
   private TrapezoidProfileBCR.State tStateFinal;        // Goal state of the system (position in deg and time in sec)
   private TrapezoidProfileBCR.Constraints tConstraints; // Max vel (deg/sec) and max accel (deg/sec/sec) of the system
  
+  // Variables for DataLogging
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogTargetAngle = new DoubleLogEntry(log, "/DriveStraight/targetAng");
+  private final DoubleLogEntry dLogTargetPos = new DoubleLogEntry(log, "/DriveStraight/targetPos");
+  private final DoubleLogEntry dLogTargetVel = new DoubleLogEntry(log, "/DriveStraight/targetVel");
+  private final DoubleLogEntry dLogTargetAccel = new DoubleLogEntry(log, "/DriveStraight/targetAccel");
+  private final DoubleLogEntry dLogRobotPos = new DoubleLogEntry(log, "/DriveStraight/robotPos");
+  private final DoubleLogEntry dLogRobotVel = new DoubleLogEntry(log, "/DriveStraight/robotVel");
+  private final DoubleLogEntry dLogRobotVelFL = new DoubleLogEntry(log, "/DriveStraight/robotVelFL");
+  private final DoubleLogEntry dLogRobotVelFR = new DoubleLogEntry(log, "/DriveStraight/robotVelFR");
+  private final DoubleLogEntry dLogRobotVelBL = new DoubleLogEntry(log, "/DriveStraight/robotVelBL");
+  private final DoubleLogEntry dLogRobotVelBR = new DoubleLogEntry(log, "/DriveStraight/robotVelBR");
+
   /**
    * Drives the robot straight.
    * <p><b>FOR CALIBRATION ONLY.</b> Use DriveToPose for competition code.
@@ -66,6 +83,7 @@ public class DriveStraight extends Command {
     this.maxAccel = MathUtil.clamp(Math.abs(maxAccel), 0, SwerveConstants.kMaxAccelerationMetersPerSecondSquare);
 
     addRequirements(driveTrain);
+    initializeDataLog();
   }
 
   /**
@@ -89,6 +107,7 @@ public class DriveStraight extends Command {
     this.maxAccel = 0.5 * SwerveConstants.kMaxAccelerationMetersPerSecondSquare;
 
     addRequirements(driveTrain);
+    initializeDataLog();
 
     if (SmartDashboard.getNumber("DriveStraight Manual Target Dist", -9999) == -9999) {
       SmartDashboard.putNumber("DriveStraight Manual Target Dist", 2);
@@ -103,6 +122,25 @@ public class DriveStraight extends Command {
       SmartDashboard.putNumber("DriveStraight Manual MaxAccel", 0.5 * SwerveConstants.kMaxAccelerationMetersPerSecondSquare);
     }
   }
+
+  /**
+   * Initialize datalog when constructing this object, in order to prime the log at boot time.
+   */
+  public void initializeDataLog() {
+    // Prime data logging at boot time
+    long timeNow = RobotController.getFPGATime();
+    dLogTargetAngle.append(-1, timeNow);
+    dLogTargetPos.append(-1, timeNow);
+    dLogTargetVel.append(-1, timeNow);
+    dLogTargetAccel.append(-1, timeNow);
+    dLogRobotPos.append(-1, timeNow);
+    dLogRobotVel.append(-1, timeNow);
+    dLogRobotVelFL.append(-1, timeNow);
+    dLogRobotVelFR.append(-1, timeNow);
+    dLogRobotVelBL.append(-1, timeNow);
+    dLogRobotVelBR.append(-1, timeNow);
+  }
+
 
   // Called when the command is initially scheduled.
   @Override
@@ -168,9 +206,18 @@ public class DriveStraight extends Command {
         + Math.abs(currentStates[1].speedMetersPerSecond) + Math.abs(currentStates[2].speedMetersPerSecond)
         + Math.abs(currentStates[3].speedMetersPerSecond)) / 4.0;
 
-    DataLogUtil.writeMessage("DriveStraight: Profile, angT = ", angleTarget, ", posT = ", tStateNext.position, "velT = ", targetVel, 
-      ", accT = ", targetAccel, ", posA = ", currDist,  ", velA = ", linearVel, ", velA-FL = ", currentStates[0].speedMetersPerSecond,
-      ", velA-FR = ", currentStates[1].speedMetersPerSecond, ", velA-BL = ", currentStates[2].speedMetersPerSecond, ", velA-BR = ", currentStates[3].speedMetersPerSecond);
+    // Log data
+    long timeNow = RobotController.getFPGATime();
+    dLogTargetAngle.append(angleTarget, timeNow);
+    dLogTargetPos.append(tStateNext.position, timeNow);
+    dLogTargetVel.append(targetVel, timeNow);
+    dLogTargetAccel.append(targetAccel, timeNow);
+    dLogRobotPos.append(currDist, timeNow);
+    dLogRobotVel.append(linearVel, timeNow);
+    dLogRobotVelFL.append(currentStates[0].speedMetersPerSecond, timeNow);
+    dLogRobotVelFR.append(currentStates[1].speedMetersPerSecond, timeNow);
+    dLogRobotVelBL.append(currentStates[2].speedMetersPerSecond, timeNow);
+    dLogRobotVelBR.append(currentStates[3].speedMetersPerSecond, timeNow);
 
     if (regenerate) {
       tStateCurr = new TrapezoidProfileBCR.State(currDist, linearVel);

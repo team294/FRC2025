@@ -4,6 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.WristConstants;
@@ -17,6 +21,10 @@ public class WristManualControl extends Command {
   
   private boolean rightJoystick;
 
+  // Variables for DataLogging
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogPct = new DoubleLogEntry(log, "/WristManualControl/WristPercent");
+
   /**
    * Controls the wrist using the Xbox controller joysticks.
    * @param xboxController Xbox controller
@@ -29,6 +37,10 @@ public class WristManualControl extends Command {
     
     this.rightJoystick = rightJoystick;
     addRequirements(wrist);
+
+    // Prime data logging at boot time
+    long timeNow = RobotController.getFPGATime();
+    dLogPct.append(-1, timeNow);
   }
 
   // Called when the command is initially scheduled.
@@ -47,7 +59,9 @@ public class WristManualControl extends Command {
     wristPercent *= WristConstants.maxManualPercentOutput;
     wrist.setWristPercentOutput(wristPercent);
 
-    DataLogUtil.writeMessage("WristManualControl: Execute, Xbox Joystick = ", wristPercent);
+    // Log data
+    long timeNow = RobotController.getFPGATime();
+    dLogPct.append(wristPercent, timeNow);
   }
 
   // Called once the command ends or is interrupted.
