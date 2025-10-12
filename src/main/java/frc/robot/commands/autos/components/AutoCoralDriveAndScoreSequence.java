@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.DataLogMessage;
 import frc.robot.commands.sequences.AutomatedDriveToReefAndScoreCoral;
@@ -44,7 +45,10 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
       // Drive to reef while intaking to ensure coral is intaked (timeout on the intake command for 4 seconds)
       new AutoDriveToReef(fromHP, location, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
       
-      // If coral is detected, score (dependent on if isLastCoral is false). If not, wait 0.5 seconds and try again, then end the score sequence and skip to the next part of the auto
+      // Wait for up to 2 seconds for coral to be fully intaked. If coral isn't in by then, go back to loading station
+      new WaitUntilCommand(() -> coralEffector.isCoralPresent()).withTimeout(2),
+
+      // If coral is detected, score; if not, then end the score sequence and skip to the next part of the auto
       either(
         new AutomatedDriveToReefAndScoreCoral(location, score, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field),
         none(),

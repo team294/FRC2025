@@ -205,7 +205,8 @@ public final class Constants {
     // Distance bumpers should be away from the reef
     // This distance is the where the scoring prep sequence will take place for L1-L3,
     // along with is how far the robot should be located to score on L4.
-    public static final double distanceFromReefToScore = Units.inchesToMeters(7.25);  // was 0.25 meters, changed to be scoring location for L4. 7.25 at AVR, 6.25 at LAR
+    public static final double distanceFromReefToScore = Units.inchesToMeters(5.0); // was 0.25 meters, changed to be scoring location for L4. 7.25 at AVR, 6.25 at LAR, changed to be 5.0in on 9/16
+    public static final double distanceFromReefToScoreL4 = Units.inchesToMeters(7.25); // was 0.25 meters, changed to be scoring location for L4. 7.25 at AVR, 6.25 at LAR, changed to be 5.0in on 9/16
 
     // How far away from the scoring prep position we start to move the elevator to the set position
     public static final double distanceFromReefToElevate = 0.05; // Value very close to zero so it doesn't evelevate until the robot is stopped
@@ -353,7 +354,7 @@ public final class Constants {
   public static final class AlgaeGrabberConstants {
     public static final double compensationVoltage = 12.0;
     public static final double intakePercent = 0.4;             // CALIBRATED 3/29
-    public static final double netOuttakePercent = -0.23;       // CALIBRATED 4/12.  4/18:  Was -0.35, now -0.20.  C2 increased to 0.23
+    public static final double netOuttakePercent = -0.27;       // CALIBRATED 4/12.  4/18:  Was -0.35, now -0.20.  C2 increased to 0.23, 9/27/25 increased to 0.27 (chezy champs)
     public static final double processorOuttakePercent = -0.18; // CALIBRATED 3/29.  Updated 4/16 from -0.15 to -0.18
   }
 
@@ -428,13 +429,13 @@ public final class Constants {
       CORAL_HP(0.0, 82.0),
 
       CORAL_L1(13.0, 95.0),
-      CORAL_L2(23.56, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 22.06 to 22.56. 4/18 elevator increased from 22.56 to 23.31 to 23.56
-      CORAL_L3(38.53, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 37.28 to 37.78. 4/18 elevator increased from 37.78 to 38.03 to 38.53
+      CORAL_L2(22.56, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 22.06 to 22.56. 4/18 elevator increased from 22.56 to 23.31 to 23.56.  9/16 elevator decreased from 23.56 to 22.56 to account for decrease in distance from reef while scoring.
+      CORAL_L3(38.03, 95.0), // CALIBRATED ON 4/7. Was 65.0 degrees, adjusted to be 1 coral away from reef.  4/16 elevator increased from 37.28 to 37.78. 4/18 elevator increased from 37.78 to 38.03 to 38.53.  9/16 elevator decreased from 38.53 to 38.03 to account for decrease in distance from reef while scoring.
       CORAL_L4(71.0, 57.0),
-      CORAL_L4_COPANEL(71.0, 28.0),  //stop  meas = 71 28   CAD = 70.7, 30 TODO change angle to ~57, do not be fully up against reef when scoring (2 inches off), and recheck regions
+      CORAL_L4_COPANEL(71.0, 57.0),  //stop  meas = 71, 28   CAD = 70.7, 30
 
       ALGAE_GROUND(5.8, -6.5),
-      ALGAE_LOWER(22.55, 24.0), //elevator position was 22.3 inches, increased to 22.55 to prevent wheel rubbing against reef pole
+      ALGAE_LOWER(22.05, 24.0), //elevator position was 22.3 inches, increased to 22.55 to prevent wheel rubbing against reef pole, 9/28/25 Chezy - decreased to 22.05 (from 22.55) as it looked a little high
       ALGAE_UPPER(38.0, 24.0),
       ALGAE_LOLLIPOP(12.0, 10.0),
 
@@ -490,7 +491,7 @@ public final class Constants {
       DEFAULT(68.0),
       START_CONFIG(90.0),
       CLIMB_START(0.0),
-      CLIMB_END(152.0);   // 4/18 Changed climb angle from 155 to 152
+      CLIMB_END(153.0);   // 9/27/25 changed climb angle from 152 to 157, 4/18 Changed climb angle from 155 to 152
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
       public final double value;

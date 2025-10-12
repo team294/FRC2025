@@ -134,7 +134,7 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorMotor1Config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevatorMotor1Config.Voltage.PeakForwardVoltage = ElevatorConstants.compensationVoltage * ElevatorConstants.maxPercentOutput;
     elevatorMotor1Config.Voltage.PeakReverseVoltage = -ElevatorConstants.compensationVoltage * ElevatorConstants.maxPercentOutput;
-    elevatorMotor1Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    elevatorMotor1Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.0; // Time from 0 to full power, in seconds
     elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
@@ -142,7 +142,7 @@ public class Elevator extends SubsystemBase implements Loggable {
     // limited to the lower limit in order to prevent the breakers from tripping
     elevatorMotor1Config.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
     elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
+    elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerTime = 1.0;    // Threshold time, in seconds
     elevatorMotor1Config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Apply the configurations to motor 1
@@ -155,7 +155,7 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorMotor2Config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevatorMotor2Config.Voltage.PeakForwardVoltage = ElevatorConstants.compensationVoltage;
     elevatorMotor2Config.Voltage.PeakReverseVoltage = -ElevatorConstants.compensationVoltage;
-    elevatorMotor2Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    elevatorMotor2Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.0; // Time from 0 to full power, in seconds
     elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
@@ -163,7 +163,7 @@ public class Elevator extends SubsystemBase implements Loggable {
     // limited to the lower limit in order to prevent the breakers from tripping
     elevatorMotor2Config.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
     elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
-    elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerTime = 1.0;    // Threshold time, in seconds
     elevatorMotor2Config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Apply the configurations to motor 2
