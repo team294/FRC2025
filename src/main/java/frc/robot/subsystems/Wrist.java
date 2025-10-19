@@ -220,8 +220,8 @@ public class Wrist extends SubsystemBase implements Loggable {
     if (usingCANcoder) {
       encoderZero = WristConstants.offsetAngleCANcoder;
       wristCalibrated = true;
-      DataLogUtil.writeMessageEcho("Wrist: CANcoder calibrated, Enc Zero = ", encoderZero,  ", CANcoder Rot = ", getCANcoderRotationsRaw(), 
-          ", Enc Raw = ", getWristEncoderRotationsRaw(), ", Angle = ", getWristAngle(), ", Target = ", getCurrentWristTarget());
+      DataLogUtil.writeMessageEcho("Wrist: CANcoder calibrated, Enc Zero =", encoderZero,  ", CANcoder Rot =", getCANcoderRotationsRaw(), 
+          ", Enc Raw =", getWristEncoderRotationsRaw(), ", Angle =", getWristAngle(), ", Target =", getCurrentWristTarget());
 
       // Set software limits after setting encoderZero
       wristMotor_CANcoderConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = wristDegreesToEncoderRotations(WristAngle.UPPER_LIMIT.value);
@@ -345,7 +345,7 @@ public class Wrist extends SubsystemBase implements Loggable {
       wristMotor.setControl(wristMMVoltageControl.withPosition(wristDegreesToEncoderRotations(safeAngle))
                             .withFeedForward(WristConstants.kG * Math.cos(safeAngle * Math.PI / 180.0)) );
 
-      DataLogUtil.writeMessage(subsystemName, ": setWristAngle, Desired Angle = ", angle, ", Set Angle = ", safeAngle);
+      DataLogUtil.writeMessage(subsystemName, ": setWristAngle, Desired Angle =", angle, ", Set Angle =", safeAngle);
       SmartDashboard.putNumber("Wrist set raw rot", wristDegreesToEncoderRotations(safeAngle));
     }  
   }
@@ -456,7 +456,7 @@ public class Wrist extends SubsystemBase implements Loggable {
     stopWrist();
     wristCalibrated = false;
 
-    DataLogUtil.writeMessageEcho("Wrist: Uncalibrate, CANcoder Rot = ", getCANcoderRotationsRaw(), ", Enc Raw = ", getWristEncoderRotationsRaw(), ", Angle = ", getWristAngle(), ", Target = ", getCurrentWristTarget());
+    DataLogUtil.writeMessageEcho("Wrist: Uncalibrate, CANcoder Rot =", getCANcoderRotationsRaw(), ", Enc Raw =", getWristEncoderRotationsRaw(), ", Angle =", getWristAngle(), ", Target =", getCurrentWristTarget());
   }
 
   /**
@@ -469,7 +469,7 @@ public class Wrist extends SubsystemBase implements Loggable {
     wristCalibrated = true;
 
     DataLogUtil.writeMessageEcho("Wrist: Calibrate, Using CANcoder", usingCANcoder,
-      ", Enc Zero = ", encoderZero, ", CANcoder Rot = ", getCANcoderRotationsRaw(), ", Enc Raw = ", getWristEncoderRotationsRaw(), ", Angle = ", getWristAngle(), ", Target = ", getCurrentWristTarget());
+      ", Enc Zero =", encoderZero, ", CANcoder Rot =", getCANcoderRotationsRaw(), ", Enc Raw =", getWristEncoderRotationsRaw(), ", Angle =", getWristAngle(), ", Target =", getCurrentWristTarget());
 
     if (usingCANcoder) {
       // Set software limits after setting encoderZero
@@ -518,7 +518,7 @@ public class Wrist extends SubsystemBase implements Loggable {
       setWristAngle(safeAngle);
     }
     
-    DataLogUtil.writeMessageEcho("Wrist: NudgeWristAngle, Enc Zero = ", encoderZero, ", CANcoder Rot = ", getCANcoderRotationsRaw(), ", Enc Raw = ", getWristEncoderRotationsRaw(), ", Angle = ", getWristAngle(), ", Target = ", getCurrentWristTarget());
+    DataLogUtil.writeMessageEcho("Wrist: NudgeWristAngle, Enc Zero =", encoderZero, ", CANcoder Rot =", getCANcoderRotationsRaw(), ", Enc Raw =", getWristEncoderRotationsRaw(), ", Angle =", getWristAngle(), ", Target =", getCurrentWristTarget());
 
     */
   }
@@ -591,11 +591,11 @@ public class Wrist extends SubsystemBase implements Loggable {
 
       RobotPreferences.recordStickyFaults("Wrist-CANcoder");
 
-      DataLogUtil.writeMessageEcho("Wrist: CANcoder Disconnection, Enc Zero = ", encoderZero, 
-        ", CANcoder Angle = ", getCANcoderRotationsRaw(), 
-        ", Enc Raw = ", getWristEncoderRotationsRaw(), 
-        ", Angle = ", getWristEncoderDegrees(), 
-        ", Target = ", getCurrentWristTarget());
+      DataLogUtil.writeMessageEcho("Wrist: CANcoder Disconnection, Enc Zero =", encoderZero, 
+        ", CANcoder Angle =", getCANcoderRotationsRaw(), 
+        ", Enc Raw =", getWristEncoderRotationsRaw(), 
+        ", Angle =", getWristEncoderDegrees(), 
+        ", Target =", getCurrentWristTarget());
     }
 
     // If the driver station is disabled, then turn off any position control for the wrist motor
