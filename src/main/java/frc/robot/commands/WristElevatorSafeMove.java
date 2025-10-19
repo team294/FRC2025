@@ -5,6 +5,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Elevator;
@@ -41,6 +46,15 @@ public class WristElevatorSafeMove extends Command {
   private final double elevatorMovingTol = 2.0; // Elevator tolerances when moving between regions, in inches
   private final double elevatorTargetTol = 1.5; // Elevator tolerance to goal postion for this command to end, in inches
 
+  private final DataLog log = DataLogManager.getLog();
+  private long timeNow;
+  private final BooleanLogEntry dLogIsElevatorCalibrated = new BooleanLogEntry(log, "/WristElevatorSafeMove/Elevator Calibrated");
+  private final BooleanLogEntry dLogIsWristCalibrated = new BooleanLogEntry(log, "/WristElevatorSafeMove/Wrist Calibrated");
+  private final DoubleLogEntry dLogWristTargetAngle = new DoubleLogEntry(log, "/WristElevatorSafeMove/Wrist Target Angle");
+  private final DoubleLogEntry dLogElevTargetPos = new DoubleLogEntry(log, "/WristElevatorSafeMove/Elev Target Position");
+  private final DoubleLogEntry dLogCurWristAngle = new DoubleLogEntry(log, "/WristElevatorSafeMove/Wrist Angle");
+  private final DoubleLogEntry dLogCurElevPos = new DoubleLogEntry(log, "/WristElevatorSafeMove/Elevator Position");
+
   /**
    * Moves the wrist and elevator in sequence, accounting for interlocks and regions.
    * @param position position to move the elevator and wrist to (use ElevatorWwristConstants.ElevatorWristPosition)
@@ -64,13 +78,19 @@ public class WristElevatorSafeMove extends Command {
   public void initialize() {
     if (!elevator.isElevatorCalibrated() || !wrist.isWristCalibrated()) {
       curState = MoveState.DONE_ERROR;
-      DataLogUtil.writeMessage("WristElevatorSafeMove: Init, Elev Calibrated =", elevator.isElevatorCalibrated(),
-          ", Wrist Calibrated =", wrist.isWristCalibrated(), ", Position =", destPosition.toString(), ", Type =", type.toString());
+      timeNow = RobotController.getFPGATime();
+      dLogIsElevatorCalibrated.append(elevator.isElevatorCalibrated(), timeNow);
+      dLogIsWristCalibrated.append(wrist.isWristCalibrated(), timeNow);
+      DataLogUtil.writeMessage("WristElevatorSafeMove: Init. Uncalibrated Subsystem(s), Position =", destPosition.toString(), ", Type =", type.toString());
       return;
     }
 
     curRegion = ElevatorWristRegions.GetRegion(type, elevator.getElevatorPosition());
     destRegion = ElevatorWristRegions.GetRegion(type, destPosition.elevatorPosition);
+
+    timeNow = RobotController.getFPGATime();
+    dLogIsElevatorCalibrated.append(elevator.isElevatorCalibrated(), timeNow);
+    dLogIsWristCalibrated.append(wrist.isWristCalibrated(), timeNow);
 
     DataLogUtil.writeMessage("WristElevatorSafeMove: Init, Calibrated =", true, ", Type =", type,
     ", Dest Position =", destPosition, ", Dest Region =", destRegion, ", Cur Region =", (curRegion != null ? curRegion.regionIndex : ""));
@@ -91,10 +111,14 @@ public class WristElevatorSafeMove extends Command {
     double curWristAngle = wrist.getWristAngle();
     double curElevPos = elevator.getElevatorPosition();
 
-    DataLogUtil.writeMessage("WristElevatorSafeMove: Execute, CurState =", curState, 
-      ", Wrist Target =", wrist.getCurrentWristTarget(), ", Wrist Angle =", curWristAngle, 
-      ", Elev Target =", elevator.getCurrentElevatorTarget(), ", Cur Elev Pos =", curElevPos,
-      ", Cur Region =", (curRegion != null ? curRegion.regionIndex : ""));
+    DataLogUtil.writeMessage("WristElevatorSafeMove: Execute, CurState =", curState, ", Cur Region =", (curRegion != null ? curRegion.regionIndex : ""));
+
+    timeNow = RobotController.getFPGATime();
+    dLogWristTargetAngle.append(wrist.getCurrentWristTarget(), timeNow);
+    dLogElevTargetPos.append(elevator.getCurrentElevatorTarget(), timeNow);
+    dLogCurWristAngle.append(curWristAngle, timeNow);
+    dLogCurWristAngle.append(curElevPos, timeNow);
+    dLogCurElevPos.append(curElevPos, timeNow);
 
     switch (curState) {
       case DONE:

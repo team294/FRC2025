@@ -6,7 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +45,15 @@ public class DriveWithJoysticksAdvanced extends Command {
   // private boolean previousReefLock;           // Whether we were locking our angle to a reef in the previous loop
   private boolean bargeBasedControl;             // Fine control, turn off forward-back driving, and turn off theta joystick
   private boolean fineControl;
+
+  private final DataLog log = DataLogManager.getLog();
+  long timeNow = RobotController.getFPGATime();
+  private final DoubleLogEntry dLogFwdVelo = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Forward Velocity");
+  private final DoubleLogEntry dLogLeftVelo = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Left Velocity");
+  private final DoubleLogEntry dLogNextTurnRate = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Next Turn Rate");
+  private final DoubleLogEntry dLogRobotAngle = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Robot Angle");
+  private final DoubleLogEntry dLogRobotGoalAngle = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Robot Goal Angle");
+  private final BooleanLogEntry dLogRobotStopped = new BooleanLogEntry(log, "/DriveWithJoysticksAdvanced/Stopped");
 
   /**
    * Control the driveTrain with joysticks using arcade drive and advanced controls.
@@ -200,36 +214,37 @@ public class DriveWithJoysticksAdvanced extends Command {
         }
 
         if (DataLogUtil.isMyLogRotation(logRotationKey)) {
-          DataLogUtil.writeMessage("DriveWithJoysticksAdvanced: Joystick, Fwd =", fwdVelocity, ", Left =", leftVelocity, ", Turn =", nextTurnRate, 
-            "Robot Angle =", Math.toDegrees(curRobotAngle), ", Goal Angle =", Math.toDegrees(goalAngle), "Stopped =", stopped);
-
           SmartDashboard.putNumber("DriveWJAdv Goal Angle", Math.toDegrees(goalAngle));
           SmartDashboard.putNumber("DriveWJAdv Robot Angle", Math.toDegrees(curRobotAngle));
           SmartDashboard.putNumber("DriveWJAdv Angle Error", Math.toDegrees(angleError));
           SmartDashboard.putBoolean("DriveWJAdv In Tolerance", angleInTolerance);
         }
-        driveTrain.drive(fwdVelocity, leftVelocity, nextTurnRate, !reefBasedControl, false);
-
+        turnRate = nextTurnRate;
       } else {
         // Uses the regular turnRate if the theta joystick is in the deadband less than 100ms
-
-        DataLogUtil.writeMessage("DriveWithJoysticksAdvanced: Joystick, Fwd =", fwdVelocity, ", Left =", leftVelocity, ", Turn =", nextTurnRate, 
-            "Robot Angle =", Math.toDegrees(driveTrain.getPose().getRotation().getRadians()), ", Goal Angle = N/A, Stopped =", stopped);
-        driveTrain.drive(fwdVelocity, leftVelocity, turnRate, !reefBasedControl, false);
+        goalAngle = driveTrain.getPose().getRotation().getRadians();
       }
 
     } else {
       // Uses the regular turnRate if the theta joystick is not in the deadband
-      if(DataLogUtil.isMyLogRotation(logRotationKey)) {
-        DataLogUtil.writeMessage("DriveWithJoysticksAdvanced: Joystick, Fwd =", fwdVelocity, ", Left =", leftVelocity, ", Turn =", turnRate, 
-        ", Robot Angle =", Math.toDegrees(driveTrain.getPose().getRotation().getRadians()));
+      if (DataLogUtil.isMyLogRotation(logRotationKey)) {
+        goalAngle = driveTrain.getPose().getRotation().getRadians();
       }
-      
-      driveTrain.drive(fwdVelocity, leftVelocity, turnRate, !reefBasedControl, false);
       
       firstInDeadband = true;
       firstCorrecting = true;
     }
+
+    if (DataLogUtil.isMyLogRotation(logRotationKey)) {
+      dLogFwdVelo.append(fwdVelocity, timeNow);
+      dLogLeftVelo.append(leftVelocity, timeNow);
+      dLogNextTurnRate.append(turnRate, timeNow);
+      dLogRobotAngle.append(Math.toDegrees(driveTrain.getPose().getRotation().getRadians()), timeNow);
+      dLogRobotGoalAngle.append(Math.toDegrees(goalAngle), timeNow);
+      dLogRobotStopped.append(stopped, timeNow);
+    }
+
+    driveTrain.drive(fwdVelocity, leftVelocity, turnRate, !reefBasedControl, false);
 
     // Remember whether we were doing any angle locking
     // previousLoadingStationLock = loadingStationLock;

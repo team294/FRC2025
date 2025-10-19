@@ -18,7 +18,6 @@ public class CoralEffectorSetPercent extends Command {
   /**
    * Sets the percent output of the coralEffector from Shuffleboard and ends immediately.
    * @param coralEffector CoralEffector subsystem
-   * @param log FileLog utility
    */
   public CoralEffectorSetPercent(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
