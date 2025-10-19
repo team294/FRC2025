@@ -25,10 +25,11 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
    * @param wrist Wrist subsystem
    * @param hopper Hopper subsystem
    * @param coralEffector CoralEffector subsystem
-   * @param led LED subsystem
    */
   public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector) {
     addCommands(
+      new DataLogMessage(false, "CoralIntakeSequence: Start"),
+
       new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
       parallel(
         new HopperSetPercent(HopperConstants.intakePercent, hopper),
@@ -45,7 +46,9 @@ public class CoralIntakeSequence extends SequentialCommandGroup {
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
         () -> coralEffector.getHoldMode()),
-      new HopperStop(hopper)
+      new HopperStop(hopper),
+
+      new DataLogMessage(false, "CoralIntakeSequence: End")
     );
   }
 }

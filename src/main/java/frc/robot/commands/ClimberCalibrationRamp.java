@@ -37,7 +37,7 @@ public class ClimberCalibrationRamp extends Command {
   public void initialize() {
     percent = 0.0;
     climber.enableFastLogging(true);
-    DataLogUtil.writeMessage("ClimberCalibrationRamp: Init, rate = ", rate, ", max percent = ", maxPercent);
+    DataLogUtil.writeMessage("ClimberCalibrationRamp: Init, rate =", rate, ", max percent =", maxPercent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

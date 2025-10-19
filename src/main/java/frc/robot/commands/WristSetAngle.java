@@ -67,7 +67,7 @@ public class WristSetAngle extends Command {
   public void initialize() {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Goal Angle", ElevatorWristPosition.START_CONFIG.wristAngle);
     wrist.setWristAngle(angle);
-    DataLogUtil.writeMessage("WristSetAngle: Init, Target = ", angle);
+    DataLogUtil.writeMessage("WristSetAngle: Init, Target =", angle);
 
   }
 
@@ -79,8 +79,8 @@ public class WristSetAngle extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (interrupted) DataLogUtil.writeMessage("WristSetAngle: Interrupted, Target = ", angle, ", Current Angle = ", wrist.getWristAngle());
-    else DataLogUtil.writeMessage("WristSetAngle: End, Target = ", angle, ", Current Angle = ", wrist.getWristAngle());
+    if (interrupted) DataLogUtil.writeMessage("WristSetAngle: Interrupted, Target =", angle, ", Current Angle =", wrist.getWristAngle());
+    else DataLogUtil.writeMessage("WristSetAngle: End, Target =", angle, ", Current Angle =", wrist.getWristAngle());
   }
 
   // Returns true when the command should end.

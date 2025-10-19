@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants.AlgaeLocation;
-import frc.robot.Constants.FieldConstants.ReefLevel;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -46,7 +45,7 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
   public AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition algaeLevel, DriveTrain driveTrain, Elevator elevator, Wrist wrist, 
       AlgaeGrabber algaeGrabber, Field field) {
     addCommands(
-      new DataLogMessage(false, "AutomatedDriveToReefAndIntakeAlgae: Start"),
+      new DataLogMessage(false, "AutomatedDriveToReefAndIntakeAlgae: Init"),
       
       parallel(
         sequence(
@@ -131,7 +130,7 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
         AlgaeGrabber algaeGrabber, Field field) {
       
       addCommands(
-        new DataLogMessage(false, "AutomatedDriveToReefAndIntakeAlgae: Start"),
+        new DataLogMessage(false, "Autonomous AutomatedDriveToReefAndIntakeAlgae: Init"),
 
         parallel(
           sequence(

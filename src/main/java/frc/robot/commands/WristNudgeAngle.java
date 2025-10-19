@@ -48,6 +48,6 @@ public class WristNudgeAngle extends InstantCommand {
   public void initialize() {
     if (fromShuffleboard) deltaDegrees = SmartDashboard.getNumber("Wrist Nudge Delta Degrees", 0);
     wrist.nudgeWristAngle(deltaDegrees);
-    DataLogUtil.writeMessage("WristNudgeAngle: Init, Delta = ", deltaDegrees);
+    DataLogUtil.writeMessage("WristNudgeAngle: Init, Delta =", deltaDegrees);
   }
 }

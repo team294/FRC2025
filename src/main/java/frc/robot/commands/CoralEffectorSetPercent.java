@@ -51,7 +51,7 @@ public class CoralEffectorSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("CoralEffector Goal Percent", 0.0);
     coralEffector.setCoralEffectorPercentOutput(percent);
 
-    DataLogUtil.writeMessage("CoralEffectorSetPercent: Init, Percent = ", percent);
+    DataLogUtil.writeMessage("CoralEffectorSetPercent: Init, Percent =", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

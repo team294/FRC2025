@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.commands.ClimberSetPercentOutput;
 import frc.robot.commands.ClimberSetRatchet;
+import frc.robot.commands.DataLogMessage;
 import frc.robot.subsystems.Climber;
 import frc.robot.utilities.LEDEventUtil;
 
@@ -22,11 +23,15 @@ public class ClimberLiftSequence extends SequentialCommandGroup {
     */
   public ClimberLiftSequence(Climber climber) {
     addCommands(
+      new DataLogMessage(false, "ClimberLiftSequence: Start"),
+      
       new ClimberSetRatchet(true, climber),
       parallel(
         new ClimberSetPercentOutput(ClimberConstants.maxPercentOutput, climber).until(() -> climber.getClimberAngle() >= ClimberConstants.ClimberAngle.CLIMB_END.value),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_LIFTING))
-      ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))
+      ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+
+      new DataLogMessage(false, "ClimberLiftSequence: End")
     );
   }
 }

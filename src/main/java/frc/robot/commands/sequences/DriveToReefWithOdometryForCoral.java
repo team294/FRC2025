@@ -40,7 +40,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
     final double distance = (level == ReefLevel.L4) ? DriveConstants.distanceFromReefToScoreL4 : DriveConstants.distanceFromReefToScore;
     
     addCommands(
-      new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
+      new DataLogMessage(false, "DriveToReefWithOdometryForCoral: Start"),
       
       sequence(
           race(
@@ -85,7 +85,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
                   new Transform2d(field.getNearestAprilTagReef(driveTrain.getPose()), driveTrain.getPose()).getY() > 0)
       ),
 
-      new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "End")
+      new DataLogMessage(false, "DriveToReefWithOdometryForCoral: End")
     );
   }
 
@@ -101,14 +101,14 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
     final double distance = (level == ReefLevel.L4) ? DriveConstants.distanceFromReefToScoreL4 : DriveConstants.distanceFromReefToScore;
     
     addCommands(
-      new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
+      new DataLogMessage(false, "DriveToReefWithOdometryForCoral: Init"),
 
       //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus a constant
       new DriveToPose(CoordType.kAbsolute, () -> (field.getReefScoringPositionWithOffset(location, 
                 new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)))), 
                 0.02, 1, driveTrain),
         
-      new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "End")
+      new DataLogMessage(false, "DriveToReefWithOdometryForCoral: End")
     );
   }
 }

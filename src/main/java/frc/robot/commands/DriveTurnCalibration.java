@@ -41,7 +41,7 @@ public class DriveTurnCalibration extends Command {
     timer.start();
     driveTrain.setDriveModeCoast(false);
     driveTrain.enableFastLogging(true);
-    DataLogUtil.writeMessage("DriveTurnCalibration: Init, maxPctOut = ", maxPercentOutput, ", rampTime = ", rampTime, ", rampRate = ", rampRate);
+    DataLogUtil.writeMessage("DriveTurnCalibration: Init, maxPctOut =", maxPercentOutput, ", rampTime =", rampTime, ", rampRate =", rampRate);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

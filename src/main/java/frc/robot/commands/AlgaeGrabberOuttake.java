@@ -40,7 +40,7 @@ public class AlgaeGrabberOuttake extends Command {
     timer.stop();
     timer.reset();
 
-    DataLogUtil.writeMessage("AlgaeGrabberOuttake: Init, Algae Present = ", algaeGrabber.isAlgaePresent());
+    DataLogUtil.writeMessage("AlgaeGrabberOuttake: Init, Algae Present =", algaeGrabber.isAlgaePresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

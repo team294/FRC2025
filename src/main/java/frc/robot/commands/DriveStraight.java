@@ -169,7 +169,7 @@ public class DriveStraight extends Command {
     tStateCurr = new TrapezoidProfileBCR.State(0.0, 0.0);     // Initialize initial state (relative turning, so assume initPos is 0 degrees)
     tConstraints = new TrapezoidProfileBCR.Constraints(maxVel, maxAccel);       // Initialize velocity and accel limits
     tProfile = new TrapezoidProfileBCR(tConstraints, tStateFinal, tStateCurr);  // Generate profile
-    DataLogUtil.writeMessage("DriveStraight: Init, Target = ", target, ", Profile total time = ", tProfile.totalTime());
+    DataLogUtil.writeMessage("DriveStraight: Init, Target =", target, ", Profile total time =", tProfile.totalTime());
     
     profileStartTime = System.currentTimeMillis();
     startLocation = driveTrain.getPose().getTranslation();
@@ -239,7 +239,7 @@ public class DriveStraight extends Command {
   public boolean isFinished() {
     if(Math.abs(target - currDist) < 0.0125) {
       accuracyCounter++;
-      DataLogUtil.writeMessage("DriveStraight: WithinTolerance, Target Dist = ", target, ", Actual Dist = ", currDist, ", Counter = ", accuracyCounter);
+      DataLogUtil.writeMessage("DriveStraight: WithinTolerance, Target Dist =", target, ", Actual Dist =", currDist, ", Counter =", accuracyCounter);
     } else {
       accuracyCounter = 0;
     }

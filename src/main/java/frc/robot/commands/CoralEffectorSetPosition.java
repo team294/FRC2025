@@ -84,7 +84,7 @@ public class CoralEffectorSetPosition extends Command {
 
     dLogPosition.append(position, timeNow);
     bLogAutoHold.append(autoHold, timeNow);
-    DataLogUtil.writeMessage("CoralEffectorSetPosition: Init, Position = ", position, ", Auto Hold = ", autoHold);
+    DataLogUtil.writeMessage("CoralEffectorSetPosition: Init, Position =", position, ", Auto Hold =", autoHold);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -97,7 +97,7 @@ public class CoralEffectorSetPosition extends Command {
   public void end(boolean interrupted) {
     coralEffector.enableFastLogging(false);
 
-    DataLogUtil.writeMessage("CoralEffectorSetPosition: End, Position = ", position, ", Measured Position = ", coralEffector.getCoralEffectorPosition());
+    DataLogUtil.writeMessage("CoralEffectorSetPosition: End, Position =", position, ", Measured Position =", coralEffector.getCoralEffectorPosition());
   }
 
   // Returns true when the command should end.

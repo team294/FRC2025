@@ -204,7 +204,7 @@ public class ChoreoFollower extends Command {
     Optional<Pose2d> finalPoseOpt = trajectory.getFinalPose(mirrorTrajectoryThisInit);
 
     if (finalPoseOpt.isEmpty()){
-      DataLogUtil.writeMessage("ChoreoFollower:  IsFinished.  No final Pose exists");
+      DataLogUtil.writeMessage("ChoreoFollower: IsFinished. No final Pose exists");
       return true;
     }
 

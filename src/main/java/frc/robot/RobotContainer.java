@@ -76,7 +76,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    DataLogUtil.writeMessageEcho("RobotContainer: Constructor, Version = ", Constants.bcrRobotCodeVersion);
+    DataLogUtil.writeMessageEcho("RobotContainer: Constructor, Version =", Constants.bcrRobotCodeVersion);
     SignalLogger.enableAutoLogging(false);
     
     // Start LEDEventUtil

@@ -30,7 +30,7 @@ public class CoralEffectorIntake extends Command {
       coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.intakePercent); 
     }
 
-    DataLogUtil.writeMessage("CoralEffectorIntake: Init, Coral in = ", coralEffector.isCoralPresent());
+    DataLogUtil.writeMessage("CoralEffectorIntake: Init, Coral in =", coralEffector.isCoralPresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

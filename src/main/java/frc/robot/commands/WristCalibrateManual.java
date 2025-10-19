@@ -49,7 +49,7 @@ public class WristCalibrateManual extends InstantCommand {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Manual Calibration Value", 0);
     wrist.calibrateWristEncoder(angle);
 
-    DataLogUtil.writeMessage("WristCalibrateManual: Init, Angle = ", angle);
+    DataLogUtil.writeMessage("WristCalibrateManual: Init, Angle =", angle);
   }
 
   @Override

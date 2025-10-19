@@ -52,7 +52,7 @@ public class ElevatorSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Elevator Percent", 0.0);
     elevator.setElevatorPercentOutput(percent);
 
-    DataLogUtil.writeMessage("ElevatorSetPercent: Init, Percent = ", percent);
+    DataLogUtil.writeMessage("ElevatorSetPercent: Init, Percent =", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -51,7 +51,7 @@ public class ClimberSetPercentOutput extends Command {
   public void initialize() {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Goal Percent", 0);
     if (climber.getRatchetPosition() == ServoPosition.DISENGAGED || percent >= 0) climber.setClimberPercentOutput(percent);
-    DataLogUtil.writeMessage("ClimberSetPercentOutput: Init, Percent = ", percent);
+    DataLogUtil.writeMessage("ClimberSetPercentOutput: Init, Percent =", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

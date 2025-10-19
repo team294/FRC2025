@@ -47,7 +47,7 @@ public class ElevatorCalibration extends Command {
     state = CalibrationRoutineState.RAMP_UP;
 
     elevator.enableFastLogging(true);
-    DataLogUtil.writeMessage("ElevatorCalibration: Init, rampRate = ", rampRate);
+    DataLogUtil.writeMessage("ElevatorCalibration: Init, rampRate =", rampRate);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

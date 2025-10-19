@@ -49,7 +49,7 @@ public class AlgaeGrabberSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("AlgaeGrabber Percent", 0.0);
     algaeGrabber.setAlgaeGrabberPercentOutput(percent);
 
-    DataLogUtil.writeMessage("AlgaeGrabberSetPercent: Init, Percent = ", percent);
+    DataLogUtil.writeMessage("AlgaeGrabberSetPercent: Init, Percent =", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

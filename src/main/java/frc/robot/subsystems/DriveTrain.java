@@ -512,7 +512,7 @@ public class DriveTrain extends SubsystemBase implements Loggable {
    *  <p> Robot angle on the field (0 = facing away from the Blue drivestation, positive = to the left, negative = to the right)
    */
   public void resetPose(Pose2d pose) {
-    DataLogUtil.writeMessage("Drive.resetPose with set angle = ", pose.getRotation().getDegrees(), ", gyro pre = ", getGyroRotation(), ", pose pre = ", pose.getRotation().getDegrees());
+    DataLogUtil.writeMessage("Drive.resetPose with set angle =", pose.getRotation().getDegrees(), ", gyro pre =", getGyroRotation(), ", pose pre =", pose.getRotation().getDegrees());
     zeroGyroRotation(pose.getRotation().getDegrees());
     poseEstimator.resetPosition(Rotation2d.fromDegrees(getGyroRotation()), getModulePositions(), pose);
   }

@@ -31,6 +31,8 @@ public class AutoCenterL1 extends SequentialCommandGroup {
    */
   public AutoCenterL1(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, AllianceSelection allianceSelection) {
     addCommands(
+      new DataLogMessage(false, "AutoCenterL1: Start"),
+
       // Turn off vision odometry
       new VisionOdometryStateSet(false, driveTrain),
 
@@ -56,7 +58,9 @@ public class AutoCenterL1 extends SequentialCommandGroup {
       new DriveToPose(CoordType.kRelative, new Pose2d(-Units.inchesToMeters(20), 0, new Rotation2d(0)), driveTrain),
 
       // Move the elevator and wrist to intake position
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
+
+      new DataLogMessage(false, "AutoCenterL1: End")
     );
   }
 }

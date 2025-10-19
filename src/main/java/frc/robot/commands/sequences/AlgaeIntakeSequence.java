@@ -26,6 +26,7 @@ import frc.robot.utilities.LEDEventUtil;
 public class AlgaeIntakeSequence extends SequentialCommandGroup {
   public AlgaeIntakeSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
+      new DataLogMessage(false, "AlgaeIntakeSequence: Start"),
       
       parallel(
         sequence(
@@ -65,7 +66,9 @@ public class AlgaeIntakeSequence extends SequentialCommandGroup {
         new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.STANDARD, elevator, wrist),
         none(),
         () -> position == ElevatorWristPosition.ALGAE_GROUND || position == ElevatorWristPosition.ALGAE_LOLLIPOP
-      )
+      ),
+
+      new DataLogMessage(false, "AlgaeIntakeSequence: End")
     );
   }
 }

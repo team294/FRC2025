@@ -86,8 +86,8 @@ public class DrivePercentSpeed extends Command {
       percentSpeed = SmartDashboard.getNumber("DrivePercentSpeed percent", 0);
     }
 
-    DataLogUtil.writeMessage("DrivePercentSpeed: Init, Angle Facing Desired = ", angleFacing, ", Percent Speed Deisred = ", 
-      percentSpeed, ", Max Distance = ", maxDistance);
+    DataLogUtil.writeMessage("DrivePercentSpeed: Init, Angle Facing Desired =", angleFacing, ", Percent Speed Deisred =", 
+      percentSpeed, ", Max Distance =", maxDistance);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -114,7 +114,7 @@ public class DrivePercentSpeed extends Command {
     timer.stop();
     SignalLogger.stop();
 
-    DataLogUtil.writeMessage("DrivePercentSpeed: End, curDistance = ", curDistance);
+    DataLogUtil.writeMessage("DrivePercentSpeed: End, curDistance =", curDistance);
   }
 
   // Returns true when the command should end.

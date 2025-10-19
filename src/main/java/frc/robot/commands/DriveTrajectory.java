@@ -39,7 +39,7 @@ public class DriveTrajectory extends SequentialCommandGroup {
    * @param alliance AllianceSelection utility
    */
   public DriveTrajectory(CoordType trajectoryType, StopType stopAtEnd, Trajectory<SwerveSample> trajectory, DriveTrain driveTrain, AllianceSelection alliance) { 
-    addCommands(new DataLogMessage(false, "DriveTrajectory: Start"));
+    addCommands(new DataLogMessage(false, "DriveTrajectory: Init"));
 
     // Define the controller for robot rotation
     PIDController thetaController = new PIDController(Constants.TrajectoryConstants.kPThetaController, 0, 0);

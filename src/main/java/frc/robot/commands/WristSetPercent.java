@@ -50,7 +50,7 @@ public class WristSetPercent extends Command {
   public void initialize() {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Wrist Goal Percent", 0);
     wrist.setWristPercentOutput(percent);
-    DataLogUtil.writeMessage("WristSetPercent: Init, Percent = ", percent);
+    DataLogUtil.writeMessage("WristSetPercent: Init, Percent =", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -62,6 +62,7 @@ public class WristSetPercent extends Command {
   @Override
   public void end(boolean interrupted) {
     wrist.stopWrist();
+    DataLogUtil.writeMessage("WristSetPercent: End");
   }
 
   // Returns true when the command should end.

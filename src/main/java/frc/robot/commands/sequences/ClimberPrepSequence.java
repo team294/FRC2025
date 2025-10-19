@@ -24,9 +24,10 @@ public class ClimberPrepSequence extends SequentialCommandGroup {
    */
   public ClimberPrepSequence(Elevator elevator, Wrist wrist, Climber climber) {
     addCommands(
+      new DataLogMessage(false, "ClimberPrepSequence: Start"),
+
       sequence(
         parallel(
-          new DataLogMessage(false, "ClimberPrepSequence Start"),
           runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_PREPPING)),
           // new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist),   // Do not move elevator/wrist, in case co-driver preps while scoring.  Co-driver is responsible for elevator/wrist.
           new ClimberSetRatchet(false, climber)
@@ -34,7 +35,8 @@ public class ClimberPrepSequence extends SequentialCommandGroup {
         new ClimberSetAngle(ClimberAngle.CLIMB_START, climber)
       ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
       runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_PREPPED)),
-      new DataLogMessage(false, "ClimberPrepSequence End")
+      
+      new DataLogMessage(false, "ClimberPrepSequence: End")
       );
   }
 }

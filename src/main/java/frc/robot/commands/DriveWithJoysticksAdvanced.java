@@ -27,8 +27,6 @@ public class DriveWithJoysticksAdvanced extends Command {
   private final AllianceSelection allianceSelection;
   private final DriveTrain driveTrain;
   
-  private final Field field;
-
   private ProfiledPIDController turnRateController;
   private boolean firstInDeadband, firstCorrecting;
   private boolean stopped;                    // Joysticks are all in deadband, and robot has turned to the desired heading. Stop the robot from moving/jittering until the driver moves a joystick.
@@ -49,14 +47,12 @@ public class DriveWithJoysticksAdvanced extends Command {
    * @param rightJoystick right joystick, X-axis controls robot rotation.
    * @param allianceSelection AllianceSelection utility
    * @param driveTrain DriveTrain subsystem
-   * @param field Field utility
    */
   public DriveWithJoysticksAdvanced(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain, Field field) {
     this.leftJoystick = leftJoystick;
     this.rightJoystick = rightJoystick;
     this.allianceSelection = allianceSelection;
     this.driveTrain = driveTrain;
-    this.field = field;
 
     turnRateController = new ProfiledPIDController(DriveConstants.kPJoystickThetaController, 0, 0, TrajectoryConstants.kThetaControllerConstraints);
     turnRateController.enableContinuousInput(-Math.PI, Math.PI);
@@ -204,8 +200,8 @@ public class DriveWithJoysticksAdvanced extends Command {
         }
 
         if (DataLogUtil.isMyLogRotation(logRotationKey)) {
-          DataLogUtil.writeMessage("DriveWithJoysticksAdvanced: Joystick, Fwd = ", fwdVelocity, ", Left = ", leftVelocity, ", Turn = ", nextTurnRate, 
-            "Robot Angle = ", Math.toDegrees(curRobotAngle), ", Goal Angle = ", Math.toDegrees(goalAngle), "Stopped = ", stopped);
+          DataLogUtil.writeMessage("DriveWithJoysticksAdvanced: Joystick, Fwd =", fwdVelocity, ", Left =", leftVelocity, ", Turn =", nextTurnRate, 
+            "Robot Angle =", Math.toDegrees(curRobotAngle), ", Goal Angle =", Math.toDegrees(goalAngle), "Stopped =", stopped);
 
           SmartDashboard.putNumber("DriveWJAdv Goal Angle", Math.toDegrees(goalAngle));
           SmartDashboard.putNumber("DriveWJAdv Robot Angle", Math.toDegrees(curRobotAngle));
@@ -217,16 +213,16 @@ public class DriveWithJoysticksAdvanced extends Command {
       } else {
         // Uses the regular turnRate if the theta joystick is in the deadband less than 100ms
 
-        DataLogUtil.writeMessage("DriveWithJoysticksAdvanced: Joystick, Fwd = ", fwdVelocity, ", Left = ", leftVelocity, ", Turn = ", nextTurnRate, 
-            "Robot Angle = ", Math.toDegrees(driveTrain.getPose().getRotation().getRadians()), ", Goal Angle = N/A, Stopped = ", stopped);
+        DataLogUtil.writeMessage("DriveWithJoysticksAdvanced: Joystick, Fwd =", fwdVelocity, ", Left =", leftVelocity, ", Turn =", nextTurnRate, 
+            "Robot Angle =", Math.toDegrees(driveTrain.getPose().getRotation().getRadians()), ", Goal Angle = N/A, Stopped =", stopped);
         driveTrain.drive(fwdVelocity, leftVelocity, turnRate, !reefBasedControl, false);
       }
 
     } else {
       // Uses the regular turnRate if the theta joystick is not in the deadband
       if(DataLogUtil.isMyLogRotation(logRotationKey)) {
-        DataLogUtil.writeMessage("DriveWithJoysticksAdvanced: Joystick, Fwd = ", fwdVelocity, ", Left = ", leftVelocity, ", Turn = ", turnRate, 
-        ", Robot Angle = ", Math.toDegrees(driveTrain.getPose().getRotation().getRadians()));
+        DataLogUtil.writeMessage("DriveWithJoysticksAdvanced: Joystick, Fwd =", fwdVelocity, ", Left =", leftVelocity, ", Turn =", turnRate, 
+        ", Robot Angle =", Math.toDegrees(driveTrain.getPose().getRotation().getRadians()));
       }
       
       driveTrain.drive(fwdVelocity, leftVelocity, turnRate, !reefBasedControl, false);

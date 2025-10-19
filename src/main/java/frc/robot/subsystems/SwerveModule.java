@@ -453,8 +453,8 @@ public class SwerveModule {
 	 */
   public void zeroDriveEncoder() {
     driveEncoderZero = getDriveEncoderRotations();
-    DataLogUtil.writeMessageEcho(buildString("SwerveModule ", swName), ": ZeroDriveEncoder, driveEncoderZero = ", driveEncoderZero, 
-    ", raw encoder = ", getDriveEncoderRotations(), ", encoder meters =", getDriveEncoderMeters());
+    DataLogUtil.writeMessageEcho(buildString("SwerveModule ", swName), ": ZeroDriveEncoder, driveEncoderZero =", driveEncoderZero, 
+    ", raw encoder =", getDriveEncoderRotations(), ", encoder meters =", getDriveEncoderMeters());
   }
 
   /**
@@ -500,8 +500,8 @@ public class SwerveModule {
    */
   public void calibrateTurningEncoderDegrees(double currentAngleDegrees) {
     turningEncoderZero = getTurningEncoderRaw() - (currentAngleDegrees / SwerveConstants.kTurningEncoderDegreesPerTick);
-    DataLogUtil.writeMessageEcho(buildString("SwerveModule ", swName), ": calibrateTurningEncoder, turningEncoderZero = ", turningEncoderZero, 
-    ", raw encoder = ", getTurningEncoderRaw(), ", set degrees = ", currentAngleDegrees, ", encoder degrees = ", getTurningEncoderDegrees());
+    DataLogUtil.writeMessageEcho(buildString("SwerveModule ", swName), ": calibrateTurningEncoder, turningEncoderZero =", turningEncoderZero, 
+    ", raw encoder =", getTurningEncoderRaw(), ", set degrees =", currentAngleDegrees, ", encoder degrees =", getTurningEncoderDegrees());
   }
 
   /**
@@ -541,8 +541,8 @@ public class SwerveModule {
     // System.out.println(swName + " " + turningOffsetDegrees);
     // turningCanCoder.configMagnetOffset(offsetDegrees, 100);
     cancoderZero = -offsetDegrees;
-    DataLogUtil.writeMessageEcho(buildString("SwerveModule ", swName), ": calibrateCanCoder, cancoderZero = ", cancoderZero, 
-    ", raw encoder = ", turningCanCoderPosition.refresh().getValueAsDouble() * 360.0, ", encoder degrees = ", getCanCoderDegrees());
+    DataLogUtil.writeMessageEcho(buildString("SwerveModule ", swName), ": calibrateCanCoder, cancoderZero =", cancoderZero, 
+    ", raw encoder =", turningCanCoderPosition.refresh().getValueAsDouble() * 360.0, ", encoder degrees =", getCanCoderDegrees());
   }
 
   /**

@@ -64,16 +64,16 @@ public class WristElevatorSafeMove extends Command {
   public void initialize() {
     if (!elevator.isElevatorCalibrated() || !wrist.isWristCalibrated()) {
       curState = MoveState.DONE_ERROR;
-      DataLogUtil.writeMessage("WristElevatorSafeMove: Init, Elev Calibrated = ", elevator.isElevatorCalibrated(),
-          ", Wrist Calibrated = ", wrist.isWristCalibrated(), ", Position = ", destPosition.toString(), ", Type = ", type.toString());
+      DataLogUtil.writeMessage("WristElevatorSafeMove: Init, Elev Calibrated =", elevator.isElevatorCalibrated(),
+          ", Wrist Calibrated =", wrist.isWristCalibrated(), ", Position =", destPosition.toString(), ", Type =", type.toString());
       return;
     }
 
     curRegion = ElevatorWristRegions.GetRegion(type, elevator.getElevatorPosition());
     destRegion = ElevatorWristRegions.GetRegion(type, destPosition.elevatorPosition);
 
-    DataLogUtil.writeMessage("WristElevatorSafeMove: Init, Calibrated = ", true, ", Type = ", type,
-    ", Dest Position = ", destPosition, ", Dest Region = ", destRegion, ", Cur Region = ", (curRegion != null ? curRegion.regionIndex : ""));
+    DataLogUtil.writeMessage("WristElevatorSafeMove: Init, Calibrated =", true, ", Type =", type,
+    ", Dest Position =", destPosition, ", Dest Region =", destRegion, ", Cur Region =", (curRegion != null ? curRegion.regionIndex : ""));
 
     double curWristAngle = wrist.getWristAngle();
     if (curWristAngle < curRegion.wristMin || curWristAngle > curRegion.wristMax) {
@@ -91,10 +91,10 @@ public class WristElevatorSafeMove extends Command {
     double curWristAngle = wrist.getWristAngle();
     double curElevPos = elevator.getElevatorPosition();
 
-    DataLogUtil.writeMessage("WristElevatorSafeMove: Execute, CurState = ", curState, 
-      ", Wrist Target = ", wrist.getCurrentWristTarget(), ", Wrist Angle = ", curWristAngle, 
-      ", Elev Target = ", elevator.getCurrentElevatorTarget(), ", Cur Elev Pos = ", curElevPos,
-      ", Cur Region = ", (curRegion != null ? curRegion.regionIndex : ""));
+    DataLogUtil.writeMessage("WristElevatorSafeMove: Execute, CurState =", curState, 
+      ", Wrist Target =", wrist.getCurrentWristTarget(), ", Wrist Angle =", curWristAngle, 
+      ", Elev Target =", elevator.getCurrentElevatorTarget(), ", Cur Elev Pos =", curElevPos,
+      ", Cur Region =", (curRegion != null ? curRegion.regionIndex : ""));
 
     switch (curState) {
       case DONE:
@@ -260,7 +260,7 @@ public class WristElevatorSafeMove extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DataLogUtil.writeMessage("WristElevatorSafeMove: End, Interrupted = ", interrupted, ", CurState = ", curState);
+    DataLogUtil.writeMessage("WristElevatorSafeMove: End, Interrupted =", interrupted, ", CurState =", curState);
 
     if (curState != MoveState.DONE) {
       // If there is an error (DONE_ERROR) of if this command is interrupted,

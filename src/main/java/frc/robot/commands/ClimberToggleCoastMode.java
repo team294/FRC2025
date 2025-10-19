@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Climber;
+import frc.robot.utilities.DataLogUtil;
 
 public class ClimberToggleCoastMode extends InstantCommand {
   Climber climber;
@@ -24,6 +25,7 @@ public class ClimberToggleCoastMode extends InstantCommand {
   @Override
   public void initialize() {
     climber.setCoastMode( !climber.getCoastMode());
+    DataLogUtil.writeMessage("ClimberToggleCoastMode: Init");
   }
 
   public boolean runsWhenDisabled() {

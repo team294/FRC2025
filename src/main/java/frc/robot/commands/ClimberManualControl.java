@@ -47,7 +47,7 @@ public class ClimberManualControl extends Command {
     climberPercent *= ClimberConstants.maxManualPercentOutput;
     climber.setClimberPercentOutput(climberPercent);
 
-    DataLogUtil.writeMessage("Climber Manual Control: Execute. Percent = ", climberPercent);
+    DataLogUtil.writeMessage("Climber Manual Control: Execute. Percent =", climberPercent);
   }
 
   // Called once the command ends or is interrupted.

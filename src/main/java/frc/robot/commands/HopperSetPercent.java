@@ -49,7 +49,7 @@ public class HopperSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Hopper Percent", 0.0);
     hopper.setHopperPercentOutput(percent);
 
-    DataLogUtil.writeMessage("Hopper Set Percent: Init, Percent = ", percent);
+    DataLogUtil.writeMessage("Hopper Set Percent: Init, Percent =", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -49,7 +49,7 @@ public class ClimberCalibrateManual extends InstantCommand {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Manual Calibration Value", 0);
     climber.calibrateClimberEncoder(angle);
 
-    DataLogUtil.writeMessage("ClimberCalibrateManual: Init, Angle = ", angle);
+    DataLogUtil.writeMessage("ClimberCalibrateManual: Init, Angle =", angle);
   }
 
   public boolean runsWhenDisabled() {

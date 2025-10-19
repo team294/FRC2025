@@ -30,7 +30,7 @@ public class DriveSetFOC extends Command {
   @Override
   public void initialize() {
     driveTrain.setDriveMotorsFOC(setFOC);
-    DataLogUtil.writeMessage("DriveSetFOC: Init, FOC Mode = ", setFOC);
+    DataLogUtil.writeMessage("DriveSetFOC: Init, FOC Mode =", setFOC);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

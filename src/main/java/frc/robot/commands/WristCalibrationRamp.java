@@ -38,7 +38,7 @@ public class WristCalibrationRamp extends Command {
   public void initialize() {
     percent = 0.0;
     wrist.enableFastLogging(true);
-    DataLogUtil.writeMessage("WristCalibrationRamp: Init, rate = ", rate, ", maxPercent = ", maxPercent);
+    DataLogUtil.writeMessage("WristCalibrationRamp: Init, rate =", rate, ", maxPercent =", maxPercent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

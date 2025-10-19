@@ -50,7 +50,7 @@ public class DriveCalibration extends Command {
     driveTrain.setVisionForOdometryState(false);    // Only use wheel encoders to track the robot for this command
     driveTrain.enableFastLogging(true);
 
-    DataLogUtil.writeMessage("DriveCalibration: Init, maxPctOut: ", maxPercentOutput, ", rampTime: ", endTime, ", rampRate: ", rampRate);
+    DataLogUtil.writeMessage("DriveCalibration: Init, maxPctOut =", maxPercentOutput, ", rampTime =", endTime, ", rampRate =", rampRate);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
