@@ -17,10 +17,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.*;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StructLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.Ports;
@@ -84,6 +90,20 @@ public class SwerveModule {
   private final SimpleMotorFeedforward driveFeedforward;
   private double priorDriveVelocity = 0;  // Last requested drive speed (m/sec)
   private boolean inVelocityMode = true;  // true = last drive request was velocity control (or stopped), false = last drive request was direct non-zero voltage control
+
+  // Data logging variables
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogCCAngle;
+  private final DoubleLogEntry dLogCCTurnRate;
+  private final DoubleLogEntry dLogFXAngle;
+  private final DoubleLogEntry dLogFXTurnRate;
+  private final DoubleLogEntry dLogTurnTemp;
+  private final DoubleLogEntry dLogTurnOutput;
+  private final DoubleLogEntry dLogDriveTemp;
+  private final DoubleLogEntry dLogDriveOutput;
+  private final DoubleLogEntry dLogDriveDist;
+  private final DoubleLogEntry dLogDriveSpeed;
+
 
   /**
    * Constructs a SwerveModule.
@@ -204,6 +224,22 @@ public class SwerveModule {
 
     // Other configs for drive and turning motors
     setMotorModeCoast(false); // false on boot up, so robot starts quickly in auto. Set to false in autoInit or teleopInit, but true when disabled.
+
+    // Create logfile entries
+    dLogCCAngle = new DoubleLogEntry(log, StringUtil.buildString("/DriveTrain/Swerve", swName, "/CCAngleDeg"));
+    dLogCCTurnRate = new DoubleLogEntry(log, StringUtil.buildString("/DriveTrain/Swerve", swName, "/CCAngleRateDPS"));
+    dLogFXAngle = new DoubleLogEntry(log, StringUtil.buildString("/DriveTrain/Swerve", swName, "/FXSngleDeg"));
+    dLogFXTurnRate = new DoubleLogEntry(log, StringUtil.buildString("/DriveTrain/Swerve", swName, "/FXAngleRateDPS"));
+    dLogTurnTemp = new DoubleLogEntry(log, StringUtil.buildString("/DriveTrain/Swerve", swName, "/TurnTemp"));
+    dLogTurnOutput = new DoubleLogEntry(log, StringUtil.buildString("/DriveTrain/Swerve", swName, "/TurnOutput"));
+    dLogDriveTemp = new DoubleLogEntry(log, StringUtil.buildString("/DriveTrain/Swerve", swName, "/DriveTemp"));
+    dLogDriveOutput = new DoubleLogEntry(log, StringUtil.buildString("/DriveTrain/Swerve", swName, "/DriveOutput"));
+    dLogDriveDist = new DoubleLogEntry(log, StringUtil.buildString("/DriveTrain/Swerve", swName, "/DriveDistMeters"));
+    dLogDriveSpeed = new DoubleLogEntry(log, StringUtil.buildString("/DriveTrain/Swerve", swName, "/DriveSpeedMPS"));
+
+    // Prime the DataLog to reduce delay when first enabling the robot
+    long timeNow = RobotController.getFPGATime();
+    updateSwerveLog(timeNow);
   }
 
   // ********** Swerve module configuration methods
@@ -578,22 +614,19 @@ public class SwerveModule {
   }
 
   /**
-   * Builds information about the swerve module to include in the log.
-   * Format of the return string is comma-delimited name-value pairs, <b>without</b> the final comma.
-   * EX: "name1,value1,name2,value2"
+   * Writes swerve module data to the logfile
+   * @param timeNow Timestamp for logging data
    */
-  public String getLogString() {
-    return buildString(
-      swName, " CCangle deg,", getCanCoderDegrees(), ",",
-      swName, " CCangle DPS,", getCanCoderVelocityDPS(), ",",
-      swName, " FXangle deg,", MathBCR.normalizeAngle(getTurningEncoderDegrees()), ",",
-      swName, " FXangle DPS,", getTurningEncoderVelocityDPS(), ",",
-      swName, " turn output,", getTurningOutputPercent(), ",",
-      swName, " drive meters,", getDriveEncoderMeters(), ",",
-      swName, " drive mps,", getDriveEncoderVelocity(), ",",
-      swName, " drive output,", getDriveOutputPercent(), ",",
-      swName, " drive temp,", getDriveTemp(), ",",
-      swName, " turn temp,", getTurningTemp()
-    );
+  public void updateSwerveLog(long timeNow) {
+    dLogCCAngle.append(getCanCoderDegrees(), timeNow);
+    dLogCCTurnRate.append(getCanCoderVelocityDPS(), timeNow);
+    dLogFXAngle.append(MathBCR.normalizeAngle(getTurningEncoderDegrees()), timeNow);
+    dLogFXTurnRate.append(getTurningEncoderVelocityDPS(), timeNow);
+    dLogTurnTemp.append(getTurningTemp(), timeNow);
+    dLogTurnOutput.append(getTurningOutputPercent(), timeNow);
+    dLogDriveTemp.append(getDriveTemp(), timeNow);
+    dLogDriveOutput.append(getDriveOutputPercent(), timeNow);
+    dLogDriveDist.append(getDriveEncoderMeters(), timeNow);
+    dLogDriveSpeed.append(getDriveEncoderVelocity(), timeNow);
   }
 }

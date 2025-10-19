@@ -670,14 +670,12 @@ public class DriveTrain extends SubsystemBase implements Loggable {
       dLogDriveXVelocity.append(robotSpeeds.vxMetersPerSecond, timeNow);
       dLogDriveYVelocity.append(robotSpeeds.vyMetersPerSecond, timeNow);
       dLogBusVoltage.append(swerveFrontLeft.getDriveBusVoltage(), timeNow);
-    }
 
-    DataLogUtil.writeMessage("Drive: Update Swerve Module Variables",
-      swerveFrontLeft.getLogString(),
-      swerveFrontRight.getLogString(),
-      swerveBackLeft.getLogString(),
-      swerveBackRight.getLogString()
-    );
+      swerveFrontLeft.updateSwerveLog(timeNow);
+      swerveFrontRight.updateSwerveLog(timeNow);
+      swerveBackLeft.updateSwerveLog(timeNow);
+      swerveBackRight.updateSwerveLog(timeNow);
+    }
     
   }
 
@@ -736,7 +734,6 @@ public class DriveTrain extends SubsystemBase implements Loggable {
             SmartDashboard.putNumber("Vision " + camera.getCameraName() + " X", camPose.estimatedPose.toPose2d().getX());
             SmartDashboard.putNumber("Vision " + camera.getCameraName() + " Y", camPose.estimatedPose.toPose2d().getY());
             SmartDashboard.putNumber("Vision " + camera.getCameraName() + " rot", camPose.estimatedPose.toPose2d().getRotation().getDegrees());
-            camera.dLogEstPose2D.append(camPose.estimatedPose.toPose2d());
   
             // Only run camera updates for pose estimator if useVisionForOdometry is true
             if (camResult.hasTargets() && useVisionForOdometry) {
