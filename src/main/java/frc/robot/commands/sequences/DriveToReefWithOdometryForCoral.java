@@ -45,6 +45,7 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
       case L4:
         distance = DriveConstants.distanceFromReefToScoreL4;
         break;
+      default:
         distance = DriveConstants.distanceFromReefToScore;
     }
     
