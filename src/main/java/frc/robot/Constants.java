@@ -268,8 +268,8 @@ public final class Constants {
 
     // Calculated by measuring y distance between center of reef wall and reef pole (6.469731 in), converted to meters
     public static final double ReefScoringPositionAprilTagOffset = 0.164331496063;
-    // Calculated by adding tag -> branch to branch -> edge
-    public static final double ReefScoringPositionAprilTagOffsetL1 = ReefScoringPositionAprilTagOffset + Units.inchesToMeters(12.05);
+    // Calculated by adding tag -> branch to branch -> edge, then subtracting 2 inches from testing in lab (calculated number is above constant + 12.05in)
+    public static final double ReefScoringPositionAprilTagOffsetL1 = ReefScoringPositionAprilTagOffset + Units.inchesToMeters(10.05);
 
     public static final double bargeScorableWidth = 3.3;  // Width of alliance barge structure (not net) is 3.72 meters, reduced for consistency CALIBRATED 4/12/2025
     public static final double bargeScoringOffset = 1.08; // CALIBRATED 4/12/2025

@@ -37,7 +37,16 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
    * @param rightJoystick Right joystick
    */
   public DriveToReefWithOdometryForCoral(ReefLevel level, DriveTrain driveTrain, Field field, Joystick rightJoystick) {
-    final double distance = (level == ReefLevel.L4) ? DriveConstants.distanceFromReefToScoreL4 : DriveConstants.distanceFromReefToScore;
+    final double distance;
+    switch (level) {
+      case L1:
+        distance = 0.0;
+        break;
+      case L4:
+        distance = DriveConstants.distanceFromReefToScoreL4;
+        break;
+        distance = DriveConstants.distanceFromReefToScore;
+    }
     
     addCommands(
       new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
@@ -119,7 +128,17 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
    * @param field Field utility
    */
   public DriveToReefWithOdometryForCoral(ReefLevel level, ReefLocation location, DriveTrain driveTrain, Field field) {
-    final double distance = (level == ReefLevel.L4) ? DriveConstants.distanceFromReefToScoreL4 : DriveConstants.distanceFromReefToScore;
+    final double distance;
+    switch (level) {
+      case L1:
+        distance = 0.0;
+        break;
+      case L4:
+        distance = DriveConstants.distanceFromReefToScoreL4;
+        break;
+      default:
+        distance = DriveConstants.distanceFromReefToScore;
+    }
     
     addCommands(
       new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
