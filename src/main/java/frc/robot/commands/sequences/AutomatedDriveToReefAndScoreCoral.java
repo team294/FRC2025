@@ -87,9 +87,15 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
                       ),
                       runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTOMATED_DRIVING_REEF)),
                       deadline(
-                        new WaitUntilCommand( () -> (driveTrain.getPose().minus(field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
+                        either(
+                          new WaitUntilCommand( () -> (driveTrain.getPose().minus(field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
                                                       new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, 
                                                       new Rotation2d(0)))).getTranslation().getNorm() <= DriveConstants.distanceFromReefToElevate)),
+                          new WaitUntilCommand( () -> (driveTrain.getPose().minus(field.getNearestReefScoringPositionWithOffsetL1(driveTrain.getPose(), 
+                                                      new Transform2d((-RobotDimensions.robotWidth / 2.0) - DriveConstants.distanceFromReefToScore, 0, 
+                                                      new Rotation2d(0)))).getTranslation().getNorm() <= DriveConstants.distanceFromReefToElevate)),
+                          () -> level != ReefLevel.L1
+                        ),
 
                         new WristElevatorSafeMove(level==ReefLevel.L1 ? ElevatorWristPosition.CORAL_L1 : ElevatorWristPosition.CORAL_L2, RegionType.CORAL_ONLY, elevator, wrist)
                       ),
@@ -112,7 +118,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
                 () -> DriverStation.isAutonomous()
               ),
 
-              // If not scoring on L4, drive forward to get to the reef
+              // If scoring on L1, drive forward to get to the reef
               either(
                 new DriveToPose(CoordType.kRelative, () -> new Pose2d(DriveConstants.distanceFromReefToScore, 0, new Rotation2d(0)),
                     0.5, 1.0, 

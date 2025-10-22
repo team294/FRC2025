@@ -50,27 +50,48 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
                       (-rightJoystick.getX() > OIConstants.joystickJoggingDeadband && 
                       new Transform2d(field.getNearestAprilTagReef(driveTrain.getPose()), driveTrain.getPose()).getY() > 0))),
 
-            //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus a constant
-            new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
+            // Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's
+            // width plus a constant (determined by scoring level, since L1 is different from L2, L3, and L4)
+            either(
+              new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
                 new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)))), 
-                0.02, 1, driveTrain)
+                0.02, 1, driveTrain),
+              new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffsetL1(driveTrain.getPose(), 
+                new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)))), 
+                0.02, 1, driveTrain),
+             () -> level != ReefLevel.L1
+            )
           )
       ),
 
       //Joystick has been pushed opposite to the robot's position on the reef, determine the opposite reef position and switch to it
       either(
         sequence(
-          //Drives to nearest left scoring position (offset off the wall half the robot's width plus a constant)
-          new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
+          // Drives to the nearest left position (on the wall), with an offset of half the robot's
+          // width plus a constant (determined by scoring level, since L1 is different from L2, L3, and L4)
+          either (
+            new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
                         new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)), true)), 
-                        0.02, 1, driveTrain)
+                        0.02, 1, driveTrain),
+            new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffsetL1(driveTrain.getPose(), 
+                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)), true)), 
+                        0.02, 1, driveTrain),
+            () -> level != ReefLevel.L1
+          )
         ),
         either(
           sequence(
-            //Drives to nearest right scoring position (offset off the wall half the robot's width a constant)
-            new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
+            // Drives to the nearest right position (on the wall), with an offset of half the robot's
+            // width plus a constant (determined by scoring level, since L1 is different from L2, L3, and L4)
+            either (
+              new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffset(driveTrain.getPose(), 
                         new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)), false)), 
-                        0.02, 1, driveTrain) 
+                        0.02, 1, driveTrain),
+              new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestReefScoringPositionWithOffsetL1(driveTrain.getPose(), 
+                        new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)), false)), 
+                        0.02, 1, driveTrain),
+              () -> level != ReefLevel.L1
+            )
           ),
           sequence(
             // If you are at the same position the joystick is at, or the joystick is in the deadband (Which shouldn't occur, as these have to be false for this section to run), do nothing
@@ -104,10 +125,16 @@ public class DriveToReefWithOdometryForCoral extends SequentialCommandGroup {
       new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "Start"),
 
       //Drives to the nearest scoring position (which is on the wall), with an offset of half the robot's width plus a constant
-      new DriveToPose(CoordType.kAbsolute, () -> (field.getReefScoringPositionWithOffset(location, 
+      either(
+        new DriveToPose(CoordType.kAbsolute, () -> (field.getReefScoringPositionWithOffset(location, 
                 new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)))), 
                 0.02, 1, driveTrain),
-        
+        new DriveToPose(CoordType.kAbsolute, () -> (field.getReefScoringPositionWithOffsetL1(location, 
+                new Transform2d((-RobotDimensions.robotWidth / 2.0) - distance, 0, new Rotation2d(0)))), 
+                0.02, 1, driveTrain),
+        () -> level != ReefLevel.L1
+      ),
+      
       new DataLogMessage(false, "DriveToReefWithOdometryForCoral", "End")
     );
   }
