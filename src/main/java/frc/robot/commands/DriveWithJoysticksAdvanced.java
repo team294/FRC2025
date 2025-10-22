@@ -47,7 +47,6 @@ public class DriveWithJoysticksAdvanced extends Command {
   private boolean fineControl;
 
   private final DataLog log = DataLogManager.getLog();
-  long timeNow = RobotController.getFPGATime();
   private final DoubleLogEntry dLogFwdVelo = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Forward Velocity");
   private final DoubleLogEntry dLogLeftVelo = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Left Velocity");
   private final DoubleLogEntry dLogNextTurnRate = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Next Turn Rate");
@@ -74,6 +73,15 @@ public class DriveWithJoysticksAdvanced extends Command {
     logRotationKey = DataLogUtil.allocateLogRotation();
 
     addRequirements(driveTrain);
+
+    // Prime DataLog at boot time
+    long timeNow = RobotController.getFPGATime();
+    dLogFwdVelo.append(-1, timeNow);
+    dLogLeftVelo.append(-1, timeNow);
+    dLogNextTurnRate.append(-1, timeNow);
+    dLogRobotAngle.append(-1, timeNow);
+    dLogRobotGoalAngle.append(-1, timeNow);
+    dLogRobotStopped.append(true, timeNow);
   }
 
   @Override
@@ -236,6 +244,7 @@ public class DriveWithJoysticksAdvanced extends Command {
     }
 
     if (DataLogUtil.isMyLogRotation(logRotationKey)) {
+      long timeNow = RobotController.getFPGATime();
       dLogFwdVelo.append(fwdVelocity, timeNow);
       dLogLeftVelo.append(leftVelocity, timeNow);
       dLogNextTurnRate.append(turnRate, timeNow);

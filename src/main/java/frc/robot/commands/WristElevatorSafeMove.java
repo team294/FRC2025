@@ -68,9 +68,17 @@ public class WristElevatorSafeMove extends Command {
     this.type = type;
     this.elevator = elevator;
     this.wrist = wrist;
-    
 
     addRequirements(elevator, wrist);
+
+    // Prime DataLog at boot time
+    timeNow = RobotController.getFPGATime();
+    dLogIsElevatorCalibrated.append(elevator.isElevatorCalibrated(), timeNow);
+    dLogIsWristCalibrated.append(wrist.isWristCalibrated(), timeNow);
+    dLogWristTargetAngle.append(wrist.getCurrentWristTarget(), timeNow);
+    dLogElevTargetPos.append(elevator.getCurrentElevatorTarget(), timeNow);
+    dLogCurWristAngle.append(wrist.getWristAngle(), timeNow);
+    dLogCurElevPos.append(elevator.getElevatorPosition(), timeNow);
   }
 
   // Called when the command is initially scheduled.
@@ -117,7 +125,6 @@ public class WristElevatorSafeMove extends Command {
     dLogWristTargetAngle.append(wrist.getCurrentWristTarget(), timeNow);
     dLogElevTargetPos.append(elevator.getCurrentElevatorTarget(), timeNow);
     dLogCurWristAngle.append(curWristAngle, timeNow);
-    dLogCurWristAngle.append(curElevPos, timeNow);
     dLogCurElevPos.append(curElevPos, timeNow);
 
     switch (curState) {
