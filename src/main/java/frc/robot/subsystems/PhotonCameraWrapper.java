@@ -39,8 +39,8 @@ public class PhotonCameraWrapper extends SubsystemBase {
   // Create Data Log Entries
   private final DataLog log = DataLogManager.getLog();
   private final StructLogEntry<Pose2d> dLogEstPose2D;
-  private final BooleanLogEntry dLogConnected = new BooleanLogEntry(log, StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/Connected") );
-  private final BooleanLogEntry dLogTagPresent = new BooleanLogEntry(log, StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/TagPresent") );
+  private final BooleanLogEntry dLogConnected;
+  private final BooleanLogEntry dLogTagPresent;
   private boolean priorConnected, priorTagPresent;
 
 
@@ -51,6 +51,8 @@ public class PhotonCameraWrapper extends SubsystemBase {
     this.cameraName = cameraName;
 
     dLogEstPose2D = StructLogEntry.create(log, StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/estPose2d"), Pose2d.struct);
+    dLogConnected = new BooleanLogEntry(log, StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/Connected") );
+    dLogTagPresent = new BooleanLogEntry(log, StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/TagPresent") );
   }
 
   /**
