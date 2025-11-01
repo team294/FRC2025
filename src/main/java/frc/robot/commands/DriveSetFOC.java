@@ -17,7 +17,6 @@ public class DriveSetFOC extends Command {
    * <p><b>NOTE:</b> This takes effect for the <b>next</b> request sent to the motor.
    * @param setFOC true = FOC mode, false = trapezoidal mode
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveSetFOC(boolean setFOC, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -31,7 +30,7 @@ public class DriveSetFOC extends Command {
   @Override
   public void initialize() {
     driveTrain.setDriveMotorsFOC(setFOC);
-    DataLogUtil.writeLog(true, "DriveSetFOC", "Initialize", "FOC Mode", setFOC);
+    DataLogUtil.writeMessage("DriveSetFOC: Init, FOC Mode =", setFOC);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

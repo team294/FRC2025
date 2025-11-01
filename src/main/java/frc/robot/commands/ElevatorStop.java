@@ -22,7 +22,7 @@ public class ElevatorStop extends Command {
   @Override
   public void initialize() {
     elevator.stopElevatorMotors();
-    DataLogUtil.writeLog(false, "ElevatorStop", "Init");
+    DataLogUtil.writeMessage("ElevatorStop: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,6 +33,7 @@ public class ElevatorStop extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    DataLogUtil.writeMessage("ElevatorStop: End");
   }
 
   // Returns true when the command should end.

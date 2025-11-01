@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ClimberConstants.ServoPosition;
 import frc.robot.subsystems.Climber;
+import frc.robot.utilities.DataLogUtil;
 
 public class ClimberSetServoPosition extends Command {
   private final Climber climber;
@@ -60,6 +61,8 @@ public class ClimberSetServoPosition extends Command {
 
     // Set servo position to UNKNOWN while moving
     climber.setRatchetPositionVariable(ClimberConstants.ServoPosition.UNKNOWN);
+
+    DataLogUtil.writeMessage("ClimberSetServoPosition: Start, target position =", position);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -75,6 +78,8 @@ public class ClimberSetServoPosition extends Command {
     }
     timer.stop();
     timer.reset();
+
+    DataLogUtil.writeMessage("ClimberSetServoPosition: End");
   }
 
   // Returns true when the command should end.

@@ -26,7 +26,7 @@ public class CoralEffectorStop extends Command {
   @Override
   public void initialize() {
     coralEffector.stopCoralEffectorMotor();
-    DataLogUtil.writeLog(false, "CoralEffectorStop", "Init");
+    DataLogUtil.writeMessage("CoralEffectorStop: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

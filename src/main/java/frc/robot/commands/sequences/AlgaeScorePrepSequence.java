@@ -24,10 +24,14 @@ import frc.robot.utilities.ElevatorWristRegions.RegionType;
 public class AlgaeScorePrepSequence extends SequentialCommandGroup {
   public AlgaeScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber) {
     addCommands(
+      new DataLogMessage(false, "AlgaeScorePrepSequence: Start"),
+      
       parallel(
         new WristElevatorSafeMove(position, RegionType.STANDARD, elevator, wrist),
         runOnce(() -> algaeGrabber.setNetScoreMode(position != ElevatorWristPosition.ALGAE_PROCESSOR))
-      )
+      ),
+
+      new DataLogMessage(false, "AlgaeScorePrepSequence: End")
     );
   }
 }

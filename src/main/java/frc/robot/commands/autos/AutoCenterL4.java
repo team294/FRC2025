@@ -18,6 +18,7 @@ import frc.robot.Constants.FieldConstants.ReefLevel;
 import frc.robot.Constants.RobotDimensions;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.CoralEffectorOuttake;
+import frc.robot.commands.DataLogMessage;
 import frc.robot.commands.DriveResetPose;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.VisionOdometryStateSet;
@@ -37,6 +38,7 @@ import frc.robot.utilities.Field;
 public class AutoCenterL4 extends SequentialCommandGroup {
   public AutoCenterL4(DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Field field, Joystick rightJoystick, AllianceSelection allianceSelection) {
     addCommands(
+      new DataLogMessage(false, "AutoCenterL4: Start"),
 
       // Turn on vision odometry
       new VisionOdometryStateSet(true, driveTrain),
@@ -76,7 +78,9 @@ public class AutoCenterL4 extends SequentialCommandGroup {
           true, true, driveTrain),
 
       // Move elevator back down
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
+      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
+
+      new DataLogMessage(false, "AutoCenterL4: End")
     );
   }
 }

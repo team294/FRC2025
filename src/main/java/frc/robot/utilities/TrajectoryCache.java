@@ -53,7 +53,6 @@ import frc.robot.Constants.FieldConstants;
 
     /**
      * Load all trajectories when the robot starts up into a cache for trajectory-following commands.
-     * @param log
      */
     public TrajectoryCache() {
         

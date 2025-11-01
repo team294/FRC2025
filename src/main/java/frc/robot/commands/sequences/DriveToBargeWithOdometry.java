@@ -26,12 +26,16 @@ public class DriveToBargeWithOdometry extends SequentialCommandGroup {
    */
   public DriveToBargeWithOdometry(DriveTrain driveTrain, Field field) {
     addCommands(
+      new DataLogMessage(false, "DriveToBargeWithOdometry: Start"),
+
       parallel(
         new DriveToPose(CoordType.kAbsolute, () -> (field.getNearestBargeScoringPosition(driveTrain.getPose())), 
         0.02, 1, driveTrain),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.AUTOMATED_DRIVING_BARGE))
       ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))
+      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+
+      new DataLogMessage(false, "DriveToBargeWithOdometry: End")
     );
   }
 }

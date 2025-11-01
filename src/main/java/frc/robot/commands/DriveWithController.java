@@ -11,7 +11,6 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.AllianceSelection;
-import frc.robot.utilities.DataLogUtil;
 
 public class DriveWithController extends Command {
   private DriveTrain driveTrain;
@@ -26,7 +25,6 @@ public class DriveWithController extends Command {
    * @param xboxController Xbox controller. Left joystick X and Y axis control robot movement, relative to the field from the 
    *   perspective of the current Alliance's driver station. Right joystick X-axis controls robot rotation.
    * @param allianceSelection AllianceSelection utility
-   * @param log FileLog utility
    */
   public DriveWithController(DriveTrain driveTrain, CommandXboxController xboxController, AllianceSelection allianceSelection) {
     this.driveTrain = driveTrain;
@@ -39,7 +37,6 @@ public class DriveWithController extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogUtil.writeLog(false, "DriveWithController", "Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

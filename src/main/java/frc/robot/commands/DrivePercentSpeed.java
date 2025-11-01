@@ -29,7 +29,6 @@ public class DrivePercentSpeed extends Command {
    * @param percentSpeed robot percent voltage, from -1 to +1 (positive = in direction of angleFacing, negative = opposite direction)
    * @param maxDistance maximum distance for the robot to travel before ending this command, in meters
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
    public DrivePercentSpeed(double angleFacing, double percentSpeed, double maxDistance, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -47,7 +46,6 @@ public class DrivePercentSpeed extends Command {
    * Waits 1 second to align wheel facings prior to starting robot movement.
    * Parameters angleFacing, percentSpeed, and maxDistance are chosen from Shuffleboard.
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DrivePercentSpeed(DriveTrain driveTrain){
     this.driveTrain = driveTrain;
@@ -88,14 +86,14 @@ public class DrivePercentSpeed extends Command {
       percentSpeed = SmartDashboard.getNumber("DrivePercentSpeed percent", 0);
     }
 
-    DataLogUtil.writeLog(false, "DrivePercentSpeed", "Initialize", 
-      "Angle Facing Desired", angleFacing, "Percent Speed Deisred", percentSpeed, "Max Distance", maxDistance);
+    DataLogUtil.writeMessage("DrivePercentSpeed: Init, Angle Facing Desired =", angleFacing, ", Percent Speed Deisred =", 
+      percentSpeed, ", Max Distance =", maxDistance);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // DataLogUtil.writeLog(false, "DrivePercentSpeed", "execute");
+    // DataLogUtil.writeMessage("DrivePercentSpeed: Execute");
     curDistance = driveTrain.getPose().relativeTo(poseStart).getTranslation().getNorm();
     SmartDashboard.putNumber("DrivePercentSpeed curDistance", curDistance);
     
@@ -116,7 +114,7 @@ public class DrivePercentSpeed extends Command {
     timer.stop();
     SignalLogger.stop();
 
-    DataLogUtil.writeLog(false, "DrivePercentSpeed", "End", "curDistance", curDistance);
+    DataLogUtil.writeMessage("DrivePercentSpeed: End, curDistance =", curDistance);
   }
 
   // Returns true when the command should end.

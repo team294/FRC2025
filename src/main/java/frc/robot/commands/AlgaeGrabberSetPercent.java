@@ -18,7 +18,6 @@ public class AlgaeGrabberSetPercent extends Command {
   /**
    * Sets the percent output of the algaeGrabber from Shuffleboard and ends immediately.
    * @param algaeGrabber AlgaeGrabber subsystem
-   * @param log FileLog utility
    */
   public AlgaeGrabberSetPercent(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
@@ -35,7 +34,6 @@ public class AlgaeGrabberSetPercent extends Command {
    * Sets the percent output of the algaeGrabber and ends immediately.
    * @param percent -1.0 to 1.0 (positive = intake, negative = outtake)
    * @param algaeGrabber AlgaeGrabber subsystem
-   * @param log FileLog utility
    */
   public AlgaeGrabberSetPercent(double percent, AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
@@ -51,7 +49,7 @@ public class AlgaeGrabberSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("AlgaeGrabber Percent", 0.0);
     algaeGrabber.setAlgaeGrabberPercentOutput(percent);
 
-    DataLogUtil.writeLog(false, "AlgaeGrabberSetPercent", "Init", "Percent", percent);
+    DataLogUtil.writeMessage("AlgaeGrabberSetPercent: Init, Percent =", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -62,6 +60,7 @@ public class AlgaeGrabberSetPercent extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    DataLogUtil.writeMessage("AlgaeGrabberSetPercent: End");
   }
 
   // Returns true when the command should end.

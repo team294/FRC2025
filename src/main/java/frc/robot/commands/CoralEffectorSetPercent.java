@@ -18,7 +18,6 @@ public class CoralEffectorSetPercent extends Command {
   /**
    * Sets the percent output of the coralEffector from Shuffleboard and ends immediately.
    * @param coralEffector CoralEffector subsystem
-   * @param log FileLog utility
    */
   public CoralEffectorSetPercent(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
@@ -51,7 +50,7 @@ public class CoralEffectorSetPercent extends Command {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("CoralEffector Goal Percent", 0.0);
     coralEffector.setCoralEffectorPercentOutput(percent);
 
-    DataLogUtil.writeMessage("CoralEffectorSetPercent: Init, Percent = ", percent);
+    DataLogUtil.writeMessage("CoralEffectorSetPercent: Init, Percent =", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

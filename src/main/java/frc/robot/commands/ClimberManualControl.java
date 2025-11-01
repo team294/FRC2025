@@ -34,7 +34,7 @@ public class ClimberManualControl extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogUtil.writeLog(false, "ClimberManualControl", "Init");
+    DataLogUtil.writeMessage("ClimberManualControl: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,7 +47,7 @@ public class ClimberManualControl extends Command {
     climberPercent *= ClimberConstants.maxManualPercentOutput;
     climber.setClimberPercentOutput(climberPercent);
 
-    DataLogUtil.writeMessage("Climber Manual Control: Execute. Percent = ", climberPercent);
+    DataLogUtil.writeMessage("Climber Manual Control: Execute. Percent =", climberPercent);
   }
 
   // Called once the command ends or is interrupted.

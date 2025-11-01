@@ -15,7 +15,6 @@ public class DriveStop extends Command {
   /**
    * Stops all of the driveTrain motors.
    * @param drivetrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveStop(DriveTrain drivetrain) {
     this.drivetrain = drivetrain;
@@ -26,7 +25,7 @@ public class DriveStop extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogUtil.writeLog(false, "DriveStop", "Stopping Motors");
+    DataLogUtil.writeMessage("DriveStop: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,6 +37,7 @@ public class DriveStop extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    DataLogUtil.writeMessage("DriveStop: End");
   }
 
   // Returns true when the command should end.

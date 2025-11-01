@@ -37,7 +37,7 @@ public class CoralEffectorOuttake extends Command {
       !coralEffector.getL1or4ScoreMode() ? CoralEffectorConstants.fastOuttakePercent : CoralEffectorConstants.outtakePercent
     );
 
-    DataLogUtil.writeMessage("CoralEffectorOuttake: Init, Coral in = ", coralEffector.isCoralPresent());
+    DataLogUtil.writeMessage("CoralEffectorOuttake: Init, Coral in =", coralEffector.isCoralPresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

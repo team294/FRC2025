@@ -23,7 +23,6 @@ public class WristCalibrationRamp extends Command {
    * @param rate rate to increase wrist percent output, in percent (-1 down to +1 up) per second
    * @param maxPercent stop command when wrist percent output (abs value) reaches this value (0 -> 1)
    * @param wrist Wrist subsytsem
-   * @param log FileLog utility
    */
   public WristCalibrationRamp(double rate, double maxPercent, Wrist wrist) {
     this.wrist = wrist;
@@ -39,8 +38,7 @@ public class WristCalibrationRamp extends Command {
   public void initialize() {
     percent = 0.0;
     wrist.enableFastLogging(true);
-    DataLogUtil.writeLog(false, "WristCalibrationRamp", "Init",
-      "rate", rate, "maxPercent", maxPercent);
+    DataLogUtil.writeMessage("WristCalibrationRamp: Init, rate =", rate, ", maxPercent =", maxPercent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -56,7 +54,7 @@ public class WristCalibrationRamp extends Command {
   public void end(boolean interrupted) {
     wrist.stopWrist();
     wrist.enableFastLogging(false);
-    DataLogUtil.writeLog(false, "WristCalibrationRamp", "End");
+    DataLogUtil.writeMessage("WristCalibrationRamp: End");
   }
 
   // Returns true when the command should end.

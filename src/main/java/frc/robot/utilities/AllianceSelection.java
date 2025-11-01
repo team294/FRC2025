@@ -44,10 +44,10 @@ public class AllianceSelection {
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
       setAlliance(ally.get());
-      DataLogUtil.writeLogEcho(true, "Alliance Selection", "Initialize", "Alliance from DriverStation", alliance.name());
+      DataLogUtil.writeMessageEcho("Alliance Selection: Init, Alliance from DriverStation =", alliance.name());
     } else {
       setAlliance(Alliance.Blue);
-      DataLogUtil.writeLogEcho(true, "Alliance Selection", "Initialize", "DriverStation not present - default to Blue", alliance.name());
+      DataLogUtil.writeMessageEcho("Alliance Selection: Init, DriverStation not present - default to Blue. ", alliance.name());
     }
   }
 
@@ -57,8 +57,7 @@ public class AllianceSelection {
    */
   public void setAlliance(Alliance alliance) {
     this.alliance = alliance;
-    DataLogUtil.writeLogEcho(true, "Alliance Selection", "SetAlliance", 
-        "Alliance Chooser", allianceChooser.getSelected().name(), "Alliance", alliance.name());
+    DataLogUtil.writeMessageEcho("Alliance Selection: SetAlliance, Alliance Chooser =", allianceChooser.getSelected().name(), ", Alliance =", alliance.name());
 
     SmartDashboard.putBoolean("Alliance Blue", alliance != Alliance.Red);
     SmartDashboard.putBoolean("Alliance Red", alliance != Alliance.Blue);

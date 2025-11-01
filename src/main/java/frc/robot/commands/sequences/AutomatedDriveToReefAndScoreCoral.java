@@ -189,7 +189,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
   public AutomatedDriveToReefAndScoreCoral(ReefLocation location, boolean score, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
       AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, Field field) {
     addCommands(
-      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: Start"),
+      new DataLogMessage(false, "Autonomous AutomatedDriveToReefAndScoreCoral: Init"),
       parallel(
         sequence(
           // Drive to specific reef location position
@@ -266,7 +266,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
       
       runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
 
-      new DataLogMessage(false, "AutomatedDriveToReefAndScoreCoral: End")
+      new DataLogMessage(false, "Autonomous AutomatedDriveToReefAndScoreCoral: End")
     );
   }
 }

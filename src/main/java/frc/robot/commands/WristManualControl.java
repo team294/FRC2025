@@ -4,6 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.WristConstants;
@@ -17,11 +21,14 @@ public class WristManualControl extends Command {
   
   private boolean rightJoystick;
 
+  // Variables for DataLogging
+  private final DataLog log = DataLogManager.getLog();
+  private final DoubleLogEntry dLogPct = new DoubleLogEntry(log, "/WristManualControl/WristPercent");
+
   /**
    * Controls the wrist using the Xbox controller joysticks.
    * @param xboxController Xbox controller
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    * @param rightJoystick true = use right joystick, false = use left joystick
    */
   public WristManualControl(CommandXboxController xboxController, Wrist wrist, boolean rightJoystick) {
@@ -30,12 +37,16 @@ public class WristManualControl extends Command {
     
     this.rightJoystick = rightJoystick;
     addRequirements(wrist);
+
+    // Prime data logging at boot time
+    long timeNow = RobotController.getFPGATime();
+    dLogPct.append(-1, timeNow);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogUtil.writeLog(false, "WristManualControl", "Init");
+    DataLogUtil.writeMessage("WristManualControl: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,7 +59,9 @@ public class WristManualControl extends Command {
     wristPercent *= WristConstants.maxManualPercentOutput;
     wrist.setWristPercentOutput(wristPercent);
 
-    DataLogUtil.writeLog(false, "WristManualControl", "Execute", "Xbox Joystick", wristPercent);
+    // Log data
+    long timeNow = RobotController.getFPGATime();
+    dLogPct.append(wristPercent, timeNow);
   }
 
   // Called once the command ends or is interrupted.
@@ -56,7 +69,7 @@ public class WristManualControl extends Command {
   public void end(boolean interrupted) {
     wrist.stopWrist();
 
-    DataLogUtil.writeLog(false, "WristManualControl", "End");
+    DataLogUtil.writeMessage("WristManualControl: End");
   }
 
   // Returns true when the command should end.

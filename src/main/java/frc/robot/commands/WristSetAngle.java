@@ -22,7 +22,6 @@ public class WristSetAngle extends Command {
    * of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
    * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristSetAngle(double angle, Wrist wrist) {
     this.wrist = wrist;
@@ -37,7 +36,6 @@ public class WristSetAngle extends Command {
    * of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
    * @param position target WristAngle angle, in degrees (see Constants.WristAngle)
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristSetAngle(ElevatorWristPosition angle, Wrist wrist) {
     this.wrist = wrist;
@@ -51,7 +49,6 @@ public class WristSetAngle extends Command {
    * Sets the target angle for the wrist from Shuffleboard and moves it to that angle. Ends when the wrist is 
    * within 3 degrees of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristSetAngle(Wrist wrist) {
     this.wrist = wrist;
@@ -70,7 +67,7 @@ public class WristSetAngle extends Command {
   public void initialize() {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Goal Angle", ElevatorWristPosition.START_CONFIG.wristAngle);
     wrist.setWristAngle(angle);
-    DataLogUtil.writeLog(false, "WristSetAngle", "Init", "Target", angle);
+    DataLogUtil.writeMessage("WristSetAngle: Init, Target =", angle);
 
   }
 
@@ -82,8 +79,8 @@ public class WristSetAngle extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (interrupted) DataLogUtil.writeLog(false, "WristSetAngle", "Interrupted", "Target", angle, "Current Angle", wrist.getWristAngle());
-    else DataLogUtil.writeLog(false, "WristSetAngle", "End", "Target", angle, "Current Angle", wrist.getWristAngle());
+    if (interrupted) DataLogUtil.writeMessage("WristSetAngle: Interrupted, Target =", angle, ", Current Angle =", wrist.getWristAngle());
+    else DataLogUtil.writeMessage("WristSetAngle: End, Target =", angle, ", Current Angle =", wrist.getWristAngle());
   }
 
   // Returns true when the command should end.

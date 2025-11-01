@@ -554,7 +554,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   // ************ Periodic methods
 
   /**
-   * Write information about the subsystem to the FileLog
+   * Write information about the subsystem to the log
    * @param logWhenDisabled true = log when enabled or disabled, false = only log when enabled
    */
   public void updateLog(boolean logWhenDisabled) {

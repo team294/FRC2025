@@ -16,7 +16,6 @@ public class ElevatorCalibrateIfAtLowerLimit extends Command {
    * If the elevator is at the lower limit, calibrate the encoders.
    * This is a blocking call and will wait up to 200ms for the zero to apply.
    * @param elevator Elevator subsystem
-   * @param log FileLog utility
    */
   public ElevatorCalibrateIfAtLowerLimit(Elevator elevator) {
     this.elevator = elevator;
@@ -28,7 +27,7 @@ public class ElevatorCalibrateIfAtLowerLimit extends Command {
   @Override
   public void initialize() {
     elevator.checkAndCalibrateEncoders();
-    DataLogUtil.writeLog(false, "ElevatorCalibrateIfAtLowerLimit", "Initialize");
+    DataLogUtil.writeMessage("ElevatorCalibrateIfAtLowerLimit: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,6 +38,7 @@ public class ElevatorCalibrateIfAtLowerLimit extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    DataLogUtil.writeMessage("ElevatorCalibrateIfAtLowerLimit: End");
   }
 
   // Returns true when the command should end.

@@ -7,15 +7,11 @@ package frc.robot.commands.autos.components;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.DataLogMessage;
 import frc.robot.commands.sequences.AutomatedDriveToReefAndScoreCoral;
-import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 

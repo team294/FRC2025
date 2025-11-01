@@ -76,7 +76,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    DataLogUtil.writeLogEcho(true, "RobotContainer", "Constructor", "Version", Constants.bcrRobotCodeVersion);
+    DataLogUtil.writeMessageEcho("RobotContainer: Constructor, Version =", Constants.bcrRobotCodeVersion);
     SignalLogger.enableAutoLogging(false);
     
     // Start LEDEventUtil
@@ -505,7 +505,7 @@ public class RobotContainer {
    */
   public void disabledInit() {
     // Do not log the word "Init" here, as it it affects the Excel macro
-    DataLogUtil.writeLogEcho(true, "Disabled", "Robot disabled");
+    DataLogUtil.writeMessageEcho("Disabled: Robot disabled");
 
     driveTrain.stopMotors();             // SAFETY: Turn off any closed loop control that may be running, so the robot does not move when re-enabled
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
@@ -536,7 +536,7 @@ public class RobotContainer {
    * Method called when auto mode is initialized/enabled.
    */
   public void autonomousInit() {
-    DataLogUtil.writeLogEcho(true, "Auto", "Mode Init");
+    DataLogUtil.writeMessageEcho("Auto: Mode Init");
 
     driveTrain.setDriveModeCoast(false);
     driveTrain.setVisionForOdometryState(true);
@@ -571,7 +571,7 @@ public class RobotContainer {
    * Method called when teleop mode is initialized/enabled.
    */
   public void teleopInit() {
-    DataLogUtil.writeLogEcho(true, "Teleop", "Mode Init");
+    DataLogUtil.writeMessageEcho("Teleop: Mode Init");
 
     driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
     driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode

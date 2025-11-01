@@ -19,7 +19,6 @@ public class WristCalibrateManual extends InstantCommand {
    * Manually calibrates the wrist, assuming we know its current angle.
    * @param angle the angle the wrist is at, in degrees
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristCalibrateManual(double angle, Wrist wrist) {
     this.wrist = wrist;
@@ -32,7 +31,6 @@ public class WristCalibrateManual extends InstantCommand {
   /**
    * Manually calibrates the wrist, assuming we know its current angle.
    * @param wrist Wrist subsystem
-   * @param log FileLog utility
    */
   public WristCalibrateManual(Wrist wrist) {
     this.wrist = wrist;
@@ -51,7 +49,7 @@ public class WristCalibrateManual extends InstantCommand {
     if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Manual Calibration Value", 0);
     wrist.calibrateWristEncoder(angle);
 
-    DataLogUtil.writeLog(true, "WristCalibrateManual", "Init", "Angle", angle);
+    DataLogUtil.writeMessage("WristCalibrateManual: Init, Angle =", angle);
   }
 
   @Override

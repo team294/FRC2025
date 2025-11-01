@@ -15,7 +15,6 @@ public class DriveToggleCoastMode extends Command {
   /**
    * Toggle between coast mode and brake mode on the driveTrain.
    * @param driveTrain DriveTrain subsystem
-   * @param log FileLog utility
    */
   public DriveToggleCoastMode(DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -32,7 +31,7 @@ public class DriveToggleCoastMode extends Command {
       driveTrain.setDriveModeCoast(true);
     }
 
-    DataLogUtil.writeLog(true, "DriveToggleCoastMode", "Initialize", "Coast Mode", driveTrain.isDriveModeCoast());
+    DataLogUtil.writeMessage("DriveToggleCoastMode: Init, Coast Mode =", driveTrain.isDriveModeCoast());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,6 +42,7 @@ public class DriveToggleCoastMode extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    DataLogUtil.writeMessage("DriveToggleCoastMode: End, Coast Mode =", driveTrain.isDriveModeCoast());
   }
 
   // Returns true when the command should end.

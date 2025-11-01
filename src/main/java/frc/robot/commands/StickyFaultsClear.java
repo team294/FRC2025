@@ -18,7 +18,6 @@ public class StickyFaultsClear extends Command {
   /**
    * Clears the sticky faults in RobotPreferences.
    * NOTE: This command can run while the robot is disabled.
-   * @param log
    */
   public StickyFaultsClear() {
     
@@ -28,7 +27,7 @@ public class StickyFaultsClear extends Command {
   @Override
   public void initialize() {
     RobotPreferences.clearStickyFaults();
-    DataLogUtil.writeLog(false, "StickyFaultsClear", "Init");
+    DataLogUtil.writeMessage("StickyFaultsClear: Init");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,6 +38,7 @@ public class StickyFaultsClear extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    DataLogUtil.writeMessage("StickyFaultsClear: End");
   }
 
   // Returns true when the command should end.

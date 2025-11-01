@@ -21,6 +21,7 @@ public class ScorePieceSequence extends SequentialCommandGroup {
    */
   public ScorePieceSequence(CoralEffector coralEffector, AlgaeGrabber algaeGrabber, DriveTrain driveTrain) {
     addCommands(
+      new DataLogMessage(false, "ScorePieceSequence: Start"),
       either(
         new AlgaeGrabberOuttake(algaeGrabber),
         sequence( 
@@ -31,7 +32,9 @@ public class ScorePieceSequence extends SequentialCommandGroup {
           //     true, true, driveTrain).asProxy()
         ), 
         () -> algaeGrabber.isAlgaePresent() || !coralEffector.isCoralPresent()
-      )
+      ),
+
+      new DataLogMessage(false, "ScorePieceSequence: End")
     );
   }
 }

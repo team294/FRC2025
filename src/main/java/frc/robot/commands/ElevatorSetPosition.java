@@ -68,7 +68,7 @@ public class ElevatorSetPosition extends Command {
     elevator.setElevatorProfileTarget(target);
     toleranceCount = 0;
 
-    DataLogUtil.writeLog(false, "ElevatorSetPosition", "Init", "Target", target, "Position", elevator.getElevatorPosition());
+    DataLogUtil.writeMessage("ElevatorSetPosition: Init, Target =", target, ", Position =", elevator.getElevatorPosition());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -79,7 +79,7 @@ public class ElevatorSetPosition extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DataLogUtil.writeLog(false, "ElevatorSetPosition", "End", "Target", target, "Position", elevator.getElevatorPosition());
+    DataLogUtil.writeMessage("ElevatorSetPosition: End, Target =", target, ", Position =", elevator.getElevatorPosition());
   }
 
   // Returns true when the command should end.
@@ -88,7 +88,7 @@ public class ElevatorSetPosition extends Command {
     // TODO add interlocks with wrist, algaeGrabber, and coralEffector
     if (!elevator.isElevatorCalibrated() || Math.abs(elevator.getElevatorPosition() - target) <= tolerance) {
       toleranceCount++;
-      DataLogUtil.writeLog(false, "ElevatorSetPosition", "Within Tolerance", "Target", target, "Position", elevator.getElevatorPosition(), "Tolerance Count", toleranceCount);
+      DataLogUtil.writeMessage("ElevatorSetPosition: Within Tolerance, Target =", target, ", Position =", elevator.getElevatorPosition(), ", Tolerance Count =", toleranceCount);
     }
     return (toleranceCount > 5);
   }

@@ -412,7 +412,7 @@ public class DriveToPose extends Command {
         goalPose = inputPose;
       }
 
-      DataLogUtil.writeMessage("DriveToPose: Start");
+      DataLogUtil.writeMessage("DriveToPose: Init");
       dLogTrajType.append("DriveToPose");
 
     }
@@ -488,7 +488,7 @@ public class DriveToPose extends Command {
     timer.stop();
     if (!interrupted) driveTrain.stopMotors();
     dLogTrajType.append("None");
-    DataLogUtil.writeMessage(false, "DriveToPose: End, interrupted = ", interrupted); 
+    DataLogUtil.writeMessage(false, "DriveToPose: End, interrupted =", interrupted); 
   }
 
   // Returns true when the command should end.
@@ -507,8 +507,8 @@ public class DriveToPose extends Command {
             (posError <= maxPositionErrorMeters));
 
     if (finished) {
-      DataLogUtil.writeMessage("DriveToPose: Finished, angleError = ", angleError, "posError", posError, 
-                "maxTheta = ", maxThetaErrorDegrees, "maxMeters = ", maxPositionErrorMeters, "timer = ", timer.get());
+      DataLogUtil.writeMessage("DriveToPose: Finished, angleError =", angleError, "posError", posError, 
+                "maxTheta =", maxThetaErrorDegrees, "maxMeters =", maxPositionErrorMeters, "timer =", timer.get());
     }
 
     return finished;

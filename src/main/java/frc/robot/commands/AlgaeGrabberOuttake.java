@@ -20,7 +20,6 @@ public class AlgaeGrabberOuttake extends Command {
   /**
    * Outtake algae from the AlgaeGrabber by running the motor until the algae is out of the mechanism.
    * @param algaeGrabber AlgaeGrabber subsystem
-   * @param log FileLog utility
    */
   public AlgaeGrabberOuttake(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
@@ -41,8 +40,7 @@ public class AlgaeGrabberOuttake extends Command {
     timer.stop();
     timer.reset();
 
-    DataLogUtil.writeLog(false, "AlgaeGrabberOuttake", "Init",
-      "Algae Present", algaeGrabber.isAlgaePresent());
+    DataLogUtil.writeMessage("AlgaeGrabberOuttake: Init, Algae Present =", algaeGrabber.isAlgaePresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -512,7 +512,7 @@ public class DriveTrain extends SubsystemBase implements Loggable {
    *  <p> Robot angle on the field (0 = facing away from the Blue drivestation, positive = to the left, negative = to the right)
    */
   public void resetPose(Pose2d pose) {
-    DataLogUtil.writeMessage("Drive.resetPose with set angle = ", pose.getRotation().getDegrees(), ", gyro pre = ", getGyroRotation(), ", pose pre = ", pose.getRotation().getDegrees());
+    DataLogUtil.writeMessage("Drive.resetPose with set angle =", pose.getRotation().getDegrees(), ", gyro pre =", getGyroRotation(), ", pose pre =", pose.getRotation().getDegrees());
     zeroGyroRotation(pose.getRotation().getDegrees());
     poseEstimator.resetPosition(Rotation2d.fromDegrees(getGyroRotation()), getModulePositions(), pose);
   }
@@ -670,14 +670,12 @@ public class DriveTrain extends SubsystemBase implements Loggable {
       dLogDriveXVelocity.append(robotSpeeds.vxMetersPerSecond, timeNow);
       dLogDriveYVelocity.append(robotSpeeds.vyMetersPerSecond, timeNow);
       dLogBusVoltage.append(swerveFrontLeft.getDriveBusVoltage(), timeNow);
-    }
 
-    DataLogUtil.writeLog(logWhenDisabled, "Drive", "Update Swerve Module Variables",
-      swerveFrontLeft.getLogString(),
-      swerveFrontRight.getLogString(),
-      swerveBackLeft.getLogString(),
-      swerveBackRight.getLogString()
-    );
+      swerveFrontLeft.updateSwerveLog(timeNow);
+      swerveFrontRight.updateSwerveLog(timeNow);
+      swerveBackLeft.updateSwerveLog(timeNow);
+      swerveBackRight.updateSwerveLog(timeNow);
+    }
     
   }
 
@@ -736,7 +734,6 @@ public class DriveTrain extends SubsystemBase implements Loggable {
             SmartDashboard.putNumber("Vision " + camera.getCameraName() + " X", camPose.estimatedPose.toPose2d().getX());
             SmartDashboard.putNumber("Vision " + camera.getCameraName() + " Y", camPose.estimatedPose.toPose2d().getY());
             SmartDashboard.putNumber("Vision " + camera.getCameraName() + " rot", camPose.estimatedPose.toPose2d().getRotation().getDegrees());
-            camera.dLogEstPose2D.append(camPose.estimatedPose.toPose2d());
   
             // Only run camera updates for pose estimator if useVisionForOdometry is true
             if (camResult.hasTargets() && useVisionForOdometry) {
