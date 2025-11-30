@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
-// import com.ctre.phoenix6.configs.Pigeon2Configuration;
-// import com.ctre.phoenix6.configs.Pigeon2Configurator;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.Matrix;
@@ -51,12 +49,6 @@ import frc.robot.utilities.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-// Vision imports
-// import org.photonvision.EstimatedRobotPose;
-// import org.photonvision.targeting.PhotonPipelineResult;
-// import org.photonvision.targeting.PhotonTrackedTarget;
-
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;

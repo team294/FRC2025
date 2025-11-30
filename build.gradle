@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2025.3.2"
+    id "com.diffplug.spotless" version "8.1.0"
 }
 
 java {
@@ -37,7 +38,7 @@ deploy {
                     final MAX_JAVA_HEAP_SIZE_MB = 100;
                     jvmArgs.add("-Xmx" + MAX_JAVA_HEAP_SIZE_MB + "M")
                     jvmArgs.add("-Xms" + MAX_JAVA_HEAP_SIZE_MB + "M")
-                    jvmArgs.add("-XX:+AlwaysPreTouch")                    
+                    jvmArgs.add("-XX:+AlwaysPreTouch")
                 }
 
                 // Static files artifact
@@ -45,7 +46,7 @@ deploy {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
                     deleteOldFiles = false // Change to true to delete files on roboRIO that no
-                                           // longer exist in deploy directory of this project
+                    // longer exist in deploy directory of this project
                 }
             }
         }
@@ -98,7 +99,11 @@ wpi.sim.addDriverstation()
 // in order to make them all available at runtime. Also adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
     from sourceSets.main.allSource
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -109,7 +114,95 @@ deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
 
+tasks.named('compileJava').configure {
+    finalizedBy tasks.named('spotlessCheck')
+}
+
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
+}
+
+// Configure Spotless code formatter
+spotless {
+    // Violations are found but build does not fail
+    enforceCheck = false
+
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**', '**/bin/**'
+        }
+        toggleOffOn()
+        googleJavaFormat('1.28.0')
+        removeUnusedImports()
+        leadingTabsToSpaces(2)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    groovyGradle {
+        target fileTree('.') {
+            include '**/*.gradle'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        greclipse()
+        leadingTabsToSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format 'xml', {
+        target fileTree('.') {
+            include '**/*.xml'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        eclipseWtp('xml')
+        leadingTabsToSpaces(2)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format 'misc', {
+        target fileTree('.') {
+            include '**/*.md', '**/.gitignore'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        leadingTabsToSpaces(2)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
+// Configure all Spotless check tasks to show warnings but not fail the build
+gradle.taskGraph.whenReady { graph ->
+    graph.allTasks.each { task ->
+        if (task.name.startsWith('spotless') && task.name.endsWith('Check')) {
+            def originalActions = new ArrayList(task.actions)
+            task.actions.clear()
+            task.ext.spotlessViolationsFound = false
+
+            originalActions.each { originalAction ->
+                task.doLast {
+                    try {
+                        originalAction.execute(task)
+                    } catch (Exception e) {
+                        task.ext.spotlessViolationsFound = true
+                        def formatName = task.name.replace('spotless', '').replace('Check', '')
+                        if (formatName.isEmpty()) {
+                            formatName = "code"
+                        }
+                        logger.warn("")
+                        logger.warn("═══════════════════════════════════════════════════════════")
+                        logger.warn("\u001B[1;31mSpotless found formatting violations in ${formatName}!\u001B[0m")
+                        logger.warn("")
+                        logger.warn("1. Open the \u001B[36mWPILib Command Palette\u001B[0m")
+                        logger.warn("2. Select \u001B[36mWPILib: Run a command with Gradle\u001B[0m")
+                        logger.warn("")
+                        logger.warn("Run \u001B[36mspotlessCheck\u001B[0m to see the violations")
+                        logger.warn("Run \u001B[36mspotlessApply\u001B[0m to automatically fix violations")
+                        logger.warn("═══════════════════════════════════════════════════════════")
+                        logger.warn("")
+                    }
+                }
+            }
+        }
+    }
 }
