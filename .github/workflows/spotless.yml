@@ -5,8 +5,6 @@ on: [push]
 jobs:
   spotless:
     runs-on: ubuntu-22.04
-    env:
-      GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
     steps:
       - uses: actions/checkout@v4
         with:
@@ -15,16 +13,6 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 17
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ github.workspace }}/.gradle/caches
-            ${{ github.workspace }}/.gradle/wrapper
-            ${{ github.workspace }}/.gradle/daemon
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Make gradlew executable
         run: chmod +x gradlew
       - run: ./gradlew spotlessCheck
