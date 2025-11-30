@@ -33,6 +33,7 @@ public class AutomatedDriveToReefAndIntakeAlgae extends SequentialCommandGroup {
     algaeToElevatorMap.put(AlgaeLocation.IJ, ElevatorWristPosition.ALGAE_UPPER);
     algaeToElevatorMap.put(AlgaeLocation.KL, ElevatorWristPosition.ALGAE_LOWER);
   }
+
   /**
    * Drives to nearest reef position and picks up algae (Algae level is manually input). The robot
    * will drive fully up against the reef, and then back up after picking up the algae.

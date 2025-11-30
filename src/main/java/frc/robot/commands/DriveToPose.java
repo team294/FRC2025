@@ -442,14 +442,14 @@ public class DriveToPose extends Command {
 
     // Get the goal pose
     switch (goalMode) {
-        // Goal pose directly specified
+      // Goal pose directly specified
       case pose:
         break;
-        // Using a supplier in the constructor
+      // Using a supplier in the constructor
       case poseSupplier:
         inputPose = goalSupplier.get();
         break;
-        // Using Shuffleboard
+      // Using Shuffleboard
       case shuffleboard:
         double xPos = SmartDashboard.getNumber("DriveToPose XPos meters", 0);
         double yPos = SmartDashboard.getNumber("DriveToPose YPos meters", 0);
@@ -479,11 +479,11 @@ public class DriveToPose extends Command {
             break;
         }
         break;
-        // Absolute angle, keep robot position
+      // Absolute angle, keep robot position
       case angleAbsolute:
         goalPose = new Pose2d(driveTrain.getPose().getTranslation(), rotation);
         break;
-        // Relative angle, keep robot position
+      // Relative angle, keep robot position
       case angleRelative:
         goalPose = driveTrain.getPose().plus(new Transform2d(new Translation2d(), rotation));
         break;

@@ -61,7 +61,7 @@ public class ElevatorCalibration extends Command {
     if (!elevator.isElevatorCalibrated()) return;
 
     switch (state) {
-        // Ramp upwards until 10 inches from top
+      // Ramp upwards until 10 inches from top
       case RAMP_UP:
         if (elevator.getElevatorPosition() < ElevatorPosition.UPPER_LIMIT.value - 10.0) {
           percentOutput = MathUtil.clamp(currTime * rampRate, -1.0, 1.0);
@@ -73,7 +73,7 @@ public class ElevatorCalibration extends Command {
         }
         break;
 
-        // Stop motor for 2 seconds
+      // Stop motor for 2 seconds
       case STOP_UP:
         if (currTime < 2.0) {
           elevator.stopElevatorMotors();
@@ -84,7 +84,7 @@ public class ElevatorCalibration extends Command {
         }
         break;
 
-        // Ramp downwards until 10 inches from bottom
+      // Ramp downwards until 10 inches from bottom
       case RAMP_DOWN:
         if (elevator.getElevatorPosition()
             > ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value + 10.0) {
@@ -97,7 +97,7 @@ public class ElevatorCalibration extends Command {
         }
         break;
 
-        // Stop motor for 2 seconds
+      // Stop motor for 2 seconds
       case STOP_DOWN:
       default:
         if (currTime < 2.0) {

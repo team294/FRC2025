@@ -134,7 +134,7 @@ spotless {
             exclude '**/build/**', '**/build-*/**', '**/bin/**'
         }
         toggleOffOn()
-        googleJavaFormat('1.15.0')
+        googleJavaFormat('1.28.0')
         removeUnusedImports()
         leadingTabsToSpaces(2)
         trimTrailingWhitespace()

@@ -25,6 +25,7 @@ public class ElevatorWristRegions {
     public final double wristMin, wristMax; // Wrist min and max angles for this region, in degrees
     private Optional<Region> regionAbove,
         regionBelow; // Region above (or empty if this is the top) or below (or empty if this is the
+
     // bottom)
 
     /**

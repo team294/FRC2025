@@ -35,6 +35,7 @@ public class AutomatedDriveToReefAndScoreCoral extends SequentialCommandGroup {
     reefToElevatorMap.put(ReefLevel.L3, ElevatorWristPosition.CORAL_L3);
     reefToElevatorMap.put(ReefLevel.L4, ElevatorWristPosition.CORAL_L4);
   }
+
   /**
    * Drives to nearest reef position, preemptively moving the elevator to L2 if a piece is held, and
    * scores coral in given level. If not scoring on L4, the robot will drive fully up against the

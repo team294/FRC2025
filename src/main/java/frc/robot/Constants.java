@@ -532,6 +532,7 @@ public final class Constants {
     public static final double MMJerk =
         MMAcceleration
             / 0.05; // Max jerk in wrist rotations / second^3. MMAccel / MMJerk = seconds to full
+
     // acceleration. CALIBRATED
 
     // CALIBRATED
@@ -642,6 +643,7 @@ public final class Constants {
     public static final double MMJerk =
         MMAcceleration
             / 0.05; // Max jerk in climber rotations / second^3. MMAccel / MMJerk = seconds to full
+
     // acceleration.
 
     // CALIBRATED 4/12
@@ -655,6 +657,7 @@ public final class Constants {
       CLIMB_START(0.0),
       CLIMB_END(
           153.0); // 9/27/25 changed climb angle from 152 to 157, 4/18 Changed climb angle from 155
+
       // to 152
 
       @SuppressWarnings({"MemberName", "PMD.SingularField"})
