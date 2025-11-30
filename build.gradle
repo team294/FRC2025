@@ -163,7 +163,7 @@ spotless {
     }
 }
 
-// Print a message when Spotless finds voilations
+// Print a message when Spotless finds formatting violations
 gradle.taskGraph.afterTask { task, state ->
     def isSpotlessTask =
             task.name.toLowerCase().contains("spotless") &&
