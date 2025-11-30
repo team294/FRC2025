@@ -1,16 +1,14 @@
 package frc.robot.utilities;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
-import frc.robot.commands.LEDAnimationBCR;
-import frc.robot.commands.LEDSendNeutral;
 import frc.robot.Constants.BCRColor;
 import frc.robot.Constants.LEDConstants.LEDSegments;
+import frc.robot.commands.LEDAnimationBCR;
+import frc.robot.commands.LEDSendNeutral;
 import frc.robot.subsystems.LED;
-
+import java.util.HashMap;
+import java.util.Map;
 
 public class LEDEventUtil {
   private static LED led;
@@ -19,11 +17,37 @@ public class LEDEventUtil {
 
   private static StripEvents previousEventStrip;
 
-  private static final RainbowAnimation ledAnimationRainbowReef = new RainbowAnimation(1.0, 0.8, LEDSegments.StripAll.count, false, LEDSegments.StripAll.index);
-  private static final RainbowAnimation ledAnimationRainbowBarge = new RainbowAnimation(1.0, 0.8, LEDSegments.StripAll.count, true, LEDSegments.StripAll.index);
-  private static final StrobeAnimation ledAnimationStrobeAlgae = new StrobeAnimation(BCRColor.ALGAE_MODE.r, BCRColor.ALGAE_MODE.g, BCRColor.ALGAE_MODE.b, 0, 0, LEDSegments.StripAll.count, LEDSegments.StripAll.index);
-  private static final StrobeAnimation ledAnimationStrobeCoral = new StrobeAnimation(BCRColor.CORAL_MODE.r, BCRColor.CORAL_MODE.g, BCRColor.CORAL_MODE.b, 0, 0, LEDSegments.StripAll.count, LEDSegments.StripAll.index);
-  private static final StrobeAnimation ledAnimationStrobeClimber = new StrobeAnimation(BCRColor.BLUE.r, BCRColor.BLUE.g, BCRColor.BLUE.b, 0, 0, LEDSegments.StripAll.count, LEDSegments.StripAll.index);
+  private static final RainbowAnimation ledAnimationRainbowReef =
+      new RainbowAnimation(1.0, 0.8, LEDSegments.StripAll.count, false, LEDSegments.StripAll.index);
+  private static final RainbowAnimation ledAnimationRainbowBarge =
+      new RainbowAnimation(1.0, 0.8, LEDSegments.StripAll.count, true, LEDSegments.StripAll.index);
+  private static final StrobeAnimation ledAnimationStrobeAlgae =
+      new StrobeAnimation(
+          BCRColor.ALGAE_MODE.r,
+          BCRColor.ALGAE_MODE.g,
+          BCRColor.ALGAE_MODE.b,
+          0,
+          0,
+          LEDSegments.StripAll.count,
+          LEDSegments.StripAll.index);
+  private static final StrobeAnimation ledAnimationStrobeCoral =
+      new StrobeAnimation(
+          BCRColor.CORAL_MODE.r,
+          BCRColor.CORAL_MODE.g,
+          BCRColor.CORAL_MODE.b,
+          0,
+          0,
+          LEDSegments.StripAll.count,
+          LEDSegments.StripAll.index);
+  private static final StrobeAnimation ledAnimationStrobeClimber =
+      new StrobeAnimation(
+          BCRColor.BLUE.r,
+          BCRColor.BLUE.g,
+          BCRColor.BLUE.b,
+          0,
+          0,
+          LEDSegments.StripAll.count,
+          LEDSegments.StripAll.index);
 
   public enum StripEvents {
     MATCH_COUNTDOWN,
@@ -41,7 +65,7 @@ public class LEDEventUtil {
   }
 
   private static final Map<StripEvents, Integer> prioritiesStripEvents = new HashMap<>();
-  
+
   static {
     prioritiesStripEvents.put(StripEvents.CORAL_INTAKING, 1);
     prioritiesStripEvents.put(StripEvents.CORAL_MODE, 2);
@@ -58,27 +82,31 @@ public class LEDEventUtil {
 
   /**
    * Sends an event to the LED Strips and update the LEDs if necessary.
+   *
    * @param event StripEvent event happening
    */
   public static void sendEvent(StripEvents event) {
     // Always update state if previous event was neutral or disabled.
-    // Do not update if last event was not neutral or disabled and the new event priority is less than the previous.
-    // If previous event was algae mode and new event is coral intaking or coral mode, override priorities and update state.
-    // If previous event was automated drive (either type) and new event is coral or algae mode, override priorities and update state.
+    // Do not update if last event was not neutral or disabled and the new event priority is less
+    // than the previous.
+    // If previous event was algae mode and new event is coral intaking or coral mode, override
+    // priorities and update state.
+    // If previous event was automated drive (either type) and new event is coral or algae mode,
+    // override priorities and update state.
 
-    if (
-      previousEventStrip != StripEvents.NEUTRAL && previousEventStrip != StripEvents.ROBOT_DISABLED
-      && (
-        !((previousEventStrip == StripEvents.ALGAE_INTAKING || previousEventStrip == StripEvents.ALGAE_MODE) && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
-        && !((previousEventStrip == StripEvents.AUTOMATED_DRIVING_REEF) || (previousEventStrip == StripEvents.AUTOMATED_DRIVING_BARGE) && (event == StripEvents.CORAL_MODE || event == StripEvents.ALGAE_MODE))
-        && getPriority(event) < getPriority(previousEventStrip)
-      )
-    ) {
+    if (previousEventStrip != StripEvents.NEUTRAL
+        && previousEventStrip != StripEvents.ROBOT_DISABLED
+        && (!((previousEventStrip == StripEvents.ALGAE_INTAKING
+                    || previousEventStrip == StripEvents.ALGAE_MODE)
+                && (event == StripEvents.CORAL_INTAKING || event == StripEvents.CORAL_MODE))
+            && !((previousEventStrip == StripEvents.AUTOMATED_DRIVING_REEF)
+                || (previousEventStrip == StripEvents.AUTOMATED_DRIVING_BARGE)
+                    && (event == StripEvents.CORAL_MODE || event == StripEvents.ALGAE_MODE))
+            && getPriority(event) < getPriority(previousEventStrip))) {
       DataLogUtil.writeMessage("LED Strips SendEvent: Return");
       return;
     }
 
-    
     DataLogUtil.writeMessage("LED Strips SendEvent: switch statement");
     switch (event) {
       case CORAL_INTAKING:
@@ -155,6 +183,7 @@ public class LEDEventUtil {
 
   /**
    * This method must be called once in RobotContainer
+   *
    * @param ledInstance LED subsystem
    */
   public static void start(LED ledInstance) {
@@ -165,6 +194,7 @@ public class LEDEventUtil {
 
   /**
    * Gets the priority level for an event.
+   *
    * @param event StripEvents event
    * @return priority level integer (higher value = higher priority), default is -1
    */

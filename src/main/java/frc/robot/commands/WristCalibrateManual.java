@@ -11,18 +11,19 @@ import frc.robot.utilities.DataLogUtil;
 
 public class WristCalibrateManual extends InstantCommand {
   private final Wrist wrist;
-  
+
   private double angle;
   private boolean fromShuffleboard;
 
   /**
    * Manually calibrates the wrist, assuming we know its current angle.
+   *
    * @param angle the angle the wrist is at, in degrees
    * @param wrist Wrist subsystem
    */
   public WristCalibrateManual(double angle, Wrist wrist) {
     this.wrist = wrist;
-    
+
     this.angle = angle;
     fromShuffleboard = false;
     addRequirements(wrist);
@@ -30,11 +31,12 @@ public class WristCalibrateManual extends InstantCommand {
 
   /**
    * Manually calibrates the wrist, assuming we know its current angle.
+   *
    * @param wrist Wrist subsystem
    */
   public WristCalibrateManual(Wrist wrist) {
     this.wrist = wrist;
-    
+
     fromShuffleboard = true;
     addRequirements(wrist);
 

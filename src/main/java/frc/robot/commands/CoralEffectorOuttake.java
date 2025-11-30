@@ -13,17 +13,19 @@ import frc.robot.utilities.LEDEventUtil;
 
 public class CoralEffectorOuttake extends Command {
   private final CoralEffector coralEffector;
-  
+
   private final Timer timer;
   private final double seconds;
 
   /**
-   * Outtake coral from the coralEffector by running the motor until the coral is out of the mechanism.
+   * Outtake coral from the coralEffector by running the motor until the coral is out of the
+   * mechanism.
+   *
    * @param coralEffector CoralEffector subsystem
    */
   public CoralEffectorOuttake(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    
+
     this.timer = new Timer();
     this.seconds = 0.02;
     addRequirements(coralEffector);
@@ -34,16 +36,17 @@ public class CoralEffectorOuttake extends Command {
   public void initialize() {
     // Use fast outtake percent if scoring on L2 or L3, and otherwise the normal outtake percent
     coralEffector.setCoralEffectorPercentOutput(
-      !coralEffector.getL1or4ScoreMode() ? CoralEffectorConstants.fastOuttakePercent : CoralEffectorConstants.outtakePercent
-    );
+        !coralEffector.getL1or4ScoreMode()
+            ? CoralEffectorConstants.fastOuttakePercent
+            : CoralEffectorConstants.outtakePercent);
 
-    DataLogUtil.writeMessage("CoralEffectorOuttake: Init, Coral in =", coralEffector.isCoralPresent());
+    DataLogUtil.writeMessage(
+        "CoralEffectorOuttake: Init, Coral in =", coralEffector.isCoralPresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -64,7 +67,8 @@ public class CoralEffectorOuttake extends Command {
       if (!timer.isRunning()) timer.start();
       // Run the motor for slightly longer as a safety measure
       else if (timer.get() >= seconds) {
-        DataLogUtil.writeMessage("CoralEffectorOuttake: IsFinished = true - coral is not present and timer has elapsed for long enough.");
+        DataLogUtil.writeMessage(
+            "CoralEffectorOuttake: IsFinished = true - coral is not present and timer has elapsed for long enough.");
         return true;
       }
     }

@@ -9,10 +9,10 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
@@ -21,53 +21,77 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.AllianceSelection;
-import frc.robot.utilities.Field;
 import frc.robot.utilities.DataLogUtil;
-
-import java.lang.Math;
+import frc.robot.utilities.Field;
 
 public class DriveWithJoysticksAdvanced extends Command {
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
   private final AllianceSelection allianceSelection;
   private final DriveTrain driveTrain;
-  
+
   private ProfiledPIDController turnRateController;
   private boolean firstInDeadband, firstCorrecting;
-  private boolean stopped;                    // Joysticks are all in deadband, and robot has turned to the desired heading. Stop the robot from moving/jittering until the driver moves a joystick.
+  private boolean
+      stopped; // Joysticks are all in deadband, and robot has turned to the desired heading. Stop
+  // the robot from moving/jittering until the driver moves a joystick.
   private int logRotationKey;
   private double fwdVelocity, leftVelocity, turnRate, nextTurnRate;
-  private double goalAngle;                   // In radians
+  private double goalAngle; // In radians
   private double startTime;
-  // private boolean loadingStationLock;         // Whether we are locking our angle to the closest loading station
-  // private boolean previousLoadingStationLock; // Whether we were locking our angle to a loading station in the previous loop
-  private boolean reefBasedControl;              // Fine control, robot-oriented control (not field-relative), and turn off theta joystick
-  // private boolean previousReefLock;           // Whether we were locking our angle to a reef in the previous loop
-  private boolean bargeBasedControl;             // Fine control, turn off forward-back driving, and turn off theta joystick
+  // private boolean loadingStationLock;         // Whether we are locking our angle to the closest
+  // loading station
+  // private boolean previousLoadingStationLock; // Whether we were locking our angle to a loading
+  // station in the previous loop
+  private boolean
+      reefBasedControl; // Fine control, robot-oriented control (not field-relative), and turn off
+  // theta joystick
+  // private boolean previousReefLock;           // Whether we were locking our angle to a reef in
+  // the previous loop
+  private boolean
+      bargeBasedControl; // Fine control, turn off forward-back driving, and turn off theta joystick
   private boolean fineControl;
 
   private final DataLog log = DataLogManager.getLog();
-  private final DoubleLogEntry dLogFwdVelo = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Forward Velocity");
-  private final DoubleLogEntry dLogLeftVelo = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Left Velocity");
-  private final DoubleLogEntry dLogNextTurnRate = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Next Turn Rate");
-  private final DoubleLogEntry dLogRobotAngle = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Robot Angle");
-  private final DoubleLogEntry dLogRobotGoalAngle = new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Robot Goal Angle");
-  private final BooleanLogEntry dLogRobotStopped = new BooleanLogEntry(log, "/DriveWithJoysticksAdvanced/Stopped");
+  private final DoubleLogEntry dLogFwdVelo =
+      new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Forward Velocity");
+  private final DoubleLogEntry dLogLeftVelo =
+      new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Left Velocity");
+  private final DoubleLogEntry dLogNextTurnRate =
+      new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Next Turn Rate");
+  private final DoubleLogEntry dLogRobotAngle =
+      new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Robot Angle");
+  private final DoubleLogEntry dLogRobotGoalAngle =
+      new DoubleLogEntry(log, "/DriveWithJoysticksAdvanced/Robot Goal Angle");
+  private final BooleanLogEntry dLogRobotStopped =
+      new BooleanLogEntry(log, "/DriveWithJoysticksAdvanced/Stopped");
 
   /**
    * Control the driveTrain with joysticks using arcade drive and advanced controls.
-   * @param leftJoystick left joystick, X and Y axis control robot movement, relative to the field from the perspective of the current Alliance's driver station
+   *
+   * @param leftJoystick left joystick, X and Y axis control robot movement, relative to the field
+   *     from the perspective of the current Alliance's driver station
    * @param rightJoystick right joystick, X-axis controls robot rotation.
    * @param allianceSelection AllianceSelection utility
    * @param driveTrain DriveTrain subsystem
    */
-  public DriveWithJoysticksAdvanced(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain, Field field) {
+  public DriveWithJoysticksAdvanced(
+      Joystick leftJoystick,
+      Joystick rightJoystick,
+      AllianceSelection allianceSelection,
+      DriveTrain driveTrain,
+      Field field) {
     this.leftJoystick = leftJoystick;
     this.rightJoystick = rightJoystick;
     this.allianceSelection = allianceSelection;
     this.driveTrain = driveTrain;
 
-    turnRateController = new ProfiledPIDController(DriveConstants.kPJoystickThetaController, 0, 0, TrajectoryConstants.kThetaControllerConstraints);
+    turnRateController =
+        new ProfiledPIDController(
+            DriveConstants.kPJoystickThetaController,
+            0,
+            0,
+            TrajectoryConstants.kThetaControllerConstraints);
     turnRateController.enableContinuousInput(-Math.PI, Math.PI);
 
     logRotationKey = DataLogUtil.allocateLogRotation();
@@ -89,8 +113,8 @@ public class DriveWithJoysticksAdvanced extends Command {
     driveTrain.setDriveModeCoast(false);
 
     goalAngle = MathUtil.angleModulus(driveTrain.getPose().getRotation().getRadians());
-    turnRateController.reset(goalAngle);    // Set the current setpoint for the controller
-    turnRateController.setGoal(goalAngle);  // Set the goal for the controller
+    turnRateController.reset(goalAngle); // Set the current setpoint for the controller
+    turnRateController.setGoal(goalAngle); // Set the goal for the controller
 
     // loadingStationLock = false;
     // previousLoadingStationLock = false;
@@ -101,7 +125,8 @@ public class DriveWithJoysticksAdvanced extends Command {
     fineControl = false;
 
     if (Math.abs(driveTrain.getAngularVelocity()) < 0.5) {
-      // Robot is rotating < 0.5 deg/sec. Assume the robot is not rotating, so use the current robot theta as the goal angle
+      // Robot is rotating < 0.5 deg/sec. Assume the robot is not rotating, so use the current robot
+      // theta as the goal angle
       firstInDeadband = false;
       firstCorrecting = false;
       startTime = System.currentTimeMillis() - 200;
@@ -117,14 +142,26 @@ public class DriveWithJoysticksAdvanced extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    reefBasedControl = rightJoystick.getRawButton(1);     // Turn on fine control, robot-oriented control (not field-relative), and turn off theta joystick
+    reefBasedControl =
+        rightJoystick.getRawButton(
+            1); // Turn on fine control, robot-oriented control (not field-relative), and turn off
+    // theta joystick
     // loadingStationLock = rightJoystick.getRawButton(2);
-    bargeBasedControl = rightJoystick.getRawButton(2);    // Turn on fine control, disables forward-back driving, and theta joystick 
+    bargeBasedControl =
+        rightJoystick.getRawButton(
+            2); // Turn on fine control, disables forward-back driving, and theta joystick
     fineControl = reefBasedControl || bargeBasedControl;
 
-
-    fwdVelocity = (bargeBasedControl) ? 0 : (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getY() : leftJoystick.getY();
-    leftVelocity = (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl) ? -leftJoystick.getX() : leftJoystick.getX();
+    fwdVelocity =
+        (bargeBasedControl)
+            ? 0
+            : (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl)
+                ? -leftJoystick.getY()
+                : leftJoystick.getY();
+    leftVelocity =
+        (allianceSelection.getAlliance() == Alliance.Blue || reefBasedControl)
+            ? -leftJoystick.getX()
+            : leftJoystick.getX();
     turnRate = (reefBasedControl || bargeBasedControl) ? 0 : -rightJoystick.getX();
 
     if (DataLogUtil.isMyLogRotation(logRotationKey)) {
@@ -134,14 +171,35 @@ public class DriveWithJoysticksAdvanced extends Command {
     }
 
     // Apply deadbands and limits for fine control
-    fwdVelocity = (Math.abs(fwdVelocity) < OIConstants.joystickDeadband) ? 0 : scaleJoystick(fwdVelocity) * ((fineControl) ? SwerveConstants.kFineControlMaxSpeedMetersPerSecond : SwerveConstants.kMaxSpeedMetersPerSecond);
-    leftVelocity = (Math.abs(leftVelocity) < OIConstants.joystickDeadband) ? 0 : scaleJoystick(leftVelocity) * ((fineControl) ? SwerveConstants.kFineControlMaxSpeedMetersPerSecond : SwerveConstants.kMaxSpeedMetersPerSecond);
-    turnRate = (Math.abs(turnRate) < OIConstants.joystickDeadband) ? 0 : scaleTurn(turnRate) * ((fineControl) ? SwerveConstants.kFineControlMaxTurningRadiansPerSecond : SwerveConstants.kMaxTurningRadiansPerSecond);
+    fwdVelocity =
+        (Math.abs(fwdVelocity) < OIConstants.joystickDeadband)
+            ? 0
+            : scaleJoystick(fwdVelocity)
+                * ((fineControl)
+                    ? SwerveConstants.kFineControlMaxSpeedMetersPerSecond
+                    : SwerveConstants.kMaxSpeedMetersPerSecond);
+    leftVelocity =
+        (Math.abs(leftVelocity) < OIConstants.joystickDeadband)
+            ? 0
+            : scaleJoystick(leftVelocity)
+                * ((fineControl)
+                    ? SwerveConstants.kFineControlMaxSpeedMetersPerSecond
+                    : SwerveConstants.kMaxSpeedMetersPerSecond);
+    turnRate =
+        (Math.abs(turnRate) < OIConstants.joystickDeadband)
+            ? 0
+            : scaleTurn(turnRate)
+                * ((fineControl)
+                    ? SwerveConstants.kFineControlMaxTurningRadiansPerSecond
+                    : SwerveConstants.kMaxTurningRadiansPerSecond);
 
-    // If the driver moves any joystick, then turn off the "stopped" feature that prevents jittering when the robot is supposed to be sitting still.
+    // If the driver moves any joystick, then turn off the "stopped" feature that prevents jittering
+    // when the robot is supposed to be sitting still.
     if (stopped && (fwdVelocity != 0.0 || leftVelocity != 0.0 || turnRate != 0.0)) {
       stopped = false;
-      firstCorrecting = true; // Set to true to reset the goal angle before starting correcting (accounts for gyro drift, odometry updates, physically moving the robot, etc)
+      firstCorrecting =
+          true; // Set to true to reset the goal angle before starting correcting (accounts for gyro
+      // drift, odometry updates, physically moving the robot, etc)
     }
 
     if (turnRate == 0 /*|| loadingStationLock || reefLock*/) {
@@ -155,37 +213,47 @@ public class DriveWithJoysticksAdvanced extends Command {
       }
 
       // if (loadingStationLock) {
-      //   // If we are locking to the loading station, update the setpoint for the goal angle to the rotation of the 
+      //   // If we are locking to the loading station, update the setpoint for the goal angle to
+      // the rotation of the
       //   // nearest loading station, with the ramp facing towards the station
       //   if (DataLogUtil.isMyLogRotation(logRotationKey)) {
-      //     goalAngle = MathUtil.angleModulus(field.getNearestAprilTagLoadingStation(driveTrain.getPose()).getRotation().getRadians());
+      //     goalAngle =
+      // MathUtil.angleModulus(field.getNearestAprilTagLoadingStation(driveTrain.getPose()).getRotation().getRadians());
       //     turnRateController.reset(goalAngle);
       //   }
-      //   stopped = false; 
-  
+      //   stopped = false;
+
       // } else if (reefLock) {
-      //   // If we are locking to a reef position, update the setpoint for the goal angle to the rotation of the
+      //   // If we are locking to a reef position, update the setpoint for the goal angle to the
+      // rotation of the
       //   // nearest reef position, with the elevator facing the reef
       //   if (DataLogUtil.isMyLogRotation(logRotationKey)) {
-      //     goalAngle = MathUtil.angleModulus(field.getNearestAprilTagReef(driveTrain.getPose()).getRotation().getRadians()-Math.PI);
+      //     goalAngle =
+      // MathUtil.angleModulus(field.getNearestAprilTagReef(driveTrain.getPose()).getRotation().getRadians()-Math.PI);
       //     turnRateController.reset(goalAngle);
       //   }
       //   stopped = false;
       // }
 
-      // else if ((previousLoadingStationLock && !loadingStationLock) || (previousReefLock && !reefLock)) {
+      // else if ((previousLoadingStationLock && !loadingStationLock) || (previousReefLock &&
+      // !reefLock)) {
       //   // We were previously locking the angle, and are not anymore
-      //   // If we did not finish turning, the goal angle would remain the same and continue turning
+      //   // If we did not finish turning, the goal angle would remain the same and continue
+      // turning
       //   // So we must reset the goal angle to the current anglet to stop turning
       //   goalAngle = MathUtil.angleModulus(driveTrain.getPose().getRotation().getRadians());
       //   turnRateController.reset(goalAngle);
       // }
 
       if (System.currentTimeMillis() - startTime > 100) {
-        // Uses profiled PID controller for angle only if the theta joystick is in the deadband for more than 100ms.
-        // The 100ms delay is the theta settling time to account for the robot's rotational inertia after the theta joystick is released.
-  
-        double curRobotAngle = MathUtil.angleModulus(driveTrain.getPose().getRotation().getRadians());  // Angle is in radians
+        // Uses profiled PID controller for angle only if the theta joystick is in the deadband for
+        // more than 100ms.
+        // The 100ms delay is the theta settling time to account for the robot's rotational inertia
+        // after the theta joystick is released.
+
+        double curRobotAngle =
+            MathUtil.angleModulus(
+                driveTrain.getPose().getRotation().getRadians()); // Angle is in radians
 
         if (firstCorrecting) {
           firstCorrecting = false;
@@ -197,19 +265,23 @@ public class DriveWithJoysticksAdvanced extends Command {
           turnRateController.reset(goalAngle);
         }
 
-        // When the right button on the right joystick is pressed then the robot turns pi radians (180 degrees)
+        // When the right button on the right joystick is pressed then the robot turns pi radians
+        // (180 degrees)
         // This button works but it is currently used for other commands
         // if (rightJoystick.getRawButtonPressed(2)) {
         //   goalAngle += Math.PI;
         //   MathUtil.angleModulus(goalAngle);
         // }
 
-        // When the left button on the right joystick is pressed then the robot goes to 0 radians absolute
+        // When the left button on the right joystick is pressed then the robot goes to 0 radians
+        // absolute
         // This button works but it is currently used for other commands
         // goalAngle = rightJoystick.getRawButtonPressed(1) ? 0 : goalAngle;
 
         double angleError = MathUtil.angleModulus(goalAngle - curRobotAngle);
-        boolean angleInTolerance = Math.abs(angleError) < Math.PI / 180.0;  // Calculate if robot angle is within 1 degree of goalAngle
+        boolean angleInTolerance =
+            Math.abs(angleError)
+                < Math.PI / 180.0; // Calculate if robot angle is within 1 degree of goalAngle
 
         // Calculates using the profiledPIDController what the next turnRate should be
         if (!angleInTolerance && !stopped) {
@@ -238,7 +310,7 @@ public class DriveWithJoysticksAdvanced extends Command {
       if (DataLogUtil.isMyLogRotation(logRotationKey)) {
         goalAngle = driveTrain.getPose().getRotation().getRadians();
       }
-      
+
       firstInDeadband = true;
       firstCorrecting = true;
     }
@@ -248,7 +320,8 @@ public class DriveWithJoysticksAdvanced extends Command {
       dLogFwdVelo.append(fwdVelocity, timeNow);
       dLogLeftVelo.append(leftVelocity, timeNow);
       dLogNextTurnRate.append(turnRate, timeNow);
-      dLogRobotAngle.append(Math.toDegrees(driveTrain.getPose().getRotation().getRadians()), timeNow);
+      dLogRobotAngle.append(
+          Math.toDegrees(driveTrain.getPose().getRotation().getRadians()), timeNow);
       dLogRobotGoalAngle.append(Math.toDegrees(goalAngle), timeNow);
       dLogRobotStopped.append(stopped, timeNow);
     }
@@ -262,8 +335,7 @@ public class DriveWithJoysticksAdvanced extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
@@ -272,22 +344,28 @@ public class DriveWithJoysticksAdvanced extends Command {
   }
 
   /**
-   * Re-maps joystick value to better enable fine robot control at small joystick values (low speeds) and full-speed travel at large joystick values.
-   * This method is optimized for linear travel.
+   * Re-maps joystick value to better enable fine robot control at small joystick values (low
+   * speeds) and full-speed travel at large joystick values. This method is optimized for linear
+   * travel.
+   *
    * @param rawJoystick raw joystick value, -1.0 to +1.0
    * @return scaled joystick value, -1.0 to +1.0
    */
-  private double scaleTurn(double rawJoystick){
-    return Math.signum(rawJoystick) * (0.6801 * rawJoystick * rawJoystick + 0.3232 * Math.abs(rawJoystick) - 0.0033);
+  private double scaleTurn(double rawJoystick) {
+    return Math.signum(rawJoystick)
+        * (0.6801 * rawJoystick * rawJoystick + 0.3232 * Math.abs(rawJoystick) - 0.0033);
   }
 
   /**
-   * Re-maps joystick value to better enable fine robot control at small joystick values (low speeds) and full-speed travel at large joystick values.
-   * This method is optimized for rotating the robot.
+   * Re-maps joystick value to better enable fine robot control at small joystick values (low
+   * speeds) and full-speed travel at large joystick values. This method is optimized for rotating
+   * the robot.
+   *
    * @param rawJoystick raw joystick value, -1.0 to +1.0
    * @return scaled joystick value, -1.0 to +1.0
    */
-  private double scaleJoystick(double rawJoystick){
-    return Math.signum(rawJoystick) * (0.7912 * rawJoystick * rawJoystick + 0.2109 * Math.abs(rawJoystick) - 0.0022);
+  private double scaleJoystick(double rawJoystick) {
+    return Math.signum(rawJoystick)
+        * (0.7912 * rawJoystick * rawJoystick + 0.2109 * Math.abs(rawJoystick) - 0.0022);
   }
 }

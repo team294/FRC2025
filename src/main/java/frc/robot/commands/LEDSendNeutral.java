@@ -12,7 +12,8 @@ public class LEDSendNeutral extends InstantCommand {
   private final LED led;
 
   /**
-   * Sends NEUTRAL Strip Event to LEDs 
+   * Sends NEUTRAL Strip Event to LEDs
+   *
    * @param led LED subsystem
    */
   public LEDSendNeutral(LED led) {

@@ -4,11 +4,10 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.SignalLogger;
-
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import choreo.util.ChoreoAllianceFlipUtil;
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -20,17 +19,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.Constants.*;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.Constants.FieldConstants.ReefLevel;
+import frc.robot.Constants.FieldConstants.ReefLocation;
 import frc.robot.commands.*;
 import frc.robot.commands.autos.components.*;
 import frc.robot.commands.sequences.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
-import frc.robot.Constants.*;
-import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
-import frc.robot.Constants.FieldConstants.ReefLevel;
-import frc.robot.Constants.FieldConstants.ReefLocation;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -59,31 +57,44 @@ public class RobotContainer {
   private final Joystick leftJoystick = new Joystick(OIConstants.usbLeftJoystick);
   private final Joystick rightJoystick = new Joystick(OIConstants.usbRightJoystick);
   private final Joystick coPanel = new Joystick(OIConstants.usbCoPanel);
-  private final CommandXboxController xboxController = new CommandXboxController(OIConstants.usbXboxController);
+  private final CommandXboxController xboxController =
+      new CommandXboxController(OIConstants.usbXboxController);
   private boolean rumbled = false;
 
   // Define other utilities
   private final TrajectoryCache trajectoryCache = new TrajectoryCache();
-  // private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, field);
-  private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache, allianceSelection, 
-      field, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber);
+  // private final AutoSelection autoSelection = new AutoSelection(rightJoystick, trajectoryCache,
+  // allianceSelection, field);
+  private final AutoSelection autoSelection =
+      new AutoSelection(
+          rightJoystick,
+          trajectoryCache,
+          allianceSelection,
+          field,
+          driveTrain,
+          elevator,
+          wrist,
+          coralEffector,
+          algaeGrabber,
+          hopper,
+          climber);
 
   // Define commands
-  private final CoralIntakeSequence coralIntakeSequence = new CoralIntakeSequence(elevator, wrist, hopper, coralEffector);
+  private final CoralIntakeSequence coralIntakeSequence =
+      new CoralIntakeSequence(elevator, wrist, hopper, coralEffector);
   private final ClimberSetRatchet climberDisengageRatchet = new ClimberSetRatchet(false, climber);
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    DataLogUtil.writeMessageEcho("RobotContainer: Constructor, Version =", Constants.bcrRobotCodeVersion);
+    DataLogUtil.writeMessageEcho(
+        "RobotContainer: Constructor, Version =", Constants.bcrRobotCodeVersion);
     SignalLogger.enableAutoLogging(false);
-    
+
     // Start LEDEventUtil
     LEDEventUtil.start(led);
 
     SmartDashboard.putBoolean("RobotPrefs Initialized", RobotPreferences.prefsExist());
-    if(!RobotPreferences.prefsExist()) {
+    if (!RobotPreferences.prefsExist()) {
       RobotPreferences.recordStickyFaults("RobotPreferences");
     }
 
@@ -95,14 +106,24 @@ public class RobotContainer {
     configureButtonBindings();
     configureShuffleboard();
 
-    driveTrain.setDefaultCommand(new DriveWithJoysticksAdvanced(leftJoystick, rightJoystick, allianceSelection, driveTrain, field));
-    // driveTrain.setDefaultCommand(new DriveWithJoysticks(leftJoystick, rightJoystick, allianceSelection, driveTrain));
-    // driveTrain.setDefaultCommand(new DriveWithController(driveTrain, xboxController, allianceSelection));
+    driveTrain.setDefaultCommand(
+        new DriveWithJoysticksAdvanced(
+            leftJoystick, rightJoystick, allianceSelection, driveTrain, field));
+    // driveTrain.setDefaultCommand(new DriveWithJoysticks(leftJoystick, rightJoystick,
+    // allianceSelection, driveTrain));
+    // driveTrain.setDefaultCommand(new DriveWithController(driveTrain, xboxController,
+    // allianceSelection));
 
-    // Set initial robot position on field. This takes place a while after the drivetrain is created, so after any CANbus delays.
+    // Set initial robot position on field. This takes place a while after the drivetrain is
+    // created, so after any CANbus delays.
     // Set initial location to (0,0) and facing away from driver (regardless of alliance color).
-    driveTrain.resetPose(new Pose2d(0.0, 0.0, 
-      allianceSelection.getAlliance() == Alliance.Red ? Rotation2d.k180deg : Rotation2d.kZero));
+    driveTrain.resetPose(
+        new Pose2d(
+            0.0,
+            0.0,
+            allianceSelection.getAlliance() == Alliance.Red
+                ? Rotation2d.k180deg
+                : Rotation2d.kZero));
   }
 
   private void configureShuffleboard() {
@@ -116,12 +137,22 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Toggle Coast", new DriveToggleCoastMode(driveTrain));
     SmartDashboard.putData("Drive Reset Pose", new DriveResetPose(driveTrain));
     SmartDashboard.putData("Drive To Pose", new DriveToPose(CoordType.kAbsolute, driveTrain));
-    SmartDashboard.putData("Drive 6m Fwd", new DriveToPose(CoordType.kRelative, () -> new Pose2d(6.0, 0.0, new Rotation2d(0.0)),
-      SwerveConstants.kNominalSpeedMetersPerSecond, SwerveConstants.kNominalAccelerationMetersPerSecondSquare, 
-      TrajectoryConstants.maxPositionErrorMeters, TrajectoryConstants.maxThetaErrorDegrees, 
-      true, true, driveTrain));
-    SmartDashboard.putData("Drive Calibration", new DriveCalibration(0.0, 0.5, 5.0, 0.1, driveTrain));
-    SmartDashboard.putData("Drive Turn Calibration", new DriveTurnCalibration(0.2, 5.0, 0.2 / 5.0, driveTrain));
+    SmartDashboard.putData(
+        "Drive 6m Fwd",
+        new DriveToPose(
+            CoordType.kRelative,
+            () -> new Pose2d(6.0, 0.0, new Rotation2d(0.0)),
+            SwerveConstants.kNominalSpeedMetersPerSecond,
+            SwerveConstants.kNominalAccelerationMetersPerSecondSquare,
+            TrajectoryConstants.maxPositionErrorMeters,
+            TrajectoryConstants.maxThetaErrorDegrees,
+            true,
+            true,
+            driveTrain));
+    SmartDashboard.putData(
+        "Drive Calibration", new DriveCalibration(0.0, 0.5, 5.0, 0.1, driveTrain));
+    SmartDashboard.putData(
+        "Drive Turn Calibration", new DriveTurnCalibration(0.2, 5.0, 0.2 / 5.0, driveTrain));
     SmartDashboard.putData("Drive Percent Speed", new DrivePercentSpeed(driveTrain));
     SmartDashboard.putData("Drive Straight", new DriveStraight(false, false, false, driveTrain));
 
@@ -131,14 +162,18 @@ public class RobotContainer {
     SmartDashboard.putData("Hopper STOP", new HopperStop(hopper));
 
     // CoralEffector
-    SmartDashboard.putData("CoralEffector Forward", new CoralEffectorSetPercent(0.05, coralEffector));
-    SmartDashboard.putData("CoralEffector Reverse", new CoralEffectorSetPercent(-0.05, coralEffector));
+    SmartDashboard.putData(
+        "CoralEffector Forward", new CoralEffectorSetPercent(0.05, coralEffector));
+    SmartDashboard.putData(
+        "CoralEffector Reverse", new CoralEffectorSetPercent(-0.05, coralEffector));
     SmartDashboard.putData("CoralEffector STOP", new CoralEffectorStop(coralEffector));
     SmartDashboard.putData("CoralEffector Intake", new CoralEffectorIntake(coralEffector));
     SmartDashboard.putData("CoralEffector Outtake", new CoralEffectorOuttake(coralEffector));
-    SmartDashboard.putData("CoralEffector Intake Enhanced", new CoralEffectorIntakeEnhanced(coralEffector));
+    SmartDashboard.putData(
+        "CoralEffector Intake Enhanced", new CoralEffectorIntakeEnhanced(coralEffector));
     SmartDashboard.putData("CoralEffector Set Percent", new CoralEffectorSetPercent(coralEffector));
-    SmartDashboard.putData("CoralEffector Set Position", new CoralEffectorSetPosition(false, coralEffector));
+    SmartDashboard.putData(
+        "CoralEffector Set Position", new CoralEffectorSetPosition(false, coralEffector));
 
     // AlgaeGrabber
     SmartDashboard.putData("AlgaeGrabber In", new AlgaeGrabberSetPercent(0.1, algaeGrabber));
@@ -149,17 +184,25 @@ public class RobotContainer {
 
     // Wrist
     SmartDashboard.putData("Wrist STOP", new WristStop(wrist));
-    SmartDashboard.putData("Wrist Up", new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
-    SmartDashboard.putData("Wrist Down", new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
+    SmartDashboard.putData(
+        "Wrist Up", new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
+    SmartDashboard.putData(
+        "Wrist Down", new WristSetPercent(-WristConstants.maxManualPercentOutput, wrist));
     SmartDashboard.putData("Wrist Set Percent", new WristSetPercent(wrist));
     SmartDashboard.putData("Wrist Set Angle", new WristSetAngle(wrist));
-    SmartDashboard.putData("Wrist Cal. to START CONFIG", new WristCalibrateManual(ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
+    SmartDashboard.putData(
+        "Wrist Cal. to START CONFIG",
+        new WristCalibrateManual(ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
     SmartDashboard.putData("Wrist Calibrate Ramp", new WristCalibrationRamp(0.01, 0.2, wrist));
 
     // Elevator
     SmartDashboard.putData("Elevator STOP", new ElevatorStop(elevator));
-    SmartDashboard.putData("Elevator Up", new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
-    SmartDashboard.putData("Elevator Down", new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
+    SmartDashboard.putData(
+        "Elevator Up",
+        new ElevatorSetPercent(ElevatorConstants.maxManualPercentOutput, false, elevator));
+    SmartDashboard.putData(
+        "Elevator Down",
+        new ElevatorSetPercent(-ElevatorConstants.maxManualPercentOutput, false, elevator));
     SmartDashboard.putData("Elevator Calibration Routine", new ElevatorCalibration(0.1, elevator));
     SmartDashboard.putData("Elevator Set Position", new ElevatorSetPosition(elevator));
 
@@ -167,64 +210,136 @@ public class RobotContainer {
     SmartDashboard.putData("Climber STOP", new ClimberStop(climber));
     SmartDashboard.putData("Climber Set Percent", new ClimberSetPercentOutput(climber));
     SmartDashboard.putData("Climber Set Angle", new ClimberSetAngle(climber));
-    SmartDashboard.putData("Climber Cal. to START CONFIG", new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber));
-    SmartDashboard.putData("Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber));
+    SmartDashboard.putData(
+        "Climber Cal. to START CONFIG",
+        new ClimberCalibrateManual(ClimberConstants.ClimberAngle.CALIBRATE_MANUAL.value, climber));
+    SmartDashboard.putData(
+        "Climber Run Calibration", new ClimberCalibrationRamp(-0.05, 0.25, climber));
     SmartDashboard.putData("Climber Toggle Coast", new ClimberToggleCoastMode(climber));
     SmartDashboard.putData("Climber Ratchet Engage", new ClimberSetRatchet(true, climber));
     SmartDashboard.putData("Climber Ratchet Disengage", new ClimberSetRatchet(false, climber));
     SmartDashboard.putData("Climber Set Servo Position", new ClimberSetServoPosition(climber));
-    SmartDashboard.putData("Climber Set Angle to Lift", new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
-    
+    SmartDashboard.putData(
+        "Climber Set Angle to Lift",
+        new ClimberSetAngle(ClimberConstants.ClimberAngle.CLIMB_END, climber));
+
     // Autos
     SmartDashboard.putData("Autonomous Run Auto Now", autoSelection.scheduleAutoCommand());
-    SmartDashboard.putData("Auto Barge Right To E", new AutoCoralDriveAndScoreSequence(false, false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field));
-    SmartDashboard.putData("Auto E to HP", new AutoCoralDriveAndIntakeSequence(ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, allianceSelection));
-    SmartDashboard.putData("Auto HP to E", new AutoCoralDriveAndScoreSequence(true, false, ReefLocation.E, ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, allianceSelection, field));
+    SmartDashboard.putData(
+        "Auto Barge Right To E",
+        new AutoCoralDriveAndScoreSequence(
+            false,
+            false,
+            ReefLocation.E,
+            ReefLevel.L1,
+            driveTrain,
+            elevator,
+            wrist,
+            coralEffector,
+            algaeGrabber,
+            hopper,
+            rightJoystick,
+            allianceSelection,
+            field));
+    SmartDashboard.putData(
+        "Auto E to HP",
+        new AutoCoralDriveAndIntakeSequence(
+            ReefLocation.E, driveTrain, elevator, wrist, coralEffector, hopper, allianceSelection));
+    SmartDashboard.putData(
+        "Auto HP to E",
+        new AutoCoralDriveAndScoreSequence(
+            true,
+            false,
+            ReefLocation.E,
+            ReefLevel.L1,
+            driveTrain,
+            elevator,
+            wrist,
+            coralEffector,
+            algaeGrabber,
+            hopper,
+            rightJoystick,
+            allianceSelection,
+            field));
 
     // Copanel buttons
-    SmartDashboard.putData("Vision Enable Odometry Updates", new VisionOdometryStateSet(true, driveTrain));
-    SmartDashboard.putData("Vision Disable Odometry Updates", new VisionOdometryStateSet(false, driveTrain));
+    SmartDashboard.putData(
+        "Vision Enable Odometry Updates", new VisionOdometryStateSet(true, driveTrain));
+    SmartDashboard.putData(
+        "Vision Disable Odometry Updates", new VisionOdometryStateSet(false, driveTrain));
 
     // Sequences
-    SmartDashboard.putData("Algae Intake Sequence Ground", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, elevator, wrist, algaeGrabber));
-    SmartDashboard.putData("Algae Intake Sequence Lower", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, elevator, wrist, algaeGrabber));
-    SmartDashboard.putData("Algae Intake Sequence Upper", new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, elevator, wrist, algaeGrabber));
-    SmartDashboard.putData("Algae Score Prep Sequence Processor", new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber));
-    SmartDashboard.putData("Algae Score Prep Sequence Net", new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData(
+        "Algae Intake Sequence Ground",
+        new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData(
+        "Algae Intake Sequence Lower",
+        new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOWER, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData(
+        "Algae Intake Sequence Upper",
+        new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_UPPER, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData(
+        "Algae Score Prep Sequence Processor",
+        new AlgaeScorePrepSequence(
+            ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber));
+    SmartDashboard.putData(
+        "Algae Score Prep Sequence Net",
+        new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET, elevator, wrist, algaeGrabber));
 
-    SmartDashboard.putData("Coral Intake Sequence", new CoralIntakeSequence(elevator, wrist, hopper, coralEffector));
-    SmartDashboard.putData("Coral Score Prep Sequence L1", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, coralEffector));
-    SmartDashboard.putData("Coral Score Prep Sequence L2", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber, coralEffector));
-    SmartDashboard.putData("Coral Score Prep Sequence L3", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, coralEffector));
-    SmartDashboard.putData("Coral Score Prep Sequence L4", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, coralEffector));
-    SmartDashboard.putData("Coral Score Prep Sequence L4-Copanel", new CoralScorePrepSequence(ElevatorWristPosition.CORAL_L4_COPANEL, elevator, wrist, algaeGrabber, coralEffector));
+    SmartDashboard.putData(
+        "Coral Intake Sequence", new CoralIntakeSequence(elevator, wrist, hopper, coralEffector));
+    SmartDashboard.putData(
+        "Coral Score Prep Sequence L1",
+        new CoralScorePrepSequence(
+            ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, coralEffector));
+    SmartDashboard.putData(
+        "Coral Score Prep Sequence L2",
+        new CoralScorePrepSequence(
+            ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber, coralEffector));
+    SmartDashboard.putData(
+        "Coral Score Prep Sequence L3",
+        new CoralScorePrepSequence(
+            ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, coralEffector));
+    SmartDashboard.putData(
+        "Coral Score Prep Sequence L4",
+        new CoralScorePrepSequence(
+            ElevatorWristPosition.CORAL_L4, elevator, wrist, algaeGrabber, coralEffector));
+    SmartDashboard.putData(
+        "Coral Score Prep Sequence L4-Copanel",
+        new CoralScorePrepSequence(
+            ElevatorWristPosition.CORAL_L4_COPANEL, elevator, wrist, algaeGrabber, coralEffector));
 
-    SmartDashboard.putData("Stow Elevator and Wrist", new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist));
+    SmartDashboard.putData(
+        "Stow Elevator and Wrist",
+        new WristElevatorSafeMove(
+            ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist));
 
-    SmartDashboard.putData("AutomatedDriveToReefAndIntakeAlgae", new AutomatedDriveToReefAndIntakeAlgae(driveTrain, elevator, wrist, algaeGrabber, field));
-    SmartDashboard.putData("Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
+    SmartDashboard.putData(
+        "AutomatedDriveToReefAndIntakeAlgae",
+        new AutomatedDriveToReefAndIntakeAlgae(driveTrain, elevator, wrist, algaeGrabber, field));
+    SmartDashboard.putData(
+        "Climber Prep Sequence", new ClimberPrepSequence(elevator, wrist, climber));
     SmartDashboard.putData("Climber Lift Sequence", new ClimberLiftSequence(climber));
 
     // Stop All Motors
-    SmartDashboard.putData("Stop All Motors", parallel(
-      new HopperStop(hopper),
-      new AlgaeGrabberStop(algaeGrabber),
-      new CoralEffectorStop(coralEffector),
-      new WristStop(wrist),
-      new ElevatorStop(elevator)
-    ));
+    SmartDashboard.putData(
+        "Stop All Motors",
+        parallel(
+            new HopperStop(hopper),
+            new AlgaeGrabberStop(algaeGrabber),
+            new CoralEffectorStop(coralEffector),
+            new WristStop(wrist),
+            new ElevatorStop(elevator)));
   }
- 
-   private void configureButtonBindings() {
-    configureXboxButtons();     // configure Xbox controller
+
+  private void configureButtonBindings() {
+    configureXboxButtons(); // configure Xbox controller
     configureJoystickButtons(); // configure joysticks
-    configureCopanel();         // configure copanel
+    configureCopanel(); // configure copanel
     configureTriggers();
   }
 
-  /**
-   * Define Xbox buttons and controls.
-   */
+  /** Define Xbox buttons and controls. */
   private void configureXboxButtons() {
     // Triggers for all Xbox buttons
     Trigger xbLT = xboxController.leftTrigger();
@@ -250,124 +365,120 @@ public class RobotContainer {
     // Move elevator and wrist, and run hopper and coralEffector to intake coral with RT
     xbRT.onTrue(new CoralIntakeSequence(elevator, wrist, hopper, coralEffector));
 
-    // xbX, A, B, and Y will automatically drive to the reef and score coral, see right[1] in configureJoystickButtons()
-    xboxController.x().onFalse(
-      either(
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
-        either(
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-          () -> coralEffector.getHoldMode()
-        ),
-        () -> algaeGrabber.isAlgaePresent()
-      )
-    );
+    // xbX, A, B, and Y will automatically drive to the reef and score coral, see right[1] in
+    // configureJoystickButtons()
+    xboxController
+        .x()
+        .onFalse(
+            either(
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+                either(
+                    runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+                    runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+                    () -> coralEffector.getHoldMode()),
+                () -> algaeGrabber.isAlgaePresent()));
 
-    xboxController.a().onFalse(
-      either(
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
-        either(
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-          () -> coralEffector.getHoldMode()
-        ),
-        () -> algaeGrabber.isAlgaePresent()
-      )
-    );
+    xboxController
+        .a()
+        .onFalse(
+            either(
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+                either(
+                    runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+                    runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+                    () -> coralEffector.getHoldMode()),
+                () -> algaeGrabber.isAlgaePresent()));
 
-    xboxController.b().onFalse(
-      either(
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
-        either(
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-          () -> coralEffector.getHoldMode()
-        ),
-        () -> algaeGrabber.isAlgaePresent()
-      )
-    );
+    xboxController
+        .b()
+        .onFalse(
+            either(
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+                either(
+                    runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+                    runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+                    () -> coralEffector.getHoldMode()),
+                () -> algaeGrabber.isAlgaePresent()));
 
-    xboxController.y().onFalse(
-      either(
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
-        either(
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-          () -> coralEffector.getHoldMode()
-        ),
-        () -> algaeGrabber.isAlgaePresent()
-      )
-    );
+    xboxController
+        .y()
+        .onFalse(
+            either(
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+                either(
+                    runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+                    runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+                    () -> coralEffector.getHoldMode()),
+                () -> algaeGrabber.isAlgaePresent()));
 
-    // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with D-Pad Left
-    xbLT.onTrue(either(
-        new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_GROUND, elevator, wrist, algaeGrabber),
-        none(),
-        () -> !coralEffector.isCoralPresent()
-      )
-    );
+    // Prep and intake algae from Ground with LT, Reef Lower with D-Pad Down, and Reef Upper with
+    // D-Pad Left
+    xbLT.onTrue(
+        either(
+            new AlgaeIntakeSequence(
+                ElevatorWristPosition.ALGAE_GROUND, elevator, wrist, algaeGrabber),
+            none(),
+            () -> !coralEffector.isCoralPresent()));
 
     xbPOVDown.onFalse(
-      either(
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
         either(
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-          () -> coralEffector.getHoldMode()
-        ),
-        () -> algaeGrabber.isAlgaePresent()
-      )
-    );
+            runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+            either(
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+                () -> coralEffector.getHoldMode()),
+            () -> algaeGrabber.isAlgaePresent()));
 
     xbPOVLeft.onFalse(
-      either(
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
         either(
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-          () -> coralEffector.getHoldMode()
-        ),
-        () -> algaeGrabber.isAlgaePresent()
-      )
-    );
+            runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+            either(
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+                () -> coralEffector.getHoldMode()),
+            () -> algaeGrabber.isAlgaePresent()));
 
     // Prep and intake algae from Lollipop with Back
-    xbBack.onTrue(either(
-      new AlgaeIntakeSequence(ElevatorWristPosition.ALGAE_LOLLIPOP, elevator, wrist, algaeGrabber),
-      none(),
-      () -> !coralEffector.isCoralPresent()
-    ));
+    xbBack.onTrue(
+        either(
+            new AlgaeIntakeSequence(
+                ElevatorWristPosition.ALGAE_LOLLIPOP, elevator, wrist, algaeGrabber),
+            none(),
+            () -> !coralEffector.isCoralPresent()));
 
     // Prep to score algae in Net with D-Pad Up and Processor with D-Pad Right
-    xbPOVUp.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET,elevator, wrist, algaeGrabber));
-    xbPOVRight.onTrue(new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber));
+    xbPOVUp.onTrue(
+        new AlgaeScorePrepSequence(ElevatorWristPosition.ALGAE_NET, elevator, wrist, algaeGrabber));
+    xbPOVRight.onTrue(
+        new AlgaeScorePrepSequence(
+            ElevatorWristPosition.ALGAE_PROCESSOR, elevator, wrist, algaeGrabber));
 
     // Manually control elevator with right joystick
-    xbLJoystickTrigger.whileTrue(sequence(
-      new ClimberSetRatchet(false, climber),
-      new ClimberManualControl(xboxController, climber, false)
-    ));
+    xbLJoystickTrigger.whileTrue(
+        sequence(
+            new ClimberSetRatchet(false, climber),
+            new ClimberManualControl(xboxController, climber, false)));
 
     // Manually control wrist with the left joystick
     xbRJoystickTrigger.whileTrue(new ElevatorManualControl(xboxController, elevator, true));
 
     // Stop all motors with LB
-    xbLB.onTrue(parallel(
-      new HopperStop(hopper),
-      new AlgaeGrabberStop(algaeGrabber),
-      new CoralEffectorStop(coralEffector),
-      new WristStop(wrist),
-      new ElevatorStop(elevator),
-      new ClimberStop(climber)
-    ));
+    xbLB.onTrue(
+        parallel(
+            new HopperStop(hopper),
+            new AlgaeGrabberStop(algaeGrabber),
+            new CoralEffectorStop(coralEffector),
+            new WristStop(wrist),
+            new ElevatorStop(elevator),
+            new ClimberStop(climber)));
 
     // Move wrist and elevator to home
-    xbRB.onTrue(new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist));
+    xbRB.onTrue(
+        new WristElevatorSafeMove(
+            ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist));
   }
 
-  /**
-   * Define driver joystick button mappings.
-   */
+  /** Define driver joystick button mappings. */
   public void configureJoystickButtons() {
     JoystickButton[] left = new JoystickButton[3];
     JoystickButton[] right = new JoystickButton[3];
@@ -382,40 +493,100 @@ public class RobotContainer {
     left[1].onTrue(new AlgaeGrabberOuttake(algaeGrabber));
     left[2].onTrue(new CoralEffectorOuttake(coralEffector));
 
-    right[1].and(xboxController.x()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L1, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field));
-    right[1].and(xboxController.a()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L2, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field));
-    right[1].and(xboxController.b()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L3, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field));
-    right[1].and(xboxController.y()).whileTrue(new AutomatedDriveToReefAndScoreCoral(ReefLevel.L4, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field));
+    right[1]
+        .and(xboxController.x())
+        .whileTrue(
+            new AutomatedDriveToReefAndScoreCoral(
+                ReefLevel.L1,
+                driveTrain,
+                elevator,
+                wrist,
+                coralEffector,
+                algaeGrabber,
+                hopper,
+                rightJoystick,
+                field));
+    right[1]
+        .and(xboxController.a())
+        .whileTrue(
+            new AutomatedDriveToReefAndScoreCoral(
+                ReefLevel.L2,
+                driveTrain,
+                elevator,
+                wrist,
+                coralEffector,
+                algaeGrabber,
+                hopper,
+                rightJoystick,
+                field));
+    right[1]
+        .and(xboxController.b())
+        .whileTrue(
+            new AutomatedDriveToReefAndScoreCoral(
+                ReefLevel.L3,
+                driveTrain,
+                elevator,
+                wrist,
+                coralEffector,
+                algaeGrabber,
+                hopper,
+                rightJoystick,
+                field));
+    right[1]
+        .and(xboxController.y())
+        .whileTrue(
+            new AutomatedDriveToReefAndScoreCoral(
+                ReefLevel.L4,
+                driveTrain,
+                elevator,
+                wrist,
+                coralEffector,
+                algaeGrabber,
+                hopper,
+                rightJoystick,
+                field));
 
     right[1].onFalse(
-      either(
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
         either(
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-          () -> coralEffector.getHoldMode()
-        ),
-        () -> algaeGrabber.isAlgaePresent()
-      )
-    );
+            runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.ALGAE_MODE)),
+            either(
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+                () -> coralEffector.getHoldMode()),
+            () -> algaeGrabber.isAlgaePresent()));
 
-    right[1].and(xboxController.povLeft()).whileTrue(new AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition.ALGAE_UPPER, driveTrain, elevator, wrist, algaeGrabber, field));
-    right[1].and(xboxController.povDown()).whileTrue(new AutomatedDriveToReefAndIntakeAlgae(ElevatorWristPosition.ALGAE_LOWER, driveTrain, elevator, wrist, algaeGrabber, field));
+    right[1]
+        .and(xboxController.povLeft())
+        .whileTrue(
+            new AutomatedDriveToReefAndIntakeAlgae(
+                ElevatorWristPosition.ALGAE_UPPER,
+                driveTrain,
+                elevator,
+                wrist,
+                algaeGrabber,
+                field));
+    right[1]
+        .and(xboxController.povDown())
+        .whileTrue(
+            new AutomatedDriveToReefAndIntakeAlgae(
+                ElevatorWristPosition.ALGAE_LOWER,
+                driveTrain,
+                elevator,
+                wrist,
+                algaeGrabber,
+                field));
 
     right[2].whileTrue(new DriveToBargeWithOdometry(driveTrain, field));
   }
 
   /**
    * Define Copanel button mappings.
-   *  
-   *  1  3  5  8
-   *  2  4  6  8
-   *      
-   *  9  11 13 7
-   *  10 12 14 7
-   * 
-   *  15 17 19
-   *  16 18 20
+   *
+   * <p>1 3 5 8 2 4 6 8
+   *
+   * <p>9 11 13 7 10 12 14 7
+   *
+   * <p>15 17 19 16 18 20
    */
   public void configureCopanel() {
     JoystickButton[] coP = new JoystickButton[21];
@@ -425,12 +596,36 @@ public class RobotContainer {
     }
 
     // ex: coP[1].onTrue(new command);
-    
+
     // Elevator and Wrist Commands
-    coP[1].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L4_COPANEL, elevator, wrist, algaeGrabber, coralEffector));
-    coP[2].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L3, elevator, wrist, algaeGrabber, coralEffector));
-    coP[9].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L2, elevator, wrist, algaeGrabber, coralEffector));
-    coP[10].onTrue(new CoralScorePrepSequence(ElevatorWristConstants.ElevatorWristPosition.CORAL_L1, elevator, wrist, algaeGrabber, coralEffector));
+    coP[1].onTrue(
+        new CoralScorePrepSequence(
+            ElevatorWristConstants.ElevatorWristPosition.CORAL_L4_COPANEL,
+            elevator,
+            wrist,
+            algaeGrabber,
+            coralEffector));
+    coP[2].onTrue(
+        new CoralScorePrepSequence(
+            ElevatorWristConstants.ElevatorWristPosition.CORAL_L3,
+            elevator,
+            wrist,
+            algaeGrabber,
+            coralEffector));
+    coP[9].onTrue(
+        new CoralScorePrepSequence(
+            ElevatorWristConstants.ElevatorWristPosition.CORAL_L2,
+            elevator,
+            wrist,
+            algaeGrabber,
+            coralEffector));
+    coP[10].onTrue(
+        new CoralScorePrepSequence(
+            ElevatorWristConstants.ElevatorWristPosition.CORAL_L1,
+            elevator,
+            wrist,
+            algaeGrabber,
+            coralEffector));
 
     // Wrist Commands
     coP[3].whileTrue(new WristSetPercent(WristConstants.maxManualPercentOutput, wrist));
@@ -445,70 +640,75 @@ public class RobotContainer {
     coP[6].onFalse(new HopperStop(hopper));
 
     // Coral Commands
-    coP[13].onTrue(new CoralEffectorSetPercent(CoralEffectorConstants.intakePercent, coralEffector));
+    coP[13].onTrue(
+        new CoralEffectorSetPercent(CoralEffectorConstants.intakePercent, coralEffector));
     coP[13].onFalse(new CoralEffectorStop(coralEffector));
-    coP[14].onTrue(new CoralEffectorSetPercent(-CoralEffectorConstants.intakePercent, coralEffector));
+    coP[14].onTrue(
+        new CoralEffectorSetPercent(-CoralEffectorConstants.intakePercent, coralEffector));
     coP[14].onFalse(new CoralEffectorStop(coralEffector));
 
     // Climber Commands
     coP[15].onTrue(new ClimberLiftSequence(climber));
     coP[16].onTrue(new ClimberPrepSequence(elevator, wrist, climber));
-    coP[17].onTrue(sequence(
-      new ClimberSetRatchet(false, climber),
-      new ClimberSetAngle(ClimberConstants.ClimberAngle.DEFAULT, climber)
-      ));
-    coP[18].onTrue(sequence(
-      new ClimberSetRatchet(false, climber),
-      new ClimberSetAngle(ClimberConstants.ClimberAngle.START_CONFIG, climber)
-    ));
+    coP[17].onTrue(
+        sequence(
+            new ClimberSetRatchet(false, climber),
+            new ClimberSetAngle(ClimberConstants.ClimberAngle.DEFAULT, climber)));
+    coP[18].onTrue(
+        sequence(
+            new ClimberSetRatchet(false, climber),
+            new ClimberSetAngle(ClimberConstants.ClimberAngle.START_CONFIG, climber)));
 
     // Reset Pose
-    coP[7].onTrue(either(
-      new DriveResetPose(180, false, driveTrain), 
-      new DriveResetPose(0, false, driveTrain), 
-      () -> allianceSelection.getAlliance() == Alliance.Red));
+    coP[7].onTrue(
+        either(
+            new DriveResetPose(180, false, driveTrain),
+            new DriveResetPose(0, false, driveTrain),
+            () -> allianceSelection.getAlliance() == Alliance.Red));
 
     // Manual Calibration Commands
     coP[11].onTrue(new ElevatorCalibrateIfAtLowerLimit(elevator));
-    coP[12].onTrue(new WristCalibrateManual(ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
+    coP[12].onTrue(
+        new WristCalibrateManual(
+            ElevatorWristConstants.ElevatorWristPosition.START_CONFIG.wristAngle, wrist));
     coP[8].onTrue(new ClimberCalibrateManual(ClimberConstants.ClimberAngle.DEFAULT.value, climber));
 
     // Algae Grabber Commands
     coP[19].onTrue(new AlgaeGrabberSetPercent(AlgaeGrabberConstants.intakePercent, algaeGrabber));
     coP[19].onFalse(new AlgaeGrabberStop(algaeGrabber));
-    coP[20].onTrue(new AlgaeGrabberSetPercent(AlgaeGrabberConstants.netOuttakePercent, algaeGrabber));
+    coP[20].onTrue(
+        new AlgaeGrabberSetPercent(AlgaeGrabberConstants.netOuttakePercent, algaeGrabber));
     coP[20].onFalse(new AlgaeGrabberStop(algaeGrabber));
   }
 
-  private void configureTriggers() {
-  }
+  private void configureTriggers() {}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
     return autoSelection.getAutoCommand();
   }
 
-  /**
-   * Method called once every scheduler cycle (20 ms).
-   */
-  public void robotPeriodic(){
+  /** Method called once every scheduler cycle (20 ms). */
+  public void robotPeriodic() {
     DataLogUtil.advanceLogRotation();
     allianceSelection.periodic();
     autoSelection.periodic();
   }
 
-  /**
-   * Method called when robot is disabled.
-   */
+  /** Method called when robot is disabled. */
   public void disabledInit() {
     // Do not log the word "Init" here, as it it affects the Excel macro
     DataLogUtil.writeMessageEcho("Disabled: Robot disabled");
 
-    driveTrain.stopMotors();             // SAFETY: Turn off any closed loop control that may be running, so the robot does not move when re-enabled
-    driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
+    driveTrain
+        .stopMotors(); // SAFETY: Turn off any closed loop control that may be running, so the robot
+    // does not move when re-enabled
+    driveTrain.enableFastLogging(
+        false); // Turn off fast logging, in case it was left on from auto mode
     driveTrain.setVisionForOdometryState(true);
 
     elevator.stopElevatorMotors();
@@ -522,19 +722,15 @@ public class RobotContainer {
     SignalLogger.stop();
   }
 
-  /**
-   * Method called once every scheduler cycle when robot is disabled.
-   */
+  /** Method called once every scheduler cycle when robot is disabled. */
   public void disabledPeriodic() {
     // Check for CAN bus error (to prevent the issue that caused us to be eliminated in 2020!)
     if (driveTrain.canBusError()) {
       RobotPreferences.recordStickyFaults("CAN Bus");
     }
   }
-  
-  /**
-   * Method called when auto mode is initialized/enabled.
-   */
+
+  /** Method called when auto mode is initialized/enabled. */
   public void autonomousInit() {
     DataLogUtil.writeMessageEcho("Auto: Mode Init");
 
@@ -561,20 +757,16 @@ public class RobotContainer {
     lastEnabledModeWasAuto = true;
   }
 
-  /**
-   * Method called once every scheduler cycle when auto mode is initialized/enabled.
-   */
-  public void autonomousPeriodic() {
-  }
+  /** Method called once every scheduler cycle when auto mode is initialized/enabled. */
+  public void autonomousPeriodic() {}
 
-  /**
-   * Method called when teleop mode is initialized/enabled.
-   */
+  /** Method called when teleop mode is initialized/enabled. */
   public void teleopInit() {
     DataLogUtil.writeMessageEcho("Teleop: Mode Init");
 
     driveTrain.setDriveModeCoast(false); // Set drive mode to brake mode
-    driveTrain.enableFastLogging(false); // Turn off fast logging, in case it was left on from auto mode
+    driveTrain.enableFastLogging(
+        false); // Turn off fast logging, in case it was left on from auto mode
     driveTrain.setVisionForOdometryState(true);
 
     if (elevator.isElevatorCalibrated()) {
@@ -592,21 +784,21 @@ public class RobotContainer {
 
     climberDisengageRatchet.schedule();
 
-    if (lastEnabledModeWasAuto && !coralEffector.getHoldMode() && elevator.getElevatorPosition() < 3.0) {
+    if (lastEnabledModeWasAuto
+        && !coralEffector.getHoldMode()
+        && elevator.getElevatorPosition() < 3.0) {
       coralIntakeSequence.schedule();
     } else if (!coralEffector.getHoldMode()) {
       coralEffector.stopCoralEffectorMotor();
     }
-    
+
     matchTimer.reset();
     matchTimer.start();
 
     lastEnabledModeWasAuto = false;
   }
 
-  /**
-   * Method called once every scheduler cycle when teleop mode is initialized/enabled.
-   */
+  /** Method called once every scheduler cycle when teleop mode is initialized/enabled. */
   public void teleopPeriodic() {
     // if between last 20 seconds and last 15 seconds (match is 135s),
     // and controller hasn't started rumbling, make the controller rumble
@@ -615,7 +807,7 @@ public class RobotContainer {
       rumbled = true;
     }
     // if after last 15 seconds (have rumbled for 5), and controller
-    // hasn't stopped rumbling, make the controller stop rumbling 
+    // hasn't stopped rumbling, make the controller stop rumbling
     else if (matchTimer.get() >= 115 && rumbled) {
       xboxController.setRumble(RumbleType.kBothRumble, 0);
       rumbled = false;

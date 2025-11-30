@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.RobotPreferences;
 
@@ -29,7 +28,7 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
-      /* roboRIO settings to optimize Java memory use:
+    /* roboRIO settings to optimize Java memory use:
         echo "vm.overcommit_memory=1" >> /etc/sysctl.conf
         echo "vm.vfs_cache_pressure=1000" >> /etc/sysctl.conf
         echo "vm.swappiness=100" >> /etc/sysctl.conf
@@ -59,7 +58,7 @@ public class Robot extends TimedRobot {
     // before creating the robotContainer, so that all of the subsystems see the values
     // from the RoboRIO instead of the default values.
     RobotPreferences.readPreferencesToConstants();
-    
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();

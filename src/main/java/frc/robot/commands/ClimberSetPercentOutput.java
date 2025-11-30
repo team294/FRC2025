@@ -12,18 +12,19 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ClimberSetPercentOutput extends Command {
   private final Climber climber;
-  
+
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
   /**
-   * Sets the percent output of the climber from Shuffleboard.
-   * <b>NOTE: This command does not end. When interrupted, it turns off the climber motor.
+   * Sets the percent output of the climber from Shuffleboard. <b>NOTE: This command does not end.
+   * When interrupted, it turns off the climber motor.
+   *
    * @param climber Climber subsystem
    */
   public ClimberSetPercentOutput(Climber climber) {
     this.climber = climber;
-    
+
     this.fromShuffleboard = true;
     addRequirements(climber);
 
@@ -33,13 +34,14 @@ public class ClimberSetPercentOutput extends Command {
   }
 
   /**
-   * Sets the percent output of the climber.
-   * <b>NOTE: This command does not end. When interrupted, it turns off the climber motor.
+   * Sets the percent output of the climber. <b>NOTE: This command does not end. When interrupted,
+   * it turns off the climber motor.
+   *
    * @param percent -1.0 to 1.0 (positive = up, negative = down)
    * @param climber Climber subsystem
    */
   public ClimberSetPercentOutput(double percent, Climber climber) {
-    
+
     this.climber = climber;
     this.percent = percent;
     this.fromShuffleboard = false;
@@ -50,14 +52,14 @@ public class ClimberSetPercentOutput extends Command {
   @Override
   public void initialize() {
     if (fromShuffleboard) percent = SmartDashboard.getNumber("Climber Goal Percent", 0);
-    if (climber.getRatchetPosition() == ServoPosition.DISENGAGED || percent >= 0) climber.setClimberPercentOutput(percent);
+    if (climber.getRatchetPosition() == ServoPosition.DISENGAGED || percent >= 0)
+      climber.setClimberPercentOutput(percent);
     DataLogUtil.writeMessage("ClimberSetPercentOutput: Init, Percent =", percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

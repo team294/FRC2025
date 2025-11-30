@@ -17,25 +17,28 @@ import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorSetPosition extends Command {
   private final CoralEffector coralEffector;
-  
+
   private final boolean autoHold;
   private double position = 0.0;
   private boolean fromShuffleboard;
 
   private final DataLog log = DataLogManager.getLog();
-  private final DoubleLogEntry dLogPosition = new DoubleLogEntry(log, "/CoralEffectorSetPosition/Position");
-  private final BooleanLogEntry bLogAutoHold = new BooleanLogEntry(log, "/CoralEffectorSetPosition/AutoHold");
+  private final DoubleLogEntry dLogPosition =
+      new DoubleLogEntry(log, "/CoralEffectorSetPosition/Position");
+  private final BooleanLogEntry bLogAutoHold =
+      new BooleanLogEntry(log, "/CoralEffectorSetPosition/AutoHold");
 
   /**
    * Sets the position of the coralEffector from Shuffleboard and ends when it is within tolerance.
-   * @param autoHold true = automatically adjust position so that both coral sensors detect the coral.  
-   *   false = hold exact position specified in first parameter.
+   *
+   * @param autoHold true = automatically adjust position so that both coral sensors detect the
+   *     coral. false = hold exact position specified in first parameter.
    * @param coralEffector CoralEffector subsystem
    */
   public CoralEffectorSetPosition(boolean autoHold, CoralEffector coralEffector) {
     this.autoHold = autoHold;
     this.coralEffector = coralEffector;
-    
+
     this.fromShuffleboard = true;
     addRequirements(coralEffector);
 
@@ -51,14 +54,15 @@ public class CoralEffectorSetPosition extends Command {
 
   /**
    * Sets the position of the coralEffector and ends when it is within tolerance.
+   *
    * @param position position, in motor rotations
-   * @param autoHold true = automatically adjust position so that both coral sensors detect the coral.  
-   *   false = hold exact position specified in first parameter.
+   * @param autoHold true = automatically adjust position so that both coral sensors detect the
+   *     coral. false = hold exact position specified in first parameter.
    * @param coralEffector CoralEffector subsystem
    */
   public CoralEffectorSetPosition(double position, boolean autoHold, CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    
+
     this.position = position;
     this.autoHold = autoHold;
     this.fromShuffleboard = false;
@@ -84,25 +88,30 @@ public class CoralEffectorSetPosition extends Command {
 
     dLogPosition.append(position, timeNow);
     bLogAutoHold.append(autoHold, timeNow);
-    DataLogUtil.writeMessage("CoralEffectorSetPosition: Init, Position =", position, ", Auto Hold =", autoHold);
+    DataLogUtil.writeMessage(
+        "CoralEffectorSetPosition: Init, Position =", position, ", Auto Hold =", autoHold);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     coralEffector.enableFastLogging(false);
 
-    DataLogUtil.writeMessage("CoralEffectorSetPosition: End, Position =", position, ", Measured Position =", coralEffector.getCoralEffectorPosition());
+    DataLogUtil.writeMessage(
+        "CoralEffectorSetPosition: End, Position =",
+        position,
+        ", Measured Position =",
+        coralEffector.getCoralEffectorPosition());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(position - coralEffector.getCoralEffectorPosition()) < CoralEffectorConstants.centeringTolerance;
+    return Math.abs(position - coralEffector.getCoralEffectorPosition())
+        < CoralEffectorConstants.centeringTolerance;
   }
 }

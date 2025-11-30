@@ -10,15 +10,15 @@ import frc.robot.utilities.DataLogUtil;
 
 public class DriveStop extends Command {
   private DriveTrain drivetrain;
-  
 
   /**
    * Stops all of the driveTrain motors.
+   *
    * @param drivetrain DriveTrain subsystem
    */
   public DriveStop(DriveTrain drivetrain) {
     this.drivetrain = drivetrain;
-    
+
     addRequirements(drivetrain);
   }
 

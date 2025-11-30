@@ -14,7 +14,7 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorCalibration extends Command {
   private Elevator elevator;
-  
+
   private double percentOutput, rampRate;
   private final Timer timer = new Timer();
 
@@ -24,17 +24,20 @@ public class ElevatorCalibration extends Command {
     RAMP_DOWN,
     STOP_DOWN,
   }
+
   private CalibrationRoutineState state;
 
   /**
    * Ramps elevator speed upwards and then downwards, reversing when 10 inches from top or bottom.
-   * The data collected during this routine can be used to calculate the terms of the elevator profile.
-   * @param rampRate Ramp rate in percent output/second 
+   * The data collected during this routine can be used to calculate the terms of the elevator
+   * profile.
+   *
+   * @param rampRate Ramp rate in percent output/second
    * @param elevator Elevator subsystem
    */
   public ElevatorCalibration(double rampRate, Elevator elevator) {
     this.elevator = elevator;
-    
+
     this.rampRate = rampRate;
     addRequirements(elevator);
   }
@@ -58,11 +61,11 @@ public class ElevatorCalibration extends Command {
     if (!elevator.isElevatorCalibrated()) return;
 
     switch (state) {
-      // Ramp upwards until 10 inches from top
+        // Ramp upwards until 10 inches from top
       case RAMP_UP:
         if (elevator.getElevatorPosition() < ElevatorPosition.UPPER_LIMIT.value - 10.0) {
           percentOutput = MathUtil.clamp(currTime * rampRate, -1.0, 1.0);
-          elevator.setElevatorPercentOutput(percentOutput);      
+          elevator.setElevatorPercentOutput(percentOutput);
         } else {
           state = CalibrationRoutineState.STOP_UP;
           timer.reset();
@@ -70,22 +73,23 @@ public class ElevatorCalibration extends Command {
         }
         break;
 
-      // Stop motor for 2 seconds
+        // Stop motor for 2 seconds
       case STOP_UP:
         if (currTime < 2.0) {
-          elevator.stopElevatorMotors();     
+          elevator.stopElevatorMotors();
         } else {
           state = CalibrationRoutineState.RAMP_DOWN;
           timer.reset();
           timer.start();
         }
         break;
-      
-      // Ramp downwards until 10 inches from bottom
+
+        // Ramp downwards until 10 inches from bottom
       case RAMP_DOWN:
-        if (elevator.getElevatorPosition() > ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value + 10.0) {
+        if (elevator.getElevatorPosition()
+            > ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value + 10.0) {
           percentOutput = MathUtil.clamp(-currTime * rampRate, -1.0, 1.0);
-          elevator.setElevatorPercentOutput(percentOutput);      
+          elevator.setElevatorPercentOutput(percentOutput);
         } else {
           state = CalibrationRoutineState.STOP_DOWN;
           timer.reset();
@@ -93,11 +97,11 @@ public class ElevatorCalibration extends Command {
         }
         break;
 
-      // Stop motor for 2 seconds
+        // Stop motor for 2 seconds
       case STOP_DOWN:
       default:
         if (currTime < 2.0) {
-          elevator.stopElevatorMotors();     
+          elevator.stopElevatorMotors();
         } else {
           state = CalibrationRoutineState.RAMP_UP;
           timer.reset();

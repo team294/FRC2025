@@ -11,17 +11,16 @@ import frc.robot.utilities.DataLogUtil;
 public class VisionOdometryStateSet extends InstantCommand {
   private final boolean enabled;
   private final DriveTrain driveTrain;
-  
 
   /**
    * Turns on or off vision updates for odometry.
-   * @param enabled true = uses vision for odometry, false = does not use vision for odometry   
+   *
+   * @param enabled true = uses vision for odometry, false = does not use vision for odometry
    * @param driveTrain DriveTrain subsystem
    */
   public VisionOdometryStateSet(boolean enabled, DriveTrain driveTrain) {
     this.enabled = enabled;
     this.driveTrain = driveTrain;
-    
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +29,7 @@ public class VisionOdometryStateSet extends InstantCommand {
     driveTrain.setVisionForOdometryState(enabled);
     DataLogUtil.writeMessage("VisionOdometryStateSet: Init, Enabled =", enabled);
   }
-  
+
   // Returns true if the command should run when the robot is disabled.
   @Override
   public boolean runsWhenDisabled() {

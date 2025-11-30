@@ -7,48 +7,51 @@ package frc.robot.commands.sequences;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-
-import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import frc.robot.Constants.HopperConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.utilities.LEDEventUtil;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
-
+import frc.robot.utilities.LEDEventUtil;
 
 public class CoralIntakeSequence extends SequentialCommandGroup {
-  
+
   /**
-   * Intakes coral by moving the wrist and elevator to the intake position, and then 
-   * running the hopper and coralEffector in parallel until the coral is safely in the coralEffector.
+   * Intakes coral by moving the wrist and elevator to the intake position, and then running the
+   * hopper and coralEffector in parallel until the coral is safely in the coralEffector.
+   *
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
    * @param hopper Hopper subsystem
    * @param coralEffector CoralEffector subsystem
    */
-  public CoralIntakeSequence(Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector) {
+  public CoralIntakeSequence(
+      Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector) {
     addCommands(
-      new DataLogMessage(false, "CoralIntakeSequence: Start"),
-
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
-      parallel(
-        new HopperSetPercent(HopperConstants.intakePercent, hopper),
+        new DataLogMessage(false, "CoralIntakeSequence: Start"),
+        new WristElevatorSafeMove(
+            ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist),
         parallel(
-          sequence(
-            new CoralEffectorIntakeEnhanced(coralEffector),
-            new WristElevatorSafeMove(ElevatorWristPosition.START_CONFIG, RegionType.CORAL_ONLY, elevator, wrist)
-          ),
-          runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_INTAKING))
-        ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL))
-      ).handleInterrupt(hopper::stopHopperMotor),
-      runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-      either(
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+                new HopperSetPercent(HopperConstants.intakePercent, hopper),
+                parallel(
+                        sequence(
+                            new CoralEffectorIntakeEnhanced(coralEffector),
+                            new WristElevatorSafeMove(
+                                ElevatorWristPosition.START_CONFIG,
+                                RegionType.CORAL_ONLY,
+                                elevator,
+                                wrist)),
+                        runOnce(
+                            () -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_INTAKING)))
+                    .handleInterrupt(
+                        () -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)))
+            .handleInterrupt(hopper::stopHopperMotor),
         runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-        () -> coralEffector.getHoldMode()),
-      new HopperStop(hopper),
-
-      new DataLogMessage(false, "CoralIntakeSequence: End")
-    );
+        either(
+            runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CORAL_MODE)),
+            runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+            () -> coralEffector.getHoldMode()),
+        new HopperStop(hopper),
+        new DataLogMessage(false, "CoralIntakeSequence: End"));
   }
 }

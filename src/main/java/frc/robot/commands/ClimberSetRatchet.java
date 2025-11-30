@@ -19,10 +19,12 @@ public class ClimberSetRatchet extends Command {
   private boolean moveNeeded;
 
   /**
-   * Set Climber ratchet engaged / disengaged.  If the the ratchet is already in the requested state,
-   * then this command does nothing and ends immediately.  If not, then it sets the ratchet to the given
-   * state and waits for it to be in that state before ending.
-   * @param engaged true = engaged, false = disengaged. engaged means we are not to move the climber down.
+   * Set Climber ratchet engaged / disengaged. If the the ratchet is already in the requested state,
+   * then this command does nothing and ends immediately. If not, then it sets the ratchet to the
+   * given state and waits for it to be in that state before ending.
+   *
+   * @param engaged true = engaged, false = disengaged. engaged means we are not to move the climber
+   *     down.
    * @param climber Climber subsystem
    */
   public ClimberSetRatchet(boolean engaged, Climber climber) {
@@ -35,8 +37,9 @@ public class ClimberSetRatchet extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    moveNeeded = (engaged && climber.getRatchetPosition()!=ServoPosition.ENGAGED ||
-      !engaged && climber.getRatchetPosition()!=ServoPosition.DISENGAGED);
+    moveNeeded =
+        (engaged && climber.getRatchetPosition() != ServoPosition.ENGAGED
+            || !engaged && climber.getRatchetPosition() != ServoPosition.DISENGAGED);
 
     if (moveNeeded) {
       climber.setRatchetEngaged(engaged);
@@ -47,7 +50,13 @@ public class ClimberSetRatchet extends Command {
 
     timer.start();
 
-    DataLogUtil.writeMessage("ClimberSetRatchet Init, set =", engaged, ", current =", climber.getRatchetPosition(), ", move needed =", moveNeeded);
+    DataLogUtil.writeMessage(
+        "ClimberSetRatchet Init, set =",
+        engaged,
+        ", current =",
+        climber.getRatchetPosition(),
+        ", move needed =",
+        moveNeeded);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,7 +66,11 @@ public class ClimberSetRatchet extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (!interrupted) climber.setRatchetPositionVariable(engaged ? ClimberConstants.ServoPosition.ENGAGED : ClimberConstants.ServoPosition.DISENGAGED);
+    if (!interrupted)
+      climber.setRatchetPositionVariable(
+          engaged
+              ? ClimberConstants.ServoPosition.ENGAGED
+              : ClimberConstants.ServoPosition.DISENGAGED);
     timer.stop();
     timer.reset();
 
@@ -67,7 +80,8 @@ public class ClimberSetRatchet extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!moveNeeded || timer.get() >= 0.25);  // Measured in pit ~0.15 sec, using 0.25 sec as safe value
+    return (!moveNeeded
+        || timer.get() >= 0.25); // Measured in pit ~0.15 sec, using 0.25 sec as safe value
   }
 
   public boolean runsWhenDisabled() {

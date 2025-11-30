@@ -3,24 +3,27 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.DataLogUtil;
 
 public class DriveSetFOC extends Command {
   private final DriveTrain driveTrain;
-  
+
   private final boolean setFOC;
 
   /**
    * Sets the drive motor to FOC or trapezoidal commuatation mode.
+   *
    * <p><b>NOTE:</b> This takes effect for the <b>next</b> request sent to the motor.
+   *
    * @param setFOC true = FOC mode, false = trapezoidal mode
    * @param driveTrain DriveTrain subsystem
    */
   public DriveSetFOC(boolean setFOC, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    
+
     this.setFOC = setFOC;
 
     addRequirements(driveTrain);
@@ -35,13 +38,11 @@ public class DriveSetFOC extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
@@ -53,5 +54,5 @@ public class DriveSetFOC extends Command {
   @Override
   public boolean runsWhenDisabled() {
     return true;
-  } 
+  }
 }

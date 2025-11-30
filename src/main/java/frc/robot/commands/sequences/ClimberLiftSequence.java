@@ -16,22 +16,24 @@ import frc.robot.utilities.LEDEventUtil;
 
 public class ClimberLiftSequence extends SequentialCommandGroup {
 
-  /** 
-   * Sets Climber Motor percent output until Climber is at the correct angle to climb, then cuts power.
-   * Not using position control to avoid robot bouncing during climb.
+  /**
+   * Sets Climber Motor percent output until Climber is at the correct angle to climb, then cuts
+   * power. Not using position control to avoid robot bouncing during climb.
+   *
    * @param climber Climber subsystem
-    */
+   */
   public ClimberLiftSequence(Climber climber) {
     addCommands(
-      new DataLogMessage(false, "ClimberLiftSequence: Start"),
-      
-      new ClimberSetRatchet(true, climber),
-      parallel(
-        new ClimberSetPercentOutput(ClimberConstants.maxPercentOutput, climber).until(() -> climber.getClimberAngle() >= ClimberConstants.ClimberAngle.CLIMB_END.value),
-        runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_LIFTING))
-      ).handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
-
-      new DataLogMessage(false, "ClimberLiftSequence: End")
-    );
+        new DataLogMessage(false, "ClimberLiftSequence: Start"),
+        new ClimberSetRatchet(true, climber),
+        parallel(
+                new ClimberSetPercentOutput(ClimberConstants.maxPercentOutput, climber)
+                    .until(
+                        () ->
+                            climber.getClimberAngle()
+                                >= ClimberConstants.ClimberAngle.CLIMB_END.value),
+                runOnce(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.CLIMBER_LIFTING)))
+            .handleInterrupt(() -> LEDEventUtil.sendEvent(LEDEventUtil.StripEvents.NEUTRAL)),
+        new DataLogMessage(false, "ClimberLiftSequence: End"));
   }
 }

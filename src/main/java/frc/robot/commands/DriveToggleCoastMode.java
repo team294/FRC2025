@@ -10,15 +10,15 @@ import frc.robot.utilities.DataLogUtil;
 
 public class DriveToggleCoastMode extends Command {
   private final DriveTrain driveTrain;
-  
 
   /**
    * Toggle between coast mode and brake mode on the driveTrain.
+   *
    * @param driveTrain DriveTrain subsystem
    */
   public DriveToggleCoastMode(DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    
+
     addRequirements(driveTrain);
   }
 
@@ -31,18 +31,19 @@ public class DriveToggleCoastMode extends Command {
       driveTrain.setDriveModeCoast(true);
     }
 
-    DataLogUtil.writeMessage("DriveToggleCoastMode: Init, Coast Mode =", driveTrain.isDriveModeCoast());
+    DataLogUtil.writeMessage(
+        "DriveToggleCoastMode: Init, Coast Mode =", driveTrain.isDriveModeCoast());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DataLogUtil.writeMessage("DriveToggleCoastMode: End, Coast Mode =", driveTrain.isDriveModeCoast());
+    DataLogUtil.writeMessage(
+        "DriveToggleCoastMode: End, Coast Mode =", driveTrain.isDriveModeCoast());
   }
 
   // Returns true when the command should end.

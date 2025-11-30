@@ -13,12 +13,14 @@ public class CoralEffectorIntake extends Command {
   private final CoralEffector coralEffector;
 
   /**
-   * Intake coral into the coralEffector by running the motor until the coral is safely in the mechanism.
+   * Intake coral into the coralEffector by running the motor until the coral is safely in the
+   * mechanism.
+   *
    * @param coralEffector CoralEffector subsystem
    */
   public CoralEffectorIntake(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    
+
     addRequirements(coralEffector);
   }
 
@@ -27,16 +29,16 @@ public class CoralEffectorIntake extends Command {
   public void initialize() {
     // If there is no coral present or the coral is not safely in the mechanism, run the motor
     if (!coralEffector.isCoralPresent()) {
-      coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.intakePercent); 
+      coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.intakePercent);
     }
 
-    DataLogUtil.writeMessage("CoralEffectorIntake: Init, Coral in =", coralEffector.isCoralPresent());
+    DataLogUtil.writeMessage(
+        "CoralEffectorIntake: Init, Coral in =", coralEffector.isCoralPresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

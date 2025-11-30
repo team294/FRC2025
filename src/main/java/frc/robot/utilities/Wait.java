@@ -8,14 +8,16 @@
 package frc.robot.utilities;
 
 public class Wait {
-    
-    /**
-     * Dumb loop that waits the time specified.
-     * NOTE: Do not use this except in robot init or subsystem constructors!
-     * @param millis duration to wait, in milliseconds
-     */
-    public static void waitTime(long millis) {
-        long t = System.currentTimeMillis() + millis;
-        while (System.currentTimeMillis() < t);
-    }
+
+  /**
+   * Dumb loop that waits the time specified. NOTE: Do not use this except in robot init or
+   * subsystem constructors!
+   *
+   * @param millis duration to wait, in milliseconds
+   */
+  public static void waitTime(long millis) {
+    long t = System.currentTimeMillis() + millis;
+    while (System.currentTimeMillis() < t)
+      ;
+  }
 }

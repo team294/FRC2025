@@ -10,15 +10,15 @@ import frc.robot.utilities.DataLogUtil;
 
 public class AlgaeGrabberStop extends Command {
   private final AlgaeGrabber algaeGrabber;
-  
 
   /**
    * Sets the percent output of the algaeGrabber to 0 and ends immediately.
+   *
    * @param algaeGrabber AlgaeGrabber subsystem
    */
   public AlgaeGrabberStop(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
-    
+
     addRequirements(algaeGrabber);
   }
 
@@ -31,8 +31,7 @@ public class AlgaeGrabberStop extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

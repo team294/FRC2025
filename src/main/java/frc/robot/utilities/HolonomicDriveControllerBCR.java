@@ -37,11 +37,13 @@ public class HolonomicDriveControllerBCR {
 
   /**
    * Constructs a holonomic drive controller.
+   *
    * @param xController PID Controller to respond to error in the field-relative x direction
    * @param yController PID Controller to respond to error in the field-relative y direction
    * @param thetaController profiled PID controller to respond to error in angle
    */
-  public HolonomicDriveControllerBCR(PIDController xController, PIDController yController, ProfiledPIDController thetaController) {
+  public HolonomicDriveControllerBCR(
+      PIDController xController, PIDController yController, ProfiledPIDController thetaController) {
     m_xController = xController;
     m_yController = yController;
     m_thetaController = thetaController;
@@ -49,8 +51,8 @@ public class HolonomicDriveControllerBCR {
   }
 
   /**
-   * Resets the HolonomicDriveController, so that the first call to calculate()
-   * resets the theta setpoint and clears the differential/integral errors.
+   * Resets the HolonomicDriveController, so that the first call to calculate() resets the theta
+   * setpoint and clears the differential/integral errors.
    */
   public void reset() {
     m_firstRun = true;
@@ -58,6 +60,7 @@ public class HolonomicDriveControllerBCR {
 
   /**
    * Gets whether the pose error is within tolerance of the reference.
+   *
    * @return true = pose error is within tolerance of the reference, false = not within tolerance
    */
   public boolean atReference() {
@@ -72,6 +75,7 @@ public class HolonomicDriveControllerBCR {
 
   /**
    * Sets the pose error which is considered tolerance for use with atReference().
+   *
    * @param tolerance pose error which is tolerable
    */
   public void setTolerance(Pose2d tolerance) {
@@ -80,9 +84,11 @@ public class HolonomicDriveControllerBCR {
 
   /**
    * Gtes the next output of the holonomic drive controller in field-relative speeds.
+   *
    * @param currentPose current pose, as measured by odometry or pose estimator
    * @param trajectoryPose desired trajectory pose, as sampled for the current timestep
-   *  <p><b>NOTE:</b> The rotation component of trajectoryPose is the desired velocity direction (not the desired robot facing)
+   *     <p><b>NOTE:</b> The rotation component of trajectoryPose is the desired velocity direction
+   *     (not the desired robot facing)
    * @param desiredLinearVelocityMetersPerSecond desired linear velocity
    * @param desiredHeading desired heading (the desired robot facing)
    * @return next output of the holonomic drive controller (field-relative speeds)
@@ -116,8 +122,9 @@ public class HolonomicDriveControllerBCR {
     // Calculate feedback velocities (based on position error)
     double xFeedback = m_xController.calculate(currentPose.getX(), trajectoryPose.getX());
     double yFeedback = m_yController.calculate(currentPose.getY(), trajectoryPose.getY());
-    double thetaFeedback = m_thetaController.calculate(currentPose.getRotation().getRadians(),
-        desiredHeading.getRadians());
+    double thetaFeedback =
+        m_thetaController.calculate(
+            currentPose.getRotation().getRadians(), desiredHeading.getRadians());
 
     // Return next output
     return new ChassisSpeeds(xFF + xFeedback, yFF + yFeedback, thetaFF + thetaFeedback);
@@ -125,9 +132,11 @@ public class HolonomicDriveControllerBCR {
 
   /**
    * Gest the next output of the holonomic drive controller in field-relative speeds.
+   *
    * @param currentPose current pose, as measured by odometry or pose estimator
    * @param desiredState desired trajectory pose, as sampled for the current timestep
-   * <p><b>NOTE:</b> The rotation component of desiredState is the desired velocity direction (not the desired robot facing)
+   *     <p><b>NOTE:</b> The rotation component of desiredState is the desired velocity direction
+   *     (not the desired robot facing)
    * @param desiredHeading desired heading (the desired robot facing)
    * @return The next output of the holonomic drive controller (field-relative speeds)
    */
@@ -140,6 +149,7 @@ public class HolonomicDriveControllerBCR {
   /**
    * Enables and disables the controller for troubleshooting problems. When calculate() is called on
    * a disabled controller, only feedforward values are returned.
+   *
    * @param enabled true = controller is enabled, false = controller is disabled
    */
   public void setEnabled(boolean enabled) {

@@ -11,17 +11,18 @@ import frc.robot.utilities.DataLogUtil;
 
 public class AlgaeGrabberSetPercent extends Command {
   private final AlgaeGrabber algaeGrabber;
-  
+
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
   /**
    * Sets the percent output of the algaeGrabber from Shuffleboard and ends immediately.
+   *
    * @param algaeGrabber AlgaeGrabber subsystem
    */
   public AlgaeGrabberSetPercent(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
-    
+
     this.fromShuffleboard = true;
     addRequirements(algaeGrabber);
 
@@ -32,12 +33,13 @@ public class AlgaeGrabberSetPercent extends Command {
 
   /**
    * Sets the percent output of the algaeGrabber and ends immediately.
+   *
    * @param percent -1.0 to 1.0 (positive = intake, negative = outtake)
    * @param algaeGrabber AlgaeGrabber subsystem
    */
   public AlgaeGrabberSetPercent(double percent, AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
-    
+
     this.percent = percent;
     this.fromShuffleboard = false;
     addRequirements(algaeGrabber);
@@ -54,8 +56,7 @@ public class AlgaeGrabberSetPercent extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

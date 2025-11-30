@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
-import frc.robot.utilities.ElevatorWristRegions;
 import frc.robot.utilities.DataLogUtil;
+import frc.robot.utilities.ElevatorWristRegions;
 
 public class WristElevatorSafeMove extends Command {
   // Subsystem and object references
   private final Elevator elevator;
   private final Wrist wrist;
-  
+
   // Input parameters
   private final ElevatorWristPosition destPosition;
   private final ElevatorWristRegions.RegionType type;
@@ -40,30 +40,45 @@ public class WristElevatorSafeMove extends Command {
 
   private MoveState curState;
   private ElevatorWristRegions.Region curRegion, nextRegion, destRegion;
-  private boolean movingDown;     // True if elevator is moving down, false if moving up
-  private final double wristBuffer = 1.5;       // How much to target to keep the wrist within min/max for each region, in degrees
-  private final double wristTargetTol = 2.0;    // Wrist tolerance to goal postion for this command to end, in degrees
-  private final double elevatorMovingTol = 2.0; // Elevator tolerances when moving between regions, in inches
-  private final double elevatorTargetTol = 1.5; // Elevator tolerance to goal postion for this command to end, in inches
+  private boolean movingDown; // True if elevator is moving down, false if moving up
+  private final double wristBuffer =
+      1.5; // How much to target to keep the wrist within min/max for each region, in degrees
+  private final double wristTargetTol =
+      2.0; // Wrist tolerance to goal postion for this command to end, in degrees
+  private final double elevatorMovingTol =
+      2.0; // Elevator tolerances when moving between regions, in inches
+  private final double elevatorTargetTol =
+      1.5; // Elevator tolerance to goal postion for this command to end, in inches
 
   private final DataLog log = DataLogManager.getLog();
   private long timeNow;
-  private final BooleanLogEntry dLogIsElevatorCalibrated = new BooleanLogEntry(log, "/WristElevatorSafeMove/Elevator Calibrated");
-  private final BooleanLogEntry dLogIsWristCalibrated = new BooleanLogEntry(log, "/WristElevatorSafeMove/Wrist Calibrated");
-  private final DoubleLogEntry dLogWristTargetAngle = new DoubleLogEntry(log, "/WristElevatorSafeMove/Wrist Target Angle");
-  private final DoubleLogEntry dLogElevTargetPos = new DoubleLogEntry(log, "/WristElevatorSafeMove/Elev Target Position");
-  private final DoubleLogEntry dLogCurWristAngle = new DoubleLogEntry(log, "/WristElevatorSafeMove/Wrist Angle");
-  private final DoubleLogEntry dLogCurElevPos = new DoubleLogEntry(log, "/WristElevatorSafeMove/Elevator Position");
+  private final BooleanLogEntry dLogIsElevatorCalibrated =
+      new BooleanLogEntry(log, "/WristElevatorSafeMove/Elevator Calibrated");
+  private final BooleanLogEntry dLogIsWristCalibrated =
+      new BooleanLogEntry(log, "/WristElevatorSafeMove/Wrist Calibrated");
+  private final DoubleLogEntry dLogWristTargetAngle =
+      new DoubleLogEntry(log, "/WristElevatorSafeMove/Wrist Target Angle");
+  private final DoubleLogEntry dLogElevTargetPos =
+      new DoubleLogEntry(log, "/WristElevatorSafeMove/Elev Target Position");
+  private final DoubleLogEntry dLogCurWristAngle =
+      new DoubleLogEntry(log, "/WristElevatorSafeMove/Wrist Angle");
+  private final DoubleLogEntry dLogCurElevPos =
+      new DoubleLogEntry(log, "/WristElevatorSafeMove/Elevator Position");
 
   /**
    * Moves the wrist and elevator in sequence, accounting for interlocks and regions.
-   * @param position position to move the elevator and wrist to (use ElevatorWwristConstants.ElevatorWristPosition)
-   * @param type  Region type = CORAL_ONLY or STANDARD
+   *
+   * @param position position to move the elevator and wrist to (use
+   *     ElevatorWwristConstants.ElevatorWristPosition)
+   * @param type Region type = CORAL_ONLY or STANDARD
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
    */
-  public WristElevatorSafeMove(ElevatorWristPosition position, ElevatorWristRegions.RegionType type,
-            Elevator elevator, Wrist wrist) {
+  public WristElevatorSafeMove(
+      ElevatorWristPosition position,
+      ElevatorWristRegions.RegionType type,
+      Elevator elevator,
+      Wrist wrist) {
     this.destPosition = position;
     this.type = type;
     this.elevator = elevator;
@@ -89,7 +104,11 @@ public class WristElevatorSafeMove extends Command {
       timeNow = RobotController.getFPGATime();
       dLogIsElevatorCalibrated.append(elevator.isElevatorCalibrated(), timeNow);
       dLogIsWristCalibrated.append(wrist.isWristCalibrated(), timeNow);
-      DataLogUtil.writeMessage("WristElevatorSafeMove: Init. Uncalibrated Subsystem(s), Position =", destPosition.toString(), ", Type =", type.toString());
+      DataLogUtil.writeMessage(
+          "WristElevatorSafeMove: Init. Uncalibrated Subsystem(s), Position =",
+          destPosition.toString(),
+          ", Type =",
+          type.toString());
       return;
     }
 
@@ -100,8 +119,17 @@ public class WristElevatorSafeMove extends Command {
     dLogIsElevatorCalibrated.append(elevator.isElevatorCalibrated(), timeNow);
     dLogIsWristCalibrated.append(wrist.isWristCalibrated(), timeNow);
 
-    DataLogUtil.writeMessage("WristElevatorSafeMove: Init, Calibrated =", true, ", Type =", type,
-    ", Dest Position =", destPosition, ", Dest Region =", destRegion, ", Cur Region =", (curRegion != null ? curRegion.regionIndex : ""));
+    DataLogUtil.writeMessage(
+        "WristElevatorSafeMove: Init, Calibrated =",
+        true,
+        ", Type =",
+        type,
+        ", Dest Position =",
+        destPosition,
+        ", Dest Region =",
+        destRegion,
+        ", Cur Region =",
+        (curRegion != null ? curRegion.regionIndex : ""));
 
     double curWristAngle = wrist.getWristAngle();
     if (curWristAngle < curRegion.wristMin || curWristAngle > curRegion.wristMax) {
@@ -119,7 +147,11 @@ public class WristElevatorSafeMove extends Command {
     double curWristAngle = wrist.getWristAngle();
     double curElevPos = elevator.getElevatorPosition();
 
-    DataLogUtil.writeMessage("WristElevatorSafeMove: Execute, CurState =", curState, ", Cur Region =", (curRegion != null ? curRegion.regionIndex : ""));
+    DataLogUtil.writeMessage(
+        "WristElevatorSafeMove: Execute, CurState =",
+        curState,
+        ", Cur Region =",
+        (curRegion != null ? curRegion.regionIndex : ""));
 
     timeNow = RobotController.getFPGATime();
     dLogWristTargetAngle.append(wrist.getCurrentWristTarget(), timeNow);
@@ -131,14 +163,17 @@ public class WristElevatorSafeMove extends Command {
       case DONE:
       case DONE_ERROR:
         return;
-    
+
       case MOVE_WRIST_INTO_THIS_REGION_START:
-        // State description:  Start moving wrist into the current region allowable range (don't move the elevator)
+        // State description:  Start moving wrist into the current region allowable range (don't
+        // move the elevator)
 
         // Hold elevator from moving
         elevator.setElevatorProfileTarget(curElevPos);
         // Start moving the wrist
-        wrist.setWristAngle( MathUtil.clamp(curWristAngle, curRegion.wristMin + wristBuffer, curRegion.wristMax - wristBuffer));
+        wrist.setWristAngle(
+            MathUtil.clamp(
+                curWristAngle, curRegion.wristMin + wristBuffer, curRegion.wristMax - wristBuffer));
 
         // Advance state to wait for wrist to get into allowable range
         curState = MoveState.MOVE_WRIST_INTO_THIS_REGION_CONT;
@@ -153,8 +188,9 @@ public class WristElevatorSafeMove extends Command {
           if (curRegion == destRegion) {
             curState = MoveState.MOVE_TO_POSITION_IN_THIS_REGION_START;
           } else {
-            curState = MoveState.MOVE_TO_NEXT_REGION_START;        }
+            curState = MoveState.MOVE_TO_NEXT_REGION_START;
           }
+        }
         break;
 
       case MOVE_TO_NEXT_REGION_START:
@@ -168,7 +204,9 @@ public class WristElevatorSafeMove extends Command {
           // Get next region
           var optNextRegion = curRegion.getRegionBelow();
           if (optNextRegion.isEmpty()) {
-            DataLogUtil.writeMessage("WristElevatorSafeMove: Execute MOVE_TO_NEXT_REGION_START, Empty Region Below", curRegion.toString());
+            DataLogUtil.writeMessage(
+                "WristElevatorSafeMove: Execute MOVE_TO_NEXT_REGION_START, Empty Region Below",
+                curRegion.toString());
             curState = MoveState.DONE_ERROR;
             return;
           }
@@ -182,7 +220,9 @@ public class WristElevatorSafeMove extends Command {
           // Get next region
           var optNextRegion = curRegion.getRegionAbove();
           if (optNextRegion.isEmpty()) {
-            DataLogUtil.writeMessage("WristElevatorSafeMove: Execute MOVE_TO_NEXT_REGION_START, Empty Region Above", curRegion.toString());
+            DataLogUtil.writeMessage(
+                "WristElevatorSafeMove: Execute MOVE_TO_NEXT_REGION_START, Empty Region Above",
+                curRegion.toString());
             curState = MoveState.DONE_ERROR;
             return;
           }
@@ -194,11 +234,15 @@ public class WristElevatorSafeMove extends Command {
 
         // Start moving the wrist
         // Choose an angle that is safe for both the current region and the next region
-        wrist.setWristAngle( MathUtil.clamp( 
-          MathUtil.clamp(curWristAngle, curRegion.wristMin + wristBuffer, curRegion.wristMax - wristBuffer),
-          nextRegion.wristMin + wristBuffer, nextRegion.wristMax - wristBuffer)
-        );
-      
+        wrist.setWristAngle(
+            MathUtil.clamp(
+                MathUtil.clamp(
+                    curWristAngle,
+                    curRegion.wristMin + wristBuffer,
+                    curRegion.wristMax - wristBuffer),
+                nextRegion.wristMin + wristBuffer,
+                nextRegion.wristMax - wristBuffer));
+
         // Advance state to wait for wrist to get into allowable range
         curState = MoveState.MOVE_TO_NEXT_REGION_CONT_WRIST_ELEV;
         break;
@@ -208,12 +252,14 @@ public class WristElevatorSafeMove extends Command {
 
         // Wait in this state (don't do anything) if wrist is not safe to go into next region
 
-        if (curWristAngle >= curRegion.wristMin && curWristAngle <= curRegion.wristMax && 
-            curWristAngle >= nextRegion.wristMin && curWristAngle <= nextRegion.wristMax) {
+        if (curWristAngle >= curRegion.wristMin
+            && curWristAngle <= curRegion.wristMax
+            && curWristAngle >= nextRegion.wristMin
+            && curWristAngle <= nextRegion.wristMax) {
           // Wrist is now safe to go into next region
-          
-          if ( (movingDown && curElevPos <= curRegion.elevatorMin + elevatorMovingTol) ||
-               (!movingDown && curElevPos >= curRegion.elevatorMax - elevatorMovingTol ) ) {
+
+          if ((movingDown && curElevPos <= curRegion.elevatorMin + elevatorMovingTol)
+              || (!movingDown && curElevPos >= curRegion.elevatorMax - elevatorMovingTol)) {
             // Elevator is ready to go into next region
 
             // Advance to next region
@@ -230,9 +276,10 @@ public class WristElevatorSafeMove extends Command {
 
             // Change elevator target for continuous motion into next region
             if (nextRegion == destRegion) {
-              elevator.setElevatorProfileTarget( destPosition.elevatorPosition );
+              elevator.setElevatorProfileTarget(destPosition.elevatorPosition);
             } else {
-              elevator.setElevatorProfileTarget( (movingDown) ? nextRegion.elevatorMin : nextRegion.elevatorMax );
+              elevator.setElevatorProfileTarget(
+                  (movingDown) ? nextRegion.elevatorMin : nextRegion.elevatorMax);
             }
 
             // Advance to next state
@@ -242,12 +289,13 @@ public class WristElevatorSafeMove extends Command {
         break;
 
       case MOVE_TO_NEXT_REGION_CONT_ELEV_ONLY:
-        // State description:  Continue moving elevator to the edge of the next region.  Wrist is ready for next region
+        // State description:  Continue moving elevator to the edge of the next region.  Wrist is
+        // ready for next region
 
         // Wait in this state until the elevator is at the next region
-          
-        if ( (movingDown && curElevPos <= curRegion.elevatorMin + elevatorMovingTol) ||
-              (!movingDown && curElevPos >= curRegion.elevatorMax - elevatorMovingTol ) ) {
+
+        if ((movingDown && curElevPos <= curRegion.elevatorMin + elevatorMovingTol)
+            || (!movingDown && curElevPos >= curRegion.elevatorMax - elevatorMovingTol)) {
           // Elevator is ready to go into next region
 
           // Advance to next region
@@ -259,7 +307,7 @@ public class WristElevatorSafeMove extends Command {
           } else {
             curState = MoveState.MOVE_TO_NEXT_REGION_START;
           }
-        } 
+        }
         break;
 
       case MOVE_TO_POSITION_IN_THIS_REGION_START:
@@ -267,17 +315,28 @@ public class WristElevatorSafeMove extends Command {
         // Note that curRegion should always be destRegion if we arrived in this state
 
         elevator.setElevatorProfileTarget(destPosition.elevatorPosition);
-        wrist.setWristAngle(MathUtil.clamp(destPosition.wristAngle, curRegion.wristMin + wristBuffer, curRegion.wristMax -wristBuffer ) );
+        wrist.setWristAngle(
+            MathUtil.clamp(
+                destPosition.wristAngle,
+                curRegion.wristMin + wristBuffer,
+                curRegion.wristMax - wristBuffer));
 
         // Advance state to wait for wrist and elevator to get to target
         curState = MoveState.MOVE_TO_POSITION_IN_THIS_REGION_CONT;
         break;
 
       case MOVE_TO_POSITION_IN_THIS_REGION_CONT:
-        // State description:  We are in destRegion!  Wait for the elevator and wrist to get to our target
+        // State description:  We are in destRegion!  Wait for the elevator and wrist to get to our
+        // target
 
-        if ( (Math.abs(curWristAngle - MathUtil.clamp(destPosition.wristAngle, curRegion.wristMin + wristBuffer, curRegion.wristMax -wristBuffer )) <= wristTargetTol) &&
-             (Math.abs(curElevPos - destPosition.elevatorPosition) <= elevatorTargetTol) ) {
+        if ((Math.abs(
+                    curWristAngle
+                        - MathUtil.clamp(
+                            destPosition.wristAngle,
+                            curRegion.wristMin + wristBuffer,
+                            curRegion.wristMax - wristBuffer))
+                <= wristTargetTol)
+            && (Math.abs(curElevPos - destPosition.elevatorPosition) <= elevatorTargetTol)) {
           curState = MoveState.DONE;
         }
 
@@ -291,7 +350,8 @@ public class WristElevatorSafeMove extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DataLogUtil.writeMessage("WristElevatorSafeMove: End, Interrupted =", interrupted, ", CurState =", curState);
+    DataLogUtil.writeMessage(
+        "WristElevatorSafeMove: End, Interrupted =", interrupted, ", CurState =", curState);
 
     if (curState != MoveState.DONE) {
       // If there is an error (DONE_ERROR) of if this command is interrupted,

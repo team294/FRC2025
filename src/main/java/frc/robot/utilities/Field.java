@@ -4,475 +4,1015 @@
 
 package frc.robot.utilities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.function.Supplier;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.FieldConstants.AlgaeLocation;
 import frc.robot.Constants.FieldConstants.ReefLocation;
-import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.function.Supplier;
 
 public class Field {
-    private final HashMap<ReefLocation, Pose2d> reefScoringPositions;
-    private final HashMap<ReefLocation, Pose2d> reefScoringPositionsByAprilTag;
-    private final HashMap<ReefLocation, Pose2d> reefScoringPositionsByAprilTagL1;
-    private final ArrayList<Pose2d> reefScoringPositionListByAprilTag;
-    private final ArrayList<Pose2d> reefScoringPositionListByAprilTagL1;
-    private final HashMap<AlgaeLocation, Pose2d> reefAlgaePickupPositions;
-    private final ArrayList<Pose2d> reefAlgaePickupPositionsList;
-    private final HashMap<Integer, Pose2d> reefAprilTagPositions;
-    private final ArrayList<Pose2d> reefAprilTagPositionList;
-    private final HashMap<Integer, Pose2d> loadingStationAprilTagPositions;
-    private final ArrayList<Pose2d> loadingStationAprilTagPositionList;
+  private final HashMap<ReefLocation, Pose2d> reefScoringPositions;
+  private final HashMap<ReefLocation, Pose2d> reefScoringPositionsByAprilTag;
+  private final HashMap<ReefLocation, Pose2d> reefScoringPositionsByAprilTagL1;
+  private final ArrayList<Pose2d> reefScoringPositionListByAprilTag;
+  private final ArrayList<Pose2d> reefScoringPositionListByAprilTagL1;
+  private final HashMap<AlgaeLocation, Pose2d> reefAlgaePickupPositions;
+  private final ArrayList<Pose2d> reefAlgaePickupPositionsList;
+  private final HashMap<Integer, Pose2d> reefAprilTagPositions;
+  private final ArrayList<Pose2d> reefAprilTagPositionList;
+  private final HashMap<Integer, Pose2d> loadingStationAprilTagPositions;
+  private final ArrayList<Pose2d> loadingStationAprilTagPositionList;
 
-    private AllianceSelection allianceSelection;
-    private AprilTagFieldLayout aprilTagFieldLayout;
-    
+  private AllianceSelection allianceSelection;
+  private AprilTagFieldLayout aprilTagFieldLayout;
 
-    /**
-     * Creates a field object that can provide various field locations.
-     * All field locations are Pose2d objects based on the current alliance that is selected.
-     * Pose components include:
-     * <p> Robot X location in the field, in meters (0 = field edge in front of driver station, + = away from our drivestation)
-     * <p> Robot Y location in the field, in meters (0 = right edge of field when standing in driver station, + = left when looking from our drivestation)
-     * <p> Robot angle on the field (0 = facing away from our drivestation, + to the left, - to the right)
+  /**
+   * Creates a field object that can provide various field locations. All field locations are Pose2d
+   * objects based on the current alliance that is selected. Pose components include:
+   *
+   * <p>Robot X location in the field, in meters (0 = field edge in front of driver station, + =
+   * away from our drivestation)
+   *
+   * <p>Robot Y location in the field, in meters (0 = right edge of field when standing in driver
+   * station, + = left when looking from our drivestation)
+   *
+   * <p>Robot angle on the field (0 = facing away from our drivestation, + to the left, - to the
+   * right)
+   *
    * @param allianceSelection AllianceSelection utility
-     */
-    public Field(AllianceSelection allianceSelection){
-        this.allianceSelection = allianceSelection;
-        
+   */
+  public Field(AllianceSelection allianceSelection) {
+    this.allianceSelection = allianceSelection;
 
-        try {
-            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
-            aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-            DataLogUtil.writeMessage("Field: Constructor, Loaded AprilTags from file");
-        } catch (Exception exception) {
-            DataLogUtil.writeMessage("Field: Constructor, Error loading AprilTags from file");
-            exception.printStackTrace();
-        }
-
-        // Reef Scoring Positions, points are on the walls of the reef (Positions are relative, with the origin being the corner to the driver's right)
-        // 0 is the closest left scoring position to the drivers, following positions moving clockwise
-        // Angles represent the direction the robot would be facing (if scoring mechanism is on the front) when scoring at that point
-        // (Rotation of 0 faces away from drivers)
-        // Drivers | Field 
-        //         |              /  \
-        //         |             K    J
-        //         |           /        \
-        //         |          L           I
-        //         |        /              \
-        //         |       |                |
-        //         |       A                H
-        //         |       |      Reef      |
-        //         |       B                G
-        //         |       |                |
-        //         |        \              /
-        //         |          C           F
-        //         |           \        /
-        //         |             D     E
-        //         |              \  /
-        reefScoringPositions = new HashMap<ReefLocation, Pose2d>(12);
-        reefScoringPositions.put(ReefLocation.A, new Pose2d(Units.inchesToMeters(144.0),         Units.inchesToMeters(166.006493),     new Rotation2d(0)           ));
-        reefScoringPositions.put(ReefLocation.B, new Pose2d(Units.inchesToMeters(144.0),         Units.inchesToMeters(153.292837),     new Rotation2d(0)           ));
-        reefScoringPositions.put(ReefLocation.C, new Pose2d(Units.inchesToMeters(154.867597965), Units.inchesToMeters(134.469605169),  new Rotation2d(Math.PI/3.0)       ));
-        reefScoringPositions.put(ReefLocation.D, new Pose2d(Units.inchesToMeters(165.877947035), Units.inchesToMeters(128.112777169),  new Rotation2d(Math.PI/3.0)       ));
-        reefScoringPositions.put(ReefLocation.E, new Pose2d(Units.inchesToMeters(187.613142965), Units.inchesToMeters(128.112777169),  new Rotation2d(Math.PI*(2.0/3.0)) ));
-        reefScoringPositions.put(ReefLocation.F, new Pose2d(Units.inchesToMeters(198.623492035), Units.inchesToMeters(134.469605169),  new Rotation2d(Math.PI*(2.0/3.0)) ));
-        reefScoringPositions.put(ReefLocation.G, new Pose2d(Units.inchesToMeters(209.49109),     Units.inchesToMeters(153.292837),     new Rotation2d(Math.PI)           ));
-        reefScoringPositions.put(ReefLocation.H, new Pose2d(Units.inchesToMeters(209.49109),     Units.inchesToMeters(166.006493),     new Rotation2d(Math.PI)           ));
-        reefScoringPositions.put(ReefLocation.I, new Pose2d(Units.inchesToMeters(198.623492035), Units.inchesToMeters(184.829724831),  new Rotation2d(-Math.PI*(2.0/3.0))));
-        reefScoringPositions.put(ReefLocation.J, new Pose2d(Units.inchesToMeters(187.613142965), Units.inchesToMeters(191.186552831),  new Rotation2d(-Math.PI*(2.0/3.0))));
-        reefScoringPositions.put(ReefLocation.K, new Pose2d(Units.inchesToMeters(165.877947035), Units.inchesToMeters(191.186552831),  new Rotation2d(-Math.PI/3.0)      ));
-        reefScoringPositions.put(ReefLocation.L, new Pose2d(Units.inchesToMeters(154.867597965), Units.inchesToMeters(184.829724831),  new Rotation2d(-Math.PI/3.0)      ));
-
-        // AprilTag Pose2d rotated by 180 degrees to face positions into reef
-        // Offset along reef edge from april tag to "scoring position" is 0.164331496063 meters
-        reefScoringPositionsByAprilTag = new HashMap<ReefLocation, Pose2d>(12);
-        reefScoringPositionsByAprilTag.put(ReefLocation.A, aprilTagFieldLayout.getTagPose(18).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffset,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.B, aprilTagFieldLayout.getTagPose(18).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.C, aprilTagFieldLayout.getTagPose(17).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffset,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.D, aprilTagFieldLayout.getTagPose(17).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.E, aprilTagFieldLayout.getTagPose(22).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffset,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.F, aprilTagFieldLayout.getTagPose(22).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.G, aprilTagFieldLayout.getTagPose(21).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffset,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.H, aprilTagFieldLayout.getTagPose(21).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.I, aprilTagFieldLayout.getTagPose(20).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffset,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.J, aprilTagFieldLayout.getTagPose(20).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.K, aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffset,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTag.put(ReefLocation.L, aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
-        reefScoringPositionListByAprilTag = new ArrayList<Pose2d>(reefScoringPositionsByAprilTag.values());
-
-        reefScoringPositionsByAprilTagL1 = new HashMap<ReefLocation, Pose2d>(12);
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.A, aprilTagFieldLayout.getTagPose(18).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffsetL1,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.B, aprilTagFieldLayout.getTagPose(18).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.C, aprilTagFieldLayout.getTagPose(17).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffsetL1,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.D, aprilTagFieldLayout.getTagPose(17).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.E, aprilTagFieldLayout.getTagPose(22).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffsetL1,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.F, aprilTagFieldLayout.getTagPose(22).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.G, aprilTagFieldLayout.getTagPose(21).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffsetL1,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.H, aprilTagFieldLayout.getTagPose(21).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.I, aprilTagFieldLayout.getTagPose(20).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffsetL1,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.J, aprilTagFieldLayout.getTagPose(20).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.K, aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffsetL1,  new Rotation2d(0))));
-        reefScoringPositionsByAprilTagL1.put(ReefLocation.L, aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
-        reefScoringPositionListByAprilTagL1 = new ArrayList<Pose2d>(reefScoringPositionsByAprilTagL1.values());
-
-        reefAlgaePickupPositions = new HashMap<AlgaeLocation, Pose2d>(6);
-        reefAlgaePickupPositions.put(AlgaeLocation.AB, aprilTagFieldLayout.getTagPose(18).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositions.put(AlgaeLocation.CD, aprilTagFieldLayout.getTagPose(17).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositions.put(AlgaeLocation.EF, aprilTagFieldLayout.getTagPose(22).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositions.put(AlgaeLocation.GH, aprilTagFieldLayout.getTagPose(21).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositions.put(AlgaeLocation.IJ, aprilTagFieldLayout.getTagPose(20).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositions.put(AlgaeLocation.KL, aprilTagFieldLayout.getTagPose(19).get().toPose2d().rotateAround(aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(), new Rotation2d(Math.PI)));
-        reefAlgaePickupPositionsList = new ArrayList<Pose2d>(reefAlgaePickupPositions.values());
-
-        reefAprilTagPositions = new HashMap<Integer, Pose2d>(18);
-        if (aprilTagFieldLayout.getTagPose(1).isEmpty()) {
-            reefAprilTagPositions.put(6,  new Pose2d(Units.inchesToMeters(530.49), Units.inchesToMeters(130.17), new Rotation2d(Math.toRadians(300)))); // Red K-L
-            reefAprilTagPositions.put(7,  new Pose2d(Units.inchesToMeters(546.87), Units.inchesToMeters(158.50), new Rotation2d(Math.toRadians(0)  ))); // Red A-B
-            reefAprilTagPositions.put(8,  new Pose2d(Units.inchesToMeters(530.49), Units.inchesToMeters(186.83), new Rotation2d(Math.toRadians(60) ))); // Red C-D
-            reefAprilTagPositions.put(9,  new Pose2d(Units.inchesToMeters(497.77), Units.inchesToMeters(186.83), new Rotation2d(Math.toRadians(120)))); // Red E-F
-            reefAprilTagPositions.put(10, new Pose2d(Units.inchesToMeters(481.39), Units.inchesToMeters(158.50), new Rotation2d(Math.toRadians(180)))); // Red G-H
-            reefAprilTagPositions.put(11, new Pose2d(Units.inchesToMeters(497.77), Units.inchesToMeters(130.17), new Rotation2d(Math.toRadians(240)))); // Red I-J
-            reefAprilTagPositions.put(17, new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(130.17), new Rotation2d(Math.toRadians(240)))); // Blue C-D
-            reefAprilTagPositions.put(18, new Pose2d(Units.inchesToMeters(144.00), Units.inchesToMeters(158.50), new Rotation2d(Math.toRadians(180)))); // Blue A-B
-            reefAprilTagPositions.put(19, new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(186.83), new Rotation2d(Math.toRadians(120)))); // Blue K-L
-            reefAprilTagPositions.put(20, new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(186.83), new Rotation2d(Math.toRadians(60) ))); // Blue I-J
-            reefAprilTagPositions.put(21, new Pose2d(Units.inchesToMeters(209.49), Units.inchesToMeters(158.50), new Rotation2d(Math.toRadians(0)  ))); // Blue G-H
-            reefAprilTagPositions.put(22, new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(130.17), new Rotation2d(Math.toRadians(300)))); // Blue E-F
-        } else {
-            // Rotation is with ramp facing reef
-            reefAprilTagPositions.put(6,  aprilTagFieldLayout.getTagPose(6).get().toPose2d() ); // Red K-L
-            reefAprilTagPositions.put(7,  aprilTagFieldLayout.getTagPose(7).get().toPose2d() ); // Red A-B
-            reefAprilTagPositions.put(8,  aprilTagFieldLayout.getTagPose(8).get().toPose2d() ); // Red C-D
-            reefAprilTagPositions.put(9,  aprilTagFieldLayout.getTagPose(9).get().toPose2d() ); // Red E-F
-            reefAprilTagPositions.put(10, aprilTagFieldLayout.getTagPose(10).get().toPose2d()); // Red G-H
-            reefAprilTagPositions.put(11, aprilTagFieldLayout.getTagPose(11).get().toPose2d()); // Red I-J
-            reefAprilTagPositions.put(17, aprilTagFieldLayout.getTagPose(17).get().toPose2d()); // Blue C-D
-            reefAprilTagPositions.put(18, aprilTagFieldLayout.getTagPose(18).get().toPose2d()); // Blue A-B
-            reefAprilTagPositions.put(19, aprilTagFieldLayout.getTagPose(19).get().toPose2d()); // Blue K-L
-            reefAprilTagPositions.put(20, aprilTagFieldLayout.getTagPose(20).get().toPose2d()); // Blue I-J
-            reefAprilTagPositions.put(21, aprilTagFieldLayout.getTagPose(21).get().toPose2d()); // Blue G-H
-            reefAprilTagPositions.put(22, aprilTagFieldLayout.getTagPose(22).get().toPose2d()); // Blue E-F
-        }
-        reefAprilTagPositionList = new ArrayList<Pose2d>(reefAprilTagPositions.values());
-
-        // Loading stations, side is relative to driver station
-        loadingStationAprilTagPositions = new HashMap<Integer, Pose2d>(4);
-        loadingStationAprilTagPositions.put(1,  aprilTagFieldLayout.getTagPose(1).get().toPose2d() ); // red left
-        loadingStationAprilTagPositions.put(2,  aprilTagFieldLayout.getTagPose(2).get().toPose2d() ); // red right
-        loadingStationAprilTagPositions.put(12, aprilTagFieldLayout.getTagPose(12).get().toPose2d()); // blue right
-        loadingStationAprilTagPositions.put(13, aprilTagFieldLayout.getTagPose(13).get().toPose2d()); // blue left
-        loadingStationAprilTagPositionList = new ArrayList<Pose2d>(loadingStationAprilTagPositions.values());
+    try {
+      aprilTagFieldLayout =
+          AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
+      aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+      DataLogUtil.writeMessage("Field: Constructor, Loaded AprilTags from file");
+    } catch (Exception exception) {
+      DataLogUtil.writeMessage("Field: Constructor, Error loading AprilTags from file");
+      exception.printStackTrace();
     }
 
-    /**
-     * Flips the x, y, and rotation coordinates across the field, converting between field positions for the red and blue alliances.
-     * @param position the Pose2d position to be flipped
-     * @return the flipped Pose2d
-     */
-    public static Pose2d flipPosition(Pose2d position) {
-        return new Pose2d(Math.abs(FieldConstants.length - position.getX()), Math.abs(FieldConstants.width - position.getY()), position.getRotation().rotateBy(Rotation2d.kPi));
-    }
+    // Reef Scoring Positions, points are on the walls of the reef (Positions are relative, with the
+    // origin being the corner to the driver's right)
+    // 0 is the closest left scoring position to the drivers, following positions moving clockwise
+    // Angles represent the direction the robot would be facing (if scoring mechanism is on the
+    // front) when scoring at that point
+    // (Rotation of 0 faces away from drivers)
+    // Drivers | Field
+    //         |              /  \
+    //         |             K    J
+    //         |           /        \
+    //         |          L           I
+    //         |        /              \
+    //         |       |                |
+    //         |       A                H
+    //         |       |      Reef      |
+    //         |       B                G
+    //         |       |                |
+    //         |        \              /
+    //         |          C           F
+    //         |           \        /
+    //         |             D     E
+    //         |              \  /
+    reefScoringPositions = new HashMap<ReefLocation, Pose2d>(12);
+    reefScoringPositions.put(
+        ReefLocation.A,
+        new Pose2d(
+            Units.inchesToMeters(144.0), Units.inchesToMeters(166.006493), new Rotation2d(0)));
+    reefScoringPositions.put(
+        ReefLocation.B,
+        new Pose2d(
+            Units.inchesToMeters(144.0), Units.inchesToMeters(153.292837), new Rotation2d(0)));
+    reefScoringPositions.put(
+        ReefLocation.C,
+        new Pose2d(
+            Units.inchesToMeters(154.867597965),
+            Units.inchesToMeters(134.469605169),
+            new Rotation2d(Math.PI / 3.0)));
+    reefScoringPositions.put(
+        ReefLocation.D,
+        new Pose2d(
+            Units.inchesToMeters(165.877947035),
+            Units.inchesToMeters(128.112777169),
+            new Rotation2d(Math.PI / 3.0)));
+    reefScoringPositions.put(
+        ReefLocation.E,
+        new Pose2d(
+            Units.inchesToMeters(187.613142965),
+            Units.inchesToMeters(128.112777169),
+            new Rotation2d(Math.PI * (2.0 / 3.0))));
+    reefScoringPositions.put(
+        ReefLocation.F,
+        new Pose2d(
+            Units.inchesToMeters(198.623492035),
+            Units.inchesToMeters(134.469605169),
+            new Rotation2d(Math.PI * (2.0 / 3.0))));
+    reefScoringPositions.put(
+        ReefLocation.G,
+        new Pose2d(
+            Units.inchesToMeters(209.49109),
+            Units.inchesToMeters(153.292837),
+            new Rotation2d(Math.PI)));
+    reefScoringPositions.put(
+        ReefLocation.H,
+        new Pose2d(
+            Units.inchesToMeters(209.49109),
+            Units.inchesToMeters(166.006493),
+            new Rotation2d(Math.PI)));
+    reefScoringPositions.put(
+        ReefLocation.I,
+        new Pose2d(
+            Units.inchesToMeters(198.623492035),
+            Units.inchesToMeters(184.829724831),
+            new Rotation2d(-Math.PI * (2.0 / 3.0))));
+    reefScoringPositions.put(
+        ReefLocation.J,
+        new Pose2d(
+            Units.inchesToMeters(187.613142965),
+            Units.inchesToMeters(191.186552831),
+            new Rotation2d(-Math.PI * (2.0 / 3.0))));
+    reefScoringPositions.put(
+        ReefLocation.K,
+        new Pose2d(
+            Units.inchesToMeters(165.877947035),
+            Units.inchesToMeters(191.186552831),
+            new Rotation2d(-Math.PI / 3.0)));
+    reefScoringPositions.put(
+        ReefLocation.L,
+        new Pose2d(
+            Units.inchesToMeters(154.867597965),
+            Units.inchesToMeters(184.829724831),
+            new Rotation2d(-Math.PI / 3.0)));
 
-    /**
-     * Gets the Pose2d of the given scoring position. This position is flipped depending on the alliance.
-     * @param position letter value associated with one of the 12 scoring positions (A-K starting at the upper 9 o'clock position and moving CCW)
-     * @return Pose2d of one of the scoring positions (against the base).
-     */
-    public Pose2d getReefScoringPosition(ReefLocation position) {
-        return allianceSelection.getAlliance() == Alliance.Blue ? reefScoringPositionsByAprilTag.get(position) : flipPosition(reefScoringPositionsByAprilTag.get(position));
-    }
+    // AprilTag Pose2d rotated by 180 degrees to face positions into reef
+    // Offset along reef edge from april tag to "scoring position" is 0.164331496063 meters
+    reefScoringPositionsByAprilTag = new HashMap<ReefLocation, Pose2d>(12);
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.A,
+        aprilTagFieldLayout
+            .getTagPose(18)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.B,
+        aprilTagFieldLayout
+            .getTagPose(18)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.C,
+        aprilTagFieldLayout
+            .getTagPose(17)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.D,
+        aprilTagFieldLayout
+            .getTagPose(17)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.E,
+        aprilTagFieldLayout
+            .getTagPose(22)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.F,
+        aprilTagFieldLayout
+            .getTagPose(22)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.G,
+        aprilTagFieldLayout
+            .getTagPose(21)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.H,
+        aprilTagFieldLayout
+            .getTagPose(21)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.I,
+        aprilTagFieldLayout
+            .getTagPose(20)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.J,
+        aprilTagFieldLayout
+            .getTagPose(20)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.K,
+        aprilTagFieldLayout
+            .getTagPose(19)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionsByAprilTag.put(
+        ReefLocation.L,
+        aprilTagFieldLayout
+            .getTagPose(19)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffset, new Rotation2d(0))));
+    reefScoringPositionListByAprilTag =
+        new ArrayList<Pose2d>(reefScoringPositionsByAprilTag.values());
 
-    /**
-     * Gets the Pose2d of the given scoring position for L1. This position is flipped depending on the alliance.
-     * @param position letter value associated with one of the 12 scoring positions (A-K starting at the upper 9 o'clock position and moving CCW)
-     * @return Pose2d of one of the scoring positions (against the base).
-     */
-    public Pose2d getReefScoringPositionL1(ReefLocation position) {
-        return allianceSelection.getAlliance() == Alliance.Blue ? reefScoringPositionsByAprilTagL1.get(position) : flipPosition(reefScoringPositionsByAprilTagL1.get(position));
-    }
+    reefScoringPositionsByAprilTagL1 = new HashMap<ReefLocation, Pose2d>(12);
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.A,
+        aprilTagFieldLayout
+            .getTagPose(18)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.B,
+        aprilTagFieldLayout
+            .getTagPose(18)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.C,
+        aprilTagFieldLayout
+            .getTagPose(17)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.D,
+        aprilTagFieldLayout
+            .getTagPose(17)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.E,
+        aprilTagFieldLayout
+            .getTagPose(22)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.F,
+        aprilTagFieldLayout
+            .getTagPose(22)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.G,
+        aprilTagFieldLayout
+            .getTagPose(21)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.H,
+        aprilTagFieldLayout
+            .getTagPose(21)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.I,
+        aprilTagFieldLayout
+            .getTagPose(20)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.J,
+        aprilTagFieldLayout
+            .getTagPose(20)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.K,
+        aprilTagFieldLayout
+            .getTagPose(19)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionsByAprilTagL1.put(
+        ReefLocation.L,
+        aprilTagFieldLayout
+            .getTagPose(19)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0, -FieldConstants.ReefScoringPositionAprilTagOffsetL1, new Rotation2d(0))));
+    reefScoringPositionListByAprilTagL1 =
+        new ArrayList<Pose2d>(reefScoringPositionsByAprilTagL1.values());
 
-    /**
-     * Finds and returns the nearest reef scoring position (against the base).
-     * @param currPos the robot's current positions
-     * @return Pose2d of the nearest scoring position
-     */
-    public Pose2d getNearestReefScoringPosition(Pose2d currPos) {
-        return getNearestReefScoringPositionWithOffset(currPos, new Transform2d(0, 0, Rotation2d.kZero));
-    }
+    reefAlgaePickupPositions = new HashMap<AlgaeLocation, Pose2d>(6);
+    reefAlgaePickupPositions.put(
+        AlgaeLocation.AB,
+        aprilTagFieldLayout
+            .getTagPose(18)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(18).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI)));
+    reefAlgaePickupPositions.put(
+        AlgaeLocation.CD,
+        aprilTagFieldLayout
+            .getTagPose(17)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(17).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI)));
+    reefAlgaePickupPositions.put(
+        AlgaeLocation.EF,
+        aprilTagFieldLayout
+            .getTagPose(22)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(22).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI)));
+    reefAlgaePickupPositions.put(
+        AlgaeLocation.GH,
+        aprilTagFieldLayout
+            .getTagPose(21)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(21).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI)));
+    reefAlgaePickupPositions.put(
+        AlgaeLocation.IJ,
+        aprilTagFieldLayout
+            .getTagPose(20)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(20).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI)));
+    reefAlgaePickupPositions.put(
+        AlgaeLocation.KL,
+        aprilTagFieldLayout
+            .getTagPose(19)
+            .get()
+            .toPose2d()
+            .rotateAround(
+                aprilTagFieldLayout.getTagPose(19).get().toPose2d().getTranslation(),
+                new Rotation2d(Math.PI)));
+    reefAlgaePickupPositionsList = new ArrayList<Pose2d>(reefAlgaePickupPositions.values());
 
-    /**
-     * Finds and returns the nearest reef scoring position (against the base) with an offset.
-     * @param currPos the robot's current positions
-     * @param offset the offset by which the returned pose2d is tranformed
-     * @return Pose2d of the nearest scoring position
-     */
-    public Pose2d getNearestReefScoringPositionWithOffset(Pose2d currPos, Transform2d offset) {
-        Pose2d currPosBlue = (allianceSelection.getAlliance() == Alliance.Blue) ? currPos : flipPosition(currPos);
-        Pose2d nearestBluePos = currPosBlue.nearest(reefScoringPositionListByAprilTag);
-        Pose2d nearestBluePosWithOffset = nearestBluePos.transformBy(offset);
-        // DataLogUtil.writeMessage("Field: getNearestReefScoringPositionWithOffset, 
-        //     Current X = ", currPosBlue.getX(),
-        //     ", Current Y = ", currPosBlue.getY(),
-        //     ", Current Rotation = ", currPosBlue.getRotation().getDegrees(),
-        //     ", Nearest X = ", nearestBluePos.getX(),
-        //     ", Nearest Y = ", nearestBluePos.getY(),
-        //     ", Nearest Rotation = ", nearestBluePos.getRotation().getDegrees(),
-        //     ", Offset X = ", offset.getX(),
-        //     ", Offset Y = ", offset.getY(),
-        //     ", Offset Rotation = ", offset.getRotation().getDegrees(),
-        //     ", Nearest with Offset X = ", nearestBluePosWithOffset.getX(),
-        //     ", Nearest with Offset Y = ", nearestBluePosWithOffset.getY(),
-        //     ", Nearest with Offset Rotation = ", nearestBluePosWithOffset.getRotation().getDegrees()
-        // );
-        return (allianceSelection.getAlliance() == Alliance.Blue) ? nearestBluePosWithOffset : flipPosition(nearestBluePosWithOffset);
+    reefAprilTagPositions = new HashMap<Integer, Pose2d>(18);
+    if (aprilTagFieldLayout.getTagPose(1).isEmpty()) {
+      reefAprilTagPositions.put(
+          6,
+          new Pose2d(
+              Units.inchesToMeters(530.49),
+              Units.inchesToMeters(130.17),
+              new Rotation2d(Math.toRadians(300)))); // Red K-L
+      reefAprilTagPositions.put(
+          7,
+          new Pose2d(
+              Units.inchesToMeters(546.87),
+              Units.inchesToMeters(158.50),
+              new Rotation2d(Math.toRadians(0)))); // Red A-B
+      reefAprilTagPositions.put(
+          8,
+          new Pose2d(
+              Units.inchesToMeters(530.49),
+              Units.inchesToMeters(186.83),
+              new Rotation2d(Math.toRadians(60)))); // Red C-D
+      reefAprilTagPositions.put(
+          9,
+          new Pose2d(
+              Units.inchesToMeters(497.77),
+              Units.inchesToMeters(186.83),
+              new Rotation2d(Math.toRadians(120)))); // Red E-F
+      reefAprilTagPositions.put(
+          10,
+          new Pose2d(
+              Units.inchesToMeters(481.39),
+              Units.inchesToMeters(158.50),
+              new Rotation2d(Math.toRadians(180)))); // Red G-H
+      reefAprilTagPositions.put(
+          11,
+          new Pose2d(
+              Units.inchesToMeters(497.77),
+              Units.inchesToMeters(130.17),
+              new Rotation2d(Math.toRadians(240)))); // Red I-J
+      reefAprilTagPositions.put(
+          17,
+          new Pose2d(
+              Units.inchesToMeters(160.39),
+              Units.inchesToMeters(130.17),
+              new Rotation2d(Math.toRadians(240)))); // Blue C-D
+      reefAprilTagPositions.put(
+          18,
+          new Pose2d(
+              Units.inchesToMeters(144.00),
+              Units.inchesToMeters(158.50),
+              new Rotation2d(Math.toRadians(180)))); // Blue A-B
+      reefAprilTagPositions.put(
+          19,
+          new Pose2d(
+              Units.inchesToMeters(160.39),
+              Units.inchesToMeters(186.83),
+              new Rotation2d(Math.toRadians(120)))); // Blue K-L
+      reefAprilTagPositions.put(
+          20,
+          new Pose2d(
+              Units.inchesToMeters(193.10),
+              Units.inchesToMeters(186.83),
+              new Rotation2d(Math.toRadians(60)))); // Blue I-J
+      reefAprilTagPositions.put(
+          21,
+          new Pose2d(
+              Units.inchesToMeters(209.49),
+              Units.inchesToMeters(158.50),
+              new Rotation2d(Math.toRadians(0)))); // Blue G-H
+      reefAprilTagPositions.put(
+          22,
+          new Pose2d(
+              Units.inchesToMeters(193.10),
+              Units.inchesToMeters(130.17),
+              new Rotation2d(Math.toRadians(300)))); // Blue E-F
+    } else {
+      // Rotation is with ramp facing reef
+      reefAprilTagPositions.put(6, aprilTagFieldLayout.getTagPose(6).get().toPose2d()); // Red K-L
+      reefAprilTagPositions.put(7, aprilTagFieldLayout.getTagPose(7).get().toPose2d()); // Red A-B
+      reefAprilTagPositions.put(8, aprilTagFieldLayout.getTagPose(8).get().toPose2d()); // Red C-D
+      reefAprilTagPositions.put(9, aprilTagFieldLayout.getTagPose(9).get().toPose2d()); // Red E-F
+      reefAprilTagPositions.put(10, aprilTagFieldLayout.getTagPose(10).get().toPose2d()); // Red G-H
+      reefAprilTagPositions.put(11, aprilTagFieldLayout.getTagPose(11).get().toPose2d()); // Red I-J
+      reefAprilTagPositions.put(
+          17, aprilTagFieldLayout.getTagPose(17).get().toPose2d()); // Blue C-D
+      reefAprilTagPositions.put(
+          18, aprilTagFieldLayout.getTagPose(18).get().toPose2d()); // Blue A-B
+      reefAprilTagPositions.put(
+          19, aprilTagFieldLayout.getTagPose(19).get().toPose2d()); // Blue K-L
+      reefAprilTagPositions.put(
+          20, aprilTagFieldLayout.getTagPose(20).get().toPose2d()); // Blue I-J
+      reefAprilTagPositions.put(
+          21, aprilTagFieldLayout.getTagPose(21).get().toPose2d()); // Blue G-H
+      reefAprilTagPositions.put(
+          22, aprilTagFieldLayout.getTagPose(22).get().toPose2d()); // Blue E-F
     }
+    reefAprilTagPositionList = new ArrayList<Pose2d>(reefAprilTagPositions.values());
 
-    /**
-     * Finds and returns the nearest L1 reef scoring position (against the base) with an offset.
-     * @param currPos the robot's current positions
-     * @param offset the offset by which the returned pose2d is tranformed
-     * @return Pose2d of the nearest scoring position
-     */
-    public Pose2d getNearestReefScoringPositionWithOffsetL1(Pose2d currPos, Transform2d offset) {
-        Pose2d currPosBlue = (allianceSelection.getAlliance() == Alliance.Blue) ? currPos : flipPosition(currPos);
-        Pose2d nearestBluePos = currPosBlue.nearest(reefScoringPositionListByAprilTagL1);
-        Pose2d nearestBluePosWithOffset = nearestBluePos.transformBy(offset);
-        return (allianceSelection.getAlliance() == Alliance.Blue) ? nearestBluePosWithOffset : flipPosition(nearestBluePosWithOffset);
-    }
+    // Loading stations, side is relative to driver station
+    loadingStationAprilTagPositions = new HashMap<Integer, Pose2d>(4);
+    loadingStationAprilTagPositions.put(
+        1, aprilTagFieldLayout.getTagPose(1).get().toPose2d()); // red left
+    loadingStationAprilTagPositions.put(
+        2, aprilTagFieldLayout.getTagPose(2).get().toPose2d()); // red right
+    loadingStationAprilTagPositions.put(
+        12, aprilTagFieldLayout.getTagPose(12).get().toPose2d()); // blue right
+    loadingStationAprilTagPositions.put(
+        13, aprilTagFieldLayout.getTagPose(13).get().toPose2d()); // blue left
+    loadingStationAprilTagPositionList =
+        new ArrayList<Pose2d>(loadingStationAprilTagPositions.values());
+  }
 
-    /**
-     * Finds and returns the nearest reef scoring position (against the base)
-     * @param currPos the robot's current positions
-     * @param left whether the robot should drive to the left (relative to the reef wall) scoring position
-     * @return The Pose2d of the nearest scoring position
-     */
-    public Pose2d getNearestReefScoringPosition(Pose2d currPos, boolean left) {
-        return getNearestReefScoringPositionWithOffset(currPos, new Transform2d(0, 0, Rotation2d.kZero), left);
-    }
+  /**
+   * Flips the x, y, and rotation coordinates across the field, converting between field positions
+   * for the red and blue alliances.
+   *
+   * @param position the Pose2d position to be flipped
+   * @return the flipped Pose2d
+   */
+  public static Pose2d flipPosition(Pose2d position) {
+    return new Pose2d(
+        Math.abs(FieldConstants.length - position.getX()),
+        Math.abs(FieldConstants.width - position.getY()),
+        position.getRotation().rotateBy(Rotation2d.kPi));
+  }
 
-    /**
-     * Finds and returns the nearest L2, L3, and L4 reef scoring position (against the base) with an offset
-     * @param currPos the robot's current positions
-     * @param offset the offset by which the returned pose2d is tranformed
-     * @param left whether the robot should drive to the left (relative to the reef wall) scoring position
-     * @return The Pose2d of the nearest scoring position
-     */
-    public Pose2d getNearestReefScoringPositionWithOffset(Pose2d currPos, Transform2d offset, boolean left) {
-        Pose2d nearestReefAprilTag = getNearestAprilTagReef(currPos);
-        Pose2d nearestReefScoringPosition = nearestReefAprilTag.rotateAround(nearestReefAprilTag.getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffset * (left ? 1.0 : -1.0),  new Rotation2d(0)));
-        Pose2d nearestReefScoringPositionWithOffset = nearestReefScoringPosition.transformBy(offset);
-        // DataLogUtil.writeMessage("Field: getNearestReefScoringPositionWithOffset, 
-        //     Current X = ", currPos.getX(),
-        //     ", Current Y = ", currPos.getY(),
-        //     ", Current Rotation = ", currPos.getRotation().getDegrees(),
-        //     ", Nearest April X = ", nearestReefAprilTag.getX(),
-        //     ", Nearest April Y = ", nearestReefAprilTag.getY(),
-        //     ", Nearest April Rotation = ", nearestReefAprilTag.getRotation().getDegrees(),
-        //     ", Left Scoring Position? ", left,
-        //     ", Nearest Scoring X = ", nearestReefScoringPosition.getX(),
-        //     ", Nearest Scoring Y = ", nearestReefScoringPosition.getY(),
-        //     ", Nearest Scoring Rotation", nearestReefScoringPosition.getRotation().getDegrees(),
-        //     ", Offset X = ", offset.getX(),
-        //     ", Offset Y = ", offset.getY(),
-        //     ", Offset Rotation = ", offset.getRotation().getDegrees(),
-        //     ", Nearest with Offset X = ", nearestReefScoringPositionWithOffset.getX(),
-        //     ", Nearest with Offset Y = ", nearestReefScoringPositionWithOffset.getY(),
-        //     ", Nearest with Offset Rotation = ", nearestReefScoringPositionWithOffset.getRotation().getDegrees()
-        // );
-        return nearestReefScoringPositionWithOffset;
-    }
+  /**
+   * Gets the Pose2d of the given scoring position. This position is flipped depending on the
+   * alliance.
+   *
+   * @param position letter value associated with one of the 12 scoring positions (A-K starting at
+   *     the upper 9 o'clock position and moving CCW)
+   * @return Pose2d of one of the scoring positions (against the base).
+   */
+  public Pose2d getReefScoringPosition(ReefLocation position) {
+    return allianceSelection.getAlliance() == Alliance.Blue
+        ? reefScoringPositionsByAprilTag.get(position)
+        : flipPosition(reefScoringPositionsByAprilTag.get(position));
+  }
 
-    /**
-     * Finds and returns the nearest L1 reef scoring position (against the base) with an offset.
-     * @param currPos the robot's current positions
-     * @param offset the offset by which the returned pose2d is tranformed
-     * @param left whether the robot should drive to the left (relative to the reef wall) scoring position
-     * @return The Pose2d of the nearest scoring position
-     */
-    public Pose2d getNearestReefScoringPositionWithOffsetL1(Pose2d currPos, Transform2d offset, boolean left) {
-        Pose2d nearestReefAprilTag = getNearestAprilTagReef(currPos);
-        Pose2d nearestReefScoringPosition = nearestReefAprilTag.rotateAround(nearestReefAprilTag.getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d(0, FieldConstants.ReefScoringPositionAprilTagOffsetL1 * (left ? 1.0 : -1.0),  new Rotation2d(0)));
-        Pose2d nearestReefScoringPositionWithOffset = nearestReefScoringPosition.transformBy(offset);
-        // DataLogUtil.writeLog(false, "Field", "getNearestReefScoringPositionWithOffset", 
-        //     "Current X", currPos.getX(),
-        //     "Current Y", currPos.getY(),
-        //     "Current Rotation", currPos.getRotation().getDegrees(),
-        //     "Nearest April X", nearestReefAprilTag.getX(),
-        //     "Nearest April Y", nearestReefAprilTag.getY(),
-        //     "Nearest April Rotation", nearestReefAprilTag.getRotation().getDegrees(),
-        //     "Left Scoring Position?", left,
-        //     "Nearest Scoring X", nearestReefScoringPosition.getX(),
-        //     "Nearest Scoring Y", nearestReefScoringPosition.getY(),
-        //     "Nearest Scoring Rotation", nearestReefScoringPosition.getRotation().getDegrees(),
-        //     "Offset X", offset.getX(),
-        //     "Offset Y", offset.getY(),
-        //     "Offset Rotation", offset.getRotation().getDegrees(),
-        //     "Nearest with Offset X", nearestReefScoringPositionWithOffset.getX(),
-        //     "Nearest with Offset Y", nearestReefScoringPositionWithOffset.getY(),
-        //     "Nearest with Offset Rotation", nearestReefScoringPositionWithOffset.getRotation().getDegrees()
-        // );
-        return nearestReefScoringPositionWithOffset;
-    }
+  /**
+   * Gets the Pose2d of the given scoring position for L1. This position is flipped depending on the
+   * alliance.
+   *
+   * @param position letter value associated with one of the 12 scoring positions (A-K starting at
+   *     the upper 9 o'clock position and moving CCW)
+   * @return Pose2d of one of the scoring positions (against the base).
+   */
+  public Pose2d getReefScoringPositionL1(ReefLocation position) {
+    return allianceSelection.getAlliance() == Alliance.Blue
+        ? reefScoringPositionsByAprilTagL1.get(position)
+        : flipPosition(reefScoringPositionsByAprilTagL1.get(position));
+  }
 
-    /**
-     * Gets the Pose2d of the given *Reef* AprilTag.
-     * @param tagNumber number value associated with the desired AprilTag
-     * @return Pose2d of the given AprilTag
-     */
-    public Pose2d getReefScoringPosition(int tagNumber) {
-        return reefAprilTagPositions.get(tagNumber);
-    }
+  /**
+   * Finds and returns the nearest reef scoring position (against the base).
+   *
+   * @param currPos the robot's current positions
+   * @return Pose2d of the nearest scoring position
+   */
+  public Pose2d getNearestReefScoringPosition(Pose2d currPos) {
+    return getNearestReefScoringPositionWithOffset(
+        currPos, new Transform2d(0, 0, Rotation2d.kZero));
+  }
 
-    /**
-     * Returns robot's scoring position based on ReefLocation passed in
-     * @param location ReefLocation location
-     * @param offset Transform2d offset
-     * @return reef scoring position
-     */
-    public Pose2d getReefScoringPositionWithOffset(ReefLocation location, Transform2d offset) {
-        return getReefScoringPosition(location).transformBy(offset);
-    }
+  /**
+   * Finds and returns the nearest reef scoring position (against the base) with an offset.
+   *
+   * @param currPos the robot's current positions
+   * @param offset the offset by which the returned pose2d is tranformed
+   * @return Pose2d of the nearest scoring position
+   */
+  public Pose2d getNearestReefScoringPositionWithOffset(Pose2d currPos, Transform2d offset) {
+    Pose2d currPosBlue =
+        (allianceSelection.getAlliance() == Alliance.Blue) ? currPos : flipPosition(currPos);
+    Pose2d nearestBluePos = currPosBlue.nearest(reefScoringPositionListByAprilTag);
+    Pose2d nearestBluePosWithOffset = nearestBluePos.transformBy(offset);
+    // DataLogUtil.writeMessage("Field: getNearestReefScoringPositionWithOffset,
+    //     Current X = ", currPosBlue.getX(),
+    //     ", Current Y = ", currPosBlue.getY(),
+    //     ", Current Rotation = ", currPosBlue.getRotation().getDegrees(),
+    //     ", Nearest X = ", nearestBluePos.getX(),
+    //     ", Nearest Y = ", nearestBluePos.getY(),
+    //     ", Nearest Rotation = ", nearestBluePos.getRotation().getDegrees(),
+    //     ", Offset X = ", offset.getX(),
+    //     ", Offset Y = ", offset.getY(),
+    //     ", Offset Rotation = ", offset.getRotation().getDegrees(),
+    //     ", Nearest with Offset X = ", nearestBluePosWithOffset.getX(),
+    //     ", Nearest with Offset Y = ", nearestBluePosWithOffset.getY(),
+    //     ", Nearest with Offset Rotation = ", nearestBluePosWithOffset.getRotation().getDegrees()
+    // );
+    return (allianceSelection.getAlliance() == Alliance.Blue)
+        ? nearestBluePosWithOffset
+        : flipPosition(nearestBluePosWithOffset);
+  }
 
-    /**
-     * Returns robot's scoring position for L1 based on ReefLocation passed in
-     * @param location ReefLocation location
-     * @param offset Transform2d offset
-     * @return reef scoring position
-     */
-    public Pose2d getReefScoringPositionWithOffsetL1(ReefLocation location, Transform2d offset) {
-        return getReefScoringPositionL1(location).transformBy(offset);
-    }
-    
-    /**
-     * Gets the Pose2d of the given algae pickup position. This position is flipped depending on the alliance.
-     * @param position the pair of letters value associated with one of the 6 algae positions (AB-KL starting at the upper 9 o'clock position and moving CCW)
-     * @return Pose2d of one of the algae pickup positions (against the base).
-     */
-    public Pose2d getAlgaePickupPosition(AlgaeLocation location) {
-        return allianceSelection.getAlliance() == Alliance.Blue ? reefAlgaePickupPositions.get(location) : flipPosition(reefAlgaePickupPositions.get(location));
-    }
+  /**
+   * Finds and returns the nearest L1 reef scoring position (against the base) with an offset.
+   *
+   * @param currPos the robot's current positions
+   * @param offset the offset by which the returned pose2d is tranformed
+   * @return Pose2d of the nearest scoring position
+   */
+  public Pose2d getNearestReefScoringPositionWithOffsetL1(Pose2d currPos, Transform2d offset) {
+    Pose2d currPosBlue =
+        (allianceSelection.getAlliance() == Alliance.Blue) ? currPos : flipPosition(currPos);
+    Pose2d nearestBluePos = currPosBlue.nearest(reefScoringPositionListByAprilTagL1);
+    Pose2d nearestBluePosWithOffset = nearestBluePos.transformBy(offset);
+    return (allianceSelection.getAlliance() == Alliance.Blue)
+        ? nearestBluePosWithOffset
+        : flipPosition(nearestBluePosWithOffset);
+  }
 
-    /**
-     * Gets the Pose2d of the given algae pickup position with an offset. This position (and offset) is flipped depending on the alliance.
-     * @param position the pair of letters value associated with one of the 6 algae positions (AB-KL starting at the upper 9 o'clock position and moving CCW)
-     * @param offset the offset by which the returned pose2d is tranformed
-     * @return Pose2d of one of the algae pickup positions (against the base), with offset.
-     */
-    public Pose2d getAlgaePickupPositionWithOffset(AlgaeLocation location, Transform2d offset) {
-        Pose2d algaePickupPositionWithOffset = reefAlgaePickupPositions.get(location).transformBy(offset);
-        return allianceSelection.getAlliance() == Alliance.Blue ? algaePickupPositionWithOffset : flipPosition(algaePickupPositionWithOffset);
-    }
+  /**
+   * Finds and returns the nearest reef scoring position (against the base)
+   *
+   * @param currPos the robot's current positions
+   * @param left whether the robot should drive to the left (relative to the reef wall) scoring
+   *     position
+   * @return The Pose2d of the nearest scoring position
+   */
+  public Pose2d getNearestReefScoringPosition(Pose2d currPos, boolean left) {
+    return getNearestReefScoringPositionWithOffset(
+        currPos, new Transform2d(0, 0, Rotation2d.kZero), left);
+  }
 
-    /**
-     * Finds and returns the nearest Algae pickup position (against the base)
-     * @param currPos the robot's current positions
-     * @return The Pose2d of the nearest pickup position
-     */
-    public Pose2d getNearestAlgaePickupPosition(Pose2d currPos) {
-        return getNearestAlgaePickupPositionWithOffset(currPos, new Transform2d(0, 0, Rotation2d.kZero));
-    };
+  /**
+   * Finds and returns the nearest L2, L3, and L4 reef scoring position (against the base) with an
+   * offset
+   *
+   * @param currPos the robot's current positions
+   * @param offset the offset by which the returned pose2d is tranformed
+   * @param left whether the robot should drive to the left (relative to the reef wall) scoring
+   *     position
+   * @return The Pose2d of the nearest scoring position
+   */
+  public Pose2d getNearestReefScoringPositionWithOffset(
+      Pose2d currPos, Transform2d offset, boolean left) {
+    Pose2d nearestReefAprilTag = getNearestAprilTagReef(currPos);
+    Pose2d nearestReefScoringPosition =
+        nearestReefAprilTag
+            .rotateAround(nearestReefAprilTag.getTranslation(), new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0,
+                    FieldConstants.ReefScoringPositionAprilTagOffset * (left ? 1.0 : -1.0),
+                    new Rotation2d(0)));
+    Pose2d nearestReefScoringPositionWithOffset = nearestReefScoringPosition.transformBy(offset);
+    // DataLogUtil.writeMessage("Field: getNearestReefScoringPositionWithOffset,
+    //     Current X = ", currPos.getX(),
+    //     ", Current Y = ", currPos.getY(),
+    //     ", Current Rotation = ", currPos.getRotation().getDegrees(),
+    //     ", Nearest April X = ", nearestReefAprilTag.getX(),
+    //     ", Nearest April Y = ", nearestReefAprilTag.getY(),
+    //     ", Nearest April Rotation = ", nearestReefAprilTag.getRotation().getDegrees(),
+    //     ", Left Scoring Position? ", left,
+    //     ", Nearest Scoring X = ", nearestReefScoringPosition.getX(),
+    //     ", Nearest Scoring Y = ", nearestReefScoringPosition.getY(),
+    //     ", Nearest Scoring Rotation", nearestReefScoringPosition.getRotation().getDegrees(),
+    //     ", Offset X = ", offset.getX(),
+    //     ", Offset Y = ", offset.getY(),
+    //     ", Offset Rotation = ", offset.getRotation().getDegrees(),
+    //     ", Nearest with Offset X = ", nearestReefScoringPositionWithOffset.getX(),
+    //     ", Nearest with Offset Y = ", nearestReefScoringPositionWithOffset.getY(),
+    //     ", Nearest with Offset Rotation = ",
+    // nearestReefScoringPositionWithOffset.getRotation().getDegrees()
+    // );
+    return nearestReefScoringPositionWithOffset;
+  }
 
-    /**
-     * Finds and returns the nearest Algae pickup position (against the base) with an offset
-     * @param currPos the robot's current positions
-     * @param offset the offset by which the returned pose2d is tranformed
-     * @return The Pose2d of the nearest pickup position
-     */
-    public Pose2d getNearestAlgaePickupPositionWithOffset(Pose2d currPos, Transform2d offset){
-        Pose2d currPosBlue = (allianceSelection.getAlliance() == Alliance.Blue) ? currPos : flipPosition(currPos);
-        Pose2d nearestBluePos = currPosBlue.nearest(reefAlgaePickupPositionsList);   
-        Pose2d nearestBluePosWithOffset = nearestBluePos.transformBy(offset);
-        return (allianceSelection.getAlliance() == Alliance.Blue) ? nearestBluePosWithOffset : flipPosition(nearestBluePosWithOffset);
-    }
+  /**
+   * Finds and returns the nearest L1 reef scoring position (against the base) with an offset.
+   *
+   * @param currPos the robot's current positions
+   * @param offset the offset by which the returned pose2d is tranformed
+   * @param left whether the robot should drive to the left (relative to the reef wall) scoring
+   *     position
+   * @return The Pose2d of the nearest scoring position
+   */
+  public Pose2d getNearestReefScoringPositionWithOffsetL1(
+      Pose2d currPos, Transform2d offset, boolean left) {
+    Pose2d nearestReefAprilTag = getNearestAprilTagReef(currPos);
+    Pose2d nearestReefScoringPosition =
+        nearestReefAprilTag
+            .rotateAround(nearestReefAprilTag.getTranslation(), new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d(
+                    0,
+                    FieldConstants.ReefScoringPositionAprilTagOffsetL1 * (left ? 1.0 : -1.0),
+                    new Rotation2d(0)));
+    Pose2d nearestReefScoringPositionWithOffset = nearestReefScoringPosition.transformBy(offset);
+    // DataLogUtil.writeLog(false, "Field", "getNearestReefScoringPositionWithOffset",
+    //     "Current X", currPos.getX(),
+    //     "Current Y", currPos.getY(),
+    //     "Current Rotation", currPos.getRotation().getDegrees(),
+    //     "Nearest April X", nearestReefAprilTag.getX(),
+    //     "Nearest April Y", nearestReefAprilTag.getY(),
+    //     "Nearest April Rotation", nearestReefAprilTag.getRotation().getDegrees(),
+    //     "Left Scoring Position?", left,
+    //     "Nearest Scoring X", nearestReefScoringPosition.getX(),
+    //     "Nearest Scoring Y", nearestReefScoringPosition.getY(),
+    //     "Nearest Scoring Rotation", nearestReefScoringPosition.getRotation().getDegrees(),
+    //     "Offset X", offset.getX(),
+    //     "Offset Y", offset.getY(),
+    //     "Offset Rotation", offset.getRotation().getDegrees(),
+    //     "Nearest with Offset X", nearestReefScoringPositionWithOffset.getX(),
+    //     "Nearest with Offset Y", nearestReefScoringPositionWithOffset.getY(),
+    //     "Nearest with Offset Rotation",
+    // nearestReefScoringPositionWithOffset.getRotation().getDegrees()
+    // );
+    return nearestReefScoringPositionWithOffset;
+  }
 
-    /**
-     * Finds and returns the nearest *Reef* AprilTag position with an offset
-     * @param currPos the robot's current positions
-     * @return The Pose2d of the nearest reef AprilTag
-     */
-    public Pose2d getNearestAprilTagReef(Pose2d currPos) {
-        return getNearestAprilTagReefWithOffset(currPos, new Transform2d(0, 0, Rotation2d.kZero));
-    }
+  /**
+   * Gets the Pose2d of the given *Reef* AprilTag.
+   *
+   * @param tagNumber number value associated with the desired AprilTag
+   * @return Pose2d of the given AprilTag
+   */
+  public Pose2d getReefScoringPosition(int tagNumber) {
+    return reefAprilTagPositions.get(tagNumber);
+  }
 
-    /**
-     * Finds and returns the nearest *Reef* AprilTag position
-     * @param currPos the robot's current positions
-     * @param offset the offset by which the returned pose2d is tranformed
-     * @return The Pose2d of the nearest reef AprilTag
-     */
-    public Pose2d getNearestAprilTagReefWithOffset(Pose2d currPos, Transform2d offset) {
-        Pose2d nearestReefAprilTag = currPos.nearest(reefAprilTagPositionList);
-        Pose2d nearestReefAprilTagWithOffset = nearestReefAprilTag.transformBy(offset);
-        // DataLogUtil.writeMessage("Field: getNearestAprilTagWithOffset, 
-        //     Current X", currPos.getX(),
-        //     ", Current Y = ", currPos.getY(),
-        //     ", Current Rotation = ", currPos.getRotation().getDegrees(),
-        //     ", Nearest X = ", nearestReefAprilTag.getX(),
-        //     ", Nearest Y = ", nearestReefAprilTag.getY(),
-        //     ", Nearest Rotation = ", nearestReefAprilTag.getRotation().getDegrees(),
-        //     ", Offset X = ", offset.getX(),
-        //     ", Offset Y = ", offset.getY(),
-        //     ", Offset Rotation = ", offset.getRotation().getDegrees(),
-        //     ", Nearest with Offset X = ", nearestReefAprilTagWithOffset.getX(),
-        //     ", Nearest with Offset Y = ", nearestReefAprilTagWithOffset.getY(),
-        //     ", Nearest with Offset Rotation = ", nearestReefAprilTagWithOffset.getRotation().getDegrees()
-        // );
-        return nearestReefAprilTagWithOffset;
-    }
+  /**
+   * Returns robot's scoring position based on ReefLocation passed in
+   *
+   * @param location ReefLocation location
+   * @param offset Transform2d offset
+   * @return reef scoring position
+   */
+  public Pose2d getReefScoringPositionWithOffset(ReefLocation location, Transform2d offset) {
+    return getReefScoringPosition(location).transformBy(offset);
+  }
 
-    /**
-     * Finds and returns the nearest *Loading Station* aprilTag position.
-     * @param currPos the robot's current position
-     * @return Pose2d of the nearest loading station AprilTag
-     */
-    public Pose2d getNearestAprilTagLoadingStation(Pose2d currPos) {
-        Pose2d nearestAprilTagLoadingStation = currPos.nearest(loadingStationAprilTagPositionList);
-        // DataLogUtil.writeMessage("Field: getNearestAprilTagLoadingStation, 
-        //     Current X = ", currPos.getX(),
-        //     ", Current Y = ", currPos.getY(),
-        //     ", Current Rotation = ", currPos.getRotation().getDegrees(),
-        //     ", Nearest X = ", nearestAprilTagLoadingStation.getX(),
-        //     ", Nearest Y = ", nearestAprilTagLoadingStation.getY(),
-        //     ", Nearest Rotation = ", nearestAprilTagLoadingStation.getRotation().getDegrees()
-        // );
-        return nearestAprilTagLoadingStation;
-    }
+  /**
+   * Returns robot's scoring position for L1 based on ReefLocation passed in
+   *
+   * @param location ReefLocation location
+   * @param offset Transform2d offset
+   * @return reef scoring position
+   */
+  public Pose2d getReefScoringPositionWithOffsetL1(ReefLocation location, Transform2d offset) {
+    return getReefScoringPositionL1(location).transformBy(offset);
+  }
 
-    /**
-     * Gets the nearest point on the line which denotes positions we can score in the barge.
-     * @param currPos the robot's current position
-     * @return Pose2d of the nearest point we can score on the barge
-     */
-    public Pose2d getNearestBargeScoringPosition(Pose2d currPos) {
-        Pose2d bargeScoringPos = (allianceSelection.getAlliance() == Alliance.Blue) ? 
-          (currPos.getX() >  FieldConstants.length / 2.0) ? aprilTagFieldLayout.getTagPose(4).get().toPose2d() : aprilTagFieldLayout.getTagPose(14).get().toPose2d()
-        : (currPos.getX() >= FieldConstants.length / 2.0) ? aprilTagFieldLayout.getTagPose(5).get().toPose2d() : aprilTagFieldLayout.getTagPose(15).get().toPose2d();
-        bargeScoringPos = bargeScoringPos.rotateAround(bargeScoringPos.getTranslation(), new Rotation2d(Math.PI)).transformBy(new Transform2d((-FieldConstants.bargeScoringOffset), 0, new Rotation2d(0)));
+  /**
+   * Gets the Pose2d of the given algae pickup position. This position is flipped depending on the
+   * alliance.
+   *
+   * @param position the pair of letters value associated with one of the 6 algae positions (AB-KL
+   *     starting at the upper 9 o'clock position and moving CCW)
+   * @return Pose2d of one of the algae pickup positions (against the base).
+   */
+  public Pose2d getAlgaePickupPosition(AlgaeLocation location) {
+    return allianceSelection.getAlliance() == Alliance.Blue
+        ? reefAlgaePickupPositions.get(location)
+        : flipPosition(reefAlgaePickupPositions.get(location));
+  }
 
-        return new Pose2d(bargeScoringPos.getX(), MathUtil.clamp(currPos.getY(), bargeScoringPos.getY() - (FieldConstants.bargeScorableWidth / 2.0), bargeScoringPos.getY() + (FieldConstants.bargeScorableWidth / 2.0)), bargeScoringPos.getRotation());
-    }
+  /**
+   * Gets the Pose2d of the given algae pickup position with an offset. This position (and offset)
+   * is flipped depending on the alliance.
+   *
+   * @param position the pair of letters value associated with one of the 6 algae positions (AB-KL
+   *     starting at the upper 9 o'clock position and moving CCW)
+   * @param offset the offset by which the returned pose2d is tranformed
+   * @return Pose2d of one of the algae pickup positions (against the base), with offset.
+   */
+  public Pose2d getAlgaePickupPositionWithOffset(AlgaeLocation location, Transform2d offset) {
+    Pose2d algaePickupPositionWithOffset =
+        reefAlgaePickupPositions.get(location).transformBy(offset);
+    return allianceSelection.getAlliance() == Alliance.Blue
+        ? algaePickupPositionWithOffset
+        : flipPosition(algaePickupPositionWithOffset);
+  }
 
-    /**
-     * Gets the location (upper or lower) of the nearest reef algae
-     * @param currPos the robot's current position
-     * @return ElevatorWristPosition determining whether the algae is on the upper or lower position
-     */
-    public ElevatorWristPosition getNearestAlgaeElevatorPosition(Supplier<Pose2d> currPos) {
-        double angleDeg = getNearestAlgaePickupPosition(currPos.get()).getRotation().getDegrees();
-        boolean isUpper = (angleDeg / 20.0) % 2 == 0;
-        isUpper = (currPos.get().getX() < FieldConstants.length / 2.0) ? isUpper : !isUpper;
-        return isUpper ? ElevatorWristPosition.ALGAE_UPPER : ElevatorWristPosition.ALGAE_UPPER;
-    }
+  /**
+   * Finds and returns the nearest Algae pickup position (against the base)
+   *
+   * @param currPos the robot's current positions
+   * @return The Pose2d of the nearest pickup position
+   */
+  public Pose2d getNearestAlgaePickupPosition(Pose2d currPos) {
+    return getNearestAlgaePickupPositionWithOffset(
+        currPos, new Transform2d(0, 0, Rotation2d.kZero));
+  }
+  ;
+
+  /**
+   * Finds and returns the nearest Algae pickup position (against the base) with an offset
+   *
+   * @param currPos the robot's current positions
+   * @param offset the offset by which the returned pose2d is tranformed
+   * @return The Pose2d of the nearest pickup position
+   */
+  public Pose2d getNearestAlgaePickupPositionWithOffset(Pose2d currPos, Transform2d offset) {
+    Pose2d currPosBlue =
+        (allianceSelection.getAlliance() == Alliance.Blue) ? currPos : flipPosition(currPos);
+    Pose2d nearestBluePos = currPosBlue.nearest(reefAlgaePickupPositionsList);
+    Pose2d nearestBluePosWithOffset = nearestBluePos.transformBy(offset);
+    return (allianceSelection.getAlliance() == Alliance.Blue)
+        ? nearestBluePosWithOffset
+        : flipPosition(nearestBluePosWithOffset);
+  }
+
+  /**
+   * Finds and returns the nearest *Reef* AprilTag position with an offset
+   *
+   * @param currPos the robot's current positions
+   * @return The Pose2d of the nearest reef AprilTag
+   */
+  public Pose2d getNearestAprilTagReef(Pose2d currPos) {
+    return getNearestAprilTagReefWithOffset(currPos, new Transform2d(0, 0, Rotation2d.kZero));
+  }
+
+  /**
+   * Finds and returns the nearest *Reef* AprilTag position
+   *
+   * @param currPos the robot's current positions
+   * @param offset the offset by which the returned pose2d is tranformed
+   * @return The Pose2d of the nearest reef AprilTag
+   */
+  public Pose2d getNearestAprilTagReefWithOffset(Pose2d currPos, Transform2d offset) {
+    Pose2d nearestReefAprilTag = currPos.nearest(reefAprilTagPositionList);
+    Pose2d nearestReefAprilTagWithOffset = nearestReefAprilTag.transformBy(offset);
+    // DataLogUtil.writeMessage("Field: getNearestAprilTagWithOffset,
+    //     Current X", currPos.getX(),
+    //     ", Current Y = ", currPos.getY(),
+    //     ", Current Rotation = ", currPos.getRotation().getDegrees(),
+    //     ", Nearest X = ", nearestReefAprilTag.getX(),
+    //     ", Nearest Y = ", nearestReefAprilTag.getY(),
+    //     ", Nearest Rotation = ", nearestReefAprilTag.getRotation().getDegrees(),
+    //     ", Offset X = ", offset.getX(),
+    //     ", Offset Y = ", offset.getY(),
+    //     ", Offset Rotation = ", offset.getRotation().getDegrees(),
+    //     ", Nearest with Offset X = ", nearestReefAprilTagWithOffset.getX(),
+    //     ", Nearest with Offset Y = ", nearestReefAprilTagWithOffset.getY(),
+    //     ", Nearest with Offset Rotation = ",
+    // nearestReefAprilTagWithOffset.getRotation().getDegrees()
+    // );
+    return nearestReefAprilTagWithOffset;
+  }
+
+  /**
+   * Finds and returns the nearest *Loading Station* aprilTag position.
+   *
+   * @param currPos the robot's current position
+   * @return Pose2d of the nearest loading station AprilTag
+   */
+  public Pose2d getNearestAprilTagLoadingStation(Pose2d currPos) {
+    Pose2d nearestAprilTagLoadingStation = currPos.nearest(loadingStationAprilTagPositionList);
+    // DataLogUtil.writeMessage("Field: getNearestAprilTagLoadingStation,
+    //     Current X = ", currPos.getX(),
+    //     ", Current Y = ", currPos.getY(),
+    //     ", Current Rotation = ", currPos.getRotation().getDegrees(),
+    //     ", Nearest X = ", nearestAprilTagLoadingStation.getX(),
+    //     ", Nearest Y = ", nearestAprilTagLoadingStation.getY(),
+    //     ", Nearest Rotation = ", nearestAprilTagLoadingStation.getRotation().getDegrees()
+    // );
+    return nearestAprilTagLoadingStation;
+  }
+
+  /**
+   * Gets the nearest point on the line which denotes positions we can score in the barge.
+   *
+   * @param currPos the robot's current position
+   * @return Pose2d of the nearest point we can score on the barge
+   */
+  public Pose2d getNearestBargeScoringPosition(Pose2d currPos) {
+    Pose2d bargeScoringPos =
+        (allianceSelection.getAlliance() == Alliance.Blue)
+            ? (currPos.getX() > FieldConstants.length / 2.0)
+                ? aprilTagFieldLayout.getTagPose(4).get().toPose2d()
+                : aprilTagFieldLayout.getTagPose(14).get().toPose2d()
+            : (currPos.getX() >= FieldConstants.length / 2.0)
+                ? aprilTagFieldLayout.getTagPose(5).get().toPose2d()
+                : aprilTagFieldLayout.getTagPose(15).get().toPose2d();
+    bargeScoringPos =
+        bargeScoringPos
+            .rotateAround(bargeScoringPos.getTranslation(), new Rotation2d(Math.PI))
+            .transformBy(
+                new Transform2d((-FieldConstants.bargeScoringOffset), 0, new Rotation2d(0)));
+
+    return new Pose2d(
+        bargeScoringPos.getX(),
+        MathUtil.clamp(
+            currPos.getY(),
+            bargeScoringPos.getY() - (FieldConstants.bargeScorableWidth / 2.0),
+            bargeScoringPos.getY() + (FieldConstants.bargeScorableWidth / 2.0)),
+        bargeScoringPos.getRotation());
+  }
+
+  /**
+   * Gets the location (upper or lower) of the nearest reef algae
+   *
+   * @param currPos the robot's current position
+   * @return ElevatorWristPosition determining whether the algae is on the upper or lower position
+   */
+  public ElevatorWristPosition getNearestAlgaeElevatorPosition(Supplier<Pose2d> currPos) {
+    double angleDeg = getNearestAlgaePickupPosition(currPos.get()).getRotation().getDegrees();
+    boolean isUpper = (angleDeg / 20.0) % 2 == 0;
+    isUpper = (currPos.get().getX() < FieldConstants.length / 2.0) ? isUpper : !isUpper;
+    return isUpper ? ElevatorWristPosition.ALGAE_UPPER : ElevatorWristPosition.ALGAE_UPPER;
+  }
 }

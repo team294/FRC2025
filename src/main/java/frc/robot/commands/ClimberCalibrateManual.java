@@ -11,18 +11,19 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ClimberCalibrateManual extends InstantCommand {
   private final Climber climber;
-  
+
   private double angle;
   private boolean fromShuffleboard;
 
   /**
    * Manually calibrates the climber, assuming we know its current angle.
+   *
    * @param angle the angle the climber is at, in degrees
    * @param climber Climber subsystem
    */
   public ClimberCalibrateManual(double angle, Climber climber) {
     this.climber = climber;
-    
+
     this.angle = angle;
     fromShuffleboard = false;
     addRequirements(climber);
@@ -30,11 +31,12 @@ public class ClimberCalibrateManual extends InstantCommand {
 
   /**
    * Manually calibrates the climber, assuming we know its current angle.
+   *
    * @param climber Climber subsystem
    */
   public ClimberCalibrateManual(Climber climber) {
     this.climber = climber;
-    
+
     fromShuffleboard = true;
     addRequirements(climber);
 

@@ -11,6 +11,7 @@ public interface Loggable {
 
   /**
    * Sets whether fast logging is enabled or disabled.
+   *
    * @param enabled true = enabled to run every cycle, false = follow normal logging cycles
    */
   public void enableFastLogging(boolean enabled);

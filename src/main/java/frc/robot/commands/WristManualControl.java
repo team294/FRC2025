@@ -10,31 +10,34 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.WristConstants;
 import frc.robot.subsystems.Wrist;
 import frc.robot.utilities.DataLogUtil;
 
 public class WristManualControl extends Command {
   private final Wrist wrist;
   private final CommandXboxController xboxController;
-  
+
   private boolean rightJoystick;
 
   // Variables for DataLogging
   private final DataLog log = DataLogManager.getLog();
-  private final DoubleLogEntry dLogPct = new DoubleLogEntry(log, "/WristManualControl/WristPercent");
+  private final DoubleLogEntry dLogPct =
+      new DoubleLogEntry(log, "/WristManualControl/WristPercent");
 
   /**
    * Controls the wrist using the Xbox controller joysticks.
+   *
    * @param xboxController Xbox controller
    * @param wrist Wrist subsystem
    * @param rightJoystick true = use right joystick, false = use left joystick
    */
-  public WristManualControl(CommandXboxController xboxController, Wrist wrist, boolean rightJoystick) {
+  public WristManualControl(
+      CommandXboxController xboxController, Wrist wrist, boolean rightJoystick) {
     this.wrist = wrist;
     this.xboxController = xboxController;
-    
+
     this.rightJoystick = rightJoystick;
     addRequirements(wrist);
 

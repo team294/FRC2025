@@ -4,8 +4,6 @@
 
 package frc.robot.commands.autos;
 
-import java.util.List;
-
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,15 +16,20 @@ import frc.robot.Constants.FieldConstants.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.*;
+import java.util.List;
 
 public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
   /**
-   * <b> ONLY STARTING ON LEFT SIDE OF THE REEF </b> (reef positions H, I, J, K, L, A) 
-   * <p> Pushes friend :) into our alliance barge to secure auto RP, then goes back to starting location and does AutoCoralCycleLoop as normal
+   * <b> ONLY STARTING ON LEFT SIDE OF THE REEF </b> (reef positions H, I, J, K, L, A)
+   *
+   * <p>Pushes friend :) into our alliance barge to secure auto RP, then goes back to starting
+   * location and does AutoCoralCycleLoop as normal
+   *
    * @param reefLocations list of ReefLocation to visit, in order
    * @param reefLevels list of ReefLevel to score on, in order
-   * @param endAtHP true = end at the coral loading station, false = end at the reef 
-   * @param grabAlgae true = grab algae at the end of coral cycle loop <b>(currently cannot end at HP)</b>, false = do not grab algae 
+   * @param endAtHP true = end at the coral loading station, false = end at the reef
+   * @param grabAlgae true = grab algae at the end of coral cycle loop <b>(currently cannot end at
+   *     HP)</b>, false = do not grab algae
    * @param driveTrain DriveTrain subsytem
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsysteem
@@ -38,31 +41,77 @@ public class AutoPushFriendThenCoralCycle extends SequentialCommandGroup {
    * @param alliance AllianceSelection utility
    * @param field Field utility
    */
-  public AutoPushFriendThenCoralCycle(List<ReefLocation> reefLocations, List<ReefLevel> reefLevels, boolean endAtHP, boolean grabAlgae, DriveTrain driveTrain, 
-      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Climber climber, Joystick rightJoystick, AllianceSelection alliance, Field field, TrajectoryCache cache) {    
+  public AutoPushFriendThenCoralCycle(
+      List<ReefLocation> reefLocations,
+      List<ReefLevel> reefLevels,
+      boolean endAtHP,
+      boolean grabAlgae,
+      DriveTrain driveTrain,
+      Elevator elevator,
+      Wrist wrist,
+      CoralEffector coralEffector,
+      AlgaeGrabber algaeGrabber,
+      Hopper hopper,
+      Climber climber,
+      Joystick rightJoystick,
+      AllianceSelection alliance,
+      Field field,
+      TrajectoryCache cache) {
 
     // Different starting pose based on if we are blue or red alliance
-    Pose2d startingPose = AutoSelection.getBargeToReef(reefLocations.get(0)).getInitialPose(alliance.getAlliance() == Alliance.Red).get();
-    
+    Pose2d startingPose =
+        AutoSelection.getBargeToReef(reefLocations.get(0))
+            .getInitialPose(alliance.getAlliance() == Alliance.Red)
+            .get();
+
     addCommands(
-      new DataLogMessage(false, "AutoPushFriendThenCoralCycle: Start"),
-      new DriveResetPose(startingPose, false, driveTrain),
-            
-      // Push friend! :D
-      new DriveToPose(CoordType.kRelative, new Pose2d(-1.5, 0, new Rotation2d(0)), driveTrain).withTimeout(3),
+        new DataLogMessage(false, "AutoPushFriendThenCoralCycle: Start"),
+        new DriveResetPose(startingPose, false, driveTrain),
 
-      // Drive back to starting position
-      new DriveToPose(CoordType.kAbsolute, startingPose, driveTrain),
+        // Push friend! :D
+        new DriveToPose(CoordType.kRelative, new Pose2d(-1.5, 0, new Rotation2d(0)), driveTrain)
+            .withTimeout(3),
 
-      // Based on whether grabAlgae is true or not, do coral cycle loop with or without ending by grabbing coral
-      either( //Below coralcycleloopthenalgae will drive to barge and score but not grab second algae currently
-        new AutoCoralCycleLoopThenAlgae(reefLocations, reefLevels, true, false, false, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, alliance, field, cache),
-        new AutoCoralCycleLoop(reefLocations, reefLevels, true, endAtHP, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, climber, rightJoystick, alliance, field),
-        () -> grabAlgae
-      ),
+        // Drive back to starting position
+        new DriveToPose(CoordType.kAbsolute, startingPose, driveTrain),
 
-      new DataLogMessage(false, "AutoPushFriendThenCoralCycle: End")
-
-    );
+        // Based on whether grabAlgae is true or not, do coral cycle loop with or without ending by
+        // grabbing coral
+        either( // Below coralcycleloopthenalgae will drive to barge and score but not grab second
+            // algae currently
+            new AutoCoralCycleLoopThenAlgae(
+                reefLocations,
+                reefLevels,
+                true,
+                false,
+                false,
+                driveTrain,
+                elevator,
+                wrist,
+                coralEffector,
+                algaeGrabber,
+                hopper,
+                climber,
+                rightJoystick,
+                alliance,
+                field,
+                cache),
+            new AutoCoralCycleLoop(
+                reefLocations,
+                reefLevels,
+                true,
+                endAtHP,
+                driveTrain,
+                elevator,
+                wrist,
+                coralEffector,
+                algaeGrabber,
+                hopper,
+                climber,
+                rightJoystick,
+                alliance,
+                field),
+            () -> grabAlgae),
+        new DataLogMessage(false, "AutoPushFriendThenCoralCycle: End"));
   }
 }

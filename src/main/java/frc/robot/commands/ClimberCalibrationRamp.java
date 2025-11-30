@@ -10,22 +10,23 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ClimberCalibrationRamp extends Command {
   private final Climber climber;
-  
 
-  private double rate;        // Ramp rate per execute() cycle = every 20ms
+  private double rate; // Ramp rate per execute() cycle = every 20ms
   private double maxPercent;
-  private double percent;     // Current percent
+  private double percent; // Current percent
 
   /**
-   * Slowly ramps voltage to the climber motors. Used for logging data to calibrate
-   * kS and kV for the climber motors.
+   * Slowly ramps voltage to the climber motors. Used for logging data to calibrate kS and kV for
+   * the climber motors.
+   *
    * @param rate rate to increase climber percent output, in percent (-1 down to +1 up) per second
-   * @param maxPercent stop command when climber percent output (abs value) reaches this value (0 -> 1)
+   * @param maxPercent stop command when climber percent output (abs value) reaches this value (0 ->
+   *     1)
    * @param climber Climber subsystem
    */
   public ClimberCalibrationRamp(double rate, double maxPercent, Climber climber) {
     this.climber = climber;
-    
+
     this.rate = rate * 0.020; // convert to execute() cycles = every 20ms
     this.maxPercent = maxPercent;
 
@@ -37,7 +38,8 @@ public class ClimberCalibrationRamp extends Command {
   public void initialize() {
     percent = 0.0;
     climber.enableFastLogging(true);
-    DataLogUtil.writeMessage("ClimberCalibrationRamp: Init, rate =", rate, ", max percent =", maxPercent);
+    DataLogUtil.writeMessage(
+        "ClimberCalibrationRamp: Init, rate =", rate, ", max percent =", maxPercent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

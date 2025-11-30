@@ -7,33 +7,40 @@ package frc.robot.commands.sequences;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-
 import frc.robot.Constants.ElevatorWristConstants.ElevatorWristPosition;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.utilities.ElevatorWristRegions.RegionType;
 
-
 /**
- * Prepares to score coral by moving the wrist and elevator to the indicated scoring position.
- * If the robot is holding algae, this sequence does nothing, since we cannot score coral while holding algae.
- * @param position position to move the elevator and wrist to (use ElevatorWwristConstants.ElevatorWristPosition)
+ * Prepares to score coral by moving the wrist and elevator to the indicated scoring position. If
+ * the robot is holding algae, this sequence does nothing, since we cannot score coral while holding
+ * algae.
+ *
+ * @param position position to move the elevator and wrist to (use
+ *     ElevatorWwristConstants.ElevatorWristPosition)
  * @param elevator Elevator subsystem
  * @param wrist Wrist subsystem
  * @param algaeGrabber AlgaeGrabber subsystem
  * @param coralEffector CoralEffector subsystem
  */
 public class CoralScorePrepSequence extends SequentialCommandGroup {
-  public CoralScorePrepSequence(ElevatorWristPosition position, Elevator elevator, Wrist wrist, AlgaeGrabber algaeGrabber, CoralEffector coralEffector) {
+  public CoralScorePrepSequence(
+      ElevatorWristPosition position,
+      Elevator elevator,
+      Wrist wrist,
+      AlgaeGrabber algaeGrabber,
+      CoralEffector coralEffector) {
     addCommands(
-      new DataLogMessage(false, "CoralScorePrepSequence: Start"),
-
-      waitUntil(() -> coralEffector.getHoldMode()),
-      new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist),
-      new WristSetAngle(position, wrist),
-      runOnce(() -> coralEffector.setL1or4ScoreMode(position == ElevatorWristPosition.CORAL_L1 || position == ElevatorWristPosition.CORAL_L4)),
-
-      new DataLogMessage(false, "CoralScorePrepSequence: End")
-    );
+        new DataLogMessage(false, "CoralScorePrepSequence: Start"),
+        waitUntil(() -> coralEffector.getHoldMode()),
+        new WristElevatorSafeMove(position, RegionType.CORAL_ONLY, elevator, wrist),
+        new WristSetAngle(position, wrist),
+        runOnce(
+            () ->
+                coralEffector.setL1or4ScoreMode(
+                    position == ElevatorWristPosition.CORAL_L1
+                        || position == ElevatorWristPosition.CORAL_L4)),
+        new DataLogMessage(false, "CoralScorePrepSequence: End"));
   }
 }

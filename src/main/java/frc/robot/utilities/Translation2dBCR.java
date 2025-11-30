@@ -9,8 +9,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 public class Translation2dBCR {
 
   /**
-   * Returns the dot product of two translations in 2D space.
-   * For example, Translation3d(1.0, 2.0) dot Translation3d(2.5, 5.5) = 2.5 + 11.0 = 13.5.
+   * Returns the dot product of two translations in 2D space. For example, Translation3d(1.0, 2.0)
+   * dot Translation3d(2.5, 5.5) = 2.5 + 11.0 = 13.5.
+   *
    * @param t1 The first translation
    * @param t2 The second translation
    * @return The dot product of the translations
@@ -20,14 +21,15 @@ public class Translation2dBCR {
   }
 
   /**
-   * Returns the normalized version of a translations in 2D space.
-   * This is a vector in the same direction as the original vector but with length = 1.0.
+   * Returns the normalized version of a translations in 2D space. This is a vector in the same
+   * direction as the original vector but with length = 1.0.
+   *
    * @param t1 The translation to normalize
    * @return The normalized translation
    */
   public static Translation2d normalize(Translation2d t1) {
     double len = t1.getNorm();
     if (len == 0) return t1;
-    else return t1.div(len);    
+    else return t1.div(len);
   }
 }

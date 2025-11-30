@@ -13,20 +13,22 @@ import frc.robot.utilities.DataLogUtil;
 public class DriveTurnCalibration extends Command {
 
   private DriveTrain driveTrain;
-  
+
   private double percentOutput, maxPercentOutput, rampTime, rampRate;
   private final Timer timer = new Timer();
 
   /**
    * Command for gathering data for calibrating the turning motors.
+   *
    * @param maxPercentOutput percent output, between 0 and 1
    * @param rampTime ramp up time, in seconds
-   * @param rampRate Ramp rate in percent output per second 
+   * @param rampRate Ramp rate in percent output per second
    * @param driveTrain DriveTrain subsystem
    */
-  public DriveTurnCalibration(double maxPercentOutput, double rampTime, double rampRate, DriveTrain driveTrain) {
+  public DriveTurnCalibration(
+      double maxPercentOutput, double rampTime, double rampRate, DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    
+
     this.maxPercentOutput = maxPercentOutput;
     this.rampTime = rampTime;
     this.rampRate = rampRate;
@@ -41,14 +43,20 @@ public class DriveTurnCalibration extends Command {
     timer.start();
     driveTrain.setDriveModeCoast(false);
     driveTrain.enableFastLogging(true);
-    DataLogUtil.writeMessage("DriveTurnCalibration: Init, maxPctOut =", maxPercentOutput, ", rampTime =", rampTime, ", rampRate =", rampRate);
+    DataLogUtil.writeMessage(
+        "DriveTurnCalibration: Init, maxPctOut =",
+        maxPercentOutput,
+        ", rampTime =",
+        rampTime,
+        ", rampRate =",
+        rampRate);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double currTime = timer.get();
-    percentOutput = MathUtil.clamp(currTime*rampRate, -maxPercentOutput, maxPercentOutput);
+    percentOutput = MathUtil.clamp(currTime * rampRate, -maxPercentOutput, maxPercentOutput);
     driveTrain.setTurningMotorsOutput(percentOutput);
   }
 

@@ -20,8 +20,9 @@ public class ClimberSetServoPosition extends Command {
   private final Timer timer;
 
   /**
-   * Sets the climber ratchet servo to a specified position.
-   * Waits for the ratchet servo to reach that position before the command ends.
+   * Sets the climber ratchet servo to a specified position. Waits for the ratchet servo to reach
+   * that position before the command ends.
+   *
    * @param position 0 -> 1
    * @param climber
    */
@@ -35,8 +36,9 @@ public class ClimberSetServoPosition extends Command {
   }
 
   /**
-   * Sets the climber ratchet servo to a specified position from Shuffleboard.
-   * Waits for the ratchet servo to reach that position before the command ends.
+   * Sets the climber ratchet servo to a specified position from Shuffleboard. Waits for the ratchet
+   * servo to reach that position before the command ends.
+   *
    * @param climber
    */
   public ClimberSetServoPosition(Climber climber) {
@@ -73,8 +75,10 @@ public class ClimberSetServoPosition extends Command {
   @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
-      if (position == ServoPosition.DISENGAGED.value) climber.setRatchetPositionVariable(ServoPosition.DISENGAGED);
-      else if (position == ServoPosition.ENGAGED.value) climber.setRatchetPositionVariable(ServoPosition.ENGAGED);
+      if (position == ServoPosition.DISENGAGED.value)
+        climber.setRatchetPositionVariable(ServoPosition.DISENGAGED);
+      else if (position == ServoPosition.ENGAGED.value)
+        climber.setRatchetPositionVariable(ServoPosition.ENGAGED);
     }
     timer.stop();
     timer.reset();

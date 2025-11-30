@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.SignalLogger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,23 +13,30 @@ import frc.robot.utilities.DataLogUtil;
 
 public class DriveCalibration extends Command {
   private DriveTrain driveTrain;
-  
+
   private final double alignTime = 1.0; // Align wheels for 1.0 second before starting ramp
   private double angleFacing, percentOutput, maxPercentOutput, endTime, rampRate;
   private final Timer timer = new Timer();
 
   /**
-   * Drives the robot straight with a ramp velocity, starting at 0 speed.
-   * Waits 1 second to align wheel facings prior to starting robot movement, then ramps up speed for "rampTime" seconds.
-   * @param angleFacing desired wheel facing relative to front of chassis, in degrees, from -180 to +180 (positive = left, negative = right, 0 = facing front of robot)
+   * Drives the robot straight with a ramp velocity, starting at 0 speed. Waits 1 second to align
+   * wheel facings prior to starting robot movement, then ramps up speed for "rampTime" seconds.
+   *
+   * @param angleFacing desired wheel facing relative to front of chassis, in degrees, from -180 to
+   *     +180 (positive = left, negative = right, 0 = facing front of robot)
    * @param maxPercentOutput percent output, between 0 and 1
    * @param rampTime ramp up time, in seconds
-   * @param rampRate ramp rate, in percent output per second 
+   * @param rampRate ramp rate, in percent output per second
    * @param driveTrain DriveTrain subsystem
    */
-  public DriveCalibration(double angleFacing, double maxPercentOutput, double rampTime, double rampRate, DriveTrain driveTrain) {
+  public DriveCalibration(
+      double angleFacing,
+      double maxPercentOutput,
+      double rampTime,
+      double rampRate,
+      DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    
+
     this.angleFacing = angleFacing;
     this.maxPercentOutput = maxPercentOutput;
     this.endTime = rampTime + alignTime;
@@ -47,10 +53,17 @@ public class DriveCalibration extends Command {
     SignalLogger.start();
 
     driveTrain.setDriveModeCoast(false);
-    driveTrain.setVisionForOdometryState(false);    // Only use wheel encoders to track the robot for this command
+    driveTrain.setVisionForOdometryState(
+        false); // Only use wheel encoders to track the robot for this command
     driveTrain.enableFastLogging(true);
 
-    DataLogUtil.writeMessage("DriveCalibration: Init, maxPctOut =", maxPercentOutput, ", rampTime =", endTime, ", rampRate =", rampRate);
+    DataLogUtil.writeMessage(
+        "DriveCalibration: Init, maxPctOut =",
+        maxPercentOutput,
+        ", rampTime =",
+        endTime,
+        ", rampRate =",
+        rampRate);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -61,7 +74,8 @@ public class DriveCalibration extends Command {
     driveTrain.setWheelFacings(angleFacing);
 
     if (timer.hasElapsed(alignTime)) {
-      percentOutput = MathUtil.clamp((currTime-alignTime) * rampRate, -maxPercentOutput, maxPercentOutput);
+      percentOutput =
+          MathUtil.clamp((currTime - alignTime) * rampRate, -maxPercentOutput, maxPercentOutput);
       driveTrain.setDriveMotorsOutput(percentOutput);
     } else {
       driveTrain.setDriveMotorsOutput(0.0);

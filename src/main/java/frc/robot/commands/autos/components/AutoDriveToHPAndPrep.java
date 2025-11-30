@@ -19,29 +19,44 @@ import frc.robot.utilities.TrajectoryCache.TrajectoryName;
 
 public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
   /**
-   * Drives to HP (using trajectory) and prepares for intaking coral.
-   * Moves the elevator in parallel while driving.
-   * @param trajectoryName TrajectoryName name of trajectory to follow 
+   * Drives to HP (using trajectory) and prepares for intaking coral. Moves the elevator in parallel
+   * while driving.
+   *
+   * @param trajectoryName TrajectoryName name of trajectory to follow
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
    * @param wrist Wrist subsystem
    * @param coralEffector EndEffector subsystem
-   * @param alliance AllianceSelection alliance 
+   * @param alliance AllianceSelection alliance
    * @param cache TrajectoryCache cache
    */
-  public AutoDriveToHPAndPrep(TrajectoryName trajectoryName, DriveTrain driveTrain, Elevator elevator, Wrist wrist, CoralEffector coralEffector, 
-          AllianceSelection alliance, TrajectoryCache cache) {    
+  public AutoDriveToHPAndPrep(
+      TrajectoryName trajectoryName,
+      DriveTrain driveTrain,
+      Elevator elevator,
+      Wrist wrist,
+      CoralEffector coralEffector,
+      AllianceSelection alliance,
+      TrajectoryCache cache) {
     addCommands(
-      new DataLogMessage(false, "AutoDriveToHPAndPrep: Start, Trajectory Name =", trajectoryName.toString()),
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
-      new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, cache.getTrajectory(trajectoryName), driveTrain, alliance),
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist)
-    );
+        new DataLogMessage(
+            false, "AutoDriveToHPAndPrep: Start, Trajectory Name =", trajectoryName.toString()),
+        new WristElevatorSafeMove(
+            ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist),
+        new DriveTrajectory(
+            CoordType.kAbsolute,
+            StopType.kBrake,
+            cache.getTrajectory(trajectoryName),
+            driveTrain,
+            alliance),
+        new WristElevatorSafeMove(
+            ElevatorWristPosition.CORAL_HP, RegionType.STANDARD, elevator, wrist));
   }
 
   /**
-   * Drives to HP (using start = reef location) and prepares for intaking coral.
-   * Moves the elevator in parallel while driving.
+   * Drives to HP (using start = reef location) and prepares for intaking coral. Moves the elevator
+   * in parallel while driving.
+   *
    * @param start ReefLocation (A-L) to start at
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
@@ -50,19 +65,32 @@ public class AutoDriveToHPAndPrep extends SequentialCommandGroup {
    * @param coralEffector EndEffector subsystem
    * @param alliance AllianceSelection alliance
    */
-  public AutoDriveToHPAndPrep(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist, Hopper hopper, CoralEffector coralEffector,
-         AllianceSelection alliance) {
+  public AutoDriveToHPAndPrep(
+      ReefLocation start,
+      DriveTrain driveTrain,
+      Elevator elevator,
+      Wrist wrist,
+      Hopper hopper,
+      CoralEffector coralEffector,
+      AllianceSelection alliance) {
 
     addCommands(
-      new DataLogMessage(false, "AutoDriveToHPAndPrep: Start, start position =", start.toString()),
-      
-      new WristElevatorSafeMove(ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist).until(
-        () -> elevator.getElevatorPosition() < ElevatorWristPosition.CORAL_L3.elevatorPosition + 10.0),
-      deadline(
-        new DriveTrajectory(CoordType.kAbsolute, StopType.kBrake, AutoSelection.getReefToHP(start), driveTrain, alliance),
-        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector)
-      ),
-      new DataLogMessage(false, "AutoDriveToHPAndPrep: End")
-    );
+        new DataLogMessage(
+            false, "AutoDriveToHPAndPrep: Start, start position =", start.toString()),
+        new WristElevatorSafeMove(
+                ElevatorWristPosition.CORAL_HP, RegionType.CORAL_ONLY, elevator, wrist)
+            .until(
+                () ->
+                    elevator.getElevatorPosition()
+                        < ElevatorWristPosition.CORAL_L3.elevatorPosition + 10.0),
+        deadline(
+            new DriveTrajectory(
+                CoordType.kAbsolute,
+                StopType.kBrake,
+                AutoSelection.getReefToHP(start),
+                driveTrain,
+                alliance),
+            new CoralIntakeSequence(elevator, wrist, hopper, coralEffector)),
+        new DataLogMessage(false, "AutoDriveToHPAndPrep: End"));
   }
 }

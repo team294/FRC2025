@@ -11,18 +11,19 @@ import frc.robot.utilities.DataLogUtil;
 
 public class WristSetPercent extends Command {
   private final Wrist wrist;
-  
+
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
   /**
-   * Sets the percent output of the coralEffector from Shuffleboard.
-   * <b>NOTE: This command does not end. When interrupted, it turns off the wrist motor.
+   * Sets the percent output of the coralEffector from Shuffleboard. <b>NOTE: This command does not
+   * end. When interrupted, it turns off the wrist motor.
+   *
    * @param wrist Wrist subsystem
    */
   public WristSetPercent(Wrist wrist) {
     this.wrist = wrist;
-    
+
     this.fromShuffleboard = true;
     addRequirements(wrist);
 
@@ -32,13 +33,14 @@ public class WristSetPercent extends Command {
   }
 
   /**
-   * Sets the percent output of the wrist.
-   * <b>NOTE: This command does not end. When interrupted, it turns off the wrist motor.
+   * Sets the percent output of the wrist. <b>NOTE: This command does not end. When interrupted, it
+   * turns off the wrist motor.
+   *
    * @param percent -1.0 to 1.0 (positive = up, negative = down)
    * @param wrist Wrist subsystem
    */
   public WristSetPercent(double percent, Wrist wrist) {
-    
+
     this.wrist = wrist;
     this.percent = percent;
     this.fromShuffleboard = false;
@@ -55,8 +57,7 @@ public class WristSetPercent extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

@@ -18,23 +18,26 @@ import frc.robot.utilities.DataLogUtil;
 public class ElevatorManualControl extends Command {
   private final Elevator elevator;
   private final CommandXboxController xboxController;
-  
+
   private boolean rightJoystick;
 
   // Variables for DataLogging
   private final DataLog log = DataLogManager.getLog();
-  private final DoubleLogEntry dLogPct = new DoubleLogEntry(log, "/ElevatorManualControl/ElevPercent");
+  private final DoubleLogEntry dLogPct =
+      new DoubleLogEntry(log, "/ElevatorManualControl/ElevPercent");
 
   /**
    * Controls the elevator using the Xbox controller joysticks.
+   *
    * @param xboxController Xbox controller
    * @param elevator Elevator subsystem
    * @param rightJoystick true = use right joystick, false = use left joystick
    */
-  public ElevatorManualControl(CommandXboxController xboxController, Elevator elevator, boolean rightJoystick) {
+  public ElevatorManualControl(
+      CommandXboxController xboxController, Elevator elevator, boolean rightJoystick) {
     this.elevator = elevator;
     this.xboxController = xboxController;
-    
+
     this.rightJoystick = rightJoystick;
     addRequirements(elevator);
 

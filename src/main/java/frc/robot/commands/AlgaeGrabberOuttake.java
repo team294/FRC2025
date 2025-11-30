@@ -13,17 +13,19 @@ import frc.robot.utilities.LEDEventUtil;
 
 public class AlgaeGrabberOuttake extends Command {
   private final AlgaeGrabber algaeGrabber;
-  
+
   private final Timer timer;
   private final double seconds;
 
   /**
-   * Outtake algae from the AlgaeGrabber by running the motor until the algae is out of the mechanism.
+   * Outtake algae from the AlgaeGrabber by running the motor until the algae is out of the
+   * mechanism.
+   *
    * @param algaeGrabber AlgaeGrabber subsystem
    */
   public AlgaeGrabberOuttake(AlgaeGrabber algaeGrabber) {
     this.algaeGrabber = algaeGrabber;
-    
+
     this.timer = new Timer();
     this.seconds = 2.0;
     addRequirements(algaeGrabber);
@@ -32,21 +34,23 @@ public class AlgaeGrabberOuttake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // If in net score mode, set outtake percent for the net. Otherwise, set outtake percent for the processor.
+    // If in net score mode, set outtake percent for the net. Otherwise, set outtake percent for the
+    // processor.
     algaeGrabber.setAlgaeGrabberPercentOutput(
-      !algaeGrabber.getNetScoreMode() ? AlgaeGrabberConstants.processorOuttakePercent : AlgaeGrabberConstants.netOuttakePercent
-    );
-    
+        !algaeGrabber.getNetScoreMode()
+            ? AlgaeGrabberConstants.processorOuttakePercent
+            : AlgaeGrabberConstants.netOuttakePercent);
+
     timer.stop();
     timer.reset();
 
-    DataLogUtil.writeMessage("AlgaeGrabberOuttake: Init, Algae Present =", algaeGrabber.isAlgaePresent());
+    DataLogUtil.writeMessage(
+        "AlgaeGrabberOuttake: Init, Algae Present =", algaeGrabber.isAlgaePresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -66,7 +70,8 @@ public class AlgaeGrabberOuttake extends Command {
       // If the timer has not been started, start it
       if (!timer.isRunning()) timer.start();
       // Run the motor for slightly longer as a safety measure
-      else if (timer.get() >= seconds) return true;     // TODO can we turn off the motor by detecting current?
+      else if (timer.get() >= seconds)
+        return true; // TODO can we turn off the motor by detecting current?
     }
     return false;
   }

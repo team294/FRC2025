@@ -7,12 +7,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.OIConstants;
@@ -25,9 +25,9 @@ public class DriveWithJoysticks extends Command {
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
   private final AllianceSelection allianceSelection;
-  
+
   private int logRotationKey;
-  
+
   private double fwdVelocity, leftVelocity, turnRate;
   // private double lastFwdPercent, lastTime, curTime;
 
@@ -42,14 +42,20 @@ public class DriveWithJoysticks extends Command {
 
   /**
    * Control the driveTrain with joysticks using arcade drive.
-   * @param leftJoystick left joystick, X and Y axis control robot movement, relative to the field from the perspective of the current Alliance's driver station
+   *
+   * @param leftJoystick left joystick, X and Y axis control robot movement, relative to the field
+   *     from the perspective of the current Alliance's driver station
    * @param rightJoystick right joystick, X-axis controls robot rotation
    * @param allianceSelection AllianceSelection utility
    * @param driveTrain DriveTrain subsystem
    */
-  public DriveWithJoysticks(Joystick leftJoystick, Joystick rightJoystick, AllianceSelection allianceSelection, DriveTrain driveTrain) {
+  public DriveWithJoysticks(
+      Joystick leftJoystick,
+      Joystick rightJoystick,
+      AllianceSelection allianceSelection,
+      DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
-    
+
     this.allianceSelection = allianceSelection;
     this.leftJoystick = leftJoystick;
     this.rightJoystick = rightJoystick;
@@ -77,20 +83,34 @@ public class DriveWithJoysticks extends Command {
   @Override
   public void execute() {
     // curTime = System.currentTimeMillis() / 1000.0;
-    fwdVelocity = allianceSelection.getAlliance() == Alliance.Blue ? -leftJoystick.getY() : leftJoystick.getY();
-    leftVelocity = allianceSelection.getAlliance() == Alliance.Blue ? -leftJoystick.getX() : leftJoystick.getX();
-    turnRate =  -rightJoystick.getX();
+    fwdVelocity =
+        allianceSelection.getAlliance() == Alliance.Blue
+            ? -leftJoystick.getY()
+            : leftJoystick.getY();
+    leftVelocity =
+        allianceSelection.getAlliance() == Alliance.Blue
+            ? -leftJoystick.getX()
+            : leftJoystick.getX();
+    turnRate = -rightJoystick.getX();
     SmartDashboard.putNumber("Left Joystick Y", fwdVelocity);
     SmartDashboard.putNumber("Left Joystick X", leftVelocity);
     SmartDashboard.putNumber("Right Joystick X", turnRate);
 
-
     // Apply deadbands
-    fwdVelocity = (Math.abs(fwdVelocity) < OIConstants.joystickDeadband) ? 0 : scaleJoystick(fwdVelocity) * SwerveConstants.kMaxSpeedMetersPerSecond;
-    leftVelocity = (Math.abs(leftVelocity) < OIConstants.joystickDeadband) ? 0 : scaleJoystick(leftVelocity) * SwerveConstants.kMaxSpeedMetersPerSecond;
-    turnRate = (Math.abs(turnRate) < OIConstants.joystickDeadband) ? 0 : scaleTurn(turnRate) * SwerveConstants.kMaxTurningRadiansPerSecond;
+    fwdVelocity =
+        (Math.abs(fwdVelocity) < OIConstants.joystickDeadband)
+            ? 0
+            : scaleJoystick(fwdVelocity) * SwerveConstants.kMaxSpeedMetersPerSecond;
+    leftVelocity =
+        (Math.abs(leftVelocity) < OIConstants.joystickDeadband)
+            ? 0
+            : scaleJoystick(leftVelocity) * SwerveConstants.kMaxSpeedMetersPerSecond;
+    turnRate =
+        (Math.abs(turnRate) < OIConstants.joystickDeadband)
+            ? 0
+            : scaleTurn(turnRate) * SwerveConstants.kMaxTurningRadiansPerSecond;
 
-    if(DataLogUtil.isMyLogRotation(logRotationKey)) {
+    if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       long timeNow = RobotController.getFPGATime();
       dLogFwd.append(fwdVelocity, timeNow);
       dLogLeft.append(leftVelocity, timeNow);
@@ -98,9 +118,11 @@ public class DriveWithJoysticks extends Command {
     }
 
     // double fwdRateChange = (fwdPercent - lastFwdPercent) / (curTime - lastTime);
-    // if (fwdRateChange > maxFwdRateChange) fwdPercent = lastFwdPercent + (curTime - lastTime) * maxFwdRateChange;
-    // else if (fwdRateChange < maxRevRateChange) fwdPercent = lastFwdPercent +(curTime - lastTime) * maxRevRateChange;
-    
+    // if (fwdRateChange > maxFwdRateChange) fwdPercent = lastFwdPercent + (curTime - lastTime) *
+    // maxFwdRateChange;
+    // else if (fwdRateChange < maxRevRateChange) fwdPercent = lastFwdPercent +(curTime - lastTime)
+    // * maxRevRateChange;
+
     driveTrain.drive(fwdVelocity, leftVelocity, turnRate, true, false);
 
     // lastFwdPercent = fwdPercent;
@@ -109,8 +131,7 @@ public class DriveWithJoysticks extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
@@ -119,22 +140,28 @@ public class DriveWithJoysticks extends Command {
   }
 
   /**
-   * Re-maps joystick value to better enable fine robot control at small joystick values (low speeds) and full-speed travel at large joystick values.
-   * This method is optimized for linear travel.
+   * Re-maps joystick value to better enable fine robot control at small joystick values (low
+   * speeds) and full-speed travel at large joystick values. This method is optimized for linear
+   * travel.
+   *
    * @param rawJoystick raw joystick value, -1.0 to +1.0
    * @return scaled joystick value, -1.0 to +1.0
    */
-  private double scaleTurn(double rawJoystick){
-    return Math.signum(rawJoystick) * (0.6801 * rawJoystick * rawJoystick + 0.3232 * Math.abs(rawJoystick) - 0.0033);
+  private double scaleTurn(double rawJoystick) {
+    return Math.signum(rawJoystick)
+        * (0.6801 * rawJoystick * rawJoystick + 0.3232 * Math.abs(rawJoystick) - 0.0033);
   }
 
   /**
-   * Re-maps joystick value to better enable fine robot control at small joystick values (low speeds) and full-speed travel at large joystick values.
-   * This method is optimized for rotating the robot.
+   * Re-maps joystick value to better enable fine robot control at small joystick values (low
+   * speeds) and full-speed travel at large joystick values. This method is optimized for rotating
+   * the robot.
+   *
    * @param rawJoystick raw joystick value, -1.0 to +1.0
    * @return scaled joystick value, -1.0 to +1.0
    */
-  private double scaleJoystick(double rawJoystick){
-    return Math.signum(rawJoystick) * (0.7912 * rawJoystick * rawJoystick + 0.2109*Math.abs(rawJoystick) - 0.0022);
+  private double scaleJoystick(double rawJoystick) {
+    return Math.signum(rawJoystick)
+        * (0.7912 * rawJoystick * rawJoystick + 0.2109 * Math.abs(rawJoystick) - 0.0022);
   }
 }

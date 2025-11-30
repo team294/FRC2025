@@ -14,6 +14,7 @@ import frc.robot.utilities.*;
 public class AutoCoralDriveAndIntakeSequence extends SequentialCommandGroup {
   /**
    * Drive from start (reef location) to HP and intake a coral.
+   *
    * @param start ReefLocation (A-L) to start at
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
@@ -22,13 +23,22 @@ public class AutoCoralDriveAndIntakeSequence extends SequentialCommandGroup {
    * @param hopper Hopper subsystem
    * @param alliance AllianceSelection alliance
    */
-  public AutoCoralDriveAndIntakeSequence(ReefLocation start, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
-      CoralEffector coralEffector, Hopper hopper, AllianceSelection alliance) {
+  public AutoCoralDriveAndIntakeSequence(
+      ReefLocation start,
+      DriveTrain driveTrain,
+      Elevator elevator,
+      Wrist wrist,
+      CoralEffector coralEffector,
+      Hopper hopper,
+      AllianceSelection alliance) {
     addCommands(
-      new DataLogMessage(false, "AutoCoralDriveAndIntakeSequence: Start, starting reef location =", start.toString()),
-      new AutoDriveToHPAndPrep(start, driveTrain, elevator, wrist, hopper, coralEffector, alliance),
-      new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(0.125),
-      new DataLogMessage(false, "AutoCoralDriveAndIntakeSequence: End")
-    );
+        new DataLogMessage(
+            false,
+            "AutoCoralDriveAndIntakeSequence: Start, starting reef location =",
+            start.toString()),
+        new AutoDriveToHPAndPrep(
+            start, driveTrain, elevator, wrist, hopper, coralEffector, alliance),
+        new CoralIntakeSequence(elevator, wrist, hopper, coralEffector).withTimeout(0.125),
+        new DataLogMessage(false, "AutoCoralDriveAndIntakeSequence: End"));
   }
 }

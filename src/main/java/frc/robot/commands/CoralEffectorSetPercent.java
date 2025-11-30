@@ -11,17 +11,18 @@ import frc.robot.utilities.DataLogUtil;
 
 public class CoralEffectorSetPercent extends Command {
   private final CoralEffector coralEffector;
-  
+
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
   /**
    * Sets the percent output of the coralEffector from Shuffleboard and ends immediately.
+   *
    * @param coralEffector CoralEffector subsystem
    */
   public CoralEffectorSetPercent(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    
+
     this.fromShuffleboard = true;
     addRequirements(coralEffector);
 
@@ -32,12 +33,13 @@ public class CoralEffectorSetPercent extends Command {
 
   /**
    * Sets the percent output of the coralEffector and ends immediately.
+   *
    * @param percent -1.0 to 1.0 (positive = intake/outtake, negative = reverse)
    * @param coralEffector CoralEffector subsystem
    */
   public CoralEffectorSetPercent(double percent, CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    
+
     this.percent = percent;
     this.fromShuffleboard = false;
     addRequirements(coralEffector);
@@ -55,8 +57,7 @@ public class CoralEffectorSetPercent extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

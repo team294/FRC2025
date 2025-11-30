@@ -11,22 +11,23 @@ import frc.robot.utilities.DataLogUtil;
 
 public class WristCalibrationRamp extends Command {
   private final Wrist wrist;
-  
 
-  private double rate;        // Ramp rate per execute() cycle = every 20ms
+  private double rate; // Ramp rate per execute() cycle = every 20ms
   private double maxPercent;
-  private double percent;     // Current percent
+  private double percent; // Current percent
 
   /**
-   * Slowly ramps voltage to the wrist motors. Used for logging data to calibrate
-   * kS and kV for the wrist motors.
+   * Slowly ramps voltage to the wrist motors. Used for logging data to calibrate kS and kV for the
+   * wrist motors.
+   *
    * @param rate rate to increase wrist percent output, in percent (-1 down to +1 up) per second
-   * @param maxPercent stop command when wrist percent output (abs value) reaches this value (0 -> 1)
+   * @param maxPercent stop command when wrist percent output (abs value) reaches this value (0 ->
+   *     1)
    * @param wrist Wrist subsytsem
    */
   public WristCalibrationRamp(double rate, double maxPercent, Wrist wrist) {
     this.wrist = wrist;
-    
+
     this.rate = rate * 0.020; // convert to execute() cycles = every 20ms
     this.maxPercent = maxPercent;
 
@@ -38,7 +39,8 @@ public class WristCalibrationRamp extends Command {
   public void initialize() {
     percent = 0.0;
     wrist.enableFastLogging(true);
-    DataLogUtil.writeMessage("WristCalibrationRamp: Init, rate =", rate, ", maxPercent =", maxPercent);
+    DataLogUtil.writeMessage(
+        "WristCalibrationRamp: Init, rate =", rate, ", maxPercent =", maxPercent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -60,8 +62,10 @@ public class WristCalibrationRamp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(percent) >= maxPercent || 
-        (percent > 0 && wrist.getWristAngle() >= WristConstants.WristAngle.UPPER_LIMIT.value - 10.0) ||
-        (percent < 0 && wrist.getWristAngle() <= WristConstants.WristAngle.LOWER_LIMIT.value + 10.0);
+    return Math.abs(percent) >= maxPercent
+        || (percent > 0
+            && wrist.getWristAngle() >= WristConstants.WristAngle.UPPER_LIMIT.value - 10.0)
+        || (percent < 0
+            && wrist.getWristAngle() <= WristConstants.WristAngle.LOWER_LIMIT.value + 10.0);
   }
 }

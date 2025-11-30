@@ -7,30 +7,29 @@
 
 package frc.robot.utilities;
 
-import java.util.Objects;
-
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import java.util.Objects;
 
 /**
  * A trapezoid-shaped velocity profile.
  *
- * While this class can be used for a profiled movement from start to finish, the intended usage is 
- * to filter a reference's dynamics based on trapezoidal velocity constraints. To compute the reference 
- * obeying this constraint, do the following.
+ * <p>While this class can be used for a profiled movement from start to finish, the intended usage
+ * is to filter a reference's dynamics based on trapezoidal velocity constraints. To compute the
+ * reference obeying this constraint, do the following.
  *
- * Initialization:
- * TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxV, kMaxA);
- * TrapezoidProfile.State previousProfiledReference = new TrapezoidProfile.State(initialReference, 0.0);
+ * <p>Initialization: TrapezoidProfile.Constraints constraints = new
+ * TrapezoidProfile.Constraints(kMaxV, kMaxA); TrapezoidProfile.State previousProfiledReference =
+ * new TrapezoidProfile.State(initialReference, 0.0);
  *
- * Run on update:
- * TrapezoidProfile profile = new TrapezoidProfile(constraints, unprofiledReference, previousProfiledReference);
- * previousProfiledReference = profile.calculate(timeSincePreviousUpdate);
- * 
- * Where unprofiledReference is free to change between calls. Note that when the unprofiled reference is 
- * within the constraints, `calculate()` returns the unprofiled reference unchanged.
+ * <p>Run on update: TrapezoidProfile profile = new TrapezoidProfile(constraints,
+ * unprofiledReference, previousProfiledReference); previousProfiledReference =
+ * profile.calculate(timeSincePreviousUpdate);
  *
- * Otherwise, a timer can be started to provide monotonic values for calculate() and to determine 
+ * <p>Where unprofiledReference is free to change between calls. Note that when the unprofiled
+ * reference is within the constraints, `calculate()` returns the unprofiled reference unchanged.
+ *
+ * <p>Otherwise, a timer can be started to provide monotonic values for calculate() and to determine
  * when the profile has completed via isFinished().
  */
 public class TrapezoidProfileBCR {
@@ -49,6 +48,7 @@ public class TrapezoidProfileBCR {
   public static class Constraints {
     @SuppressWarnings("MemberName")
     public double maxVelocity;
+
     @SuppressWarnings("MemberName")
     public double maxAcceleration;
 
@@ -58,6 +58,7 @@ public class TrapezoidProfileBCR {
 
     /**
      * Construct constraints for a TrapezoidProfile.
+     *
      * @param maxVelocity maximum velocity
      * @param maxAcceleration maximum acceleration
      */
@@ -71,13 +72,14 @@ public class TrapezoidProfileBCR {
   public static class State {
     @SuppressWarnings("MemberName")
     public double position;
+
     @SuppressWarnings("MemberName")
     public double velocity;
+
     @SuppressWarnings("MemberName")
     public double acceleration;
 
-    public State() {
-    }
+    public State() {}
 
     public State(double position, double velocity, double acceleration) {
       this.position = position;
@@ -95,7 +97,9 @@ public class TrapezoidProfileBCR {
     public boolean equals(Object other) {
       if (other instanceof State) {
         State rhs = (State) other;
-        return this.position == rhs.position && this.velocity == rhs.velocity && this.acceleration == rhs.acceleration;
+        return this.position == rhs.position
+            && this.velocity == rhs.velocity
+            && this.acceleration == rhs.acceleration;
       } else {
         return false;
       }
@@ -109,6 +113,7 @@ public class TrapezoidProfileBCR {
 
   /**
    * Construct a TrapezoidProfileBCR.
+   *
    * @param constraints The constraints on the profile, like maximum velocity
    * @param goal The desired state when the profile is complete.
    * @param initial The initial state (usually the current state).
@@ -133,12 +138,12 @@ public class TrapezoidProfileBCR {
 
     // Now we can calculate the parameters as if it was a full trapezoid instead of a truncated one
 
-    double fullTrapezoidDist = cutoffDistBegin + (m_goal.position - m_initial.position)
-        + cutoffDistEnd;
+    double fullTrapezoidDist =
+        cutoffDistBegin + (m_goal.position - m_initial.position) + cutoffDistEnd;
     double accelerationTime = m_constraints.maxVelocity / m_constraints.maxAcceleration;
 
-    double fullSpeedDist = fullTrapezoidDist - accelerationTime * accelerationTime
-        * m_constraints.maxAcceleration;
+    double fullSpeedDist =
+        fullTrapezoidDist - accelerationTime * accelerationTime * m_constraints.maxAcceleration;
 
     // Handle the case where the profile never reaches full speed
     if (fullSpeedDist < 0) {
@@ -148,17 +153,20 @@ public class TrapezoidProfileBCR {
 
     // System.out.println("input positions: " + m_initial.position + ", " + m_goal.position);
     // System.out.println("input velocities: " + m_initial.velocity + ", " + m_goal.velocity);
-    // System.out.println("dists: " + cutoffDistBegin + ", " + fullSpeedDist + ", " + cutoffDistEnd);
+    // System.out.println("dists: " + cutoffDistBegin + ", " + fullSpeedDist + ", " +
+    // cutoffDistEnd);
 
     m_timeToMaxVel = accelerationTime - cutoffBegin;
     m_timeToStartDeccel = m_timeToMaxVel + fullSpeedDist / m_constraints.maxVelocity;
     m_timeToEndProfile = m_timeToStartDeccel + accelerationTime - cutoffEnd;
 
-    // System.out.println("times: " + m_timeToMaxVel + "," + m_timeToStartDeccel + ", " + m_timeToEndProfile);
+    // System.out.println("times: " + m_timeToMaxVel + "," + m_timeToStartDeccel + ", " +
+    // m_timeToEndProfile);
   }
 
   /**
    * Construct a TrapezoidProfileBCR.
+   *
    * @param constraints The constraints on the profile, like maximum velocity
    * @param goal The desired state when the profile is complete
    */
@@ -167,7 +175,9 @@ public class TrapezoidProfileBCR {
   }
 
   /**
-   * Calculates the correct position and velocity for the profile at a time t where the beginning of the profile was t = 0.
+   * Calculates the correct position and velocity for the profile at a time t where the beginning of
+   * the profile was t = 0.
+   *
    * @param t Time since the beginning of the profile
    */
   @SuppressWarnings("ParameterName")
@@ -181,13 +191,18 @@ public class TrapezoidProfileBCR {
       // System.out.println("Accelerating");
     } else if (t < m_timeToStartDeccel) {
       result.velocity = m_constraints.maxVelocity;
-      result.position += (m_initial.velocity + m_timeToMaxVel * m_constraints.maxAcceleration / 2.0) * m_timeToMaxVel + m_constraints.maxVelocity * (t - m_timeToMaxVel);
+      result.position +=
+          (m_initial.velocity + m_timeToMaxVel * m_constraints.maxAcceleration / 2.0)
+                  * m_timeToMaxVel
+              + m_constraints.maxVelocity * (t - m_timeToMaxVel);
       result.acceleration = 0;
       // System.out.println("Constant");
     } else if (t <= m_timeToEndProfile) {
       result.velocity = m_goal.velocity + (m_timeToEndProfile - t) * m_constraints.maxAcceleration;
       double timeLeft = m_timeToEndProfile - t;
-      result.position = m_goal.position - (m_goal.velocity + timeLeft * m_constraints.maxAcceleration / 2.0) * timeLeft;
+      result.position =
+          m_goal.position
+              - (m_goal.velocity + timeLeft * m_constraints.maxAcceleration / 2.0) * timeLeft;
       result.acceleration = -m_constraints.maxAcceleration;
       // System.out.println("Deccelerating");
     } else {
@@ -198,6 +213,7 @@ public class TrapezoidProfileBCR {
 
   /**
    * Gets the time left until a target distance in the profile is reached.
+   *
    * @param target Target distance
    * @return Remaining time
    */
@@ -253,9 +269,15 @@ public class TrapezoidProfileBCR {
       deccelDist = distToTarget - fullSpeedDist - accelDist;
     }
 
-    double accelTime = (-velocity + Math.sqrt(Math.abs(velocity * velocity + 2 * acceleration * accelDist))) / acceleration;
+    double accelTime =
+        (-velocity + Math.sqrt(Math.abs(velocity * velocity + 2 * acceleration * accelDist)))
+            / acceleration;
 
-    double deccelTime = (-deccelVelocity + Math.sqrt(Math.abs(deccelVelocity * deccelVelocity + 2 * decceleration * deccelDist))) / decceleration;
+    double deccelTime =
+        (-deccelVelocity
+                + Math.sqrt(
+                    Math.abs(deccelVelocity * deccelVelocity + 2 * decceleration * deccelDist)))
+            / decceleration;
 
     double fullSpeedTime = fullSpeedDist / m_constraints.maxVelocity;
 
@@ -264,6 +286,7 @@ public class TrapezoidProfileBCR {
 
   /**
    * Gets the total time the profile takes to reach the goal.
+   *
    * @return Total time
    */
   public double totalTime() {
@@ -271,8 +294,9 @@ public class TrapezoidProfileBCR {
   }
 
   /**
-   * Returns true if the profile has reached the goal.
-   * The profile has reached the goal if the time since the profile started has exceeded the profile's total time.
+   * Returns true if the profile has reached the goal. The profile has reached the goal if the time
+   * since the profile started has exceeded the profile's total time.
+   *
    * @param t Time since the beginning of the profile
    */
   @SuppressWarnings("ParameterName")
@@ -281,8 +305,9 @@ public class TrapezoidProfileBCR {
   }
 
   /**
-   * Returns true if the profile inverted.
-   * The profile is inverted if goal position is less than the initial position.
+   * Returns true if the profile inverted. The profile is inverted if goal position is less than the
+   * initial position.
+   *
    * @param initial The initial state (usually the current state)
    * @param goal The desired state when the profile is complete
    */
@@ -292,6 +317,7 @@ public class TrapezoidProfileBCR {
 
   /**
    * Flips the sign of the velocity and position if the profile is inverted.
+   *
    * @param in The state of the profile
    * @return The new state with the flipped sign
    */

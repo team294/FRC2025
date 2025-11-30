@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
@@ -14,11 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.StringUtil;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -29,7 +27,7 @@ public class PhotonCameraWrapper extends SubsystemBase {
   public PhotonCamera photonCamera;
   public PhotonPoseEstimator photonPoseEstimatorCamera;
   private AprilTagFieldLayout aprilTagFieldLayout;
-  
+
   private boolean hasInit = false;
   private int logRotationKey;
   private boolean fastLogging = false;
@@ -43,22 +41,30 @@ public class PhotonCameraWrapper extends SubsystemBase {
   private final BooleanLogEntry dLogTagPresent;
   private boolean priorConnected, priorTagPresent;
 
-
   public PhotonCameraWrapper(Transform3d robotToCam, String cameraName, int logRotationKey) {
-    
+
     this.logRotationKey = logRotationKey;
     this.robotToCam = robotToCam;
     this.cameraName = cameraName;
 
-    dLogEstPose2D = StructLogEntry.create(log, StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/estPose2d"), Pose2d.struct);
-    dLogConnected = new BooleanLogEntry(log, StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/Connected") );
-    dLogTagPresent = new BooleanLogEntry(log, StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/TagPresent") );
+    dLogEstPose2D =
+        StructLogEntry.create(
+            log,
+            StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/estPose2d"),
+            Pose2d.struct);
+    dLogConnected =
+        new BooleanLogEntry(
+            log, StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/Connected"));
+    dLogTagPresent =
+        new BooleanLogEntry(
+            log, StringUtil.buildString("/PhotonCameraWrapper/", cameraName, "/TagPresent"));
   }
 
   /**
    * Turns file logging on every scheduler cycle (~20 ms) or every 10 cycles (~0.2 sec).
+   *
    * @param enabled true = log every cycle, false = log every 10 cycles
-   */ 
+   */
   public void enableFastLogging(boolean enabled) {
     this.fastLogging = enabled;
   }
@@ -67,19 +73,21 @@ public class PhotonCameraWrapper extends SubsystemBase {
     DataLogUtil.writeMessage("PhotonCameraWrapper (", cameraName, "): Init, Starting");
 
     try {
-      aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
-      aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide); 
-      DataLogUtil.writeMessage("PhotonCameraWrapper (", cameraName, "): Init, Loaded april tags from file");
+      aprilTagFieldLayout =
+          AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
+      aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+      DataLogUtil.writeMessage(
+          "PhotonCameraWrapper (", cameraName, "): Init, Loaded april tags from file");
     } catch (IOException e) {
-      DataLogUtil.writeMessage("PhotonCameraWrapper (", cameraName, "): Init, Error loading april tags from file");
+      DataLogUtil.writeMessage(
+          "PhotonCameraWrapper (", cameraName, "): Init, Error loading april tags from file");
       e.printStackTrace();
     }
 
     // Create pose estimator
-    photonPoseEstimatorCamera = new PhotonPoseEstimator(
-      aprilTagFieldLayout,
-      PoseStrategy.CLOSEST_TO_REFERENCE_POSE,
-      robotToCam);
+    photonPoseEstimatorCamera =
+        new PhotonPoseEstimator(
+            aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToCam);
 
     if (photonCamera == null) {
       photonCamera = new PhotonCamera(cameraName);
@@ -92,7 +100,8 @@ public class PhotonCameraWrapper extends SubsystemBase {
     dLogEstPose2D.append(Pose2d.kZero, timeNow);
     priorConnected = photonCamera.isConnected();
     dLogConnected.append(priorConnected, timeNow);
-    SmartDashboard.putBoolean(StringUtil.buildString("PhotonVision ", cameraName, " Connected"), priorConnected);
+    SmartDashboard.putBoolean(
+        StringUtil.buildString("PhotonVision ", cameraName, " Connected"), priorConnected);
     priorTagPresent = false;
     dLogTagPresent.append(priorTagPresent, timeNow);
 
@@ -105,7 +114,7 @@ public class PhotonCameraWrapper extends SubsystemBase {
 
   public void periodic() {
     // if (fastLogging || DataLogUtil.isMyLogRotation(logRotationKey)) {
-      // DataLogUtil.writeMessage("PhotonCameraWrapper (", cameraName, "): Periodic");
+    // DataLogUtil.writeMessage("PhotonCameraWrapper (", cameraName, "): Periodic");
     // }
   }
 
@@ -114,38 +123,42 @@ public class PhotonCameraWrapper extends SubsystemBase {
   }
 
   /**
-   * Gets a PhotonPipelineResult with the best target in Camera Pipeline result and the Camera enum. 
-   * If there are no new targets, this method will return null. The best target is determined by the 
+   * Gets a PhotonPipelineResult with the best target in Camera Pipeline result and the Camera enum.
+   * If there are no new targets, this method will return null. The best target is determined by the
    * target sort mode in the PhotonVision UI.
+   *
    * @return the best target of the pipeline result
    */
   PhotonPipelineResult getLatestResult() {
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    return results.isEmpty() ? null : results.get(results.size()-1);
+    return results.isEmpty() ? null : results.get(results.size() - 1);
   }
 
   /**
    * Gets the estimated global pose of the robot on the field.
+   *
    * @param prevEstimatedRobotPose the current best guess at robot pose
    * @param latestResult the latest result from the photon vision pipeline
-   * @return Optional of the fused camera observations to a single Pose2d on the field, and the time of
-   * the observation. Assumes a planar field and the robot is always firmly on the ground.
+   * @return Optional of the fused camera observations to a single Pose2d on the field, and the time
+   *     of the observation. Assumes a planar field and the robot is always firmly on the ground.
    */
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose, PhotonPipelineResult latestResult) {
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(
+      Pose2d prevEstimatedRobotPose, PhotonPipelineResult latestResult) {
     long timeNow = RobotController.getFPGATime();
 
     boolean isConnected = photonCamera.isConnected();
-    if (isConnected!=priorConnected) {
+    if (isConnected != priorConnected) {
       // only write to datalog if this value has changed (saves space in the log)
       dLogConnected.append(isConnected, timeNow);
-      SmartDashboard.putBoolean(StringUtil.buildString("PhotonVision ", cameraName, " Connected"), isConnected);
+      SmartDashboard.putBoolean(
+          StringUtil.buildString("PhotonVision ", cameraName, " Connected"), isConnected);
       priorConnected = isConnected;
     }
 
     photonPoseEstimatorCamera.setReferencePose(prevEstimatedRobotPose);
     Optional<EstimatedRobotPose> newPoseOptional = photonPoseEstimatorCamera.update(latestResult);
     boolean tagPresent = newPoseOptional.isPresent();
-    if (tagPresent!=priorTagPresent) {
+    if (tagPresent != priorTagPresent) {
       // only write to datalog if this value has changed (saves space in the log)
       dLogTagPresent.append(tagPresent, timeNow);
       priorTagPresent = tagPresent;

@@ -11,30 +11,32 @@ import frc.robot.utilities.DataLogUtil;
 
 public class WristNudgeAngle extends InstantCommand {
   private Wrist wrist;
-  
+
   private double deltaDegrees;
   private boolean fromShuffleboard;
 
   /**
    * Adjusts the current calibration degrees of the wrist by a small amount.
+   *
    * @param deltaDegrees degrees to move (positive = down, negative = up)
    * @param wrist Wrist subsystem
    */
   public WristNudgeAngle(double deltaDegrees, Wrist wrist) {
     this.deltaDegrees = deltaDegrees;
     this.wrist = wrist;
-    
+
     fromShuffleboard = false;
     addRequirements(wrist);
   }
 
   /**
    * Adjusts the current calibration degrees of the wrist by a small amount from Shuffleboard.
+   *
    * @param wrist Wrist subsystem
    */
   public WristNudgeAngle(Wrist wrist) {
     this.wrist = wrist;
-    
+
     fromShuffleboard = true;
     addRequirements(wrist);
 

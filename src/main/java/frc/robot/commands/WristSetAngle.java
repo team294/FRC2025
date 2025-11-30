@@ -12,47 +12,52 @@ import frc.robot.utilities.DataLogUtil;
 
 public class WristSetAngle extends Command {
   private final Wrist wrist;
-  
+
   private double angle;
   private final double tolerance = 3.0; // tolerance of 5 degrees
   private boolean fromShuffleboard;
 
   /**
-   * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 3 degrees 
-   * of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
-   * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
+   * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 3
+   * degrees of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
+   *
+   * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up,
+   *     negative = down)
    * @param wrist Wrist subsystem
    */
   public WristSetAngle(double angle, Wrist wrist) {
     this.wrist = wrist;
-    
+
     this.angle = angle;
     fromShuffleboard = false;
     addRequirements(wrist);
   }
 
   /**
-   * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 3 degrees 
-   * of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
+   * Sets the target angle for the wrist and moves it to that angle. Ends when the wrist is within 3
+   * degrees of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
+   *
    * @param position target WristAngle angle, in degrees (see Constants.WristAngle)
    * @param wrist Wrist subsystem
    */
   public WristSetAngle(ElevatorWristPosition angle, Wrist wrist) {
     this.wrist = wrist;
-    
+
     this.angle = angle.wristAngle;
     fromShuffleboard = false;
     addRequirements(wrist);
   }
 
   /**
-   * Sets the target angle for the wrist from Shuffleboard and moves it to that angle. Ends when the wrist is 
-   * within 3 degrees of the target. If the wrist is uncalibrated, this does nothing and ends immediately.
+   * Sets the target angle for the wrist from Shuffleboard and moves it to that angle. Ends when the
+   * wrist is within 3 degrees of the target. If the wrist is uncalibrated, this does nothing and
+   * ends immediately.
+   *
    * @param wrist Wrist subsystem
    */
   public WristSetAngle(Wrist wrist) {
     this.wrist = wrist;
-    
+
     fromShuffleboard = true;
 
     if (SmartDashboard.getNumber("Wrist Goal Angle", -9999) == -9999) {
@@ -65,27 +70,36 @@ public class WristSetAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) angle = SmartDashboard.getNumber("Wrist Goal Angle", ElevatorWristPosition.START_CONFIG.wristAngle);
+    if (fromShuffleboard)
+      angle =
+          SmartDashboard.getNumber(
+              "Wrist Goal Angle", ElevatorWristPosition.START_CONFIG.wristAngle);
     wrist.setWristAngle(angle);
     DataLogUtil.writeMessage("WristSetAngle: Init, Target =", angle);
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (interrupted) DataLogUtil.writeMessage("WristSetAngle: Interrupted, Target =", angle, ", Current Angle =", wrist.getWristAngle());
-    else DataLogUtil.writeMessage("WristSetAngle: End, Target =", angle, ", Current Angle =", wrist.getWristAngle());
+    if (interrupted)
+      DataLogUtil.writeMessage(
+          "WristSetAngle: Interrupted, Target =",
+          angle,
+          ", Current Angle =",
+          wrist.getWristAngle());
+    else
+      DataLogUtil.writeMessage(
+          "WristSetAngle: End, Target =", angle, ", Current Angle =", wrist.getWristAngle());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !wrist.isWristCalibrated() || Math.abs(wrist.getWristAngle() - wrist.getCurrentWristTarget()) < tolerance;
+    return !wrist.isWristCalibrated()
+        || Math.abs(wrist.getWristAngle() - wrist.getCurrentWristTarget()) < tolerance;
   }
 }

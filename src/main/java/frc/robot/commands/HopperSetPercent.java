@@ -11,17 +11,18 @@ import frc.robot.utilities.DataLogUtil;
 
 public class HopperSetPercent extends Command {
   private final Hopper hopper;
-  
+
   private double percent = 0.0;
   private boolean fromShuffleboard;
 
   /**
    * Sets the percent output of the hopper from Shuffleboard and ends immediately.
+   *
    * @param hopper Hopper subsystem
    */
   public HopperSetPercent(Hopper hopper) {
     this.hopper = hopper;
-    
+
     this.fromShuffleboard = true;
     addRequirements(hopper);
 
@@ -32,12 +33,13 @@ public class HopperSetPercent extends Command {
 
   /**
    * Sets the percent output of the hopper and ends immediately.
+   *
    * @param percent -1.0 to 1.0 (positive = intake, negative = reverse)
    * @param hopper Hopper subsystem
-   */  
+   */
   public HopperSetPercent(double percent, Hopper hopper) {
     this.hopper = hopper;
-    
+
     this.percent = percent;
     this.fromShuffleboard = false;
     addRequirements(hopper);
@@ -54,8 +56,7 @@ public class HopperSetPercent extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -69,4 +70,3 @@ public class HopperSetPercent extends Command {
     return true;
   }
 }
-

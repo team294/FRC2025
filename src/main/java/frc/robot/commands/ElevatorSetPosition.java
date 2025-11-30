@@ -12,15 +12,16 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorSetPosition extends Command {
   private final Elevator elevator;
-  
+
   private double target;
   private double tolerance = 0.5;
   private int toleranceCount = 0;
   private boolean fromShuffleboard;
 
   /**
-   * Sets the target position of the elevator to run a generated profile.
-   * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
+   * Sets the target position of the elevator to run a generated profile. The command will end when
+   * the elevator is within 0.5 inches of the target position for 5 cycles.
+   *
    * @param target target position, in inches (0 = lower limit, positive = up)
    * @param elevator Elevator subsystem
    */
@@ -32,9 +33,11 @@ public class ElevatorSetPosition extends Command {
   }
 
   /**
-   * Sets the target position of the elevator to run a generated profile.
-   * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
-   * @param target target from ElevatorWristPosition enum, in inches (see ElevatorWristConstants.ElevatorWristPosition)
+   * Sets the target position of the elevator to run a generated profile. The command will end when
+   * the elevator is within 0.5 inches of the target position for 5 cycles.
+   *
+   * @param target target from ElevatorWristPosition enum, in inches (see
+   *     ElevatorWristConstants.ElevatorWristPosition)
    * @param elevator Elevator subsystem
    */
   public ElevatorSetPosition(ElevatorWristPosition target, Elevator elevator) {
@@ -45,8 +48,10 @@ public class ElevatorSetPosition extends Command {
   }
 
   /**
-   * Sets the target position of the elevator to run a generated profile.  Gets the target position from Suffleboard.
-   * The command will end when the elevator is within 0.5 inches of the target position for 5 cycles.
+   * Sets the target position of the elevator to run a generated profile. Gets the target position
+   * from Suffleboard. The command will end when the elevator is within 0.5 inches of the target
+   * position for 5 cycles.
+   *
    * @param elevator Elevator subsystem
    */
   public ElevatorSetPosition(Elevator elevator) {
@@ -68,27 +73,41 @@ public class ElevatorSetPosition extends Command {
     elevator.setElevatorProfileTarget(target);
     toleranceCount = 0;
 
-    DataLogUtil.writeMessage("ElevatorSetPosition: Init, Target =", target, ", Position =", elevator.getElevatorPosition());
+    DataLogUtil.writeMessage(
+        "ElevatorSetPosition: Init, Target =",
+        target,
+        ", Position =",
+        elevator.getElevatorPosition());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DataLogUtil.writeMessage("ElevatorSetPosition: End, Target =", target, ", Position =", elevator.getElevatorPosition());
+    DataLogUtil.writeMessage(
+        "ElevatorSetPosition: End, Target =",
+        target,
+        ", Position =",
+        elevator.getElevatorPosition());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     // TODO add interlocks with wrist, algaeGrabber, and coralEffector
-    if (!elevator.isElevatorCalibrated() || Math.abs(elevator.getElevatorPosition() - target) <= tolerance) {
+    if (!elevator.isElevatorCalibrated()
+        || Math.abs(elevator.getElevatorPosition() - target) <= tolerance) {
       toleranceCount++;
-      DataLogUtil.writeMessage("ElevatorSetPosition: Within Tolerance, Target =", target, ", Position =", elevator.getElevatorPosition(), ", Tolerance Count =", toleranceCount);
+      DataLogUtil.writeMessage(
+          "ElevatorSetPosition: Within Tolerance, Target =",
+          target,
+          ", Position =",
+          elevator.getElevatorPosition(),
+          ", Tolerance Count =",
+          toleranceCount);
     }
     return (toleranceCount > 5);
   }

@@ -14,12 +14,13 @@ import frc.robot.utilities.*;
 
 public class AutoCoralCycle extends SequentialCommandGroup {
   /**
-   * Based on a start (reef location) and end (reef location to score at), run a cycle that:
-   *   - Drives from reef to HP and intakes a coral
-   *   - Drives to reef and scores the coral
+   * Based on a start (reef location) and end (reef location to score at), run a cycle that: -
+   * Drives from reef to HP and intakes a coral - Drives to reef and scores the coral
+   *
    * @param start ReefLocation (A-L) to start at
    * @param end ReefLocation (A-L) to end at
-   * @param score true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
+   * @param score true = we want to move the elevator to score the coral false = stop at reef
+   *     DOESN'T WORK
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsystem
    * @param elevator Elevator subsystem
@@ -31,18 +32,43 @@ public class AutoCoralCycle extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
-  public AutoCoralCycle(ReefLocation start, ReefLocation end, boolean score, ReefLevel level, DriveTrain driveTrain, Elevator elevator, Wrist wrist,
-          CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance, Field field) {
+  public AutoCoralCycle(
+      ReefLocation start,
+      ReefLocation end,
+      boolean score,
+      ReefLevel level,
+      DriveTrain driveTrain,
+      Elevator elevator,
+      Wrist wrist,
+      CoralEffector coralEffector,
+      AlgaeGrabber algaeGrabber,
+      Hopper hopper,
+      Joystick rightJoystick,
+      AllianceSelection alliance,
+      Field field) {
     addCommands(
-      new DataLogMessage(false, "AutoCoralCycle: Start"),
-      // Drives from start reef location to HP and intakes coral  
-      new AutoCoralDriveAndIntakeSequence(start, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
+        new DataLogMessage(false, "AutoCoralCycle: Start"),
+        // Drives from start reef location to HP and intakes coral
+        new AutoCoralDriveAndIntakeSequence(
+            start, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
 
-      // If not the last coral, then drives from HP to reef location and scores coral
-      // Otherwise, if it is the last coral, then drives from HP to end reef location and stops there
-      new AutoCoralDriveAndScoreSequence(true, score, end, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, alliance, field),
-      
-      new DataLogMessage(false, "AutoCoralCycle: End")
-    );
+        // If not the last coral, then drives from HP to reef location and scores coral
+        // Otherwise, if it is the last coral, then drives from HP to end reef location and stops
+        // there
+        new AutoCoralDriveAndScoreSequence(
+            true,
+            score,
+            end,
+            level,
+            driveTrain,
+            elevator,
+            wrist,
+            coralEffector,
+            algaeGrabber,
+            hopper,
+            rightJoystick,
+            alliance,
+            field),
+        new DataLogMessage(false, "AutoCoralCycle: End"));
   }
 }

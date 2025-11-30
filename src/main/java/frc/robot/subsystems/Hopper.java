@@ -4,6 +4,13 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
@@ -20,25 +27,19 @@ import frc.robot.Constants.HopperConstants;
 import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 
-import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-
 public class Hopper extends SubsystemBase implements Loggable {
-  
+
   private final int logRotationKey;
-  private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
-  private String subsystemName;           // Subsystem name for use in file logging and dashboard
+  private boolean fastLogging =
+      false; // true = enabled to run every cycle, false = follow normal logging cycles
+  private String subsystemName; // Subsystem name for use in file logging and dashboard
 
   private final TalonFX hopperMotor = new TalonFX(Constants.Ports.CANHopper);
 
   // Create variables for the hopper Kraken motor
-  private final StatusSignal<Temperature> hopperTemp;                 // Motor temperature, in degrees Celsius
-  private final StatusSignal<Current> hopperStatorCurrent;            // Motor stator current, in amps (positive = forward, negative = reverse)
+  private final StatusSignal<Temperature> hopperTemp; // Motor temperature, in degrees Celsius
+  private final StatusSignal<Current>
+      hopperStatorCurrent; // Motor stator current, in amps (positive = forward, negative = reverse)
   private final StatusSignal<AngularVelocity> hopperEncoderVelocity;
   private final StatusSignal<Voltage> hopperVoltage;
 
@@ -54,7 +55,7 @@ public class Hopper extends SubsystemBase implements Loggable {
 
   public Hopper(String subsystemName) {
     this.subsystemName = subsystemName;
-    
+
     logRotationKey = DataLogUtil.allocateLogRotation();
 
     // Get signal and sensor objects
@@ -69,13 +70,16 @@ public class Hopper extends SubsystemBase implements Loggable {
     hopperConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     hopperConfig.Voltage.PeakForwardVoltage = HopperConstants.compensationVoltage;
     hopperConfig.Voltage.PeakReverseVoltage = -HopperConstants.compensationVoltage;
-    hopperConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    hopperConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod =
+        0.3; // Time from 0 to full power, in seconds
 
-    // If the current is above the supply current limit for the threshold time, the current is limited to the lower limit.
+    // If the current is above the supply current limit for the threshold time, the current is
+    // limited to the lower limit.
     // This is configured to prevent the breakers from tripping.
-    hopperConfig.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
-    hopperConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
-    hopperConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
+    hopperConfig.CurrentLimits.SupplyCurrentLimit = 60.0; // Upper limit for the current, in amps
+    hopperConfig.CurrentLimits.SupplyCurrentLowerLimit =
+        35.0; // Lower limit for the current, in amps
+    hopperConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2; // Threshold time, in seconds
     hopperConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Apply the configurations to the motor.
@@ -90,21 +94,22 @@ public class Hopper extends SubsystemBase implements Loggable {
 
   /**
    * Sets the percent output of the hopper motor using voltage compensation.
+   *
    * @param percent output percent, -1.0 to 1.0 (positive = intake, negative = reverse)
    */
   public void setHopperPercentOutput(double percent) {
-    hopperMotor.setControl(hopperVoltageControl.withOutput(percent * HopperConstants.compensationVoltage));
+    hopperMotor.setControl(
+        hopperVoltageControl.withOutput(percent * HopperConstants.compensationVoltage));
   }
 
-  /**
-   * Stops the hopper motor.
-   */
+  /** Stops the hopper motor. */
   public void stopHopperMotor() {
     setHopperPercentOutput(0);
   }
 
   /**
    * Gets the velocity of the hopper motor.
+   *
    * @return motor velocity, in RPM
    */
   public double getHopperVelocity() {
@@ -114,6 +119,7 @@ public class Hopper extends SubsystemBase implements Loggable {
 
   /**
    * Gets the current of the hopper motor.
+   *
    * @return motor current, in amps
    */
   public double getHopperAmps() {
@@ -123,6 +129,7 @@ public class Hopper extends SubsystemBase implements Loggable {
 
   /**
    * Gets the name of the subsystem.
+   *
    * @return the subsystem name
    */
   public String getName() {
@@ -131,6 +138,7 @@ public class Hopper extends SubsystemBase implements Loggable {
 
   /**
    * Turns file logging on every scheduler cycle (~20 ms) or every 10 cycles (~0.2 sec).
+   *
    * @param enabled true = log every cycle, false = log every 10 cycles
    */
   @Override
@@ -140,7 +148,9 @@ public class Hopper extends SubsystemBase implements Loggable {
 
   /**
    * Write information about the hopper to the file log.
-   * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
+   *
+   * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is
+   *     enabled
    */
   public void updateLog(boolean logWhenDisabled) {
     if (logWhenDisabled || !DriverStation.isDisabled()) {

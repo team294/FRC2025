@@ -11,7 +11,6 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
@@ -25,22 +24,25 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utilities.DataLogUtil;
-import frc.robot.utilities.Loggable;
 import frc.robot.Constants.AlgaeGrabberConstants;
 import frc.robot.Constants.Ports;
+import frc.robot.utilities.DataLogUtil;
+import frc.robot.utilities.Loggable;
 
 public class AlgaeGrabber extends SubsystemBase implements Loggable {
-  
+
   private final int logRotationKey;
-  private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
-  private String subsystemName;         // Subsystem name for use in file logging and dashboard
+  private boolean fastLogging =
+      false; // true = enabled to run every cycle, false = follow normal logging cycles
+  private String subsystemName; // Subsystem name for use in file logging and dashboard
 
   // Create variables for the algaeGrabber Minion motor
-  private final StatusSignal<Temperature> algaeGrabberTemp;       // Motor temp, in degrees Celsius
-	private final StatusSignal<Current> algaeGrabberStatorCurrent;  // Motor stator current, in amps (positive = forward, negative = reverse)
-	private final StatusSignal<AngularVelocity> algaeGrabberEncoderVelocity;	
-	private final StatusSignal<Voltage> algaeGrabberVoltage;
+  private final StatusSignal<Temperature> algaeGrabberTemp; // Motor temp, in degrees Celsius
+  private final StatusSignal<Current>
+      algaeGrabberStatorCurrent; // Motor stator current, in amps (positive = forward, negative =
+  // reverse)
+  private final StatusSignal<AngularVelocity> algaeGrabberEncoderVelocity;
+  private final StatusSignal<Voltage> algaeGrabberVoltage;
 
   private final TalonFX algaeGrabberMotor = new TalonFX(Ports.CANAlgaeGrabber);
   private final TalonFXConfigurator algaeGrabberConfigurator = algaeGrabberMotor.getConfigurator();
@@ -56,12 +58,13 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
   private final DoubleLogEntry dLogVoltage = new DoubleLogEntry(log, "/AlgaeGrabber/Voltage");
   private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/AlgaeGrabber/Current");
   private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/AlgaeGrabber/Velocity");
-  private final BooleanLogEntry dLogAlgaePresent = new BooleanLogEntry(log, "/AlgaeGrabber/Algae present");
+  private final BooleanLogEntry dLogAlgaePresent =
+      new BooleanLogEntry(log, "/AlgaeGrabber/Algae present");
 
   private boolean netScoreMode = true;
 
   public AlgaeGrabber(String subsystemName) {
-    
+
     logRotationKey = DataLogUtil.allocateLogRotation();
     this.subsystemName = subsystemName;
 
@@ -77,13 +80,16 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
     algaeGrabberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     algaeGrabberConfig.Voltage.PeakForwardVoltage = AlgaeGrabberConstants.compensationVoltage;
     algaeGrabberConfig.Voltage.PeakReverseVoltage = -AlgaeGrabberConstants.compensationVoltage;
-    algaeGrabberConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3; // Time from 0 to full power, in seconds
+    algaeGrabberConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod =
+        0.3; // Time from 0 to full power, in seconds
 
-    // If the current is above the supply current limit for the threshold time, the current is 
+    // If the current is above the supply current limit for the threshold time, the current is
     // limited to the lower limit in order to prevent the breakers from tripping
-    algaeGrabberConfig.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
-    algaeGrabberConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
-    algaeGrabberConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;    // Threshold time, in seconds
+    algaeGrabberConfig.CurrentLimits.SupplyCurrentLimit =
+        60.0; // Upper limit for the current, in amps
+    algaeGrabberConfig.CurrentLimits.SupplyCurrentLowerLimit =
+        35.0; // Lower limit for the current, in amps
+    algaeGrabberConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2; // Threshold time, in seconds
     algaeGrabberConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Apply the configurations to the motor.
@@ -96,23 +102,24 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
     updateLog(true);
   }
 
-  /** 
-   * Sets the percent output of the algaeGrabber motor using voltage compensation. 
+  /**
+   * Sets the percent output of the algaeGrabber motor using voltage compensation.
+   *
    * @param percent output percent, -1.0 to 1.0 (positive = intake, negative = outtake)
    */
   public void setAlgaeGrabberPercentOutput(double percent) {
-    algaeGrabberMotor.setControl(algaeGrabberVoltageControl.withOutput(percent * AlgaeGrabberConstants.compensationVoltage));
+    algaeGrabberMotor.setControl(
+        algaeGrabberVoltageControl.withOutput(percent * AlgaeGrabberConstants.compensationVoltage));
   }
 
-  /**
-   * Stops the algaeGrabber motor.
-   */
+  /** Stops the algaeGrabber motor. */
   public void stopAlgaeGrabberMotor() {
     setAlgaeGrabberPercentOutput(0);
   }
 
-  /** 
+  /**
    * Gets the velocity of the algaeGrabber motor.
+   *
    * @return motor velocity, in RPM
    */
   public double getAlgaeGrabberVelocity() {
@@ -122,6 +129,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
   /**
    * Gets the current of the algaeGrabber motor.
+   *
    * @return motor current, in amps
    */
   public double getAlgaeGrabberAmps() {
@@ -131,6 +139,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
   /**
    * Gets whether an algae is in the algaeGrabber.
+   *
    * @return true = algae is present, false = algae is not present or not triggering the bump switch
    */
   public boolean isAlgaePresent() {
@@ -139,6 +148,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
   /**
    * Sets whether we are scoring in the net or processor.
+   *
    * @param net true = scoring in net, false = scoring in processor
    */
   public void setNetScoreMode(boolean net) {
@@ -147,6 +157,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
   /**
    * Gets whether we are scoring in the net or processor.
+   *
    * @return true = scoring in net, false = scoring in processor
    */
   public boolean getNetScoreMode() {
@@ -155,6 +166,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
   /**
    * Gets the name of the subsystem.
+   *
    * @return the subsystem name
    */
   public String getName() {
@@ -163,6 +175,7 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
   /**
    * Turns file logging on every scheduler cycle (~20 ms) or every 10 cycles (~0.2 sec).
+   *
    * @param enabled true = log every cycle, false = log every 10 cycles
    */
   @Override
@@ -172,10 +185,12 @@ public class AlgaeGrabber extends SubsystemBase implements Loggable {
 
   /**
    * Writes information about the algaeGrabber to the file log.
-   * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
+   *
+   * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is
+   *     enabled
    */
   public void updateLog(boolean logWhenDisabled) {
-    if(logWhenDisabled || !DriverStation.isDisabled()){
+    if (logWhenDisabled || !DriverStation.isDisabled()) {
       long timeNow = RobotController.getFPGATime();
 
       dLogTemp.append(algaeGrabberTemp.refresh().getValueAsDouble(), timeNow);

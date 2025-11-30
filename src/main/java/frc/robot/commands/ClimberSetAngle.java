@@ -13,48 +13,55 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ClimberSetAngle extends Command {
   private final Climber climber;
-  
+
   private double angle;
   private final double tolerance = 3.0; // tolerance of 3 degrees
   private boolean fromShuffleboard;
   private boolean moveAllowed;
 
   /**
-   * Sets the target angle for the climber and moves it to that angle. Ends when the climber is within 3 degrees 
-   * of the target. If the climber is uncalibrated, this does nothing and ends immediately.
-   * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up, negative = down)
+   * Sets the target angle for the climber and moves it to that angle. Ends when the climber is
+   * within 3 degrees of the target. If the climber is uncalibrated, this does nothing and ends
+   * immediately.
+   *
+   * @param angle target angle, in degrees (0 = horizontal in front of robot, positive = up,
+   *     negative = down)
    * @param climber Climber subsystem
    */
   public ClimberSetAngle(double angle, Climber climber) {
     this.climber = climber;
-    
+
     this.angle = angle;
     fromShuffleboard = false;
     addRequirements(climber);
   }
 
   /**
-   * Sets the target angle for the climber and moves it to that angle. Ends when the climber is within 3 degrees 
-   * of the target. If the climber is uncalibrated, this does nothing and ends immediately.
+   * Sets the target angle for the climber and moves it to that angle. Ends when the climber is
+   * within 3 degrees of the target. If the climber is uncalibrated, this does nothing and ends
+   * immediately.
+   *
    * @param position target ClimberAngle angle, in degrees (see Constants.ClimberAngle)
    * @param climber Climber subsystem
    */
   public ClimberSetAngle(ClimberAngle pos, Climber climber) {
     this.climber = climber;
-    
+
     this.angle = pos.value;
     fromShuffleboard = false;
     addRequirements(climber);
   }
 
   /**
-   * Sets the target angle for the climber from Shuffleboard and moves it to that angle. Ends when the climber is 
-   * within 3 degrees of the target. If the climber is uncalibrated, this does nothing and ends immediately.
+   * Sets the target angle for the climber from Shuffleboard and moves it to that angle. Ends when
+   * the climber is within 3 degrees of the target. If the climber is uncalibrated, this does
+   * nothing and ends immediately.
+   *
    * @param climber Climber subsystem
    */
   public ClimberSetAngle(Climber climber) {
     this.climber = climber;
-    
+
     fromShuffleboard = true;
 
     if (SmartDashboard.getNumber("Climber Goal Angle", -9999) == -9999) {
@@ -67,29 +74,38 @@ public class ClimberSetAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (fromShuffleboard) angle = SmartDashboard.getNumber("Climber Goal Angle", climber.getClimberAngle());
+    if (fromShuffleboard)
+      angle = SmartDashboard.getNumber("Climber Goal Angle", climber.getClimberAngle());
 
-    moveAllowed = climber.isEncoderCalibrated() && climber.getRatchetPosition() == ServoPosition.DISENGAGED;
-    if (moveAllowed)  climber.setClimberAngle(angle);
+    moveAllowed =
+        climber.isEncoderCalibrated() && climber.getRatchetPosition() == ServoPosition.DISENGAGED;
+    if (moveAllowed) climber.setClimberAngle(angle);
 
     DataLogUtil.writeMessage("ClimberSetAngle Init, Allowed =", moveAllowed, ", Target =", angle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (interrupted) DataLogUtil.writeMessage("ClimberSetAngle Interrupted, Target =", angle, ", Current Angle =", climber.getClimberAngle());
-    else DataLogUtil.writeMessage("ClimberSetAngle", "End", "Target", angle, "Current Angle", climber.getClimberAngle());
+    if (interrupted)
+      DataLogUtil.writeMessage(
+          "ClimberSetAngle Interrupted, Target =",
+          angle,
+          ", Current Angle =",
+          climber.getClimberAngle());
+    else
+      DataLogUtil.writeMessage(
+          "ClimberSetAngle", "End", "Target", angle, "Current Angle", climber.getClimberAngle());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !moveAllowed || Math.abs(climber.getClimberAngle() - climber.getCurrentClimberTarget()) < tolerance;
+    return !moveAllowed
+        || Math.abs(climber.getClimberAngle() - climber.getCurrentClimberTarget()) < tolerance;
   }
 }

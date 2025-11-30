@@ -10,15 +10,15 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ClimberStop extends Command {
   private final Climber climber;
-  
- 
+
   /**
    * Sets the percent output of the climber to 0 and ends immediately.
+   *
    * @param climber Climber subsystem
    */
   public ClimberStop(Climber climber) {
     this.climber = climber;
-    
+
     addRequirements(climber);
   }
 
@@ -31,8 +31,7 @@ public class ClimberStop extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

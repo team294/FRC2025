@@ -10,7 +10,6 @@ import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -32,22 +31,28 @@ import frc.robot.utilities.DataLogUtil;
 import frc.robot.utilities.Loggable;
 
 public class CoralEffector extends SubsystemBase implements Loggable {
-  
+
   private final int logRotationKey;
-  private boolean fastLogging = false;    // true = enabled to run every cycle, false = follow normal logging cycles
-  private String subsystemName;           // Subsystem name for use in file logging and dashboard
-    
+  private boolean fastLogging =
+      false; // true = enabled to run every cycle, false = follow normal logging cycles
+  private String subsystemName; // Subsystem name for use in file logging and dashboard
+
   private final TalonFX coralEffectorMotor = new TalonFX(Ports.CANCoralEffector);
 
   // Create variables for the coralEffector Minion motor
-  private final StatusSignal<Temperature> coralEffectorTemp;                  // Motor temperature, in degrees Celsius
-  private final StatusSignal<Current> coralEffectorStatorCurrent;             // Motor stator current, in amps (positive = forward, negative = reverse)
-  private final StatusSignal<Angle> coralEffectorEncoderPosition;                     // Encoder position, in pinion rotations
+  private final StatusSignal<Temperature>
+      coralEffectorTemp; // Motor temperature, in degrees Celsius
+  private final StatusSignal<Current>
+      coralEffectorStatorCurrent; // Motor stator current, in amps (positive = forward, negative =
+  // reverse)
+  private final StatusSignal<Angle>
+      coralEffectorEncoderPosition; // Encoder position, in pinion rotations
   private final StatusSignal<AngularVelocity> coralEffectorEncoderVelocity;
   private final StatusSignal<Voltage> coralEffectorVoltage;
   private final StatusSignal<ControlModeValue> coralEffectorControlMode;
 
-  private final TalonFXConfigurator coralEffectorConfigurator = coralEffectorMotor.getConfigurator();
+  private final TalonFXConfigurator coralEffectorConfigurator =
+      coralEffectorMotor.getConfigurator();
   private TalonFXConfiguration coralEffectorConfig;
   private VoltageOut coralEffectorVoltageControl = new VoltageOut(0.0);
   private PositionVoltage coralEffectorPositionControl = new PositionVoltage(0.0);
@@ -66,14 +71,16 @@ public class CoralEffector extends SubsystemBase implements Loggable {
   private final DoubleLogEntry dLogCurrent = new DoubleLogEntry(log, "/CoralEffector/Current");
   private final DoubleLogEntry dLogVelocity = new DoubleLogEntry(log, "/CoralEffector/Velocity");
   private final DoubleLogEntry dLogPosition = new DoubleLogEntry(log, "/CoralEffector/Position");
-  private final DoubleLogEntry dLogTargetPos = new DoubleLogEntry(log, "/CoralEffector/TargetPosition");
-  private final BooleanLogEntry dLogPositionControl = new BooleanLogEntry(log, "/CoralEffector/PositionControl");
+  private final DoubleLogEntry dLogTargetPos =
+      new DoubleLogEntry(log, "/CoralEffector/TargetPosition");
+  private final BooleanLogEntry dLogPositionControl =
+      new BooleanLogEntry(log, "/CoralEffector/PositionControl");
   private final BooleanLogEntry dLogAutoHold = new BooleanLogEntry(log, "/CoralEffector/AutoHold");
   private final BooleanLogEntry dLogCoralIn = new BooleanLogEntry(log, "/CoralEffector/CoralIn");
 
   public CoralEffector(String subsystemName, Wrist wrist) {
     this.subsystemName = subsystemName;
-    
+
     logRotationKey = DataLogUtil.allocateLogRotation();
     this.wrist = wrist;
 
@@ -89,22 +96,34 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     coralEffectorConfig = new TalonFXConfiguration();
     coralEffectorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     coralEffectorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    coralEffectorConfig.Voltage.PeakForwardVoltage = 3.5;  // Voltage limit needed to cap feedback during PositionVoltage control to prevent oscillation, was 2.0
-    coralEffectorConfig.Voltage.PeakReverseVoltage = -3.5;  // Voltage limit needed to cap feedback during PositionVoltage control to prevent oscillation, was 2.0
-    coralEffectorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.3;  // Time from 0 to full power, in seconds
-    coralEffectorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.3;  // Time from 0 to full power, in seconds
+    coralEffectorConfig.Voltage.PeakForwardVoltage =
+        3.5; // Voltage limit needed to cap feedback during PositionVoltage control to prevent
+    // oscillation, was 2.0
+    coralEffectorConfig.Voltage.PeakReverseVoltage =
+        -3.5; // Voltage limit needed to cap feedback during PositionVoltage control to prevent
+    // oscillation, was 2.0
+    coralEffectorConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod =
+        0.3; // Time from 0 to full power, in seconds
+    coralEffectorConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod =
+        0.3; // Time from 0 to full power, in seconds
 
-    // If the current is above the supply current limit for the threshold time, the current is limited to the lower limit.
+    // If the current is above the supply current limit for the threshold time, the current is
+    // limited to the lower limit.
     // This is configured to prevent the breakers from tripping.
-    coralEffectorConfig.CurrentLimits.SupplyCurrentLimit = 60.0;        // Upper limit for the current, in amps
-    coralEffectorConfig.CurrentLimits.SupplyCurrentLowerLimit = 35.0;   // Lower limit for the current, in amps
-    coralEffectorConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2;     // Threshold time, in seconds
+    coralEffectorConfig.CurrentLimits.SupplyCurrentLimit =
+        60.0; // Upper limit for the current, in amps
+    coralEffectorConfig.CurrentLimits.SupplyCurrentLowerLimit =
+        35.0; // Lower limit for the current, in amps
+    coralEffectorConfig.CurrentLimits.SupplyCurrentLowerTime = 0.2; // Threshold time, in seconds
     coralEffectorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Configure PID for PositionVoltage control
-    coralEffectorConfig.Slot0.kP = CoralEffectorConstants.kP;  // kP = (desired-output-volts) / (error-in-encoder-rotations)
-    coralEffectorConfig.Slot0.kI = 0.0;       // kI = (desired-output-volts) / [(error-in-encoder-rotations) * (seconds)]
-    coralEffectorConfig.Slot0.kD = 0.0;       // kD = (desired-output-volts) / [(error-in-encoder-rotations) / (seconds)]
+    coralEffectorConfig.Slot0.kP =
+        CoralEffectorConstants.kP; // kP = (desired-output-volts) / (error-in-encoder-rotations)
+    coralEffectorConfig.Slot0.kI =
+        0.0; // kI = (desired-output-volts) / [(error-in-encoder-rotations) * (seconds)]
+    coralEffectorConfig.Slot0.kD =
+        0.0; // kD = (desired-output-volts) / [(error-in-encoder-rotations) / (seconds)]
 
     // Configure encoder to user for feedback
     coralEffectorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -115,7 +134,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
     // Set feedback behaviors for position control
     coralEffectorPositionControl.Slot = 0;
     coralEffectorPositionControl.OverrideBrakeDurNeutral = true;
-  
+
     // Apply the configurations to the motor.
     // This is a blocking call and will wait up to 200ms for the zero to apply.
     coralEffectorConfigurator.apply(coralEffectorConfig);
@@ -128,6 +147,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Gets the name of the subsystem.
+   *
    * @return the subsystem name
    */
   public String getName() {
@@ -136,6 +156,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Set coral score mode boolean
+   *
    * @param mode true = L1 / L4, false = L2 / L3
    */
   public void setL1or4ScoreMode(boolean mode) {
@@ -144,6 +165,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Returns whether or not scoring in L1 or L4
+   *
    * @return true = L1 / L4, false = L2 / L4
    */
   public boolean getL1or4ScoreMode() {
@@ -154,46 +176,59 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Sets the percent output of the coralEffector motor using voltage compensation.
+   *
    * @param percent output percent, -1.0 to 1.0 (positive = intake/outtake, negative = reverse)
    */
   public void setCoralEffectorPercentOutput(double percent) {
-    coralEffectorMotor.setControl(coralEffectorVoltageControl.withOutput(percent * CoralEffectorConstants.compensationVoltage));
+    coralEffectorMotor.setControl(
+        coralEffectorVoltageControl.withOutput(
+            percent * CoralEffectorConstants.compensationVoltage));
     autoHoldMode = false;
   }
 
-  /**
-   * Stops the coralEffector motor.
-   */
+  /** Stops the coralEffector motor. */
   public void stopCoralEffectorMotor() {
     setCoralEffectorPercentOutput(0);
   }
 
   /**
    * Sets the coralEffector motor to hold a specific position.
-   * @param position position to hold, in motor rotations (+ more towards front of robot, - = more towards hopper)
-   * @param autoHold true = automatically adjust position so that exit coral sensor detects the coral.  
-   *   false = hold exact position specified in first parameter.
+   *
+   * @param position position to hold, in motor rotations (+ more towards front of robot, - = more
+   *     towards hopper)
+   * @param autoHold true = automatically adjust position so that exit coral sensor detects the
+   *     coral. false = hold exact position specified in first parameter.
    */
   public void setCoralEffectorPosition(double position, boolean autoHold) {
-    coralEffectorMotor.setControl(coralEffectorPositionControl.withPosition(position)
-          .withFeedForward(-CoralEffectorConstants.kG * Math.cos(Units.degreesToRadians(wrist.getWristAngle()))));  // add an offset angle to true vertical coral, if needed.
+    coralEffectorMotor.setControl(
+        coralEffectorPositionControl
+            .withPosition(position)
+            .withFeedForward(
+                -CoralEffectorConstants.kG
+                    * Math.cos(
+                        Units.degreesToRadians(
+                            wrist
+                                .getWristAngle())))); // add an offset angle to true vertical coral,
+    // if needed.
     targetPosition = position;
     autoHoldMode = autoHold;
   }
 
   /**
    * Gets whether the coral motor is in position control or direct percent output control.
+   *
    * @return true = position control, false = direct percent output control
    */
   public boolean isMotorPositionControl() {
-    return (coralEffectorControlMode.refresh().getValue() == ControlModeValue.PositionVoltage) || 
-            (coralEffectorControlMode.refresh().getValue() == ControlModeValue.PositionVoltageFOC);
+    return (coralEffectorControlMode.refresh().getValue() == ControlModeValue.PositionVoltage)
+        || (coralEffectorControlMode.refresh().getValue() == ControlModeValue.PositionVoltageFOC);
   }
 
   // ********** Motor information methods
 
   /**
    * Gets the angle (position) of the coralEffector motor.
+   *
    * @return motor position, in rotations
    */
   public double getCoralEffectorPosition() {
@@ -203,6 +238,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Gets the velocity of the coralEffector motor.
+   *
    * @return motor velocity, in RPM
    */
   public double getCoralEffectorVelocity() {
@@ -212,6 +248,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Gets the current of the coralEffector motor.
+   *
    * @return motor current, in amps
    */
   public double getCoralEffectorAmps() {
@@ -221,9 +258,10 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Gets if the endEffector is in hold mode
+   *
    * @return the hold mode of the endeffector: True = hold mode, False = not in hold mode
    */
-  public boolean getHoldMode(){
+  public boolean getHoldMode() {
     return autoHoldMode;
   }
 
@@ -231,6 +269,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Gets whether a coral is in the coralEffector.
+   *
    * @return true = coral is present, false = coral is not present
    */
   public boolean isCoralPresent() {
@@ -241,6 +280,7 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Turns file logging on every scheduler cycle (~20 ms) or every 10 cycles (~0.2 sec).
+   *
    * @param enabled true = log every cycle, false = log every 10 cycles
    */
   @Override
@@ -250,7 +290,9 @@ public class CoralEffector extends SubsystemBase implements Loggable {
 
   /**
    * Writes information about the coralEffector to the file log.
-   * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is enabled
+   *
+   * @param logWhenDisabled true = write when robot is disabled, false = only write when robot is
+   *     enabled
    */
   public void updateLog(boolean logWhenDisabled) {
     if (logWhenDisabled || !DriverStation.isDisabled()) {
@@ -281,14 +323,18 @@ public class CoralEffector extends SubsystemBase implements Loggable {
       SmartDashboard.putBoolean("Coral Auto Hold", autoHoldMode);
     }
 
-    // If in coral auto hold mode and is at its target position, 
+    // If in coral auto hold mode and is at its target position,
     // then adjust position target (if needed) to make sure it is held in a safe position
-    if (autoHoldMode && Math.abs(targetPosition - getCoralEffectorPosition()) < CoralEffectorConstants.centeringTolerance) {
+    if (autoHoldMode
+        && Math.abs(targetPosition - getCoralEffectorPosition())
+            < CoralEffectorConstants.centeringTolerance) {
       // Coral is too far back, so move it forward until it is in a safe position
       if (!isCoralPresent()) {
-        setCoralEffectorPosition(targetPosition + CoralEffectorConstants.centeringStepSize, autoHoldMode);
+        setCoralEffectorPosition(
+            targetPosition + CoralEffectorConstants.centeringStepSize, autoHoldMode);
       }
-      // Note: if this is too slow, then set % power slow (0.025%) to center the coral, then set the position
+      // Note: if this is too slow, then set % power slow (0.025%) to center the coral, then set the
+      // position
     }
   }
 }

@@ -10,15 +10,15 @@ import frc.robot.utilities.DataLogUtil;
 
 public class WristStop extends Command {
   private final Wrist wrist;
-  
- 
+
   /**
    * Sets the percent output of the wrist to 0 and ends immediately.
+   *
    * @param wrist Wrist subsystem
    */
   public WristStop(Wrist wrist) {
     this.wrist = wrist;
-    
+
     addRequirements(wrist);
   }
 
@@ -31,8 +31,7 @@ public class WristStop extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

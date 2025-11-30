@@ -10,11 +10,10 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorStop extends Command {
   private final Elevator elevator;
-  
 
   public ElevatorStop(Elevator elevator) {
     this.elevator = elevator;
-    
+
     addRequirements(elevator);
   }
 
@@ -27,8 +26,7 @@ public class ElevatorStop extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

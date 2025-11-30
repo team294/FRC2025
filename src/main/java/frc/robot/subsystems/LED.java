@@ -4,20 +4,17 @@
 
 package frc.robot.subsystems;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
 import frc.robot.Constants.LEDConstants.LEDSegments;
 import frc.robot.utilities.*;
-
+import java.util.HashMap;
+import java.util.Map;
 
 public class LED extends SubsystemBase {
   private final int logRotationKey;
@@ -33,16 +30,18 @@ public class LED extends SubsystemBase {
   public enum CANdleEvents {
     STICKY_FAULTS_CLEARED,
     STICKY_FAULT_PRESENT,
-}
+  }
 
-private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new HashMap<>();
-    static {
-        prioritiesCANdleEvents.put(CANdleEvents.STICKY_FAULTS_CLEARED, 0);
-        prioritiesCANdleEvents.put(CANdleEvents.STICKY_FAULT_PRESENT, 0);
-    }
+  private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new HashMap<>();
+
+  static {
+    prioritiesCANdleEvents.put(CANdleEvents.STICKY_FAULTS_CLEARED, 0);
+    prioritiesCANdleEvents.put(CANdleEvents.STICKY_FAULT_PRESENT, 0);
+  }
 
   /**
    * Creates the LED subsystem.
+   *
    * @param CANPort the CAN port that the CANdle is on
    * @param subsystemName the name of the subsystem
    * @param matchTimer a timer that tracks the time elapsed in the match
@@ -60,6 +59,7 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
 
   /**
    * Updates the LED strips for a countdown animation.
+   *
    * @param percent Percent of last 10 seconds left in match
    */
   public void updateLEDsCountdown(double percent) {
@@ -68,13 +68,17 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
 
     double rightCount = LEDSegments.StripRight.count * percent;
     int ledCountRight = Math.min((int) rightCount + 1, LEDSegments.StripLeft.count);
-    
+
     setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegments.StripRight.index, ledCountRight);
-    setLEDs(BCRColor.MATCH_COUNTDOWN, LEDSegments.StripLeft.index + LEDSegments.StripLeft.count - ledCountLeft, ledCountLeft);
+    setLEDs(
+        BCRColor.MATCH_COUNTDOWN,
+        LEDSegments.StripLeft.index + LEDSegments.StripLeft.count - ledCountLeft,
+        ledCountLeft);
   }
 
   /**
    * Changes the color of the LEDs on either the strips or the CANdle.
+   *
    * @param color BCRColor to make LEDs (solid)
    * @param strip true = update strips, false = update CANdle
    */
@@ -88,9 +92,10 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
   }
 
   /**
-  * Sends an event to the CANdle and update the LEDs if necessary.
-  * @param event CANdleEvent event happening
-  */
+   * Sends an event to the CANdle and update the LEDs if necessary.
+   *
+   * @param event CANdleEvent event happening
+   */
   public void sendEvent(CANdleEvents event) {
     // Do not update if the new event priority is less than the previous
     if (getPriority(event) < getPriority(previousEventCANdle)) return;
@@ -112,21 +117,21 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
 
   /**
    * Gets the name of the subsystem.
+   *
    * @return the subsystem name
    */
   public String getName() {
     return subsystemName;
   }
-  
-  /**
-   * Clears all animations from the CANdle and LED strips.
-   */
+
+  /** Clears all animations from the CANdle and LED strips. */
   public void clearAnimation() {
     candle.clearAnimation(0);
   }
-  
+
   /**
    * Starts a built-in animation.
+   *
    * @param anim animation object to use
    */
   public void animate(Animation anim) {
@@ -135,14 +140,16 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
 
   /**
    * Sets LEDs using BCRColor constant
+   *
    * @param color BCRColor color
-   */ 
+   */
   public void setLEDs(BCRColor color) {
     candle.setLEDs(color.r, color.g, color.b);
   }
 
   /**
    * Sets LEDs using R, G, and B.
+   *
    * @param r red value
    * @param g green value
    * @param b blue value
@@ -153,25 +160,35 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
 
   /**
    * Sets LEDs using Color, an index, and a count.
+   *
    * @param color color to set
    * @param index index to start at
    * @param count count of LEDs to set
    */
   public void setLEDs(Color color, int index, int count) {
-    candle.setLEDs((int) (color.red * 255), (int) (color.green * 255), (int) (color.blue) * 255, 0, index, count);
+    candle.setLEDs(
+        (int) (color.red * 255),
+        (int) (color.green * 255),
+        (int) (color.blue) * 255,
+        0,
+        index,
+        count);
   }
 
   /**
    * Sets LEDs using Color and an index.
+   *
    * @param color color to set
    * @param index index to start at
    */
   public void setLEDs(Color color, int index) {
-    candle.setLEDs((int) (color.red * 255), (int) (color.green * 255), (int) (color.blue * 255), 0, index, 1);
+    candle.setLEDs(
+        (int) (color.red * 255), (int) (color.green * 255), (int) (color.blue * 255), 0, index, 1);
   }
 
   /**
    * Sets LEDs using BCRColor and segment values.
+   *
    * @param color BCRColor value
    * @param segment segment to light up
    */
@@ -181,6 +198,7 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
 
   /**
    * Sets LEDs using BCRColor, an index, and a count.
+   *
    * @param color BCRColor to set
    * @param index index to start at
    * @param count count of LEDs to set
@@ -191,16 +209,17 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
 
   /**
    * Gets the priority level for an event.
+   *
    * @param event CANdleEvents event
    * @return priority level integer (higher value = higher priority), default is -1
    */
   private int getPriority(CANdleEvents event) {
     return event != null ? prioritiesCANdleEvents.getOrDefault(event, -1) : -1;
   }
-  
+
   @Override
   public void periodic() {
-    if(DataLogUtil.isMyLogRotation(logRotationKey)) {
+    if (DataLogUtil.isMyLogRotation(logRotationKey)) {
       // If there is a sticky fault, send sticky fault present event
       if (RobotPreferences.isStickyFaultActive() && !lastStickyFaultPresentReading) {
         sendEvent(CANdleEvents.STICKY_FAULT_PRESENT);
@@ -213,7 +232,9 @@ private static final Map<CANdleEvents, Integer> prioritiesCANdleEvents = new Has
         lastStickyFaultPresentReading = false;
       }
 
-      SmartDashboard.putString("LED State", String.format("#%02x%02x%02x", dashboardColor.r, dashboardColor.g, dashboardColor.b));
+      SmartDashboard.putString(
+          "LED State",
+          String.format("#%02x%02x%02x", dashboardColor.r, dashboardColor.g, dashboardColor.b));
       SmartDashboard.putNumber("Teleop Timer", 135.0 - matchTimer.get());
 
       // If in last 10 seconds of match, send match countdown event

@@ -18,8 +18,10 @@ import frc.robot.utilities.*;
 public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
   /**
    * Drive from barge to end (reef location) and score a coral.
+   *
    * @param fromHP true = starting at HP, false = starting at barge
-   * @param score true = we want to move the elevator to score the coral false = stop at reef DOESN'T WORK
+   * @param score true = we want to move the elevator to score the coral false = stop at reef
+   *     DOESN'T WORK
    * @param location ReefLocation (A-L) to end at
    * @param level ReefLevel (L1, L2, L3, L4) to score on
    * @param driveTrain DriveTrain subsystem
@@ -33,26 +35,51 @@ public class AutoCoralDriveAndScoreSequence extends SequentialCommandGroup {
    * @param alliance AllianceSelection alliance
    * @param field Field field
    */
-  public AutoCoralDriveAndScoreSequence(boolean fromHP, boolean score, ReefLocation location, ReefLevel level, DriveTrain driveTrain,
-      Elevator elevator, Wrist wrist, CoralEffector coralEffector, AlgaeGrabber algaeGrabber, Hopper hopper, Joystick rightJoystick, AllianceSelection alliance,
+  public AutoCoralDriveAndScoreSequence(
+      boolean fromHP,
+      boolean score,
+      ReefLocation location,
+      ReefLevel level,
+      DriveTrain driveTrain,
+      Elevator elevator,
+      Wrist wrist,
+      CoralEffector coralEffector,
+      AlgaeGrabber algaeGrabber,
+      Hopper hopper,
+      Joystick rightJoystick,
+      AllianceSelection alliance,
       Field field) {
     addCommands(
-      new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: Start, goal reef location =", location.toString()),
-      // Drive to reef while intaking to ensure coral is intaked (timeout on the intake command for 4 seconds)
-      new AutoDriveToReef(fromHP, location, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
-      
-      // Wait for up to 2 seconds for coral to be fully intaked. If coral isn't in by then, go back to loading station
-      new WaitUntilCommand(() -> coralEffector.isCoralPresent()).withTimeout(2),
+        new DataLogMessage(
+            false,
+            "AutoCoralDriveAndScoreSequence: Start, goal reef location =",
+            location.toString()),
+        // Drive to reef while intaking to ensure coral is intaked (timeout on the intake command
+        // for 4 seconds)
+        new AutoDriveToReef(
+            fromHP, location, driveTrain, elevator, wrist, coralEffector, hopper, alliance),
 
-      // If coral is detected, score; if not, then end the score sequence and skip to the next part of the auto
-      either(
-        new AutomatedDriveToReefAndScoreCoral(location, score, level, driveTrain, elevator, wrist, coralEffector, algaeGrabber, hopper, rightJoystick, field),
-        none(),
-        () -> coralEffector.isCoralPresent()
-      ),
+        // Wait for up to 2 seconds for coral to be fully intaked. If coral isn't in by then, go
+        // back to loading station
+        new WaitUntilCommand(() -> coralEffector.isCoralPresent()).withTimeout(2),
 
-
-      new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: End")
-    );
+        // If coral is detected, score; if not, then end the score sequence and skip to the next
+        // part of the auto
+        either(
+            new AutomatedDriveToReefAndScoreCoral(
+                location,
+                score,
+                level,
+                driveTrain,
+                elevator,
+                wrist,
+                coralEffector,
+                algaeGrabber,
+                hopper,
+                rightJoystick,
+                field),
+            none(),
+            () -> coralEffector.isCoralPresent()),
+        new DataLogMessage(false, "AutoCoralDriveAndScoreSequence: End"));
   }
 }

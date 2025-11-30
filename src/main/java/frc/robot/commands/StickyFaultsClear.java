@@ -13,15 +13,11 @@ import frc.robot.utilities.RobotPreferences;
 
 public class StickyFaultsClear extends Command {
 
-  
-
   /**
-   * Clears the sticky faults in RobotPreferences.
-   * NOTE: This command can run while the robot is disabled.
+   * Clears the sticky faults in RobotPreferences. NOTE: This command can run while the robot is
+   * disabled.
    */
-  public StickyFaultsClear() {
-    
-  }
+  public StickyFaultsClear() {}
 
   // Called when the command is initially scheduled.
   @Override
@@ -32,8 +28,7 @@ public class StickyFaultsClear extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -47,7 +42,8 @@ public class StickyFaultsClear extends Command {
     return true;
   }
 
-  // Returns whether the command should be able to run while the robot is disabled (default = false). 
+  // Returns whether the command should be able to run while the robot is disabled (default =
+  // false).
   @Override
   public boolean runsWhenDisabled() {
     return true;

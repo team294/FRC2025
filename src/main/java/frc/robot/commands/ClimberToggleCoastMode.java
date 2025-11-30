@@ -13,6 +13,7 @@ public class ClimberToggleCoastMode extends InstantCommand {
 
   /**
    * Toggle Coast Mode on Climber Motor
+   *
    * @param climber
    */
   public ClimberToggleCoastMode(Climber climber) {
@@ -24,7 +25,7 @@ public class ClimberToggleCoastMode extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climber.setCoastMode( !climber.getCoastMode());
+    climber.setCoastMode(!climber.getCoastMode());
     DataLogUtil.writeMessage("ClimberToggleCoastMode: Init");
   }
 

@@ -12,14 +12,15 @@ import frc.robot.utilities.DataLogUtil;
 public class CoralEffectorIntakeEnhanced extends Command {
   private final CoralEffector coralEffector;
   private boolean startedWithCoral;
-  
+
   /**
    * Intakes coral quickly, then ends and auto-holds after the tip of the coral reaches the exit.
+   *
    * @param coralEffector CoralEffector subsystem
    */
   public CoralEffectorIntakeEnhanced(CoralEffector coralEffector) {
     this.coralEffector = coralEffector;
-    
+
     addRequirements(coralEffector);
   }
 
@@ -29,25 +30,30 @@ public class CoralEffectorIntakeEnhanced extends Command {
     // If there is no coral present or the coral is not safely in the mechanism, run the motor
     startedWithCoral = coralEffector.isCoralPresent();
     if (!startedWithCoral) {
-      coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.fastIntakePercent); 
+      coralEffector.setCoralEffectorPercentOutput(CoralEffectorConstants.fastIntakePercent);
     }
 
-    DataLogUtil.writeMessage("CoralEffectorIntakeEnhanced: Init, Coral in =", coralEffector.isCoralPresent());
+    DataLogUtil.writeMessage(
+        "CoralEffectorIntakeEnhanced: Init, Coral in =", coralEffector.isCoralPresent());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // Back off the position, since due to coral velocity it likely overshot the balanced position between the sensors.
-    // A different option would be to add to the final position by the (coral velocity)*(time delay @ 20ms).
+    // Back off the position, since due to coral velocity it likely overshot the balanced position
+    // between the sensors.
+    // A different option would be to add to the final position by the (coral velocity)*(time delay
+    // @ 20ms).
     if (coralEffector.isCoralPresent()) {
       if (!startedWithCoral) {
-        coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition() + CoralEffectorConstants.centerRotationsUndershoot, true);
+        coralEffector.setCoralEffectorPosition(
+            coralEffector.getCoralEffectorPosition()
+                + CoralEffectorConstants.centerRotationsUndershoot,
+            true);
       } else {
         coralEffector.setCoralEffectorPosition(coralEffector.getCoralEffectorPosition(), true);
       }

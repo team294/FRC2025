@@ -11,7 +11,6 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -31,32 +30,45 @@ import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.Ports;
-import frc.robot.utilities.ElevatorProfileGenerator;
 import frc.robot.utilities.DataLogUtil;
+import frc.robot.utilities.ElevatorProfileGenerator;
 import frc.robot.utilities.Loggable;
 import frc.robot.utilities.Wait;
 
 public class Elevator extends SubsystemBase implements Loggable {
-  
+
   private final int logRotationKey;
-  private boolean fastLogging = false;  // true = enabled to run every cycle, false = follow normal logging cycles
-  private final String subsystemName;   // Subsystem name for use in file logging and dashboarrd
+  private boolean fastLogging =
+      false; // true = enabled to run every cycle, false = follow normal logging cycles
+  private final String subsystemName; // Subsystem name for use in file logging and dashboarrd
 
   // Create variables for the Elevator Kraken motor 1
-  private final StatusSignal<Voltage> elevatorMotor1SupplyVoltage;  // Incoming bus voltage to motor, in volts
-  private final StatusSignal<Temperature> elevatorMotor1Temp;       // Motor temperature, in degrees Celsius
-  private final StatusSignal<Double> elevatorMotor1DutyCycle;       // Motor duty cycle percent power, -1 to 1
-  private final StatusSignal<Current> elevatorMotor1StatorCurrent;  // Motor stator current, in amps (positive = forward, negative = reverse)
-  private final StatusSignal<Angle> elevatorMotor1EncoderPosition;  // Encoder position, in pinion rotations
+  private final StatusSignal<Voltage>
+      elevatorMotor1SupplyVoltage; // Incoming bus voltage to motor, in volts
+  private final StatusSignal<Temperature>
+      elevatorMotor1Temp; // Motor temperature, in degrees Celsius
+  private final StatusSignal<Double>
+      elevatorMotor1DutyCycle; // Motor duty cycle percent power, -1 to 1
+  private final StatusSignal<Current>
+      elevatorMotor1StatorCurrent; // Motor stator current, in amps (positive = forward, negative =
+  // reverse)
+  private final StatusSignal<Angle>
+      elevatorMotor1EncoderPosition; // Encoder position, in pinion rotations
   private final StatusSignal<AngularVelocity> elevatorMotor1EncoderVelocity;
   private final StatusSignal<Voltage> elevatorMotor1Voltage;
 
   // Create variables for the Elevator Kraken motor 2
-  private final StatusSignal<Voltage> elevatorMotor2SupplyVoltage;  // Incoming bus voltage to motor, in volts
-  private final StatusSignal<Temperature> elevatorMotor2Temp;       // Motor temperature, in degrees Celsius
-  private final StatusSignal<Double> elevatorMotor2DutyCycle;       // Motor duty cycle percent power, -1 to 1
-  private final StatusSignal<Current> elevatorMotor2StatorCurrent;  // Motor stator current, in amps (positive = forward, negative = reverse)
-  private final StatusSignal<Angle> elevatorMotor2EncoderPosition;  // Encoder position, in pinion rotations
+  private final StatusSignal<Voltage>
+      elevatorMotor2SupplyVoltage; // Incoming bus voltage to motor, in volts
+  private final StatusSignal<Temperature>
+      elevatorMotor2Temp; // Motor temperature, in degrees Celsius
+  private final StatusSignal<Double>
+      elevatorMotor2DutyCycle; // Motor duty cycle percent power, -1 to 1
+  private final StatusSignal<Current>
+      elevatorMotor2StatorCurrent; // Motor stator current, in amps (positive = forward, negative =
+  // reverse)
+  private final StatusSignal<Angle>
+      elevatorMotor2EncoderPosition; // Encoder position, in pinion rotations
   private final StatusSignal<AngularVelocity> elevatorMotor2EncoderVelocity;
   private final StatusSignal<Voltage> elevatorMotor2Voltage;
 
@@ -70,14 +82,19 @@ public class Elevator extends SubsystemBase implements Loggable {
   private VoltageOut elevatorMotor2VoltageControl = new VoltageOut(0.0);
 
   // Create lower limit and upper limit sensors
-  private final DigitalInput lowerLimitSensor1 = new DigitalInput(Ports.DIOElevatorLowerLimitSensor1);
-  private final DigitalInput lowerLimitSensor2 = new DigitalInput(Ports.DIOElevatorLowerLimitSensor2);
+  private final DigitalInput lowerLimitSensor1 =
+      new DigitalInput(Ports.DIOElevatorLowerLimitSensor1);
+  private final DigitalInput lowerLimitSensor2 =
+      new DigitalInput(Ports.DIOElevatorLowerLimitSensor2);
 
   // Create the mmotion profile generator
   private final ElevatorProfileGenerator elevatorProfile;
 
-  private boolean elevatorCalibrated = false;       // true = encoder is working and calibrated, false = not calibrated
-  private boolean elevatorPositionControl = false;  // true = position control mode (motion profile), false = manual control mode (percent output)
+  private boolean elevatorCalibrated =
+      false; // true = encoder is working and calibrated, false = not calibrated
+  private boolean elevatorPositionControl =
+      false; // true = position control mode (motion profile), false = manual control mode (percent
+  // output)
 
   // Variables for DataLogging
   private final DataLog log = DataLogManager.getLog();
@@ -95,12 +112,13 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final DoubleLogEntry dLogVel2 = new DoubleLogEntry(log, "/Elevator/Velocity2");
   private final DoubleLogEntry dLogTargetPos = new DoubleLogEntry(log, "/Elevator/TargetPos");
   private final BooleanLogEntry dLogCalibrated = new BooleanLogEntry(log, "/Elevator/Calibrated");
-  private final BooleanLogEntry dLogPosControl = new BooleanLogEntry(log, "/Elevator/PositionControl");
+  private final BooleanLogEntry dLogPosControl =
+      new BooleanLogEntry(log, "/Elevator/PositionControl");
   private final BooleanLogEntry dLogLowerLimit = new BooleanLogEntry(log, "/Elevator/AtLowerLimit");
-
 
   /**
    * Creates the elevator subsystem.
+   *
    * @param subsystemName name of the subsystem for file logging
    */
   public Elevator(String subsystemName) {
@@ -132,17 +150,22 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorMotor1Config = new TalonFXConfiguration();
     elevatorMotor1Config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     elevatorMotor1Config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    elevatorMotor1Config.Voltage.PeakForwardVoltage = ElevatorConstants.compensationVoltage * ElevatorConstants.maxPercentOutput;
-    elevatorMotor1Config.Voltage.PeakReverseVoltage = -ElevatorConstants.compensationVoltage * ElevatorConstants.maxPercentOutput;
-    elevatorMotor1Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.0; // Time from 0 to full power, in seconds
+    elevatorMotor1Config.Voltage.PeakForwardVoltage =
+        ElevatorConstants.compensationVoltage * ElevatorConstants.maxPercentOutput;
+    elevatorMotor1Config.Voltage.PeakReverseVoltage =
+        -ElevatorConstants.compensationVoltage * ElevatorConstants.maxPercentOutput;
+    elevatorMotor1Config.OpenLoopRamps.VoltageOpenLoopRampPeriod =
+        0.0; // Time from 0 to full power, in seconds
     elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
-    // If the current is above the supply current limit for the threshold time, the current is 
+    // If the current is above the supply current limit for the threshold time, the current is
     // limited to the lower limit in order to prevent the breakers from tripping
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
-    elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerTime = 1.0;    // Threshold time, in seconds
+    elevatorMotor1Config.CurrentLimits.SupplyCurrentLimit =
+        60.0; // Upper limit for the current, in amps
+    elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerLimit =
+        35.0; // Lower limit for the current, in amps
+    elevatorMotor1Config.CurrentLimits.SupplyCurrentLowerTime = 1.0; // Threshold time, in seconds
     elevatorMotor1Config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Apply the configurations to motor 1
@@ -155,15 +178,18 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorMotor2Config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevatorMotor2Config.Voltage.PeakForwardVoltage = ElevatorConstants.compensationVoltage;
     elevatorMotor2Config.Voltage.PeakReverseVoltage = -ElevatorConstants.compensationVoltage;
-    elevatorMotor2Config.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.0; // Time from 0 to full power, in seconds
+    elevatorMotor2Config.OpenLoopRamps.VoltageOpenLoopRampPeriod =
+        0.0; // Time from 0 to full power, in seconds
     elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
-    // If the current is above the supply current limit for the threshold time, the current is 
+    // If the current is above the supply current limit for the threshold time, the current is
     // limited to the lower limit in order to prevent the breakers from tripping
-    elevatorMotor2Config.CurrentLimits.SupplyCurrentLimit = 60.0;       // Upper limit for the current, in amps
-    elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerLimit = 35.0;  // Lower limit for the current, in amps
-    elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerTime = 1.0;    // Threshold time, in seconds
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLimit =
+        60.0; // Upper limit for the current, in amps
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerLimit =
+        35.0; // Lower limit for the current, in amps
+    elevatorMotor2Config.CurrentLimits.SupplyCurrentLowerTime = 1.0; // Threshold time, in seconds
     elevatorMotor2Config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     // Apply the configurations to motor 2
@@ -174,14 +200,18 @@ public class Elevator extends SubsystemBase implements Loggable {
     checkAndCalibrateEncoders();
 
     // Wait 0.25 seconds before checking the limit switch or encoder ticks.
-    // The reason is that zeroing the encoder (above) can be delayed up to 50ms for a round trip 
-    // from the Rio to the Kraken and back to the Rio. So, reading position could give the wrong value 
-    // if we do not wait (random weird behavior). Verified this is still needed after migrating to Phoenix 6.
+    // The reason is that zeroing the encoder (above) can be delayed up to 50ms for a round trip
+    // from the Rio to the Kraken and back to the Rio. So, reading position could give the wrong
+    // value
+    // if we do not wait (random weird behavior). Verified this is still needed after migrating to
+    // Phoenix 6.
     // DO NOT GET RID OF THIS WITHOUT TALKING TO DON.
     Wait.waitTime(250);
 
     // Start the elevator in uncalibrated mode unless it is properly zeroed
-    elevatorCalibrated = isElevatorAtLowerLimit() && (getElevatorEncoderRotations(1) == 0 && getElevatorEncoderRotations(2) == 0);
+    elevatorCalibrated =
+        isElevatorAtLowerLimit()
+            && (getElevatorEncoderRotations(1) == 0 && getElevatorEncoderRotations(2) == 0);
 
     // Ensure the elevator starts in manual control mode
     stopElevatorMotors();
@@ -192,7 +222,9 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Checks if elevator is in position control.
-   * @return true = position control mode (motion profile), false = manual control mode (percent output)
+   *
+   * @return true = position control mode (motion profile), false = manual control mode (percent
+   *     output)
    */
   public boolean isElevatorInPositionControl() {
     return elevatorPositionControl;
@@ -200,36 +232,42 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   // ************ Elevator movement methods
 
-  /**
-   * Stops both elevator motors.
-   */
+  /** Stops both elevator motors. */
   public void stopElevatorMotors() {
     setElevatorPercentOutput(0);
   }
 
   /**
-   * Sets the percent output of both elevator motors.
-   * This method is for internal use only. It does not change manual vs. profile control modes or check interlocks.
+   * Sets the percent output of both elevator motors. This method is for internal use only. It does
+   * not change manual vs. profile control modes or check interlocks.
+   *
    * @param percent output percent, -1.0 to +1.0 (positive = up, negative = down)
    */
   private void setElevatorPercentOutputDirect(double percent) {
     // If the elevator is at or below the lower limit, prevent it from going down any further
-    if ((isElevatorAtLowerLimit() || (isElevatorCalibrated() && getElevatorPosition() < ElevatorPosition.LOWER_LIMIT.value)) && percent < 0) {
+    if ((isElevatorAtLowerLimit()
+            || (isElevatorCalibrated()
+                && getElevatorPosition() < ElevatorPosition.LOWER_LIMIT.value))
+        && percent < 0) {
       percent = 0;
     }
 
     // If the elevator is at or above the upper limit, prevent it from going up any further
-    if ((isElevatorCalibrated() && getElevatorPosition() > ElevatorPosition.UPPER_LIMIT.value) && percent > 0) {
+    if ((isElevatorCalibrated() && getElevatorPosition() > ElevatorPosition.UPPER_LIMIT.value)
+        && percent > 0) {
       percent = 0;
     }
 
-    elevatorMotor1.setControl(elevatorMotor1VoltageControl.withOutput(percent * ElevatorConstants.compensationVoltage));
-    elevatorMotor2.setControl(elevatorMotor2VoltageControl.withOutput(percent * ElevatorConstants.compensationVoltage));
+    elevatorMotor1.setControl(
+        elevatorMotor1VoltageControl.withOutput(percent * ElevatorConstants.compensationVoltage));
+    elevatorMotor2.setControl(
+        elevatorMotor2VoltageControl.withOutput(percent * ElevatorConstants.compensationVoltage));
   }
-  
+
   /**
-   * Sets elevator to manual control mode with the specified percent output for both motors.
-   * Does not move the elevator if interlocks should prevent movement.
+   * Sets elevator to manual control mode with the specified percent output for both motors. Does
+   * not move the elevator if interlocks should prevent movement.
+   *
    * @param percent output percent, -1.0 to +1.0 (positive = up, negative = down)
    */
   public void setElevatorPercentOutput(double percent) {
@@ -238,18 +276,26 @@ public class Elevator extends SubsystemBase implements Loggable {
 
     // Clamp speed depending on calibration
     if (elevatorCalibrated) {
-      percent = MathUtil.clamp(percent, -ElevatorConstants.maxPercentOutput, ElevatorConstants.maxPercentOutput);
+      percent =
+          MathUtil.clamp(
+              percent, -ElevatorConstants.maxPercentOutput, ElevatorConstants.maxPercentOutput);
     } else {
-      percent = MathUtil.clamp(percent, -ElevatorConstants.maxUncalibratedPercentOutput, ElevatorConstants.maxUncalibratedPercentOutput);
+      percent =
+          MathUtil.clamp(
+              percent,
+              -ElevatorConstants.maxUncalibratedPercentOutput,
+              ElevatorConstants.maxUncalibratedPercentOutput);
     }
 
-    // Do not move the elevator if there is a dangerous condition. TODO add interlocks with wrist, algaeGrabber, and coralEffector
+    // Do not move the elevator if there is a dangerous condition. TODO add interlocks with wrist,
+    // algaeGrabber, and coralEffector
 
     setElevatorPercentOutputDirect(percent);
   }
 
   /**
    * Gets the percent output of the voltage compensation limit for an elevator motor.
+   *
    * @param motor 1 = elevatorMotor1, 2 = elevatorMotor2
    * @return output percent, -1.0 to +1.0 (positive = up, negative = down)
    */
@@ -268,6 +314,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the average percent output of the voltage compensation limit for the elevator motors.
+   *
    * @return output percent, -1.0 to +1.0 (positive = up, negative = down)
    */
   public double getElevatorPercentOutput() {
@@ -275,15 +322,18 @@ public class Elevator extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Sets the target position for the elevator, using motion profile movement.
-   * If the elevator is not calibrated, the target position will not change.
+   * Sets the target position for the elevator, using motion profile movement. If the elevator is
+   * not calibrated, the target position will not change.
+   *
    * @param position target, in inches (use ElevatorConstants.ElevatorPosition)
    */
-  public void setElevatorProfileTarget(double position) {    
+  public void setElevatorProfileTarget(double position) {
     // TODO add interlocks with wrist, algaeGrabber, and coralEffector
     if (isElevatorCalibrated()) {
       elevatorPositionControl = true;
-      position = MathUtil.clamp(position, ElevatorPosition.LOWER_LIMIT.value, ElevatorPosition.UPPER_LIMIT.value);
+      position =
+          MathUtil.clamp(
+              position, ElevatorPosition.LOWER_LIMIT.value, ElevatorPosition.UPPER_LIMIT.value);
       elevatorProfile.setProfileTarget(position);
       DataLogUtil.writeMessage(subsystemName, ": setProfileTarget Allowed, Target =", position);
     } else {
@@ -292,9 +342,10 @@ public class Elevator extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Get the target position that the elevator is trying to move to.
-   * If the elevator is in manual control mode, returns the actual position.
-   * If the elevator is not calibrated, returns +10 inches from the lower limit.
+   * Get the target position that the elevator is trying to move to. If the elevator is in manual
+   * control mode, returns the actual position. If the elevator is not calibrated, returns +10
+   * inches from the lower limit.
+   *
    * @return target, in inches
    */
   public double getCurrentElevatorTarget() {
@@ -310,32 +361,38 @@ public class Elevator extends SubsystemBase implements Loggable {
   // ************ Encoder methods
 
   /**
-   * Checks if the elevator is at the lower limit switch.
-   * If it is, then zeros the elevator encoder and waits up to 200ms for the new setting to be applied.
+   * Checks if the elevator is at the lower limit switch. If it is, then zeros the elevator encoder
+   * and waits up to 200ms for the new setting to be applied.
    */
   public void checkAndZeroEncoders() {
     if (isElevatorAtLowerLimit()) {
-      stopElevatorMotors(); // Ensure PID loop or motion profile will not move to last set position when resetting encoder
+      stopElevatorMotors(); // Ensure PID loop or motion profile will not move to last set position
+      // when resetting encoder
 
-      elevatorMotor1.setPosition(ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick);
-      elevatorMotor2.setPosition(ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick);
+      elevatorMotor1.setPosition(
+          ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick);
+      elevatorMotor2.setPosition(
+          ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick);
 
       DataLogUtil.writeMessageEcho(subsystemName, ":  checkAndZeroEncoders... Zeroed!");
     }
   }
 
   /**
-   * Checks if the elevator is at the lower limit switch.
-   * If it is, then zeros the elevator encoder, enables soft limits, sets the elevatorCalibrated flag, and waits up to 400ms for the new setting to be applied.
+   * Checks if the elevator is at the lower limit switch. If it is, then zeros the elevator encoder,
+   * enables soft limits, sets the elevatorCalibrated flag, and waits up to 400ms for the new
+   * setting to be applied.
    */
   public void checkAndCalibrateEncoders() {
     if (isElevatorAtLowerLimit()) {
       checkAndZeroEncoders();
       elevatorCalibrated = true;
-  
+
       // Set software limits after setting encoderZero
-      elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorPosition.UPPER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
-      elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+          ElevatorPosition.UPPER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+          ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
       elevatorMotor1Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
       elevatorMotor1Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
       // Apply the configurations to motor 1
@@ -343,8 +400,10 @@ public class Elevator extends SubsystemBase implements Loggable {
       elevatorMotor1Configurator.apply(elevatorMotor1Config);
 
       // Set software limits after setting encoderZero
-      elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ElevatorPosition.UPPER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
-      elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+          ElevatorPosition.UPPER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
+      elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+          ElevatorPosition.LOWER_LIMIT.value / ElevatorConstants.kElevEncoderInchesPerTick;
       elevatorMotor2Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
       elevatorMotor2Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
       // Apply the configurations to motor 2
@@ -357,6 +416,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Checks if both encoders are calibrated.
+   *
    * @return true = both calibrated, false = one or both are not calibrated
    */
   public boolean isElevatorCalibrated() {
@@ -365,6 +425,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the raw encoder rotations of a specific elevator motor.
+   *
    * @param motor 1 = elevatorMotor1, 2 = elevatorMotor2
    * @return raw encoder reading, in pinion rotations (positive = up, negative = down)
    */
@@ -383,6 +444,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the vertical position of a specific elevator motor.
+   *
    * @param motor 1 = elevatorMotor1, 2 = elevatorMotor2
    * @return position from the bottom of the elevator, or the lower limit if uncalibrated, in inches
    */
@@ -401,6 +463,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the vertical position of the elevator using the average position of the motors.
+   *
    * @return position from the bottom of the elevator, or the lower limit if uncalibrated, in inches
    */
   public double getElevatorPosition() {
@@ -409,6 +472,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the velocity of a specific elevator motor.
+   *
    * @param motor 1 = elevatorMotor1, 2 = elevatorMotor2
    * @return velocity, in in/s (positive = up, negative = down)
    */
@@ -416,10 +480,12 @@ public class Elevator extends SubsystemBase implements Loggable {
     switch (motor) {
       case 1:
         elevatorMotor1EncoderVelocity.refresh();
-        return elevatorMotor1EncoderVelocity.getValueAsDouble() * ElevatorConstants.kElevEncoderInchesPerTick;
+        return elevatorMotor1EncoderVelocity.getValueAsDouble()
+            * ElevatorConstants.kElevEncoderInchesPerTick;
       case 2:
         elevatorMotor2EncoderVelocity.refresh();
-        return elevatorMotor2EncoderVelocity.getValueAsDouble() * ElevatorConstants.kElevEncoderInchesPerTick;
+        return elevatorMotor2EncoderVelocity.getValueAsDouble()
+            * ElevatorConstants.kElevEncoderInchesPerTick;
       default:
         return -9999;
     }
@@ -427,6 +493,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the velocity of the elevator using the average of the motors.
+   *
    * @return velocity, in in/s (positive = up, negative = down)
    */
   public double getElevatorVelocity() {
@@ -437,6 +504,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets whether the elevator is at the lower limit.
+   *
    * @return true = at lower limit, false = not at lower limit
    */
   public boolean isElevatorAtLowerLimit() {
@@ -445,6 +513,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets whether the elevator is at the lower limit.
+   *
    * @return true = at lower limit, false = not at lower limit
    */
   public boolean isElevatorAtLowerLimit(int sensor) {
@@ -453,9 +522,10 @@ public class Elevator extends SubsystemBase implements Loggable {
   }
 
   // ************ Information methods
-  
+
   /**
    * Gets the temperature of a specific elevator motor.
+   *
    * @param motor 1 = elevatorMotor1, 2 = elevatorMotor2
    * @return temperature, in degrees Celsius
    */
@@ -474,6 +544,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the voltage for a specific elevator motor.
+   *
    * @param motor 1 = elevatorMotor1, 2 = elevatorMotor2
    * @return voltage, in volts
    */
@@ -492,6 +563,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the average voltage of the elevator motors.
+   *
    * @return voltage, in volts
    */
   public double getElevatorVoltage() {
@@ -500,6 +572,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the current that is being drawn by the windings of a specific elevator motor.
+   *
    * @param motor 1 = elevatorMotor1, 2 = elevatorMotor2
    * @return current, in amps
    */
@@ -518,6 +591,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the average current that is being drawn by the windings of the two motors.
+   *
    * @return current, in amps
    */
   public double getStatorCurrent() {
@@ -525,7 +599,9 @@ public class Elevator extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Gets the input bus voltage, measured at the input to the motor controller for a specific elevator motor.
+   * Gets the input bus voltage, measured at the input to the motor controller for a specific
+   * elevator motor.
+   *
    * @param motor 1 = elevatorMotor1, 2 = elevatorMotor2
    * @return voltage, in volts
    */
@@ -544,6 +620,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Gets the average input bus voltage, measured at the input to the motor controllers.
+   *
    * @param motor 1 = elevatorMotor1, 2 = elevatorMotor2
    * @return voltage, in volts
    */
@@ -555,6 +632,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Write information about the subsystem to the log
+   *
    * @param logWhenDisabled true = log when enabled or disabled, false = only log when enabled
    */
   public void updateLog(boolean logWhenDisabled) {
@@ -581,6 +659,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   /**
    * Turns file logging on every scheduler cycle (~20ms) or every 10 cycles (~0.2 sec).
+   *
    * @param enabled true = every cycle, false = every 10 cycles
    */
   @Override
@@ -612,43 +691,58 @@ public class Elevator extends SubsystemBase implements Loggable {
 
     // Sets elevator motors to percent output required as determined by motion profile.
     // Only set percent output if the motion profile is enabled.
-    // NOTE: If we are using our motion profile control loop, then set the power directly using setElevatorMotorPercentOutputDirect().
-    // Do not call setElevatorMotorPercentOutput(), since that will change elevatorPositionControl to false (manual control).
+    // NOTE: If we are using our motion profile control loop, then set the power directly using
+    // setElevatorMotorPercentOutputDirect().
+    // Do not call setElevatorMotorPercentOutput(), since that will change elevatorPositionControl
+    // to false (manual control).
     if (isElevatorInPositionControl()) {
-	    setElevatorPercentOutputDirect(elevatorProfile.trackProfilePeriodic());
+      setElevatorPercentOutputDirect(elevatorProfile.trackProfilePeriodic());
     }
 
     // Elevator is not calibrated and is at the lower limit, so update encoder calibration.
     if (!isElevatorCalibrated() && isElevatorAtLowerLimit()) {
       // This is a blocking call and will wait up to 200ms for the zero to apply.
       checkAndCalibrateEncoders();
-      DataLogUtil.writeMessageEcho(subsystemName, ": Calibrate Encoders in periodic(), Elevator Pos after cal =", getElevatorPosition());
+      DataLogUtil.writeMessageEcho(
+          subsystemName,
+          ": Calibrate Encoders in periodic(), Elevator Pos after cal =",
+          getElevatorPosition());
     }
 
-    // Elevator is calibrated but the zero position is "drifting upwards."  Re-zero if the elevator drifts upwards too much
-    if (isElevatorCalibrated() && isElevatorAtLowerLimit() && 
-        getElevatorPosition() > 1.0 && getElevatorPosition() < 2.0) {
+    // Elevator is calibrated but the zero position is "drifting upwards."  Re-zero if the elevator
+    // drifts upwards too much
+    if (isElevatorCalibrated()
+        && isElevatorAtLowerLimit()
+        && getElevatorPosition() > 1.0
+        && getElevatorPosition() < 2.0) {
       // This is a blocking call and will wait up to 200ms for the zero to apply.
       double elevPosPre = getElevatorPosition();
       checkAndZeroEncoders();
-      DataLogUtil.writeMessageEcho(subsystemName, ": Zero Encoders in periodic(), Pos before =", elevPosPre, ", Pos after =", getElevatorPosition());
+      DataLogUtil.writeMessageEcho(
+          subsystemName,
+          ": Zero Encoders in periodic(), Pos before =",
+          elevPosPre,
+          ", Pos after =",
+          getElevatorPosition());
     }
 
     // If the elevator is at or below the lower limit, prevent it from going down any further.
-    if (isElevatorAtLowerLimit() || (isElevatorCalibrated() && getElevatorPosition() < ElevatorPosition.LOWER_LIMIT.value)) {
-      // Elevator is calibrated and under position control. If moving down, set the target to the current position.
+    if (isElevatorAtLowerLimit()
+        || (isElevatorCalibrated() && getElevatorPosition() < ElevatorPosition.LOWER_LIMIT.value)) {
+      // Elevator is calibrated and under position control. If moving down, set the target to the
+      // current position.
       if (isElevatorCalibrated() && isElevatorInPositionControl()) {
         if (getCurrentElevatorTarget() < getElevatorPosition()) {
           setElevatorProfileTarget(getElevatorPosition());
         }
 
-      // Elevator is under manual control. If moving down, stop the motors.
+        // Elevator is under manual control. If moving down, stop the motors.
       } else if (!isElevatorInPositionControl()) {
         if (getElevatorPercentOutput() < 0) {
           stopElevatorMotors();
         }
 
-      // Elevator is uncalibrated and under position control. Stop the motors.
+        // Elevator is uncalibrated and under position control. Stop the motors.
       } else {
         stopElevatorMotors();
       }
@@ -656,19 +750,20 @@ public class Elevator extends SubsystemBase implements Loggable {
 
     // If the elevator is at or above the upper limit, prevent it from going up any further.
     if (isElevatorCalibrated() && getElevatorPosition() > ElevatorPosition.UPPER_LIMIT.value) {
-      // Elevator is calibrated and under position control. If moving up, set the target to the current position.
+      // Elevator is calibrated and under position control. If moving up, set the target to the
+      // current position.
       if (isElevatorCalibrated() && isElevatorInPositionControl()) {
         if (getCurrentElevatorTarget() > getElevatorPosition()) {
           setElevatorProfileTarget(getElevatorPosition());
         }
 
-      // Elevator is under direct control. If moving up, stop the motors.
+        // Elevator is under direct control. If moving up, stop the motors.
       } else if (!isElevatorInPositionControl()) {
         if (getElevatorPercentOutput() > 0) {
           stopElevatorMotors();
         }
-        
-      // Elevator is uncalibrated and under position control. Stop the motors.
+
+        // Elevator is uncalibrated and under position control. Stop the motors.
       } else {
         stopElevatorMotors();
       }

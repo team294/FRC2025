@@ -11,13 +11,14 @@ import frc.robot.utilities.DataLogUtil;
 
 public class ElevatorSetPercent extends Command {
   private final Elevator elevator;
-  
+
   private double percent = 0.0;
   private boolean fromShuffleboard;
   private boolean endImmediately;
 
   /**
    * Sets the percent output of the elevator and ends immediately.
+   *
    * @param percent -1.0 to 1.0 (positive = up, negative = down)
    * @param elevator Elevator subsystem
    */
@@ -25,19 +26,20 @@ public class ElevatorSetPercent extends Command {
     this.percent = percent;
     this.endImmediately = endImmediately;
     this.elevator = elevator;
-    
+
     this.fromShuffleboard = false;
     addRequirements(elevator);
   }
 
   /**
    * Sets the percent output of the elevator from Shuffleboard and ends immediately.
+   *
    * @param elevator Elevator subsystem
    */
   public ElevatorSetPercent(boolean endImmediately, Elevator elevator) {
     this.endImmediately = endImmediately;
     this.elevator = elevator;
-    
+
     this.fromShuffleboard = true;
     addRequirements(elevator);
 
@@ -57,8 +59,7 @@ public class ElevatorSetPercent extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

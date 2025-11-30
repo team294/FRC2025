@@ -4,139 +4,178 @@
 
 package frc.robot.utilities;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants.ElevatorConstants;
+import java.util.Optional;
 
 public class ElevatorWristRegions {
 
-    public enum RegionType {
-        CORAL_ONLY,                  //  Region when only holding coral
-        STANDARD                     //  Region for all other situations
-    }
+  public enum RegionType {
+    CORAL_ONLY, //  Region when only holding coral
+    STANDARD //  Region for all other situations
+  }
 
-    // All of the information about a region
-    public static class Region {
-        public final RegionType type;                           // Type for this region
-        public final int regionIndex;                           // Region numbering FOR THIS RegionType, from 0 (bottom) to highest (top)
-        public final double elevatorMin, elevatorMax;           // Elevator min and max heights for this region, in inches
-        public final double wristMin, wristMax;                 // Wrist min and max angles for this region, in degrees
-        private Optional<Region> regionAbove, regionBelow;      // Region above (or empty if this is the top) or below (or empty if this is the bottom)
-
-        /**
-         * Creates a region for a region type and a range of elevator heights
-         * @param type          Type for this region
-         * @param regionIndex   Region numbering FOR THIS RegionType, from 0 (bottom) to highest (top)
-         * @param elevatorMin   Elevator min height for this region, in inches
-         * @param elevatorMax   Elevator max height for this region, in inches
-         * @param wristMin      Wrist min angle for this region, in degrees
-         * @param wristMax      Wrist max angle for this region, in degrees
-         */
-        public Region(RegionType type, int regionIndex, double elevatorMin, double elevatorMax,
-                      double wristMin, double wristMax) {
-            this.type = type;
-            this.regionIndex = regionIndex;
-            this.elevatorMax = elevatorMax;
-            this.elevatorMin = elevatorMin;
-            this.wristMax = wristMax;
-            this.wristMin = wristMin;
-            regionAbove = Optional.empty();
-            regionAbove = Optional.empty();
-        }
-
-        /**
-         * Sets the regions above/below this region
-         * @param below Region below, or null if none
-         * @param above Region above, or null if none
-         */
-        public void setNeighborRegions(Region below, Region above) {
-            regionBelow = (below==null) ? Optional.empty() : Optional.of(below);
-            regionAbove = (above==null) ? Optional.empty() : Optional.of(above);
-        }
-
-        /**
-         * Gets the region immediately above this region, or Optional.empty() if this is the top region
-         * @return
-         */
-        public Optional<Region> getRegionAbove() {
-            return regionAbove;
-        }
-
-        /**
-         * Gets the region immediately below this region, or Optional.empty() if this is the bottom region
-         * @return
-         */
-        public Optional<Region> getRegionBelow() {
-            return regionBelow;
-        }
-    }
-
-    // Arrays for the regions
-    // Region indicies must be in order from 0, 1, 2, etc
-    // Note that some regions have added 1-2" of margin on the elevator position for safety
-    public static final Region[] CoralOnlyRegions = {
-        new Region(RegionType.CORAL_ONLY, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 6.5, 63, 101.5),       // 4/18 increased all regions from 100.5 to 101.5 deg max wrist
-        new Region(RegionType.CORAL_ONLY, 1, 6.5, 55, 90, 101),
-        new Region(RegionType.CORAL_ONLY, 2, 55, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, 24, 101.5)
-    };
-    private static final Region[] StandardRegions = {
-        new Region(RegionType.STANDARD, 0, ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 4.8, 63, 101.5),
-        new Region(RegionType.STANDARD, 1, 4.8, ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value, -8.5, 101.5)
-    };
+  // All of the information about a region
+  public static class Region {
+    public final RegionType type; // Type for this region
+    public final int
+        regionIndex; // Region numbering FOR THIS RegionType, from 0 (bottom) to highest (top)
+    public final double elevatorMin,
+        elevatorMax; // Elevator min and max heights for this region, in inches
+    public final double wristMin, wristMax; // Wrist min and max angles for this region, in degrees
+    private Optional<Region> regionAbove,
+        regionBelow; // Region above (or empty if this is the top) or below (or empty if this is the
+    // bottom)
 
     /**
-     * Link the prior and next regions in each array
+     * Creates a region for a region type and a range of elevator heights
+     *
+     * @param type Type for this region
+     * @param regionIndex Region numbering FOR THIS RegionType, from 0 (bottom) to highest (top)
+     * @param elevatorMin Elevator min height for this region, in inches
+     * @param elevatorMax Elevator max height for this region, in inches
+     * @param wristMin Wrist min angle for this region, in degrees
+     * @param wristMax Wrist max angle for this region, in degrees
      */
-    static {
-        // Set the links to each region above/below
-        for (Region region : CoralOnlyRegions) {
-            region.setNeighborRegions(
-                region.regionIndex <= 0 ? null : CoralOnlyRegions[region.regionIndex-1],
-                region.regionIndex >= CoralOnlyRegions.length-1 ? null : CoralOnlyRegions[region.regionIndex+1]
-            );
-        }
-        for (Region region : StandardRegions) {
-            region.setNeighborRegions(
-                region.regionIndex <= 0 ? null : StandardRegions[region.regionIndex-1],
-                region.regionIndex >= StandardRegions.length-1 ? null : StandardRegions[region.regionIndex+1]
-            );
-        }
+    public Region(
+        RegionType type,
+        int regionIndex,
+        double elevatorMin,
+        double elevatorMax,
+        double wristMin,
+        double wristMax) {
+      this.type = type;
+      this.regionIndex = regionIndex;
+      this.elevatorMax = elevatorMax;
+      this.elevatorMin = elevatorMin;
+      this.wristMax = wristMax;
+      this.wristMin = wristMin;
+      regionAbove = Optional.empty();
+      regionAbove = Optional.empty();
     }
 
     /**
-     * Returns a region, based on the input region type and elevatorHeight
-     * @param type  CORAL_ONLY or STANDARD
-     * @param elevatorHeight
-     * @return Region
+     * Sets the regions above/below this region
+     *
+     * @param below Region below, or null if none
+     * @param above Region above, or null if none
      */
-    public static Region GetRegion(RegionType type, double elevatorHeight) {
-        Region currentRegion;
+    public void setNeighborRegions(Region below, Region above) {
+      regionBelow = (below == null) ? Optional.empty() : Optional.of(below);
+      regionAbove = (above == null) ? Optional.empty() : Optional.of(above);
+    }
 
-        // Clamp the elevator height to be within the region arrays
-        elevatorHeight = MathUtil.clamp(elevatorHeight, 
-            ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value, 
+    /**
+     * Gets the region immediately above this region, or Optional.empty() if this is the top region
+     *
+     * @return
+     */
+    public Optional<Region> getRegionAbove() {
+      return regionAbove;
+    }
+
+    /**
+     * Gets the region immediately below this region, or Optional.empty() if this is the bottom
+     * region
+     *
+     * @return
+     */
+    public Optional<Region> getRegionBelow() {
+      return regionBelow;
+    }
+  }
+
+  // Arrays for the regions
+  // Region indicies must be in order from 0, 1, 2, etc
+  // Note that some regions have added 1-2" of margin on the elevator position for safety
+  public static final Region[] CoralOnlyRegions = {
+    new Region(
+        RegionType.CORAL_ONLY,
+        0,
+        ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value,
+        6.5,
+        63,
+        101.5), // 4/18 increased all regions from 100.5 to 101.5 deg max wrist
+    new Region(RegionType.CORAL_ONLY, 1, 6.5, 55, 90, 101),
+    new Region(
+        RegionType.CORAL_ONLY,
+        2,
+        55,
+        ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value,
+        24,
+        101.5)
+  };
+  private static final Region[] StandardRegions = {
+    new Region(
+        RegionType.STANDARD,
+        0,
+        ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value,
+        4.8,
+        63,
+        101.5),
+    new Region(
+        RegionType.STANDARD,
+        1,
+        4.8,
+        ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value,
+        -8.5,
+        101.5)
+  };
+
+  /** Link the prior and next regions in each array */
+  static {
+    // Set the links to each region above/below
+    for (Region region : CoralOnlyRegions) {
+      region.setNeighborRegions(
+          region.regionIndex <= 0 ? null : CoralOnlyRegions[region.regionIndex - 1],
+          region.regionIndex >= CoralOnlyRegions.length - 1
+              ? null
+              : CoralOnlyRegions[region.regionIndex + 1]);
+    }
+    for (Region region : StandardRegions) {
+      region.setNeighborRegions(
+          region.regionIndex <= 0 ? null : StandardRegions[region.regionIndex - 1],
+          region.regionIndex >= StandardRegions.length - 1
+              ? null
+              : StandardRegions[region.regionIndex + 1]);
+    }
+  }
+
+  /**
+   * Returns a region, based on the input region type and elevatorHeight
+   *
+   * @param type CORAL_ONLY or STANDARD
+   * @param elevatorHeight
+   * @return Region
+   */
+  public static Region GetRegion(RegionType type, double elevatorHeight) {
+    Region currentRegion;
+
+    // Clamp the elevator height to be within the region arrays
+    elevatorHeight =
+        MathUtil.clamp(
+            elevatorHeight,
+            ElevatorConstants.ElevatorPosition.LOWER_LIMIT.value,
             ElevatorConstants.ElevatorPosition.UPPER_LIMIT.value - 0.001);
 
-        if (type == RegionType.CORAL_ONLY) {
-            currentRegion = CoralOnlyRegions[0];  // default value
-            for (Region r : CoralOnlyRegions) {
-                if ( elevatorHeight >= r.elevatorMin && elevatorHeight < r.elevatorMax) {
-                    currentRegion = r;
-                    break;
-                }
-            }
-        } else {
-            currentRegion = StandardRegions[0];  // default value
-            for (Region r : StandardRegions) {
-                if ( elevatorHeight >= r.elevatorMin && elevatorHeight < r.elevatorMax) {
-                    currentRegion = r;
-                    break;
-                }
-            }
+    if (type == RegionType.CORAL_ONLY) {
+      currentRegion = CoralOnlyRegions[0]; // default value
+      for (Region r : CoralOnlyRegions) {
+        if (elevatorHeight >= r.elevatorMin && elevatorHeight < r.elevatorMax) {
+          currentRegion = r;
+          break;
         }
-
-        return currentRegion;
+      }
+    } else {
+      currentRegion = StandardRegions[0]; // default value
+      for (Region r : StandardRegions) {
+        if (elevatorHeight >= r.elevatorMin && elevatorHeight < r.elevatorMax) {
+          currentRegion = r;
+          break;
+        }
+      }
     }
 
+    return currentRegion;
+  }
 }
