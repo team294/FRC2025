@@ -18,9 +18,9 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-          ~/.gradle/daemon
+          ${{ github.workspace }}/.gradle/caches
+          ${{ github.workspace }}/.gradle/wrapper
+          ${{ github.workspace }}/.gradle/daemon
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
