@@ -134,8 +134,9 @@ spotless {
             exclude '**/build/**', '**/build-*/**', '**/bin/**'
         }
         toggleOffOn()
-        googleJavaFormat('1.15.0').aosp()
+        googleJavaFormat('1.15.0')
         removeUnusedImports()
+        leadingTabsToSpaces(2)
         trimTrailingWhitespace()
         endWithNewline()
     }
@@ -155,8 +156,8 @@ spotless {
             exclude '**/build/**', '**/build-*/**'
         }
         eclipseWtp('xml')
-        trimTrailingWhitespace()
         leadingTabsToSpaces(2)
+        trimTrailingWhitespace()
         endWithNewline()
     }
     format 'misc', {
@@ -164,8 +165,8 @@ spotless {
             include '**/*.md', '**/.gitignore'
             exclude '**/build/**', '**/build-*/**'
         }
-        trimTrailingWhitespace()
         leadingTabsToSpaces(2)
+        trimTrailingWhitespace()
         endWithNewline()
     }
 }
