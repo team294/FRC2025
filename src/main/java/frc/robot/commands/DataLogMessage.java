@@ -17,7 +17,8 @@ public class DataLogMessage extends Command {
   /**
    * Writes to the file log, to be used in command groups.
    * @param echo true = write to the file log and the console, false = write just to the file log
-   * @param paramArray List of descriptions and values (variable number of parameters)
+   * @param paramArray List of descriptions and values (variable number of parameters).
+   * If more than one string or object is provided, then places one space between each item.
    */
   public DataLogMessage(boolean echo, Object... paramArray) {
     this.echo = echo;

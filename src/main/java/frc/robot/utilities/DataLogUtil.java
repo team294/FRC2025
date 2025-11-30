@@ -9,7 +9,6 @@ package frc.robot.utilities;
 
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
 
 import static frc.robot.utilities.StringUtil.*;
 
@@ -27,9 +26,6 @@ public class DataLogUtil {
 
 	// DataLog entry to use for logging messages and events
     private static final StringLogEntry dLogMessage = new StringLogEntry(DataLogManager.getLog(), "/DataLog/message");
-
-	// DataLog entry to use for heritage logging calls
-	private static final StringLogEntry dLogOldEntry = new StringLogEntry(DataLogManager.getLog(), "/DataLog/oldlog");
 
 
 	/** Start data log manager with default directory location. */
@@ -58,33 +54,6 @@ public class DataLogUtil {
 		System.out.println(buildString("Log:  ", s));
 	}
 
-	/**
-	 * Writes a message to the log file. The message will be timestamped. Does not echo the message to the screen.
-	 * @param logWhenDisabled true = log when disabled, false = discard the message
-	 * @param subsystemOrCommand The name of the subsystem or command generating the message
-	 * @param event A description of the event (ex. start, data, event)
-	 * @param paramArray... List of descriptions and values (variable number of parameters)
-	 */
-	public static void writeLog(boolean logWhenDisabled, String subsystemOrCommand, String event, Object... paramArray) {
-		// Write the message to the file
-		if (logWhenDisabled || DriverStation.isEnabled()) {
-			dLogOldEntry.append(buildStringWithCommas(subsystemOrCommand, event, buildStringWithCommas((Object [])paramArray)));
-		}
-	}
-	
-  	/**
-	 * Writes a message to the log file. The message will be timestamped. The message will be echoed to the screen.
-	 * @param logWhenDisabled true = log when disabled, false = discard the message
-	 * @param subsystemOrCommand The name of the subsystem or command generating the message
-	 * @param event A description of the event (ex. start, data, event)
-	 * @param paramArray... List of descriptions and values (variable number of parameters)
-	 */
-	public static void writeLogEcho(boolean logWhenDisabled, String subsystemOrCommand, String event, Object... paramArray) {
-		String s = buildStringWithCommas((Object [])paramArray);
-		writeLog(logWhenDisabled, subsystemOrCommand, event, s);
-		System.out.println(buildStringWithCommas("Log", subsystemOrCommand, event, s));
-	}
-	
   	/**
 	 * Changes level of detail for the fileLog.
 	 * Level 1 = full debugging logs. Huge file log, so use sparingly.
@@ -94,7 +63,7 @@ public class DataLogUtil {
 	 */
 	public static void setLogLevel(int level) {
 		logLevel = level;
-		writeLogEcho(true, "FileLog", "setLogLevel", "Level", level);
+		writeMessageEcho("DataLogUtil:  setLogLevel, Level =", level);
 	}
 
 	/**
