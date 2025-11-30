@@ -1,4 +1,4 @@
-name: Build
+name: Build Robot Code
 
 on:
   push:
