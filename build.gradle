@@ -114,6 +114,10 @@ deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
 
+tasks.named('compileJava').configure {
+    finalizedBy tasks.named('spotlessCheck')
+}
+
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
@@ -121,6 +125,9 @@ tasks.withType(JavaCompile) {
 
 // Configure Spotless code formatter
 spotless {
+    // Violations are found but build does not fail
+    enforceCheck = false
+
     java {
         target fileTree('.') {
             include '**/*.java'
@@ -163,19 +170,38 @@ spotless {
     }
 }
 
-// Print a message when Spotless finds formatting violations
-gradle.taskGraph.afterTask { task, state ->
-    def isSpotlessTask =
-            task.name.toLowerCase().contains("spotless") &&
-            task.name.toLowerCase().contains("check")
+// Configure all Spotless check tasks to show warnings but not fail the build
+gradle.taskGraph.whenReady { graph ->
+    graph.allTasks.each { task ->
+        if (task.name.startsWith('spotless') && task.name.endsWith('Check')) {
+            def originalActions = new ArrayList(task.actions)
+            task.actions.clear()
+            task.ext.spotlessViolationsFound = false
 
-    if (isSpotlessTask && state.failure != null) {
-        println ""
-        println "──────────────────────────────────────────────────────────"
-        println "\u001B[1;31mSpotless formatting errors detected!\u001B[0m"
-        println "Open the \u001B[36mWPILib Command Palette\u001B[0m, select \u001B[36mWPILib: Run a command with Gradle\u001B[0m"
-        println "and type \u001B[36mspotlessApply\u001B[0m to automatically fix all formatting violations."
-        println "──────────────────────────────────────────────────────────"
-        println ""
+            originalActions.each { originalAction ->
+                task.doLast {
+                    try {
+                        originalAction.execute(task)
+                    } catch (Exception e) {
+                        task.ext.spotlessViolationsFound = true
+                        def formatName = task.name.replace('spotless', '').replace('Check', '')
+                        if (formatName.isEmpty()) {
+                            formatName = "code"
+                        }
+                        logger.warn("")
+                        logger.warn("═══════════════════════════════════════════════════════════")
+                        logger.warn("\u001B[1;31mSpotless found formatting violations in ${formatName}!\u001B[0m")
+                        logger.warn("")
+                        logger.warn("1. Open the \u001B[36mWPILib Command Palette\u001B[0m")
+                        logger.warn("2. Select \u001B[36mWPILib: Run a command with Gradle\u001B[0m")
+                        logger.warn("")
+                        logger.warn("Run \u001B[36mspotlessCheck\u001B[0m to see the violations")
+                        logger.warn("Run \u001B[36mspotlessApply\u001B[0m to automatically fix violations")
+                        logger.warn("═══════════════════════════════════════════════════════════")
+                        logger.warn("")
+                    }
+                }
+            }
+        }
     }
 }
