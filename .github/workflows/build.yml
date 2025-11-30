@@ -10,6 +10,8 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     container: wpilib/roborio-cross-ubuntu:2025-22.04
+    env:
+      GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
     steps:
     - uses: actions/checkout@v4
     - name: Add repository to git safe directories
